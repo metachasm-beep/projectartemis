@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DiscoveryCard } from '../components/DiscoveryCard';
-import { MatriarchText } from '../components/MatriarchText';
-import GlassSurface from '../components/GlassSurface';
 import { api } from '../services/api';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, X, Star } from 'lucide-react';
+import { Heart, X, Star, Crown, Shield } from 'lucide-react';
 
 const DEMO_WOMAN_ID = 'woman_demo_888';
 
@@ -20,14 +18,14 @@ export const Discovery: React.FC = () => {
       if (data && data.length > 0) {
         setProfiles(data);
       } else {
-        // Fallback demo data
         setProfiles([
           { 
             user_id: '1', 
             full_name: 'Aravind Sharma', 
             age: 28, 
             bio: 'Sovereign Tech Lead in Bengaluru.', 
-            image_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=1000' 
+            image_url: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=1000',
+            rank_score: 94
           }
         ]);
       }
@@ -41,96 +39,106 @@ export const Discovery: React.FC = () => {
     if (currentProfile) {
       await api.selectAction(DEMO_WOMAN_ID, currentProfile.user_id, action);
     }
-    setCurrentIndex(prev => (prev + 1) % (profiles.length || 1));
+    setCurrentIndex((prev: number) => (prev + 1) % (profiles.length || 1));
   };
 
   if (loading) return (
-    <div className="h-screen flex items-center justify-center">
-      <MatriarchText text="SCANNING SOVEREIGNS..." variant="h3" gold />
+    <div className="h-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
+      <div className="mb-6 rounded-2xl bg-[#6E3FF3]/10 p-4 border border-[#6E3FF3]/20 shadow-glow animate-pulse">
+        <Crown className="w-10 h-10 text-[#6E3FF3]" strokeWidth={1.5} />
+      </div>
+      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.8em] animate-pulse">Scanning Sovereigns...</div>
     </div>
   );
 
   if (!profiles.length) return (
-    <div className="h-screen flex items-center justify-center">
-      <MatriarchText text="NO SOVEREIGNS FOUND" variant="h3" gold />
+    <div className="h-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
+      <div className="mb-6 rounded-2xl bg-[#6E3FF3]/10 p-4 border border-[#6E3FF3]/20">
+        <X className="w-10 h-10 text-[#6E3FF3]" strokeWidth={1.5} />
+      </div>
+      <div className="text-[10px] font-black text-white/20 uppercase tracking-[0.8em]">No Sovereigns Found</div>
     </div>
   );
 
   const profile = profiles[currentIndex];
 
   return (
-    <div className="h-screen flex flex-col pt-20 pb-40 overflow-hidden px-4">
-      <div className="px-6 mb-8 text-center">
-        <MatriarchText text="MATRIARCH" variant="h1" gold />
-        <MatriarchText text="Sovereign Selection" variant="caption" className="opacity-60" />
-      </div>
+    <div className="h-screen flex flex-col pt-24 pb-48 overflow-hidden px-8 bg-[#0A0A0B]">
+      <header className="px-8 mb-16 text-center flex flex-col items-center">
+        <div className="mb-6 rounded-xl bg-[#6E3FF3]/10 p-3 border border-[#6E3FF3]/20 shadow-glow">
+          <Crown className="w-6 h-6 text-[#6E3FF3]" strokeWidth={1.5} />
+        </div>
+        <h1 className="text-4xl font-black text-[#F6F3EE] italic tracking-tighter uppercase mb-2 font-sora">MATRIARCH</h1>
+        <div className="text-[10px] tracking-[0.6em] font-black text-[#6E3FF3] uppercase">Selective Discovery</div>
+      </header>
 
-      <div className="flex-1 flex items-center justify-center relative">
+      <main className="flex-1 flex items-center justify-center relative">
         <AnimatePresence mode="wait">
           <motion.div
             key={profile.user_id}
-            initial={{ opacity: 0, scale: 0.9, x: 20 }}
-            animate={{ opacity: 1, scale: 1, x: 0 }}
-            exit={{ opacity: 0, scale: 1.1, x: -20 }}
-            transition={{ duration: 0.6, ease: "circOut" }}
-            className="w-full max-w-sm"
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -40, scale: 1.05 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-md px-4"
           >
-            <GlassSurface 
-              borderRadius={40} 
-              brightness={15} 
-              opacity={0.3} 
-              blur={15}
-              className="p-1 border border-gold/30 shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
-            >
+            <div className="surface-premium rounded-xl overflow-hidden shadow-premium border-none p-2 relative group">
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               <DiscoveryCard 
                 imageSrc={profile.image_url}
                 altText={profile.full_name}
                 captionText={profile.full_name}
                 overlayContent={
-                  <div className="text-white p-4">
-                    <div className="flex justify-between items-end mb-2">
-                       <h2 className="text-4xl font-black text-gold">{profile.full_name}, {profile.age}</h2>
-                       <div className="bg-gold/20 border border-gold/40 px-2 py-0.5 rounded-full text-[10px] font-black text-gold tracking-widest">RANK {Math.round(profile.rank_score)}</div>
+                  <div className="text-white p-8 bg-gradient-to-t from-[#0A0A0B] via-[#0A0A0B]/80 to-transparent">
+                    <div className="flex justify-between items-end mb-6">
+                       <div>
+                          <h2 className="text-5xl font-black text-[#F6F3EE] mb-2 tracking-tighter">{profile.full_name}, {profile.age}</h2>
+                          <div className="flex items-center gap-3">
+                             <Shield className="w-3.5 h-3.5 text-[#6E3FF3]" />
+                             <span className="text-[10px] font-black uppercase tracking-[0.3em] text-[#6E3FF3]">Sovereign Verified</span>
+                          </div>
+                       </div>
+                       <div className="bg-[#D4AF37]/10 border border-[#D4AF37]/20 px-4 py-2 rounded-xl text-[10px] font-black text-[#D4AF37] tracking-[0.3em] uppercase shadow-glow">RANK {Math.round(profile.rank_score)}</div>
                     </div>
-                    <p className="text-xs border-l-4 border-gold pl-3 mt-3 font-medium bg-plum/40 p-4 rounded-xl backdrop-blur-xl border border-white/5 leading-relaxed text-white/90">
-                      {profile.bio}
+                    <p className="text-sm font-medium bg-white/5 p-6 rounded-xl backdrop-blur-3xl border border-white/5 leading-relaxed text-[#A6A0B3] italic">
+                      "{profile.bio}"
                     </p>
                   </div>
                 }
               />
-            </GlassSurface>
+            </div>
           </motion.div>
         </AnimatePresence>
-      </div>
+      </main>
 
-      <div className="absolute bottom-12 left-0 right-0 flex justify-center gap-6 px-6">
+      <nav className="absolute bottom-16 left-0 right-0 flex justify-center gap-10 px-8 z-20">
         <motion.button 
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, y: -4 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('skip')}
-          className="w-16 h-16 rounded-full flex items-center justify-center bg-graphite/40 backdrop-blur-lg border border-red-500/40 text-red-400 hover:bg-red-500/10 transition-colors"
+          className="w-20 h-20 rounded-xl flex items-center justify-center surface-raised border border-red-500/10 text-red-400/40 hover:text-red-500 hover:bg-red-500/5 transition-all shadow-premium"
         >
-          <X size={28} />
+          <X size={32} strokeWidth={1.5} />
         </motion.button>
         
         <motion.button 
-          whileHover={{ scale: 1.1 }}
+          whileHover={{ scale: 1.1, y: -4 }}
           whileTap={{ scale: 0.9 }}
           onClick={() => handleAction('save')}
-          className="w-16 h-16 rounded-full flex items-center justify-center bg-graphite/40 backdrop-blur-lg border border-gold/20 text-gold/40 hover:text-gold transition-colors"
+          className="w-20 h-20 rounded-xl flex items-center justify-center surface-raised border border-white/5 text-white/10 hover:text-[#6E3FF3] hover:border-[#6E3FF3]/20 transition-all shadow-premium"
         >
-          <Star size={28} />
+          <Star size={32} strokeWidth={1.5} />
         </motion.button>
-
+ 
         <motion.button 
-          whileHover={{ scale: 1.2, rotate: 10 }}
-          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.15, y: -8 }}
+          whileTap={{ scale: 0.95 }}
           onClick={() => handleAction('match')}
-          className="w-20 h-20 rounded-full flex items-center justify-center bg-plum/60 backdrop-blur-2xl border-2 border-gold text-gold shadow-[0_0_40px_rgba(212,175,55,0.4)] hover:shadow-[0_0_60px_rgba(212,175,55,0.6)] transition-shadow"
+          className="w-24 h-24 rounded-xl flex items-center justify-center bg-[#6E3FF3] text-white shadow-glow hover:shadow-[0_0_50px_rgba(110,63,243,0.5)] transition-all"
         >
-          <Heart size={36} fill="currentColor" />
+          <Heart size={40} fill="currentColor" />
         </motion.button>
-      </div>
+      </nav>
     </div>
   );
 };

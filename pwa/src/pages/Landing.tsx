@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import DecryptedText from "../components/ui/react-bits/DecryptedText";
 import ShinyText from "../components/ui/react-bits/ShinyText";
-import TrueFocus from "../components/ui/react-bits/TrueFocus";
 import SpotlightCard from "../components/ui/react-bits/SpotlightCard";
-import Waves from "../components/ui/react-bits/Waves";
-import { Lock, ArrowRight, Shield, Star, Zap, X, Check, Eye, UserCheck, MessageSquare } from "lucide-react";
+import LiquidChrome from "../components/ui/react-bits/LiquidChrome";
+import TextPressure from "../components/ui/react-bits/TextPressure";
+import { Lock, ArrowRight, Shield, Star, Zap, X, Check, Eye, UserCheck, MessageSquare, Crown } from "lucide-react";
 
 interface LandingProps {
   onLogin: (inviteCode?: string) => void;
@@ -41,30 +40,26 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#09090B] text-white selection:bg-violet-500/30 selection:text-white font-sans overflow-x-hidden">
+    <div className="min-h-screen bg-[#0A0A0B] text-[#F6F3EE] selection:bg-[#6E3FF3]/30 selection:text-white font-sans overflow-x-hidden">
       {/* Premium Waves Background */}
       <div className="fixed inset-0 -z-10">
-        <Waves
-          lineColor="rgba(139, 92, 246, 0.2)"
-          backgroundColor="#09090B"
-          waveSpeedX={0.0125}
-          waveSpeedY={0.005}
-          waveAmpX={32}
-          waveAmpY={16}
-          friction={0.925}
-          tension={0.005}
-          maxCursorMove={100}
+        <LiquidChrome
+          baseColor={[0.1, 0.05, 0.2]}
+          speed={0.15}
+          amplitude={0.6}
+          interactive={false}
         />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0B]/50 to-[#0A0A0B]" />
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#09090B]/60 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl border border-white/10 bg-white/5 shadow-2xl">
-              <span className="text-lg font-bold tracking-[0.2em] text-violet-400">M</span>
+      <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#0A0A0B]/40 backdrop-blur-2xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-8 py-6">
+          <div className="flex items-center gap-4">
+            <div className="grid h-12 w-12 place-items-center rounded-2xl border border-[#D4AF37]/20 bg-[#24152E]/40 shadow-2xl">
+              <Crown className="w-6 h-6 text-[#D4AF37]" strokeWidth={1.5} />
             </div>
-            <p className="text-sm font-bold uppercase tracking-[0.4em] text-white/80">MATRIARCH</p>
+            <p className="text-lg font-black uppercase tracking-[0.6em] text-white/90">MATRIARCH</p>
           </div>
 
           <div className="flex items-center gap-6">
@@ -76,7 +71,7 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
             </button>
             <button
               onClick={() => setShowInviteGate(true)}
-              className="inline-flex rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-2 text-sm font-semibold text-white shadow-lg shadow-violet-900/20 transition hover:scale-105 active:scale-95"
+              className="btn-primary"
             >
               Enter Sovereign
             </button>
@@ -94,27 +89,21 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
               transition={{ duration: 0.8 }}
               className="text-left"
             >
-              <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/10 px-6 py-2 text-[10px] uppercase tracking-[0.3em] text-violet-300 font-bold">
-                <Star className="w-3 h-3 fill-violet-300" />
-                Women-First Architecture
+              <div className="mb-10 inline-flex items-center gap-3 rounded-full border border-[#6E3FF3]/20 bg-[#6E3FF3]/5 px-6 py-2.5 text-[10px] uppercase tracking-[0.4em] text-[#6E3FF3] font-black">
+                <Crown className="w-3.5 h-3.5" />
+                Sovereign Selection Architecture
               </div>
 
-              <h1 className="text-6xl font-bold tracking-tight text-white sm:text-7xl lg:text-8xl mb-8 leading-[1.1]">
-                <TrueFocus 
-                  sentence="She chooses."
-                  blurAmount={5}
-                  borderColor="#8B5CF6"
-                  glowColor="rgba(139, 92, 246, 0.4)"
+              <div className="h-[180px] mb-12">
+                <TextPressure
+                  text="SHE CHOOSES."
+                  fontFamily="Sora"
+                  textColor="#F6F3EE"
+                  minFontSize={80}
+                  width={true}
+                  weight={true}
                 />
-                <span className="block mt-4">
-                  <DecryptedText 
-                    text="Everything else follows." 
-                    animateOn="view"
-                    revealDirection="center"
-                    className="bg-gradient-to-r from-white via-violet-200 to-fuchsia-200 bg-clip-text text-transparent"
-                  />
-                </span>
-              </h1>
+              </div>
 
               <p className="text-xl leading-relaxed text-white/70 mb-6 max-w-xl">
                 MATRIARCH is a women-first dating platform where men don’t swipe, chase, or flood inboxes. They build their profile, earn their visibility, and wait to be chosen.
@@ -124,19 +113,19 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
                 A high-trust, high-tech dating experience designed around feminine control, selective access, and intentional connection.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              <div className="flex flex-col sm:flex-row gap-6 mb-16">
                 <button
                   onClick={() => setShowInviteGate(true)}
-                  className="group relative inline-flex items-center justify-center rounded-full bg-white px-10 py-5 text-base font-bold text-black transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+                  className="btn-gold"
                 >
                   Join the Waitlist
-                  <ArrowRight className="ml-2 w-5 h-5 transition-transform group-hover:translate-x-1" />
+                  <ArrowRight className="ml-2 w-5 h-5 inline-block" />
                 </button>
                 <button
                   onClick={() => {
                     document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" });
                   }}
-                  className="rounded-full border border-white/10 bg-white/5 px-10 py-5 text-base font-bold text-white transition hover:bg-white/10"
+                  className="btn-secondary"
                 >
                   See How It Works
                 </button>
@@ -199,53 +188,54 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
           </div>
         </section>
 
-        {/* 2. POSITIONING STRIP */}
-        <section className="border-y border-white/5 bg-white/[0.02] py-8 overflow-hidden whitespace-nowrap">
-          <div className="flex gap-16 items-center animate-marquee">
-            {[1, 2, 3].map(i => (
-              <div key={i} className="flex gap-16 items-center">
-                <span className="text-2xl font-bold tracking-tighter text-white/20 uppercase italic">Not another swipe app.</span>
-                <span className="text-2xl font-bold tracking-tighter text-white/20 uppercase italic">Not another attention marketplace.</span>
-                <span className="text-2xl font-bold tracking-tighter text-white/20 uppercase italic">Not another inbox war.</span>
-                <span className="text-2xl font-bold tracking-tighter text-violet-400/40 uppercase italic">MATRIARCH redefines dating as a system of selection.</span>
+        <section className="border-y border-white/5 bg-white/[0.02] py-12 overflow-hidden whitespace-nowrap">
+          <div className="flex gap-24 items-center animate-marquee">
+            {[1, 2].map(i => (
+              <div key={i} className="flex gap-24 items-center">
+                <span className="text-4xl font-black tracking-tighter text-white/5 uppercase italic">Not another swipe app.</span>
+                <Crown className="w-8 h-8 text-[#D4AF37]/20" />
+                <span className="text-4xl font-black tracking-tighter text-white/5 uppercase italic">Not another attention marketplace.</span>
+                <Crown className="w-8 h-8 text-[#D4AF37]/20" />
+                <span className="text-4xl font-black tracking-tighter text-white/5 uppercase italic">Not another inbox war.</span>
+                <Crown className="w-8 h-8 text-[#D4AF37]/20" />
+                <span className="text-4xl font-black tracking-tighter text-[#6E3FF3]/20 uppercase italic">MATRIARCH redefines dating.</span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* 3. HOW IT WORKS */}
-        <section id="how-it-works" className="mx-auto max-w-7xl px-6 py-32 lg:px-8">
-           <div className="text-center mb-20">
-              <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">How MATRIARCH works</h2>
-              <div className="mt-4 h-1 w-20 bg-violet-500 mx-auto rounded-full" />
+        <section id="how-it-works" className="mx-auto max-w-7xl px-8 py-40">
+           <div className="text-center mb-24">
+              <h2 className="text-5xl font-black tracking-tight sm:text-6xl mb-6">Sovereign Mechanics</h2>
+              <p className="text-[#A6A0B3] text-xl font-medium">A three-tiered system of intentional engagement.</p>
            </div>
 
-          <div className="grid gap-12 md:grid-cols-3">
-            <SpotlightCard className="p-10 border border-white/5 bg-white/5 rounded-[2.5rem] relative overflow-hidden group">
-              <div className="mb-8 rounded-2xl bg-violet-600/20 p-5 w-fit group-hover:bg-violet-600/30 transition-colors">
-                <Eye className="w-10 h-10 text-violet-400" />
+          <div className="grid gap-8 md:grid-cols-3">
+            <SpotlightCard className="p-12 surface-premium rounded-xl relative overflow-hidden group border-none">
+              <div className="mb-10 rounded-2xl bg-[#6E3FF3]/10 p-6 w-fit group-hover:bg-[#6E3FF3]/20 transition-all duration-500 shadow-2xl">
+                <Eye className="w-10 h-10 text-[#6E3FF3]" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-bold mb-6 italic tracking-tight">For Women</h3>
-              <h4 className="text-xl font-bold mb-4 text-violet-300">You review. You decide.</h4>
-              <p className="text-white/50 leading-relaxed text-lg">Browse ranked profiles of men who meet your criteria. Match only when someone genuinely stands out.</p>
+              <h3 className="text-sm font-black mb-4 uppercase tracking-[0.3em] text-[#6E3FF3]">For Women</h3>
+              <h4 className="text-3xl font-bold mb-6 text-white leading-tight">Review. <br/>Decide.</h4>
+              <p className="text-[#A6A0B3] leading-relaxed text-lg">Browse curated profiles of men who meet your exacting criteria. Match only when excellence is evident.</p>
             </SpotlightCard>
 
-            <SpotlightCard className="p-10 border border-white/5 bg-white/5 rounded-[2.5rem] relative overflow-hidden group">
-              <div className="mb-8 rounded-2xl bg-fuchsia-600/20 p-5 w-fit group-hover:bg-fuchsia-600/30 transition-colors">
-                <UserCheck className="w-10 h-10 text-fuchsia-400" />
+            <SpotlightCard className="p-12 surface-premium rounded-xl relative overflow-hidden group border-none">
+              <div className="mb-10 rounded-2xl bg-fuchsia-600/10 p-6 w-fit group-hover:bg-fuchsia-600/20 transition-all duration-500 shadow-2xl">
+                <UserCheck className="w-10 h-10 text-fuchsia-400" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-bold mb-6 italic tracking-tight">For Men</h3>
-              <h4 className="text-xl font-bold mb-4 text-fuchsia-300">You build. You earn. You wait.</h4>
-              <p className="text-white/50 leading-relaxed text-lg">No swiping. No random chasing. Create a strong profile, improve your rank, and become visible to the right women.</p>
+              <h3 className="text-sm font-black mb-4 uppercase tracking-[0.3em] text-fuchsia-400">For Men</h3>
+              <h4 className="text-3xl font-bold mb-6 text-white leading-tight">Build. <br/>Qualify.</h4>
+              <p className="text-[#A6A0B3] leading-relaxed text-lg">No swiping. No chasing. Construct a profile of substance, earn your rank, and await discovery.</p>
             </SpotlightCard>
 
-            <SpotlightCard className="p-10 border border-white/5 bg-white/5 rounded-[2.5rem] relative overflow-hidden group">
-              <div className="mb-8 rounded-2xl bg-amber-600/20 p-5 w-fit group-hover:bg-amber-600/30 transition-colors">
-                <MessageSquare className="w-10 h-10 text-amber-400" />
+            <SpotlightCard className="p-12 surface-premium rounded-xl relative overflow-hidden group border-none">
+              <div className="mb-10 rounded-2xl bg-[#D4AF37]/10 p-6 w-fit group-hover:bg-[#D4AF37]/20 transition-all duration-500 shadow-2xl">
+                <MessageSquare className="w-10 h-10 text-[#D4AF37]" strokeWidth={1.5} />
               </div>
-              <h3 className="text-2xl font-bold mb-6 italic tracking-tight">After Matching</h3>
-              <h4 className="text-xl font-bold mb-4 text-amber-300">Communication on her terms.</h4>
-              <p className="text-white/50 leading-relaxed text-lg">Once a match is made, the woman chooses how the connection begins—chat, call request, or a slower unlock.</p>
+              <h3 className="text-sm font-black mb-4 uppercase tracking-[0.3em] text-[#D4AF37]">Execution</h3>
+              <h4 className="text-3xl font-bold mb-6 text-white leading-tight">Her Terms. <br/>Always.</h4>
+              <p className="text-[#A6A0B3] leading-relaxed text-lg">Communication begins only how and when she defines. No uninvited access, ever.</p>
             </SpotlightCard>
           </div>
         </section>
@@ -295,77 +285,75 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
             </div>
         </section>
 
-        {/* 5. FEATURES SECTION */}
-        <section className="mx-auto max-w-7xl px-6 py-32 lg:px-8">
-          <div className="text-center mb-24">
-             <h2 className="text-4xl font-bold tracking-tight sm:text-5xl">Built for women who want control, not clutter</h2>
+        <section className="mx-auto max-w-7xl px-8 py-40">
+          <div className="text-center mb-32">
+             <h2 className="text-4xl font-black tracking-tight sm:text-6xl mb-6">Selection Protocol Features</h2>
+             <p className="text-[#A6A0B3] text-xl">Designed for women who want control, not clutter.</p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[
-                { title: "Women-first matching", desc: "Men do not browse women. Women initiate match selection.", icon: UserCheck },
-                { title: "Ranked male visibility", desc: "Profiles are shown through a structured ranking system shaped by quality.", icon: Zap },
-                { title: "Communication mode control", desc: "After matching, women choose how the interaction begins.", icon: MessageSquare },
-                { title: "High-trust profiles", desc: "Verification, safety controls, and platform moderation are built-in.", icon: Shield },
-                { title: "Intentional visibility", desc: "Men improve standing through profile quality and authenticity.", icon: Star },
-                { title: "Premium architecture", desc: "Designed like a private network, not a public feed.", icon: Lock },
+                { title: "Sovereign Matching", desc: "Men do not browse women. Women initiate every selection cycle.", icon: Crown },
+                { title: "Ranked Discovery", desc: "Profiles are accessed through a meritocratic ranking system.", icon: Zap },
+                { title: "Communication Modes", desc: "After matching, she defines the connection parameters.", icon: MessageSquare },
+                { title: "Verified Lineage", desc: "Multi-factor verification and elite referral systems.", icon: Shield },
+                { title: "intentional Standing", desc: "Men improve visibility through quality and authenticity.", icon: Star },
+                { title: "Private Architecture", desc: "Designed as a closed-loop selection system.", icon: Lock },
             ].map((feature, i) => (
-                <SpotlightCard key={i} className="p-8 border border-white/5 bg-white/5 rounded-3xl hover:border-violet-500/30 transition-all">
-                    <feature.icon className="w-8 h-8 text-violet-400 mb-6" />
-                    <h3 className="text-xl font-bold mb-3">{feature.title}</h3>
-                    <p className="text-white/40 leading-relaxed">{feature.desc}</p>
+                <SpotlightCard key={i} className="p-10 surface-raised rounded-xl hover:border-[#6E3FF3]/30 transition-all border-none">
+                    <feature.icon className="w-8 h-8 text-[#6E3FF3] mb-8" strokeWidth={1.5} />
+                    <h3 className="text-xl font-bold mb-4 text-white">{feature.title}</h3>
+                    <p className="text-[#A6A0B3] leading-relaxed">{feature.desc}</p>
                 </SpotlightCard>
             ))}
           </div>
         </section>
 
-        {/* 6. MEN'S RANKING SECTION */}
-        <section className="mx-auto max-w-7xl px-6 py-24 lg:px-8">
-            <div className="rounded-[3rem] bg-gradient-to-br from-violet-600/10 to-transparent border border-white/5 p-12 lg:p-20 relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-96 h-96 bg-violet-600/10 blur-[100px] -z-10" />
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <section className="mx-auto max-w-7xl px-8 py-32">
+            <div className="rounded-xl surface-premium p-16 lg:p-24 relative overflow-hidden border-none shadow-premium">
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#6E3FF3]/10 blur-[120px] -z-10" />
+                <div className="grid lg:grid-cols-2 gap-24 items-center">
                     <div>
-                        <h2 className="text-4xl font-bold mb-6 tracking-tight italic uppercase">Visibility is earned</h2>
-                        <p className="text-lg text-white/50 mb-10 leading-relaxed">On MATRIARCH, men don’t win through swiping volume. They rise through profile strength, authenticity, activity, and platform signals.</p>
-                        <p className="text-white/30 mb-8 italic mb-10">Attention isn’t claimed. It’s qualified for.</p>
+                        <h2 className="text-4xl font-black mb-8 tracking-tight italic uppercase leading-none">Visibility is <br/><span className="text-[#D4AF37]">Earned.</span></h2>
+                        <p className="text-xl text-[#A6A0B3] mb-12 leading-relaxed">On MATRIARCH, attention isn't a commodity to be bought or spammed. It is qualified for through excellence, authenticity, and verified standing.</p>
                         
-                        <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+                        <div className="grid grid-cols-2 gap-x-12 gap-y-10">
                             {[
-                                { label: "Profile Completion", val: "85%" },
-                                { label: "Referral Strength", val: "High" },
-                                { label: "Verification", val: "Level 2" },
-                                { label: "Activity Score", val: "A+" }
+                                { label: "Profile Integrity", val: "98%" },
+                                { label: "Elite Standing", val: "Tier 1" },
+                                { label: "Verification", val: "Royal" },
+                                { label: "Platform Signal", val: "A+" }
                             ].map(item => (
-                                <div key={item.label} className="border-l-2 border-violet-500/20 pl-4 py-1">
-                                    <div className="text-[10px] text-white/30 uppercase tracking-widest font-bold mb-1">{item.label}</div>
-                                    <div className="text-xl font-bold text-white/80">{item.val}</div>
+                                <div key={item.label} className="border-l-2 border-[#6E3FF3]/30 pl-6 py-2">
+                                    <div className="text-[10px] text-white/20 uppercase tracking-[0.3em] font-black mb-2">{item.label}</div>
+                                    <div className="text-2xl font-bold text-white">{item.val}</div>
                                 </div>
                             ))}
                         </div>
                     </div>
-                    <div className="bg-black/40 backdrop-blur-2xl rounded-3xl border border-white/10 p-10 shadow-3xl relative">
-                        <div className="absolute inset-0 bg-gradient-to-br from-violet-600/5 to-transparent" />
-                        <div className="relative space-y-10">
+                    <div className="bg-[#0A0A0B]/60 backdrop-blur-3xl rounded-xl border border-white/5 p-12 shadow-3xl relative">
+                        <div className="absolute inset-0 bg-[#6E3FF3]/5" />
+                        <div className="relative space-y-12">
                             <div className="flex justify-between items-center">
-                                <div className="space-y-1">
-                                    <div className="text-[10px] font-bold tracking-widest text-violet-400 uppercase">Current Standing</div>
-                                    <div className="text-3xl font-black italic">ELITE TIER</div>
+                                <div className="space-y-2">
+                                    <div className="text-[10px] font-black tracking-[0.4em] text-[#6E3FF3] uppercase">Sovereign Standing</div>
+                                    <div className="text-4xl font-black italic">ELITE TIER</div>
                                 </div>
-                                <Star className="w-10 h-10 text-violet-500 animate-pulse" />
+                                <Crown className="w-12 h-12 text-[#D4AF37] animate-pulse" strokeWidth={1} />
                             </div>
-                            <div className="space-y-6">
-                                <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-white/40 mb-2">
-                                    <span>Visibility Potential</span>
-                                    <span>Top 5%</span>
+                            <div className="space-y-8">
+                                <div className="flex justify-between text-[10px] font-black uppercase tracking-[0.3em] text-white/30 mb-2">
+                                    <span>Visibility Index</span>
+                                    <span className="text-[#D4AF37]">Top 1%</span>
                                 </div>
-                                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                                    <motion.div initial={{ width: 0 }} whileInView={{ width: "95%" }} className="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 shadow-[0_0_15px_rgba(139,92,246,0.5)]" />
+                                <div className="h-2.5 bg-white/5 rounded-full overflow-hidden">
+                                    <motion.div initial={{ width: 0 }} whileInView={{ width: "99%" }} transition={{ duration: 1.5, ease: "easeOut" }} className="h-full bg-gradient-to-r from-[#6E3FF3] to-[#D4AF37] shadow-[0_0_20px_rgba(110,63,243,0.5)]" />
                                 </div>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/5 border border-white/5 flex items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="w-3 h-3 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
-                                    <span className="text-sm font-bold tracking-tight">Access Verification Secured</span>
+                            <div className="p-8 rounded-xl surface-raised flex items-center justify-between border-none">
+                                <div className="flex items-center gap-6">
+                                    <div className="w-3.5 h-3.5 rounded-full bg-[#D4AF37] shadow-[0_0_15px_rgba(212,175,55,0.6)]" />
+                                    <span className="text-sm font-black uppercase tracking-widest text-[#F6F3EE]">Sovereign Verified</span>
                                 </div>
                             </div>
                         </div>
@@ -375,60 +363,58 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
         </section>
 
         {/* 7. SAFETY / TRUST SECTION */}
-        <section className="mx-auto max-w-5xl px-6 py-32 text-center">
-             <div className="inline-flex mb-8 items-center justify-center w-20 h-20 rounded-[2rem] bg-violet-600/20 border border-violet-400/20">
-                <Shield className="w-10 h-10 text-violet-400" />
+        <section className="mx-auto max-w-5xl px-8 py-40 text-center">
+             <div className="inline-flex mb-12 items-center justify-center w-24 h-24 rounded-xl bg-[#6E3FF3]/10 border border-[#6E3FF3]/20 shadow-premium">
+                <Shield className="w-12 h-12 text-[#6E3FF3]" strokeWidth={1.5} />
               </div>
-            <h2 className="text-4xl font-bold mb-8 italic tracking-tight">Power means nothing without protection</h2>
-            <p className="text-xl text-white/50 mb-12 leading-relaxed max-w-3xl mx-auto">
-                MATRIARCH is built to give women not just control—but secure control. From communication settings to reporting tools and platform moderation, safety is part of the architecture.
+            <h2 className="text-4xl font-black mb-10 italic tracking-tight sm:text-5xl uppercase">Security through Authority</h2>
+            <p className="text-xl text-[#A6A0B3] mb-16 leading-relaxed max-w-3xl mx-auto">
+                MATRIARCH is built to give women not just choice—but absolute, secure control. Safety is not a feature; it is the fundamental architecture of the Sovereign selection cycle.
             </p>
-            <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
+            <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-4xl mx-auto">
                 {[
-                    "Communication controls",
-                    "Reporting & blocking",
-                    "Profile verification",
+                    "Communication isolation",
+                    "Verification protocols",
                     "Privacy infrastructure",
-                    "Moderation controls"
+                    "Selective discovery",
+                    "Moderated mechanics"
                 ].map(item => (
-                    <div key={item} className="flex flex-col items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-violet-500" />
-                        <span className="text-sm font-bold uppercase tracking-widest text-white/80">{item}</span>
+                    <div key={item} className="flex flex-col items-center gap-4 surface-raised p-8 rounded-xl border-none">
+                        <div className="w-2 h-2 rounded-full bg-[#6E3FF3] shadow-violet-500/50 shadow-glow" />
+                        <span className="text-xs font-black uppercase tracking-[0.3em] text-white/80">{item}</span>
                     </div>
                 ))}
             </div>
-            <p className="mt-20 text-base italic text-white/40">Because real power in dating is not just choice. It’s safe choice.</p>
+            <p className="mt-24 text-sm font-black italic text-white/20 uppercase tracking-[0.4em]">Real power is the power to choose safely.</p>
         </section>
 
-        {/* 8. PREMIUM BRAND SECTION */}
-        <section className="mx-auto max-w-7xl px-6 py-32 lg:px-8 border-t border-white/5 relative overflow-hidden">
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full bg-[radial-gradient(circle,rgba(139,92,246,0.05)_0%,transparent_70%)] -z-10" />
-             <div className="text-center max-w-3xl mx-auto">
-                <h2 className="text-3xl font-bold mb-10 tracking-widest uppercase italic">A private system for modern selection</h2>
-                <div className="space-y-8 text-xl leading-relaxed text-white/60">
-                    <p>MATRIARCH is for women who are done performing for algorithms and filtering chaos. It creates a more elegant dating dynamic: less noise, more signal, more control.</p>
-                    <p className="text-white/80 font-bold uppercase tracking-widest text-sm">For women who want standards. For men willing to qualify.</p>
-                    <div className="text-4xl font-black tracking-tighter text-white">This is <span className="text-violet-500">MATRIARCH</span>.</div>
+        <section className="mx-auto max-w-7xl px-8 py-40 border-t border-white/5 relative overflow-hidden">
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full bg-[radial-gradient(circle,rgba(110,63,243,0.08)_0%,transparent_70%)] -z-10" />
+             <div className="text-center max-w-4xl mx-auto">
+                <h2 className="text-4xl font-black mb-12 tracking-[0.3em] uppercase italic">The Private Selection System</h2>
+                <div className="space-y-10 text-xl leading-relaxed text-[#A6A0B3]">
+                    <p>MATRIARCH is for those who are done performing for machines. It creates a more elegant dynamic: less noise, more excellence, more power where it belongs.</p>
+                    <p className="text-white font-black uppercase tracking-[0.5em] text-sm">For the selective. For the exceptional.</p>
+                    <div className="text-6xl font-black tracking-tighter text-white mt-12">MATRIARCH.</div>
                 </div>
              </div>
         </section>
 
-        {/* 9. FINAL CTA / WAITLIST */}
-        <section className="mx-auto max-w-7xl px-6 py-32 text-center">
-             <div className="rounded-[4rem] bg-gradient-to-t from-violet-600/20 to-white/[0.03] border border-white/10 p-16 lg:p-32 shadow-3xl relative overflow-hidden">
+        <section className="mx-auto max-w-7xl px-8 py-40 text-center">
+             <div className="rounded-xl surface-premium p-20 lg:p-40 shadow-premium relative overflow-hidden border-none">
                 <div className="relative z-10">
-                    <h2 className="text-5xl font-bold tracking-tight mb-8">The next era of dating <br/>begins with her choice.</h2>
-                    <p className="text-xl text-white/50 mb-12">Join the waitlist for early access priority.</p>
+                    <h2 className="text-5xl font-black tracking-tight mb-12 sm:text-7xl uppercase leading-none">The Era of <br/><span className="text-[#6E3FF3]">Selection</span> Begins.</h2>
+                    <p className="text-xl text-[#A6A0B3] mb-16 font-medium">Join the waitlist for sovereign access priority.</p>
                     
                     <div className="max-w-md mx-auto">
                          <button
                             onClick={() => setShowInviteGate(true)}
-                            className="w-full bg-white text-black font-black py-6 rounded-3xl text-xl hover:scale-105 transition-all shadow-[0_20px_50px_rgba(255,255,255,0.1)] active:scale-95"
+                            className="btn-gold w-full py-8 text-2xl shadow-premium"
                         >
                             Reserve Your Place
                         </button>
-                        <p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-white/20">
-                            Women receive priority access. Men join the ranked waitlist.
+                        <p className="mt-8 text-[10px] font-black uppercase tracking-[0.5em] text-white/20">
+                            Women receive priority. Men earn their rank.
                         </p>
                     </div>
                 </div>
@@ -446,41 +432,41 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
             className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-2xl bg-black/90"
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="max-w-md w-full bg-[#0E0E12] rounded-[2.5rem] border border-white/10 p-10 shadow-3xl text-center relative overflow-hidden"
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              className="max-w-md w-full surface-premium rounded-xl p-12 shadow-premium text-center relative overflow-hidden border-none"
             >
-              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-violet-600" />
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#6E3FF3] via-[#D4AF37] to-[#6E3FF3]" />
               
-              <div className="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-violet-600/20 border border-violet-400/20">
-                <Lock className="w-8 h-8 text-violet-400" />
+              <div className="mb-10 inline-flex items-center justify-center w-20 h-20 rounded-xl bg-[#6E3FF3]/10 border border-[#6E3FF3]/20 shadow-glow">
+                <Lock className="w-10 h-10 text-[#6E3FF3]" strokeWidth={1.5} />
               </div>
-              <h2 className="text-3xl font-bold mb-4 italic tracking-tight">Sovereign Access</h2>
-              <p className="text-white/50 mb-8 leading-relaxed">MATRIARCH is currently invite-only. Please enter your Sovereign code or check your status on the waitlist.</p>
+              <h2 className="text-4xl font-black mb-6 italic tracking-tight uppercase">Sovereign Access</h2>
+              <p className="text-[#A6A0B3] mb-12 leading-relaxed font-medium">MATRIARCH is a private selective infrastructure. Please enter your Sovereign code or verify your waitlist standing.</p>
               
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div className="relative">
                   <input
                     type="text"
-                    placeholder="ENTER SOVEREIGN CODE"
+                    placeholder="SOVEREIGN CODE"
                     value={inviteCode}
                     onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
-                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-5 text-center text-lg font-black tracking-[0.3em] focus:border-violet-500 focus:bg-white/10 outline-none transition-all placeholder:text-white/10"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl px-8 py-6 text-center text-xl font-black tracking-[0.5em] focus:border-[#6E3FF3] focus:bg-white/10 outline-none transition-all placeholder:text-white/5"
                   />
                 </div>
-                {error && <p className="text-red-400 text-[10px] font-bold uppercase tracking-widest">{error}</p>}
+                {error && <p className="text-red-400 text-[10px] font-black uppercase tracking-[0.3em]">{error}</p>}
                 <button
                   onClick={validateAndLogin}
-                  className="w-full bg-violet-600 text-white font-bold py-5 rounded-2xl hover:bg-violet-500 transition-all active:scale-95 shadow-lg shadow-violet-900/40"
+                  className="btn-primary w-full py-6 text-lg shadow-glow"
                 >
                   Verify Access
                 </button>
                 <button
                   onClick={() => setShowInviteGate(false)}
-                  className="w-full text-white/20 text-[10px] font-bold uppercase tracking-widest hover:text-white/40 transition-colors pt-4"
+                  className="w-full text-white/20 text-[10px] font-black uppercase tracking-[0.5em] hover:text-[#6E3FF3] transition-colors pt-6"
                 >
-                  Return to Landing
+                  Return to Archive
                 </button>
               </div>
             </motion.div>
@@ -488,36 +474,36 @@ const LandingPage: React.FC<LandingProps> = ({ onLogin }) => {
         )}
       </AnimatePresence>
 
-      <footer className="mx-auto max-w-7xl px-6 border-t border-white/5 py-24">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-12 mb-20">
+      <footer className="mx-auto max-w-7xl px-8 border-t border-white/5 py-40">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-16 mb-32">
             <div className="col-span-2">
-                <div className="flex items-center gap-3 mb-6">
-                    <div className="grid h-8 w-8 place-items-center rounded-lg border border-white/10 bg-white/5">
-                    <span className="text-sm font-bold tracking-[0.1em] text-violet-400">M</span>
+                <div className="flex items-center gap-4 mb-10">
+                    <div className="grid h-10 w-10 place-items-center rounded-xl border border-white/5 bg-white/5">
+                      <Crown className="w-5 h-5 text-[#6E3FF3]" strokeWidth={1.5} />
                     </div>
-                    <p className="text-xs font-bold uppercase tracking-[0.3em] text-white">MATRIARCH</p>
+                    <p className="text-sm font-black uppercase tracking-[0.5em] text-white">MATRIARCH</p>
                 </div>
-                <p className="text-sm text-white/30 leading-relaxed max-w-xs">Connecting intention with execution. A feminine-first dating ecosystem built for selection, not noise.</p>
+                <p className="text-sm text-[#A6A0B3] leading-relaxed max-w-sm font-medium">Redefining connection through selective architecture. A private ecosystem built for intention, not noise.</p>
             </div>
             <div>
-                <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-6">Archive</h5>
-                <ul className="space-y-4 text-xs font-bold text-white/50">
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">About</li>
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">Lore</li>
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">Safety</li>
+                <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-8">Archive</h5>
+                <ul className="space-y-6 text-xs font-black text-white/40 tracking-[0.2em] uppercase">
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">About</li>
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">Protocol</li>
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">Safety</li>
                 </ul>
             </div>
             <div>
-                 <h5 className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20 mb-6">Protocols</h5>
-                <ul className="space-y-4 text-xs font-bold text-white/50">
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">Terms</li>
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">Privacy</li>
-                    <li className="hover:text-violet-400 transition-colors cursor-pointer tracking-widest uppercase">Access</li>
+                 <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20 mb-8">Sovereign</h5>
+                <ul className="space-y-6 text-xs font-black text-white/40 tracking-[0.2em] uppercase">
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">Terms</li>
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">Privacy</li>
+                    <li className="hover:text-[#6E3FF3] transition-colors cursor-pointer">Waitlist</li>
                 </ul>
             </div>
         </div>
-        <div className="text-center text-white/10 text-[10px] font-bold tracking-[0.4em] uppercase">
-          MATRIARCH — WHERE CONNECTION BEGINS WITH HER CHOICE.
+        <div className="text-center text-white/5 text-[10px] font-black tracking-[0.8em] uppercase">
+          MATRIARCH — CONNECTION BEGINS WITH HER CHOICE.
         </div>
       </footer>
 
