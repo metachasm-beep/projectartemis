@@ -22,6 +22,14 @@
   --color-matriarch-gold-soft: #E7C96D;
   --color-matriarch-gold-deep: #A9861D;
 
+  /* Aliases for shorthand utility usage */
+  --color-mat-bg: var(--color-matriarch-bg);
+  --color-mat-surface: var(--color-matriarch-surface);
+  --color-mat-violet: var(--color-matriarch-violet);
+  --color-mat-gold: var(--color-matriarch-gold);
+  --color-mat-plum: var(--color-matriarch-plum);
+  --color-mat-red: var(--color-matriarch-red);
+
   --color-matriarch-plum: #24152E;
   --color-matriarch-red: #EF4444;
 

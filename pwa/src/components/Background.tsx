@@ -152,10 +152,15 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
 
     let animationId: number;
     function update(t: number) {
-      animationId = requestAnimationFrame(update);
-      if (!renderer) return;
-      program.uniforms.uTime.value = t * 0.001 * speed;
-      renderer.render({ scene: mesh });
+      try {
+        animationId = requestAnimationFrame(update);
+        if (!renderer || !gl) return;
+        program.uniforms.uTime.value = t * 0.001 * speed;
+        renderer.render({ scene: mesh });
+      } catch (err) {
+        console.warn("Animation update failed - terminating protocol background", err);
+        cancelAnimationFrame(animationId);
+      }
     }
     animationId = requestAnimationFrame(update);
 

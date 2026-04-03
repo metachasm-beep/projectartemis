@@ -62,21 +62,21 @@ const App: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-screen w-full flex items-center justify-center bg-matriarch-bg">
+      <div style={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0A0A0B', position: 'relative', overflow: 'hidden' }}>
         <Background 
           baseColor={[0.1, 0.05, 0.2]} 
           speed={0.12}
           amplitude={0.3}
         />
-        <div className="z-10 flex flex-col items-center gap-6">
+        <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
           <motion.div
             animate={{ rotate: 360 }}
             transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-            className="w-16 h-16 rounded-2xl border-b-2 border-mat-gold flex items-center justify-center"
+            style={{ width: '64px', height: '64px', borderRadius: '16px', borderBottom: '2px solid #D4AF37', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
-            <Crown className="text-mat-gold w-8 h-8" />
+            <Crown style={{ color: '#D4AF37', width: '32px', height: '32px' }} />
           </motion.div>
-          <div className="text-[10px] font-black text-mat-gold/40 uppercase tracking-[0.8em] animate-pulse">Syncing Protocols</div>
+          <div style={{ fontSize: '10px', fontWeight: 900, color: 'rgba(212, 175, 87, 0.4)', textTransform: 'uppercase', letterSpacing: '0.8em' }}>Syncing Protocols</div>
         </div>
       </div>
     );
