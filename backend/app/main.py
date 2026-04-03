@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, legal, verification, discovery, rank, auth, communication, safety
+from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin
 from app.core.config import settings
 from app.services.backfill_service import backfill_service
 from fastapi import BackgroundTasks
@@ -42,6 +42,7 @@ app.include_router(discovery.router, prefix="/api/v1/discovery", tags=["Discover
 app.include_router(rank.router, prefix="/api/v1/rank", tags=["Rank"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(communication.router, prefix="/api/v1/communication", tags=["Communication"])
+app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
 
 
 @app.post("/api/v1/admin/trigger-backfill", tags=["Admin"])

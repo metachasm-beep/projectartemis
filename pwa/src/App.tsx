@@ -4,6 +4,7 @@ import { Dashboard } from './pages/Dashboard';
 import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
+import AdminDashboard from './pages/AdminDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Users, User, Bell, LogOut, Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
@@ -157,6 +158,7 @@ const App: React.FC = () => {
                 >
                   {activeTab === 'dashboard' && <Dashboard />}
                   {activeTab === 'discovery' && <Discovery />}
+                  {window.location.pathname === '/admin' && <AdminDashboard />}
                   {activeTab === 'profile' && (
                     <div className="h-screen flex flex-col items-center justify-center px-12 pt-24 text-center">
                        <div className="mb-8 rounded-2xl bg-[#D4AF37]/10 p-4 border border-[#D4AF37]/20 shadow-glow">

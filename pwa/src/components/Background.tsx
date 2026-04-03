@@ -28,9 +28,18 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     if (!containerRef.current) return;
 
     const container = containerRef.current;
-    const renderer = new Renderer({ antialias: true, alpha: true });
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 0);
+    let renderer: Renderer | null = null;
+    let gl: any = null;
+
+    try {
+      renderer = new Renderer({ antialias: true, alpha: true });
+      gl = renderer.gl;
+      if (!gl) throw new Error("Could not create WebGL context");
+      gl.clearColor(0, 0, 0, 0);
+    } catch (err) {
+      console.error("WebGL Initialization failed", err);
+      return;
+    }
 
     const vertexShader = `
       attribute vec2 position;
@@ -105,7 +114,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     const mesh = new Mesh(gl, { geometry, program });
 
     function resize() {
-      if (!container) return;
+      if (!container || !renderer || !gl) return;
       renderer.setSize(container.offsetWidth, container.offsetHeight);
       const resUniform = program.uniforms.uResolution.value as Float32Array;
       resUniform[0] = gl.canvas.width;
@@ -144,6 +153,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     let animationId: number;
     function update(t: number) {
       animationId = requestAnimationFrame(update);
+      if (!renderer) return;
       program.uniforms.uTime.value = t * 0.001 * speed;
       renderer.render({ scene: mesh });
     }
