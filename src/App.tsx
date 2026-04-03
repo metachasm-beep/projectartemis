@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LiquidChrome as Background } from './components/Background';
 import { Dashboard } from './pages/Dashboard';
+import { AdminDashboard } from './pages/dashboards/AdminDashboard';
 import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
@@ -8,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
-type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications';
+type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications' | 'admin';
 
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
@@ -89,6 +90,9 @@ const App: React.FC = () => {
     if (!userId) return;
     console.log("MATRIARCH: Fetching profile for:", userId);
     try {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const userEmail = currentSession?.user?.email;
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
@@ -99,9 +103,28 @@ const App: React.FC = () => {
         console.error("Profile Fetch Error:", error);
       }
       
+      let finalProfile = data;
+
+      // Admin Bootstrap Logic
+      if (userEmail === 'metachasm@gmail.com' && data && data.role !== 'admin') {
+        console.log("MATRIARCH: Promoting metachasm@gmail.com to Admin Sanctuary...");
+        const { data: updatedProfile, error: updateError } = await supabase
+          .from('profiles')
+          .update({ role: 'admin' })
+          .eq('user_id', userId)
+          .select()
+          .single();
+        
+        if (!updateError) {
+          finalProfile = updatedProfile;
+        } else {
+          console.error("MATRIARCH: Admin Promotion Failed:", updateError);
+        }
+      }
+      
       if (mounted) {
-        console.log("MATRIARCH: Profile State Set. Exists:", !!data);
-        setProfile(data);
+        console.log("MATRIARCH: Profile State Set. Exists:", !!finalProfile);
+        setProfile(finalProfile);
         setLoading(false);
       }
     } catch (err) {
@@ -180,6 +203,7 @@ const App: React.FC = () => {
               <div className="min-h-screen pb-32">
                 {activeTab === 'dashboard' && <Dashboard />}
                 {activeTab === 'discovery' && <Discovery />}
+                {activeTab === 'admin' && profile?.role === 'admin' && <AdminDashboard />}
                 {activeTab === 'profile' && (
                   <div className="h-screen flex flex-col items-center justify-center space-y-8">
                     <div className="text-center">
@@ -199,19 +223,27 @@ const App: React.FC = () => {
               <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/40 backdrop-blur-2xl border-t border-white/5 max-w-md mx-auto rounded-t-3xl sm:rounded-t-none sm:max-w-none">
                 <button 
                   onClick={() => setActiveTab('dashboard')} 
-                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                 >
                   Home
                 </button>
                 <button 
                   onClick={() => setActiveTab('discovery')} 
-                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                 >
                   Discovery
                 </button>
+                {profile?.role === 'admin' && (
+                  <button 
+                    onClick={() => setActiveTab('admin')} 
+                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'admin' ? 'bg-mat-gold text-black shadow-mat-gold/20' : 'text-mat-gold/60 hover:text-mat-gold'}`}
+                  >
+                    Admin
+                  </button>
+                )}
                 <button 
                   onClick={() => setActiveTab('profile')} 
-                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                 >
                   You
                 </button>
