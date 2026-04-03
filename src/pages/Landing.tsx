@@ -67,19 +67,7 @@ const LandingPage: React.FC = () => {
           <MatriarchLogo />
           
           <div className="flex items-center gap-8">
-            <button 
-              onClick={() => setShowSignIn(true)}
-              className="hidden text-sm font-medium text-matriarch-textSoft transition hover:text-white md:block"
-            >
-              Sign In
-            </button>
-            <Button 
-              variant="default" 
-              onClick={() => setShowSignIn(true)}
-              className="px-8 shadow-mat-violet"
-            >
-              Sign In with Google
-            </Button>
+            {/* CTAs removed from top bar per request */}
           </div>
         </nav>
       </header>
