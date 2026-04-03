@@ -58,15 +58,15 @@ if (rootElement) {
   // Handshake Listener: Dismiss loader only when app signals it's ready
   window.addEventListener('message', (event) => {
     if (event.data === 'MATRIARCH_PROTOCOL_READY') {
-      const loader = document.getElementById('boot-loader');
+      const loader = document.getElementById('root-loader');
       if (loader) {
-        if (diagnostic) diagnostic.innerHTML += '<div style="color: #00F2FF">> [SUCCESS] App Handshake received. Dismantling shell...</div>';
+        console.log("MATRIARCH: App Handshake received. Dismantling shell...");
         setTimeout(() => {
           loader.style.opacity = '0';
           setTimeout(() => {
             loader.style.display = 'none';
           }, 500);
-        }, 1000);
+        }, 100);
       }
     }
   });

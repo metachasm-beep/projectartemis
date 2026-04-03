@@ -16,18 +16,34 @@ const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+  const [showBypass, setShowBypass] = useState(false);
+
+  // Profile Sync Watchdog
+  useEffect(() => {
+    if (session && !profile && !loading) {
+      const timer = setTimeout(() => {
+        console.warn("MATRIARCH: Profile fetch is taking too long. Enabling bypass.");
+        setShowBypass(true);
+      }, 4000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowBypass(false);
+    }
+  }, [session, profile, loading]);
 
   useEffect(() => {
     let mounted = true;
 
     const initializeAuth = async () => {
+      console.log("MATRIARCH: Initializing Auth Protocol...");
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (!mounted) return;
         
-        setSession(session);
-        if (session) {
-          await fetchProfile(session.user.id, mounted);
+        console.log("MATRIARCH: Initial Session found:", !!currentSession);
+        setSession(currentSession);
+        if (currentSession) {
+          await fetchProfile(currentSession.user.id, mounted);
         } else {
           setLoading(false);
         }
@@ -39,11 +55,13 @@ const App: React.FC = () => {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      console.log("MATRIARCH: Auth State Change:", event, !!currentSession);
       if (!mounted) return;
-      setSession(session);
-      if (session) {
-        await fetchProfile(session.user.id, mounted);
+      
+      setSession(currentSession);
+      if (currentSession) {
+        await fetchProfile(currentSession.user.id, mounted);
       } else {
         setProfile(null);
         setLoading(false);
@@ -57,6 +75,8 @@ const App: React.FC = () => {
   }, []);
 
   const fetchProfile = async (userId: string, mounted: boolean = true) => {
+    if (!userId) return;
+    console.log("MATRIARCH: Fetching profile for:", userId);
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -64,35 +84,39 @@ const App: React.FC = () => {
         .eq('user_id', userId)
         .single();
       
-      if (error && error.code !== 'PGRST116') throw error;
+      if (error && error.code !== 'PGRST116') {
+        console.error("Profile Fetch Error:", error);
+      }
+      
       if (mounted) {
+        console.log("MATRIARCH: Profile State Set. Exists:", !!data);
         setProfile(data);
+        setLoading(false);
       }
     } catch (err) {
-      console.error("Profile fetch error:", err);
-      if (mounted) setProfile(null);
-    } finally {
-      if (mounted) setLoading(false);
+      console.error("Profile fetch catch:", err);
+      if (mounted) {
+        setProfile(null);
+        setLoading(false);
+      }
     }
   };
 
+  // Handshake to index.html
   useEffect(() => {
     if (!loading) {
+      console.log("MATRIARCH: Signaling Readiness to Shell.");
       window.postMessage('MATRIARCH_PROTOCOL_READY', '*');
-      console.log("MATRIARCH: Protocol Ready. Session:", !!session, "Profile:", !!profile);
+      
+      // Fallback: Manually hide any loader after a delay if the postMessage fails
+      setTimeout(() => {
+        const loader = document.getElementById('root-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.style.display = 'none', 800);
+        }
+      }, 500);
     }
-  }, [loading, session, profile]);
-
-  // Diagnostic Heartbeat
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (loading) {
-        console.warn("MATRIARCH: Auth initialization timeout. Breaking loader.");
-        setLoading(false); 
-      }
-    }, 6000); 
-
-    return () => clearTimeout(timeout);
   }, [loading]);
 
   if (loading) {
@@ -111,50 +135,80 @@ const App: React.FC = () => {
       <Background baseColor={[0.1, 0.05, 0.2]} speed={0.12} amplitude={0.3} />
       
       <main className="relative z-10 w-full min-h-screen">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {!session ? (
-            <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
               <Landing />
             </motion.div>
-          ) : !profile ? (
-            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+          ) : (!profile || showBypass) ? (
+            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full relative">
               <Onboarding userId={session.user.id} onComplete={() => fetchProfile(session.user.id)} />
+              {showBypass && (
+                <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center gap-4">
+                  <p className="text-[10px] text-white/40 uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md">Connection Unstable / Profile Missing</p>
+                  <button 
+                    onClick={() => setProfile({ user_id: session.user.id, is_verified: false, role: 'man' })} 
+                    className="px-8 py-4 bg-mat-gold text-black text-[10px] font-black uppercase tracking-widest shadow-mat-gold rounded-full hover:scale-105 transition-transform"
+                  >
+                    Force Protocol Entry
+                  </button>
+                </div>
+              )}
             </motion.div>
           ) : !profile.is_verified ? (
-            <motion.div key="aadhaar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <motion.div key="aadhaar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
               <AadhaarVerification userId={session.user.id} onVerified={() => fetchProfile(session.user.id)} />
             </motion.div>
           ) : (
-            <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-              <div className="min-h-screen">
+            <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen w-full">
+              <div className="min-h-screen pb-32">
                 {activeTab === 'dashboard' && <Dashboard />}
                 {activeTab === 'discovery' && <Discovery />}
                 {activeTab === 'profile' && (
-                  <div className="h-screen flex flex-col items-center justify-center">
-                    <h2 className="text-2xl font-black">{profile.display_name}</h2>
-                    <p className="opacity-50">Profile Protocol Active</p>
-                    <button onClick={() => supabase.auth.signOut()} className="mt-8 text-red-500 uppercase tracking-widest text-[10px] font-black">Reboot Protocol (Logout)</button>
+                  <div className="h-screen flex flex-col items-center justify-center space-y-8">
+                    <div className="text-center">
+                       <h2 className="text-4xl font-display font-black text-white italic tracking-tighter uppercase mb-2">{profile.display_name || 'Designation Pending'}</h2>
+                       <p className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Protocol Identity Verified</p>
+                    </div>
+                    <button 
+                      onClick={() => supabase.auth.signOut()} 
+                      className="px-10 py-4 border border-red-500/30 text-red-500 hover:bg-red-500/10 text-[10px] font-black uppercase tracking-[0.4em] transition-all rounded-full"
+                    >
+                      Reboot Protocol (Logout)
+                    </button>
                   </div>
                 )}
               </div>
               
-              {/* Navigation Placeholder */}
-              <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/20 backdrop-blur-xl border-t border-white/5">
-                <button onClick={() => setActiveTab('dashboard')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Core</button>
-                <button onClick={() => setActiveTab('discovery')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Discovery</button>
-                <button onClick={() => setActiveTab('profile')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Identity</button>
+              <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/40 backdrop-blur-2xl border-t border-white/5 max-w-md mx-auto rounded-t-3xl sm:rounded-t-none sm:max-w-none">
+                <button 
+                  onClick={() => setActiveTab('dashboard')} 
+                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                >
+                  Core
+                </button>
+                <button 
+                  onClick={() => setActiveTab('discovery')} 
+                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                >
+                  Discovery
+                </button>
+                <button 
+                  onClick={() => setActiveTab('profile')} 
+                  className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                >
+                  Identity
+                </button>
               </nav>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      {/* Persistence Diagnostic Layer */}
-      {!session && (
-        <div className="fixed bottom-4 right-4 opacity-10 hover:opacity-100 transition-opacity z-50">
-           <button onClick={() => window.location.reload()} className="text-[8px] text-white/20 font-mono">REBOOT_PROTOCOL</button>
-        </div>
-      )}
+      <div className="fixed bottom-4 left-4 opacity-5 hover:opacity-100 transition-opacity z-[100] flex gap-4">
+         <button onClick={() => window.location.reload()} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">REFRESH_SYNC</button>
+         <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">PURGE_PROTOCOL</button>
+      </div>
     </div>
   );
 };

@@ -41,9 +41,9 @@ export const Discovery: React.FC = () => {
 
         // Fetch user role
         const { data: userData } = await supabase
-          .from('users')
+          .from('profiles')
           .select('role')
-          .eq('id', user.id)
+          .eq('user_id', user.id)
           .single();
         
         const userRole = userData?.role;
