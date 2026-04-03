@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { 
   Trophy, 
   ShieldCheck, 
@@ -6,9 +7,6 @@ import {
   Heart, 
   Crown,
   TrendingUp,
-  LogOut,
-  Users,
-  Fingerprint,
   Activity,
   ArrowUpRight
 } from 'lucide-react';
@@ -17,25 +15,23 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Separator } from "@/components/ui/separator";
-import { MatriarchLogo } from "@/components/MatriarchLogo";
 import { cn } from "@/lib/utils";
 import DecryptedText from "@/components/ui/react-bits/DecryptedText";
-import CountUp from "@/components/ui/react-bits/CountUp";
-import SoftAurora from "@/components/ui/react-bits/SoftAurora";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
+import SoftAurora from "@/components/ui/react-bits/SoftAurora";
+import CountUp from "@/components/ui/react-bits/CountUp";
+
+import { FAQ } from '@/components/FAQ';
 
 interface WomenDashboardProps {
   profile: any;
   status: any;
-  handleLogout: () => void;
   handleBoost: () => void;
 }
 
 export const WomenDashboard: React.FC<WomenDashboardProps> = ({ 
   profile,
   status, 
-  handleLogout, 
   handleBoost 
 }) => {
   const tierColor = status?.rank_tier === 'elite' ? 'text-matriarch-gold' : status?.rank_tier === 'high' ? 'text-matriarch-violetBright' : 'text-matriarch-textSoft';
@@ -52,30 +48,6 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         />
       </div>
 
-      <header className="border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl sticky top-0 z-50">
-        <div className="mat-container flex h-20 items-center justify-between">
-          <MatriarchLogo />
-          <div className="flex items-center gap-4">
-             <Button variant="ghost" size="icon" onClick={handleLogout} className="text-matriarch-textSoft hover:text-white">
-                <LogOut className="w-5 h-5" />
-             </Button>
-             <Badge variant="outline" className="hidden sm:flex py-1.5 border-matriarch-gold/30 text-matriarch-goldSoft">
-                <Fingerprint className="w-3 h-3 mr-2" />
-                <DecryptedText 
-                  text="A RADIANT QUEEN" 
-                  animateOn="view" 
-                  speed={80} 
-                  className="tracking-widest" 
-                  sequential
-                />
-             </Badge>
-             <div className="w-10 h-10 rounded-full border border-white/10 bg-white/5 grid place-items-center">
-                <Users className="w-5 h-5 text-matriarch-textSoft" />
-             </div>
-          </div>
-        </div>
-      </header>
-
       <main className="mat-container pt-12 space-y-12">
         {!profile?.is_verified && (
           <VerificationPrompt 
@@ -84,36 +56,36 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
             onVerified={() => window.location.reload()} 
           />
         )}
-        <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-4 border-b border-white/5 mat-stagger-fade-in">
+        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 lg:gap-8 pb-6 border-b border-white/5 mat-stagger-fade-in font-display">
            <div className="space-y-2">
-              <span className="mat-eyebrow">Your Journey / The Inner Sanctuary</span>
-              <h1 className="mat-heading-md">
+              <span className="mat-text-label-pro">Your Journey / The Inner Sanctuary</span>
+              <h1 className="mat-text-display-pro text-white leading-none">
                 <DecryptedText 
                   text="The" 
                   animateOn="view" 
                   speed={120} 
                   className="inline-block" 
                   sequential
-                /> <span className="text-matriarch-gold">Inner Sanctuary</span>
-                 <div className="group relative cursor-help ml-4 inline-block">
-                    <Badge variant="gold" className="text-[8px] px-2 py-0.5 opacity-60 hover:opacity-100 transition-opacity flex items-center gap-1 h-fit">
+                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20">Inner Sanctuary</span>
+                 <div className="group relative cursor-help ml-2 inline-block">
+                    <Badge variant="gold" className="text-[7px] lg:text-[8px] px-2 py-0.5 opacity-60 hover:opacity-100 transition-opacity flex items-center gap-1 h-fit">
                        <Zap size={8} /> Blessings
                     </Badge>
                     {/* Tooltip */}
                     <div className="absolute top-full mt-2 left-0 w-48 p-4 bg-[#0F0F10] border border-mat-gold/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left">
-                     <p className="text-[9px] text-mat-gold font-black uppercase tracking-widest mb-2 flex items-center gap-2">
+                     <p className="mat-text-label-pro text-mat-gold mb-3 flex items-center gap-2 not-italic">
                         <Zap size={10} /> Divine Rewards
                      </p>
-                     <div className="space-y-1.5">
-                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                     <div className="space-y-1.5 font-sans">
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest font-bold">
                            <span className="text-white/40">Daily Entry</span>
                            <span className="text-mat-gold">+10</span>
                         </div>
-                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest font-bold">
                            <span className="text-white/40">7 Day Streak</span>
                            <span className="text-mat-gold">+100</span>
                         </div>
-                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest font-bold">
                            <span className="text-white/40">30 Day Streak</span>
                            <span className="text-mat-gold">+1000</span>
                         </div>
@@ -122,14 +94,14 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                  </div>
               </h1>
            </div>
-           <div className="flex gap-4">
-              <Button variant="secondary" className="gap-2 transition-transform hover:scale-95">
+           <div className="flex items-center gap-3 w-full lg:w-auto">
+              <Button variant="secondary" className="flex-1 lg:flex-none h-14 lg:h-12 gap-2 transition-transform hover:scale-95 font-black uppercase text-[10px] tracking-widest px-6">
                 <TrendingUp className="w-4 h-4" />
                 History
               </Button>
-              <Button variant="gold" className="gap-2 shadow-mat-gold" onClick={handleBoost} disabled={status?.points < 100}>
+              <Button variant="gold" className="flex-1 lg:flex-none gap-2 shadow-mat-gold h-14 lg:h-12 px-6 lg:px-8 font-black uppercase text-[10px] tracking-widest shrink-0" onClick={handleBoost} disabled={status?.points < 100}>
                 <Zap className="w-4 h-4" />
-                {status?.points >= 100 ? "Boost Visibility" : "Need 100 Points"}
+                {status?.points >= 100 ? ( <span className="whitespace-nowrap">Boost Visibility</span> ) : ( <span className="whitespace-nowrap">Need 100 Pts</span> )}
               </Button>
            </div>
         </section>
@@ -139,24 +111,24 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none group-hover:opacity-[0.05] transition-opacity duration-1000">
                 <Trophy size={200} />
               </div>
-              <CardHeader>
-                <div className="flex justify-between items-start">
+              <CardHeader className="p-6 lg:p-8">
+                <div className="flex flex-col lg:flex-row justify-between items-start gap-8">
                    <div>
-                      <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase mb-2">
-                        <DecryptedText text="Your Divine Grace" animateOn="view" />
+                      <CardTitle className="mb-4">
+                        <span className="mat-text-label-pro">Your Divine Grace</span>
                       </CardTitle>
                       <div className="flex items-center gap-4">
-                         <h2 className="text-6xl font-display font-black tracking-tighter text-white">
+                         <h2 className="text-5xl lg:text-7xl mat-text-display-pro text-white leading-tight">
                            {status?.rank_tier === 'matriarch' ? "THE QUEEN'S GRACE" : (status?.rank_tier?.toUpperCase() || 'SOUL')}
                          </h2>
-                         <Crown className={cn("w-10 h-10 animate-pulse", tierColor)} strokeWidth={1} />
+                         <Crown className={cn("w-8 h-8 lg:w-12 lg:h-12 animate-pulse", tierColor)} strokeWidth={1} />
                       </div>
                    </div>
-                   <div className="text-right">
-                      <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">
+                   <div className="lg:text-right">
+                      <div className="mat-text-label-pro text-mat-gold mb-2">
                         {status?.rank_tier === 'matriarch' ? 'Inner Light' : 'Grace Level'}
                       </div>
-                      <div className="text-4xl font-display font-black text-white">
+                      <div className="text-5xl mat-text-display-pro text-white mat-text-glow-gold leading-none">
                         <CountUp to={Math.round(status?.rank_score || 0)} duration={2.5} />
                       </div>
                    </div>
@@ -164,7 +136,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               </CardHeader>
               <CardContent className="mt-8 space-y-8">
                  <div className="space-y-4">
-                    <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-matriarch-textSoft">
+                    <div className="flex justify-between mat-text-label-pro text-matriarch-textSoft">
                        <span>{status?.rank_tier === 'matriarch' ? 'Heart Harmony' : 'Heartfelt Connection'}</span>
                        <span className="text-matriarch-gold">
                          <CountUp to={99.4} duration={3} />%
@@ -173,19 +145,19 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                     <Progress value={99} className="h-2 bg-white/5" />
                  </div>
                  <div className="flex flex-wrap gap-4">
-                    <Badge variant="violet">{status?.rank_tier === 'matriarch' ? 'Arch-Matriarch' : 'Top 0.1% Globally'}</Badge>
-                    <Badge variant="violet">Premium Verified</Badge>
-                    <Badge variant="violet">Matriarch Story</Badge>
+                    <Badge variant="violet" className="font-black tracking-widest text-[9px] px-3 py-1 uppercase">{status?.rank_tier === 'matriarch' ? 'Arch-Matriarch' : 'Top 0.1% Globally'}</Badge>
+                    <Badge variant="violet" className="font-black tracking-widest text-[9px] px-3 py-1 uppercase">Premium Verified</Badge>
+                    <Badge variant="violet" className="font-black tracking-widest text-[9px] px-3 py-1 uppercase">Matriarch Story</Badge>
                  </div>
               </CardContent>
            </Card>
 
-           <Card className="mat-panel mat-glass-premium mat-float-hover border-none flex flex-col justify-between">
-              <CardHeader>
-                <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase">
-                   <DecryptedText text="True Reflection" animateOn="view" />
+           <Card className="mat-panel mat-glass-premium mat-float-hover border-none flex flex-col justify-between p-6">
+              <CardHeader className="p-0">
+                <CardTitle className="mb-6">
+                   <span className="mat-text-label-pro">True Reflection</span>
                 </CardTitle>
-                <div className="pt-6 flex justify-center">
+                <div className="flex justify-center">
                    <div className="relative w-32 h-32">
                       <svg className="w-full h-full" viewBox="0 0 100 100">
                          <circle 
@@ -207,55 +179,54 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                          />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                         <span className="text-2xl font-black">
+                         <span className="text-3xl mat-text-display-pro text-white not-italic">
                            <CountUp to={status?.profile_completeness_pct || 0} duration={3} />%
                          </span>
                       </div>
                    </div>
                 </div>
               </CardHeader>
-              <CardContent className="text-center">
-                 <p className="text-xs text-matriarch-textSoft mb-6">Complete your story to find your kindred spirit.</p>
-                 <Button variant="secondary" size="sm" className="w-full transition-transform hover:scale-[0.98]">Edit Profile</Button>
+              <CardContent className="text-center p-0 mt-8">
+                 <p className="text-[10px] font-black tracking-widest uppercase text-matriarch-textSoft mb-6 opacity-60">Complete your story to find your kindred spirit.</p>
+                 <Button variant="secondary" size="sm" className="w-full transition-transform hover:scale-[0.98] font-black uppercase tracking-widest text-[10px] h-12">Edit Profile</Button>
               </CardContent>
            </Card>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in text-display text-white">
            {[
-             { label: 'TRUTH', title: 'Aadhaar Seal', val: profile?.is_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
-             { label: 'LIGHT', title: 'Inner Glow', val: status?.rank_tier === 'matriarch' ? 'RADIANT' : 'GATHERING', icon: Zap, color: 'text-matriarch-plum' },
-             { label: 'WHISPERS', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'Secret Whispers', val: '0', icon: Heart, color: 'text-matriarch-gold' },
-             { label: 'ENERGY', title: 'Gentle Energy', val: 'STABLE', icon: Activity, color: 'text-white' },
+              { label: 'TRUTH', title: 'Aadhaar Seal', val: profile?.is_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
+              { label: 'LIGHT', title: 'Inner Glow', val: status?.rank_tier === 'matriarch' ? 'RADIANT' : 'GATHERING', icon: Zap, color: 'text-matriarch-plum' },
+              { label: 'WHISPERS', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'Secret Whispers', val: '0', icon: Heart, color: 'text-matriarch-gold' },
+              { label: 'ENERGY', title: 'Gentle Energy', val: 'STABLE', icon: Activity, color: 'text-white' },
            ].map((item, i) => (
-             <Card key={i} className="mat-panel mat-glass-premium mat-float-hover border-none group cursor-pointer hover:bg-white/[0.06] transition-all">
+             <Card key={i} className="mat-panel mat-glass-premium mat-float-hover border-none group cursor-pointer hover:bg-white/[0.06] transition-all bg-white/[0.02]">
                 <CardContent className="p-8">
                    <div className="flex justify-between items-start mb-6">
                       <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={1.5} />
                       <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/40 transition-colors" />
                    </div>
                    <div className="space-y-1">
-                      <span className="text-[10px] font-black text-matriarch-textFaint tracking-widest uppercase">{item.label}</span>
-                      <h4 className="text-xl font-bold text-white">{item.title}</h4>
-                      <p className={cn("text-xs font-black tracking-widest pt-2", item.color)}>{item.val}</p>
+                      <span className="mat-text-label-pro">{item.label}</span>
+                      <h4 className="text-xl font-bold text-white uppercase tracking-tight">{item.title}</h4>
+                      <p className={cn("text-[10px] font-black tracking-widest pt-2 mat-text-shimmer-subtle", item.color)}>{item.val}</p>
                    </div>
                    {item.label === 'TRUTH' && (
                        <div className="mt-4 pt-4 border-t border-white/5">
-                          <p className="text-[8px] text-white/20 uppercase font-black tracking-widest mb-2">Referral Code</p>
-                          <div className="flex items-center justify-between p-2.5 bg-black/40 rounded-xl border border-white/5">
+                          <p className="mat-text-label-pro mb-3">Referral Code</p>
+                          <div className="flex items-center justify-between p-2.5 bg-black/40 rounded-xl border border-white/5 font-sans">
                              <span className="text-xs font-mono text-matriarch-violetBright">{profile?.referral_code || '---'}</span>
                              <Button 
                                variant="ghost" 
                                size="sm" 
-                               className="h-6 text-[8px] text-matriarch-violetBright/60 p-1"
-                               onClick={(e) => {
+                               className="h-6 text-[8px] text-matriarch-violetBright/60 p-1 font-black uppercase tracking-widest"
+                               onClick={(e: React.MouseEvent) => {
                                  e.stopPropagation();
                                  navigator.clipboard.writeText(`https://matriarch.vercel.app/onboarding?ref=${profile?.user_id}`);
                                  alert("Referral Link Copied!");
                                }}
                              >COPY</Button>
                           </div>
-                          <p className="text-[7px] text-white/10 uppercase mt-2 font-black tracking-widest text-center">Help others find their sanctuary</p>
                        </div>
                    )}
                 </CardContent>
@@ -263,42 +234,35 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
            ))}
         </div>
 
-        <section className="space-y-6 mat-stagger-fade-in">
-           <div className="flex items-center gap-4">
-              <h3 className="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">
-                <DecryptedText text="A Sanctuary for Your Soul" animateOn="view" sequential />
-              </h3>
-              <Separator className="flex-1 bg-emerald-500/10" />
-           </div>
-           
-           <Card className="mat-panel mat-glass-premium border-emerald-500/20 bg-emerald-500/[0.02]">
-              <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-8">
-                 <div className="flex items-center gap-6">
-                    <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center animate-pulse-slow">
-                       <ShieldCheck className="text-emerald-500 w-6 h-6" />
-                    </div>
-                    <div>
-                       <h4 className="text-lg font-bold text-white">Your Space is Secure and Private</h4>
-                       <p className="text-sm text-matriarch-textSoft">Your privacy is our highest priority.</p>
-                    </div>
-                 </div>
-                 <div className="flex items-center gap-4">
-                    <div className="text-right hidden sm:block">
-                       <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Trust Rating</div>
-                       <div className="text-2xl font-black text-white">
-                         <CountUp to={98} duration={1.5} />/100
-                       </div>
-                    </div>
-                    <Button variant="outline" className="border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 shadow-sm">Full Audit</Button>
-                 </div>
-              </CardContent>
-           </Card>
-        </section>
+        <FAQ />
+
+        <div className="py-20 text-center opacity-[0.03] pointer-events-none">
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH // WHERE EVERY STORY BEGINS WITH HER CHOICE</span>
+        </div>
       </main>
 
-      <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH // WHERE EVERY CHOICE IS MADE WITH GRACE</span>
-      </div>
+      {profile?.is_verified && !profile?.is_active && (
+        <motion.div 
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          className="fixed bottom-0 left-0 right-0 z-[60] p-4"
+        >
+          <div className="mat-container">
+            <div className="bg-matriarch-violetBright/10 border border-matriarch-violetBright/20 backdrop-blur-xl p-4 rounded-2xl flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-matriarch-violetBright text-white flex items-center justify-center animate-pulse">
+                   <Zap size={20} />
+                </div>
+                <div>
+                  <p className="mat-text-label-pro text-matriarch-violetBright">Awaiting Activation</p>
+                  <p className="text-[9px] text-white/60 uppercase font-medium">The Sanctuary is synchronizing your truth. This usually takes just a few moments.</p>
+                </div>
+              </div>
+              <Button size="sm" variant="ghost" onClick={() => window.location.reload()} className="text-[9px] font-black uppercase tracking-widest text-matriarch-violetBright hover:bg-matriarch-violetBright/10">Sync</Button>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

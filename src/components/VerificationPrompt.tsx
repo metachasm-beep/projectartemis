@@ -20,21 +20,21 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`p-6 rounded-[2rem] border backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-6 ${
+        className={`p-8 rounded-[2.5rem] border backdrop-blur-xl flex flex-col md:flex-row items-center justify-between gap-8 ${
           isMan 
-            ? 'bg-mat-gold/5 border-mat-gold/20' 
-            : 'bg-matriarch-violet/5 border-matriarch-violet/20'
+            ? 'bg-mat-gold/5 border-mat-gold/20 shadow-[0_0_50px_rgba(212,175,55,0.05)]' 
+            : 'bg-matriarch-violetBright/5 border-matriarch-violetBright/20 shadow-[0_0_50px_rgba(138,99,255,0.05)]'
         }`}
       >
-        <div className="flex items-center gap-4 text-center md:text-left">
-          <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-            isMan ? 'bg-mat-gold text-black' : 'bg-matriarch-violet text-white'
+        <div className="flex items-center gap-6 text-center md:text-left">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shadow-xl ${
+            isMan ? 'bg-mat-gold text-black' : 'bg-matriarch-violetBright text-white'
           }`}>
-            <ShieldCheck size={24} />
+            <ShieldCheck size={28} />
           </div>
           <div>
-            <h3 className="text-sm font-black uppercase tracking-widest text-white">A Sanctuary Built on Truth</h3>
-            <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mt-1">
+            <h3 className="mat-text-label-pro !text-[11px] text-white not-italic mb-1">A Sanctuary Built on Truth</h3>
+            <p className="text-[10px] text-white/40 uppercase tracking-[0.25em] font-medium leading-relaxed italic">
               Let us know you are real, so you can truly be found in our Sanctuary.
             </p>
           </div>
@@ -42,13 +42,13 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
         
         <Button 
           onClick={() => setShowModal(true)}
-          className={`h-14 px-8 rounded-2xl font-black tracking-widest uppercase text-[10px] transition-all hover:scale-105 active:scale-95 ${
+          className={`h-14 px-10 rounded-2xl font-black tracking-[0.2em] uppercase text-[10px] transition-all hover:scale-105 active:scale-95 ${
             isMan 
-              ? 'bg-mat-gold text-black hover:bg-mat-gold/90 shadow-lg shadow-mat-gold/10' 
-              : 'bg-matriarch-violet text-white hover:bg-matriarch-violet/90 shadow-lg shadow-matriarch-violet/10'
+              ? 'bg-mat-gold text-black hover:bg-mat-gold/90 shadow-mat-gold' 
+              : 'bg-matriarch-violetBright text-white hover:bg-matriarch-violetBright/90 shadow-[0_0_30px_rgba(138,99,255,0.3)]'
           }`}
         >
-          Reveal Your Truth <ArrowRight size={14} className="ml-2" />
+          Reveal Your Truth <ArrowRight size={14} className="ml-3" />
         </Button>
       </motion.div>
 
@@ -60,7 +60,7 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setShowModal(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+              className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
             />
             
             <motion.div 
@@ -71,12 +71,12 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
             >
               <button 
                 onClick={() => setShowModal(false)}
-                className="absolute -top-4 -right-4 w-10 h-10 bg-white/5 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-colors z-20"
+                className="absolute -top-6 -right-6 w-12 h-12 bg-black/40 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-all z-20"
               >
-                <X size={20} />
+                <X size={24} />
               </button>
               
-              <div className="max-h-[90vh] overflow-y-auto rounded-[3rem] shadow-2xl">
+              <div className="max-h-[90vh] overflow-y-auto rounded-[3.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] bg-[#0F0F10] border border-white/10">
                 <AadhaarVerification 
                   userId={userId} 
                   onVerified={() => {

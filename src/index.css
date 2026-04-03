@@ -89,8 +89,15 @@
     margin-right: auto;
     width: 100%;
     max-width: 80rem;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .mat-container {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
   }
 
   @media (min-width: 1024px) {
@@ -101,8 +108,15 @@
   }
 
   .mat-section {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
+  }
+
+  @media (min-width: 768px) {
+    .mat-section {
+      padding-top: 5rem;
+      padding-bottom: 5rem;
+    }
   }
 
   .mat-eyebrow {
@@ -271,5 +285,59 @@
   @keyframes matFadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
+  }
+
+  /* --- UI-UX-PRO-MAX TYPOGRAPHY --- */
+
+  .mat-text-gradient-gold {
+    background: linear-gradient(135deg, #A9861D 0%, #D4AF37 30%, #E7C96D 50%, #D4AF37 70%, #A9861D 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: matShimmer 4s linear infinite;
+  }
+
+  .mat-text-label-pro {
+    font-size: 0.625rem; /* 10px */
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 0.5em;
+    color: rgba(255, 255, 255, 0.35);
+    line-height: 1;
+  }
+
+  .mat-text-display-pro {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.05em;
+    line-height: 0.9;
+    text-transform: uppercase;
+    /* Responsive font scaling */
+    font-size: clamp(2.5rem, 10vw + 1rem, 8rem);
+  }
+
+  .mat-text-glow-gold {
+    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+  }
+
+  .mat-text-glow-violet {
+    text-shadow: 0 0 20px rgba(138, 99, 255, 0.4);
+  }
+
+  /* Micro-shimmer for secondary values */
+  .mat-text-shimmer-subtle {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.4) 0%,
+      rgba(255,255,255,1) 50%,
+      rgba(255,255,255,0.4) 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: matShimmer 6s linear infinite;
   }
 }

@@ -9,6 +9,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
+// Navigation Components
+import { MatriarchNav } from './components/navigation/MatriarchNav';
+import { MatriarchHeader } from './components/navigation/MatriarchHeader';
+
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
 type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications' | 'admin';
 
 const App: React.FC = () => {
@@ -16,20 +27,6 @@ const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
-  const [showBypass, setShowBypass] = useState(false);
-
-  // Profile Sync Watchdog
-  useEffect(() => {
-    if (session && !profile && !loading) {
-      const timer = setTimeout(() => {
-        console.warn("MATRIARCH: Profile fetch is taking too long. Enabling bypass.");
-        setShowBypass(true);
-      }, 12000); // Increased to 12s for slower connections
-      return () => clearTimeout(timer);
-    } else {
-      setShowBypass(false);
-    }
-  }, [session, profile, loading]);
 
   // Watchdog: Force end loading if stuck
   useEffect(() => {
@@ -51,12 +48,9 @@ const App: React.FC = () => {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (!mounted) return;
         
-        console.log("MATRIARCH: Initial Session found:", !!currentSession);
         setSession(currentSession);
         if (currentSession) {
-          // Instant Admin Elevation: Prevents onboarding flicker
           if (currentSession.user.email === 'metachasm@gmail.com') {
-            console.log("MATRIARCH: Architect detected. Bypassing entry protocols.");
             setProfile({ 
               user_id: currentSession.user.id, 
               role: 'admin', 
@@ -78,10 +72,8 @@ const App: React.FC = () => {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
-      console.log("MATRIARCH: Auth State Change:", event, !!currentSession);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
       if (!mounted) return;
-      
       setSession(currentSession);
       if (currentSession) {
         await fetchProfile(currentSession.user.id, mounted);
@@ -97,36 +89,25 @@ const App: React.FC = () => {
     };
   }, []);
 
-  // Admin Auto-Navigation
-  useEffect(() => {
-    if (profile?.role === 'admin' && activeTab !== 'admin') {
-      console.log("MATRIARCH: Directing Architect to Command Center.");
-      setActiveTab('admin');
-    }
-  }, [profile, activeTab]);
-
   const fetchProfile = async (userId: string, mounted: boolean = true) => {
     if (!userId) return;
-    console.log("MATRIARCH: Fetching profile for:", userId);
     try {
-      const { data: { session: currentSession } } = await supabase.auth.getSession();
-      const userEmail = currentSession?.user?.email;
-
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
       
+      let finalProfile = data;
+
       if (error && error.code !== 'PGRST116') {
         console.error("Profile Fetch Error:", error);
       }
-      
-      let finalProfile = data;
 
-      // Admin Bootstrap Logic: Enforce Admin Role and Bypass Onboarding
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      const userEmail = currentSession?.user?.email;
+
       if (userEmail === 'metachasm@gmail.com' && (!data || data.role !== 'admin')) {
-        console.log("MATRIARCH: Initializing the Architect...");
         const { data: updatedProfile, error: updateError } = await supabase
           .from('profiles')
           .upsert({ 
@@ -141,33 +122,22 @@ const App: React.FC = () => {
           .select()
           .single();
         
-        if (!updateError) {
-          finalProfile = updatedProfile;
-        } else {
-          console.error("MATRIARCH: Architect Initialization Failed:", updateError);
-        }
+        if (!updateError) finalProfile = updatedProfile;
       }
       
       if (mounted) {
-        console.log("MATRIARCH: Profile State Set. Exists:", !!finalProfile);
         setProfile(finalProfile);
         setLoading(false);
       }
     } catch (err) {
       console.error("Profile fetch catch:", err);
       if (mounted) setProfile(null);
-    } finally {
-      if (mounted) setLoading(false);
     }
   };
 
-  // Handshake to index.html
   useEffect(() => {
     if (!loading) {
-      console.log("MATRIARCH: Signaling Harmony to Shell.");
       window.postMessage('MATRIARCH_SANCTUARY_READY', '*');
-      
-      // Fallback: Manually hide any loader after a delay if the postMessage fails
       setTimeout(() => {
         const loader = document.getElementById('root-loader');
         if (loader) {
@@ -195,6 +165,8 @@ const App: React.FC = () => {
     );
   }
 
+  const showNav = session && profile && profile.onboarding_status === 'COMPLETED';
+
   return (
     <div className="relative min-h-screen bg-[#0A0A0B] text-[#F6F3EE] overflow-y-auto overflow-x-hidden font-inter selection:bg-matriarch-violet/30">
       <Background {...backgroundProps} />
@@ -212,78 +184,55 @@ const App: React.FC = () => {
                 metadata={session.user.user_metadata}
                 onComplete={() => fetchProfile(session.user.id)} 
               />
-              {(showBypass && !profile) && (
-                <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center gap-4">
-                  <p className="text-[10px] text-white/40 uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md">Connection Unstable / Profile Missing</p>
-                  <button 
-                    onClick={() => setProfile({ user_id: session.user.id, is_verified: true, role: 'man' })} 
-                    className="px-8 py-4 bg-mat-gold text-black text-[10px] font-black uppercase tracking-widest shadow-mat-gold rounded-full hover:scale-105 transition-all"
-                  >
-                    Enter the Sanctuary
-                  </button>
-                </div>
-              )}
             </motion.div>
           ) : (
             <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen w-full">
-              <div className="min-h-screen pb-32">
+              {showNav && <MatriarchHeader />}
+              
+              <div className={cn("min-h-screen", showNav ? "pt-16 pb-32" : "")}>
                 {activeTab === 'dashboard' && <Dashboard />}
                 {activeTab === 'discovery' && <Discovery />}
                 {activeTab === 'admin' && profile?.role === 'admin' && (
                   <AdminDashboard handleLogout={() => supabase.auth.signOut()} />
                 )}
                 {activeTab === 'profile' && (
-                  <div className="h-screen flex flex-col items-center justify-center space-y-8">
-                    <div className="text-center">
-                       <h2 className="text-4xl font-display font-black text-white italic tracking-tighter uppercase mb-2">{profile.full_name || 'Designation Pending'}</h2>
-                       <p className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Authentically You</p>
+                  <div className="h-[80vh] flex flex-col items-center justify-center space-y-12 px-8">
+                    <div className="text-center space-y-4">
+                       <h2 className="text-5xl mat-text-display-pro text-white leading-tight lowercase">
+                         {profile.full_name || 'Designation Pending'}
+                       </h2>
+                       <p className="mat-text-label-pro !text-mat-gold">Authentically You</p>
                     </div>
-                    <button 
-                      onClick={() => supabase.auth.signOut()} 
-                      className="px-10 py-4 border border-red-500/30 text-red-500 hover:bg-red-500/10 text-[10px] font-black uppercase tracking-[0.4em] transition-all rounded-full"
-                    >
-                      Sign Out
-                    </button>
+                    
+                    <div className="w-full max-w-sm space-y-4">
+                       <button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between px-8 text-white/60 hover:text-white transition-all">
+                          <span className="mat-text-label-pro !not-italic">Edit Sacred Story</span>
+                          <Crown size={16} className="text-mat-gold" />
+                       </button>
+                       <button 
+                         onClick={() => supabase.auth.signOut()} 
+                         className="w-full h-16 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-500 flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.4em] transition-all hover:bg-red-500/10"
+                       >
+                         Sever Connection
+                       </button>
+                    </div>
                   </div>
                 )}
               </div>
               
-              {profile?.role !== 'admin' && (
-                <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/40 backdrop-blur-2xl border-t border-white/5 max-w-md mx-auto rounded-t-3xl sm:rounded-t-none sm:max-w-none">
-                  <button 
-                    onClick={() => setActiveTab('dashboard')} 
-                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                  >
-                    Home
-                  </button>
-                  <button 
-                    onClick={() => setActiveTab('discovery')} 
-                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                  >
-                    Discovery
-                  </button>
-                  {profile?.role === 'admin' && (
-                    <button 
-                      onClick={() => setActiveTab('admin')} 
-                      className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'admin' ? 'bg-mat-gold text-black shadow-mat-gold/20' : 'text-mat-gold/60 hover:text-mat-gold'}`}
-                    >
-                      Admin
-                    </button>
-                  )}
-                  <button 
-                    onClick={() => setActiveTab('profile')} 
-                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                  >
-                    You
-                  </button>
-                </nav>
+              {showNav && (
+                <MatriarchNav 
+                  activeTab={activeTab} 
+                  setActiveTab={setActiveTab} 
+                  role={profile?.role} 
+                />
               )}
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
-      <div className="fixed bottom-4 left-4 opacity-5 hover:opacity-100 transition-opacity z-[100] flex gap-4">
+      <div className="fixed bottom-4 left-4 opacity-5 hover:opacity-100 transition-opacity z-[120] flex gap-4">
           <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">RESET_APP</button>
       </div>
     </div>

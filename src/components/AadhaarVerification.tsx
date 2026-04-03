@@ -62,6 +62,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         .from('profiles')
         .update({ 
           is_verified: true,
+          is_active: true,
           onboarding_status: 'COMPLETED',
           updated_at: new Date().toISOString()
         })
