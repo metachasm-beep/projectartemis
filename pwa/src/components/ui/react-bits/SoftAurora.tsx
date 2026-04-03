@@ -277,5 +277,4 @@ export default function SoftAurora({
 
   return <div ref={containerRef} className="w-full h-full" />;
 }
-鼓
-鼓
+
