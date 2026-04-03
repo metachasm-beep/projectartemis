@@ -5,12 +5,24 @@ from app.core.config import settings
 from app.services.backfill_service import backfill_service
 from fastapi import BackgroundTasks
 
+from contextlib import asynccontextmanager
+import asyncio
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Start backfill service in the background
+    asyncio.create_task(backfill_service.start_service())
+    yield
+    # Stop backfill service on shutdown
+    backfill_service.stop_service()
+
 app = FastAPI(
     title="MATRIARCH API",
     description="High-tech, women-first dating platform backend",
     version="1.0.0",
     docs_url="/api/docs",
     redoc_url="/api/redoc",
+    lifespan=lifespan
 )
 
 # Set up CORS

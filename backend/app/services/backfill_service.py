@@ -9,48 +9,57 @@ class BackfillService:
     def __init__(self):
         self.is_running = False
 
-    async def run_elite_backfill(self):
+    async def start_service(self):
         """
-        Ongoing background service to re-calculate ranks for all men.
-        In a production environment, this could be triggered by a CRON job.
-        For Vercel, we can run it as a BackgroundTask on specific events.
+        Starts the continuous background loop for ranking.
         """
         if self.is_running:
-            logger.info("Backfill already in progress.")
             return
         
         self.is_running = True
-        try:
-            logger.info("Starting Elite Backfill process...")
+        logger.info("Elite Backfill Service STARTED.")
+        
+        while self.is_running:
+            try:
+                await self.run_cycle()
+                # Run every 5 minutes
+                await asyncio.sleep(300)
+            except Exception as e:
+                logger.error(f"Backfill loop error: {e}")
+                await asyncio.sleep(60)
+
+    async def run_cycle(self):
+        """
+        Single cycle of rank recalculation.
+        """
+        logger.info("Executing Rank Calculation Cycle...")
+        # Fetch all active men
+        limit = 100
+        offset = 0
+        
+        while True:
+            response = supabase_client.table("users") \
+                .select("id") \
+                .eq("role", "man") \
+                .range(offset, offset + limit - 1) \
+                .execute()
             
-            # Fetch all active men
-            # Using pagination for scale
-            limit = 100
-            offset = 0
+            users = response.data
+            if not users:
+                break
             
-            while True:
-                response = supabase_client.table("users") \
-                    .select("id") \
-                    .eq("role", "man") \
-                    .eq("is_active", True) \
-                    .range(offset, offset + limit - 1) \
-                    .execute()
-                
-                users = response.data
-                if not users:
-                    break
-                
-                for user in users:
+            for user in users:
+                try:
                     await rank_service.calculate_man_rank(user["id"])
-                    # Small sleep to prevent rate limiting Supabase
-                    await asyncio.sleep(0.1)
-                
-                offset += limit
-                
-            logger.info("Elite Backfill completed successfully.")
-        except Exception as e:
-            logger.error(f"Error during backfill: {str(e)}")
-        finally:
-            self.is_running = False
+                    await asyncio.sleep(0.05) # Throttle
+                except Exception as e:
+                    logger.error(f"Failed to rank user {user['id']}: {e}")
+            
+            offset += limit
+        logger.info("Cycle complete.")
+
+    def stop_service(self):
+        self.is_running = False
+        logger.info("Elite Backfill Service STOPPED.")
 
 backfill_service = BackfillService()
