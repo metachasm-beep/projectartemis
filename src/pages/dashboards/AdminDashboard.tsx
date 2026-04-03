@@ -13,7 +13,7 @@ import {
   Trash2,
   ArrowUpRight,
   RefreshCw,
-  Crown
+  LogOut
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
@@ -27,7 +27,11 @@ interface AdminStats {
   totalTokens: number;
 }
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  handleLogout: () => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) => {
   const [stats, setStats] = useState<AdminStats>({
     totalUsers: 0,
     totalMen: 0,
@@ -74,6 +78,7 @@ export const AdminDashboard: React.FC = () => {
   }, []);
 
   const updateUserProfile = async (userId: string, updates: any) => {
+    console.log(`MATRIARCH: Absolute Intervention Initiated for ${userId}:`, updates);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -81,8 +86,9 @@ export const AdminDashboard: React.FC = () => {
         .eq('user_id', userId);
       
       if (!error) {
-        setUsers(users.map(u => u.user_id === userId ? { ...u, ...updates } : u));
+        setUsers(prev => prev.map(u => u.user_id === userId ? { ...u, ...updates } : u));
         setActiveMenuUserId(null);
+        console.log(`MATRIARCH: Soul ${userId} successfully evolved.`);
       } else {
          throw error;
       }
@@ -105,8 +111,10 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
-  const toggleVerification = async (userId: string, currentStatus: boolean) => {
-    await updateUserProfile(userId, { is_verified: !currentStatus });
+  const toggleVerification = async (userId: string, currentStatus: any) => {
+    // Explicitly toggle based on truthy/falsy to handle nulls
+    const targetStatus = !currentStatus;
+    await updateUserProfile(userId, { is_verified: targetStatus });
   };
 
   const adjustTokens = async (userId: string, currentTokens: number, amount: number) => {
@@ -133,14 +141,23 @@ export const AdminDashboard: React.FC = () => {
           </h1>
           <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.6em]">System Oversight & Divine Intervention</p>
         </div>
-        <Button 
-          onClick={fetchData} 
-          disabled={loading}
-          className="h-14 px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex gap-3 items-center backdrop-blur-xl"
-        >
-          <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-          <span className="text-[10px] font-black uppercase tracking-widest">Refresh Pulse</span>
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button 
+            onClick={handleLogout}
+            className="h-14 px-8 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 rounded-2xl flex gap-3 items-center backdrop-blur-xl transition-all"
+          >
+            <LogOut size={16} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Sign Out</span>
+          </Button>
+          <Button 
+            onClick={fetchData} 
+            disabled={loading}
+            className="h-14 px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex gap-3 items-center backdrop-blur-xl"
+          >
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            <span className="text-[10px] font-black uppercase tracking-widest">Synchronize</span>
+          </Button>
+        </div>
       </div>
 
       {/* Stats Grid */}
@@ -299,7 +316,10 @@ export const AdminDashboard: React.FC = () => {
                                </div>
                                <div className="p-2 flex flex-col gap-1">
                                   <button 
-                                    onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
+                                    onClick={(e) => {
+                                       e.stopPropagation();
+                                       updateUserProfile(u.user_id, { is_active: !u.is_active });
+                                    }}
                                     className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${u.is_active === false ? 'text-green-400 hover:bg-green-400/10' : 'text-red-400 hover:bg-red-400/10'}`}
                                   >
                                     {u.is_active === false ? <UserCheck size={14} /> : <UserX size={14} />}
@@ -307,7 +327,10 @@ export const AdminDashboard: React.FC = () => {
                                   </button>
                                   
                                   <button 
-                                    onClick={() => toggleVerification(u.user_id, u.is_verified)}
+                                    onClick={(e) => {
+                                       e.stopPropagation();
+                                       toggleVerification(u.user_id, u.is_verified);
+                                    }}
                                     className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-white/60 uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
                                   >
                                     <ShieldCheck size={14} />
@@ -366,11 +389,7 @@ export const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
-      {/* Footer Branding */}
-      <div className="flex justify-center flex-col items-center gap-4 opacity-20">
-         <Crown className="text-mat-gold" size={32} />
-         <p className="text-[10px] font-black uppercase tracking-[1em] text-white">Matriarch Command</p>
-      </div>
+      {/* Footer Branding Removed as per request */}
     </div>
   );
 };

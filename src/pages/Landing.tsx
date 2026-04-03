@@ -407,6 +407,39 @@ const LandingPage: React.FC = () => {
            </div>
         </section>
 
+        {/* 6.5 DIVINE ECONOMY (DAILY REWARDS) */}
+        <section className="mat-section relative overflow-hidden">
+           <div className="mat-container flex flex-col items-center">
+              <div className="text-center mb-16 max-w-2xl">
+                 <Badge variant="secondary" className="mb-6 opacity-60">The Economy of Devotion</Badge>
+                 <h2 className="mat-heading-lg uppercase italic tracking-tighter">Devotion is <span className="text-mat-gold">Recognized.</span></h2>
+                 <p className="mat-copy mt-4">Every day the sanctuary doors open, your presence is honored through token blessings. Consistency amplifies your radiance.</p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-8 w-full">
+                 {[
+                   { title: "Daily Entry", reward: "+10", desc: "For every dawn you join the sanctuary.", icon: Zap },
+                   { title: "7 Day Streak", reward: "+100", desc: "A week of dedicated intention.", icon: Star },
+                   { title: "30 Day Devotion", reward: "+1000", desc: "Monthly absolute alignment.", icon: Crown }
+                 ].map((item, i) => (
+                   <Card key={i} className="mat-panel p-10 border-none bg-white/[0.02] hover:bg-white/[0.04] transition-all group overflow-hidden relative">
+                      <div className="absolute -top-4 -right-4 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity">
+                         <item.icon size={120} className="text-matriarch-gold" />
+                      </div>
+                      <div className="relative z-10 space-y-6">
+                         <item.icon size={32} className="text-matriarch-gold/40 group-hover:text-matriarch-gold transition-colors" />
+                         <div>
+                            <h4 className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-1">{item.title}</h4>
+                            <div className="text-4xl font-display font-black text-white italic tracking-tighter">{item.reward} <span className="text-xs uppercase tracking-widest opacity-40 font-inter">Tokens</span></div>
+                         </div>
+                         <p className="text-[10px] text-white/40 uppercase font-black tracking-widest leading-relaxed">{item.desc}</p>
+                      </div>
+                   </Card>
+                 ))}
+              </div>
+           </div>
+        </section>
+
         {/* 7. SAFETY / TRUST */}
         <section className="mat-section">
           <div className="mat-container text-center max-w-4xl">

@@ -95,6 +95,31 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   className="inline-block" 
                   sequential
                 /> <span className="text-matriarch-gold">Inner Sanctuary</span>
+                 <div className="group relative cursor-help ml-4 inline-block">
+                    <Badge variant="gold" className="text-[8px] px-2 py-0.5 opacity-60 hover:opacity-100 transition-opacity flex items-center gap-1 h-fit">
+                       <Zap size={8} /> Blessings
+                    </Badge>
+                    {/* Tooltip */}
+                    <div className="absolute top-full mt-2 left-0 w-48 p-4 bg-[#0F0F10] border border-mat-gold/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left">
+                     <p className="text-[9px] text-mat-gold font-black uppercase tracking-widest mb-2 flex items-center gap-2">
+                        <Zap size={10} /> Divine Rewards
+                     </p>
+                     <div className="space-y-1.5">
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                           <span className="text-white/40">Daily Entry</span>
+                           <span className="text-mat-gold">+10</span>
+                        </div>
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                           <span className="text-white/40">7 Day Streak</span>
+                           <span className="text-mat-gold">+100</span>
+                        </div>
+                        <div className="flex justify-between text-[8px] uppercase tracking-widest">
+                           <span className="text-white/40">30 Day Streak</span>
+                           <span className="text-mat-gold">+1000</span>
+                        </div>
+                     </div>
+                   </div>
+                 </div>
               </h1>
            </div>
            <div className="flex gap-4">

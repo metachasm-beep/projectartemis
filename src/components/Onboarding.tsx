@@ -182,6 +182,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                 <div className="text-center space-y-4">
                   <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Begin Your Story</h2>
                   <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Find your place in the sanctuary</p>
+                  <p className="text-[9px] text-mat-gold/60 font-black uppercase tracking-[0.2em] mt-2">
+                    Daily Presence: +10 Tokens • 7 Day Streak: +100 • 30 Day Streak: +1000
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">

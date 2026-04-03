@@ -229,7 +229,9 @@ const App: React.FC = () => {
               <div className="min-h-screen pb-32">
                 {activeTab === 'dashboard' && <Dashboard />}
                 {activeTab === 'discovery' && <Discovery />}
-                {activeTab === 'admin' && profile?.role === 'admin' && <AdminDashboard />}
+                {activeTab === 'admin' && profile?.role === 'admin' && (
+                  <AdminDashboard handleLogout={() => supabase.auth.signOut()} />
+                )}
                 {activeTab === 'profile' && (
                   <div className="h-screen flex flex-col items-center justify-center space-y-8">
                     <div className="text-center">
@@ -246,34 +248,36 @@ const App: React.FC = () => {
                 )}
               </div>
               
-              <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/40 backdrop-blur-2xl border-t border-white/5 max-w-md mx-auto rounded-t-3xl sm:rounded-t-none sm:max-w-none">
-                <button 
-                  onClick={() => setActiveTab('dashboard')} 
-                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                >
-                  Home
-                </button>
-                <button 
-                  onClick={() => setActiveTab('discovery')} 
-                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                >
-                  Discovery
-                </button>
-                {profile?.role === 'admin' && (
+              {profile?.role !== 'admin' && (
+                <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/40 backdrop-blur-2xl border-t border-white/5 max-w-md mx-auto rounded-t-3xl sm:rounded-t-none sm:max-w-none">
                   <button 
-                    onClick={() => setActiveTab('admin')} 
-                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'admin' ? 'bg-mat-gold text-black shadow-mat-gold/20' : 'text-mat-gold/60 hover:text-mat-gold'}`}
+                    onClick={() => setActiveTab('dashboard')} 
+                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                   >
-                    Admin
+                    Home
                   </button>
-                )}
-                <button 
-                  onClick={() => setActiveTab('profile')} 
-                  className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                >
-                  You
-                </button>
-              </nav>
+                  <button 
+                    onClick={() => setActiveTab('discovery')} 
+                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  >
+                    Discovery
+                  </button>
+                  {profile?.role === 'admin' && (
+                    <button 
+                      onClick={() => setActiveTab('admin')} 
+                      className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'admin' ? 'bg-mat-gold text-black shadow-mat-gold/20' : 'text-mat-gold/60 hover:text-mat-gold'}`}
+                    >
+                      Admin
+                    </button>
+                  )}
+                  <button 
+                    onClick={() => setActiveTab('profile')} 
+                    className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                  >
+                    You
+                  </button>
+                </nav>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

@@ -178,9 +178,31 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               </h1>
            </div>
            <div className="flex gap-4">
-              <div className="flex flex-col items-end justify-center px-6 py-2 bg-white/5 rounded-2xl border border-white/10">
+              <div className="flex flex-col items-end justify-center px-6 py-2 bg-white/5 rounded-2xl border border-white/10 group relative cursor-help">
                  <span className="text-[8px] font-black text-mat-gold/60 uppercase tracking-widest">Token Balance</span>
                  <span className="text-xl font-mono text-white">₹{profile?.tokens || 0}</span>
+                 
+                 {/* Divine Blessings Info */}
+                 <div className="absolute top-full mt-4 right-0 w-56 p-5 bg-[#0F0F10] border border-mat-gold/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left">
+                    <div className="flex items-center gap-2 mb-3">
+                       <Zap size={12} className="text-mat-gold" />
+                       <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Divine Blessings</span>
+                    </div>
+                    <div className="space-y-2">
+                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
+                          <span className="text-white/40">Daily Entry</span>
+                          <span className="text-white">+10</span>
+                       </div>
+                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
+                          <span className="text-white/40">7 Day Streak</span>
+                          <span className="text-mat-gold">+100</span>
+                       </div>
+                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
+                          <span className="text-white/40">30 Day Streak</span>
+                          <span className="text-mat-gold">+1000</span>
+                       </div>
+                    </div>
+                 </div>
               </div>
               <Button variant="gold" className="gap-2 shadow-mat-gold h-12 px-8" onClick={handleBuyTokens}>
                 <Zap className="w-4 h-4" />
