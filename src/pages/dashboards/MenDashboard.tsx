@@ -145,9 +145,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   text="Your Charisma" 
                   animateOn="view" 
                   speed={120} 
-                  className="inline-block" 
+                  className="inline-block overflow-visible" 
                   sequential
-                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20">& Connections</span>
+                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20 block lg:inline-block mt-2 lg:mt-0">/ & Connections</span>
               </h1>
            </div>
            <div className="flex items-center gap-4 w-full lg:w-auto">
@@ -234,7 +234,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                  <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
                     <div className="space-y-4">
                        <span className="mat-text-label-pro text-mat-gold">Your Place in Her World</span>
-                       <h2 className="text-7xl lg:text-9xl mat-text-display-pro text-white leading-none">
+                       <h2 className="text-7xl lg:text-9xl mat-text-display-pro text-white leading-none pt-2">
                           #{absRank || '--'}
                        </h2>
                     </div>
@@ -321,7 +321,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                       <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={1} />
                       <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/40 transition-colors" />
                    </div>
-                   <div className="space-y-1">
+                   <div className="space-y-1 overflow-visible">
                       <span className="mat-text-label-pro">{item.label}</span>
                       <h4 className="text-lg font-bold text-white uppercase tracking-tight">{item.title}</h4>
                       <p className={cn("text-[10px] font-black tracking-widest pt-2 mat-text-shimmer-subtle", item.color)}>{item.val}</p>

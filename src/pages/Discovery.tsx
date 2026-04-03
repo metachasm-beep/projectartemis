@@ -6,14 +6,12 @@ import {
   TrendingUp, 
   Lock, 
   Shield, 
-  Crown,
-  Zap
+  Crown
 } from 'lucide-react';
 
 import { SeekerBrowse } from '@/components/SeekerBrowse';
 import { supabase } from '@/lib/supabase';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import SoftAurora from "@/components/ui/react-bits/SoftAurora";
 
 export const Discovery: React.FC = () => {
@@ -78,7 +76,7 @@ export const Discovery: React.FC = () => {
           </div>
           
           <div className="space-y-6">
-            <h2 className="text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase shadow-mat-gold/10">Access <span className="mat-text-gradient-gold">Restricted</span></h2>
+            <h2 className="text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase shadow-mat-gold/10 overflow-visible py-2">Access <span className="mat-text-gradient-gold">Restricted</span></h2>
             <p className="text-xs lg:text-sm text-white/40 font-medium tracking-wide italic leading-relaxed">
               The Sanctuary's Discovery is reserved for verified souls. Verify your Aadhaar to explore the curated connections.
             </p>
@@ -135,7 +133,7 @@ export const Discovery: React.FC = () => {
             </div>
 
             <div className="space-y-6">
-              <h2 className="text-5xl lg:text-6xl mat-text-display-pro text-white leading-tight uppercase">Awaiting Her <span className="mat-text-gradient-gold">Gaze</span></h2>
+              <h2 className="text-5xl lg:text-6xl mat-text-display-pro text-white leading-tight uppercase overflow-visible py-2">Awaiting Her <span className="mat-text-gradient-gold">Gaze</span></h2>
               <p className="mat-text-label-pro opacity-40 italic">Your story is shared with those who choose.</p>
             </div>
 

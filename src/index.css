@@ -185,7 +185,7 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: var(--shadow-mat-premium);
     position: relative;
-    overflow: hidden;
+    /* overflow: hidden; -- Removed to prevent text clipping */
   }
 
   .mat-glass-premium::after {
@@ -312,7 +312,7 @@
     font-weight: 900;
     font-style: italic;
     letter-spacing: -0.05em;
-    line-height: 0.9;
+    line-height: 1.1; /* Increased from 0.9 to prevent descender clipping */
     text-transform: uppercase;
     /* Responsive font scaling */
     font-size: clamp(2.5rem, 10vw + 1rem, 8rem);
@@ -339,5 +339,14 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: matShimmer 6s linear infinite;
+  }
+
+  /* Pro Max Utilities */
+  .pb-safe {
+    padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
+  }
+  
+  .overflow-visible-important {
+    overflow: visible !important;
   }
 }

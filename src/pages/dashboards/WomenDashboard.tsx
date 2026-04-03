@@ -64,9 +64,9 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   text="The" 
                   animateOn="view" 
                   speed={120} 
-                  className="inline-block" 
+                  className="inline-block overflow-visible" 
                   sequential
-                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20">Inner Sanctuary</span>
+                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20 block lg:inline-block mt-2 lg:mt-0">Inner Sanctuary</span>
                  <div className="group relative cursor-help ml-2 inline-block">
                     <Badge variant="gold" className="text-[7px] lg:text-[8px] px-2 py-0.5 opacity-60 hover:opacity-100 transition-opacity flex items-center gap-1 h-fit">
                        <Zap size={8} /> Blessings
@@ -118,7 +118,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                         <span className="mat-text-label-pro">Your Divine Grace</span>
                       </CardTitle>
                       <div className="flex items-center gap-4">
-                         <h2 className="text-5xl lg:text-7xl mat-text-display-pro text-white leading-tight">
+                         <h2 className="text-5xl lg:text-7xl mat-text-display-pro text-white leading-tight overflow-visible py-2">
                            {status?.rank_tier === 'matriarch' ? "THE QUEEN'S GRACE" : (status?.rank_tier?.toUpperCase() || 'SOUL')}
                          </h2>
                          <Crown className={cn("w-8 h-8 lg:w-12 lg:h-12 animate-pulse", tierColor)} strokeWidth={1} />

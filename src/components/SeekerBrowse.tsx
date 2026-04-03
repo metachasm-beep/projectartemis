@@ -218,7 +218,7 @@ export const SeekerBrowse: React.FC = () => {
                   </div>
 
                   {/* Content Side */}
-                  <div className="flex-1 p-6 lg:p-16 overflow-y-auto custom-scrollbar space-y-12 lg:space-y-16">
+                  <div className="flex-1 p-6 lg:p-16 overflow-y-auto custom-scrollbar space-y-12 lg:space-y-16 pb-safe">
                     <div className="space-y-6">
                       <div className="flex items-center gap-4">
                         <Badge variant="gold" className="text-[10px] px-3 py-1 uppercase tracking-widest h-fit font-black">
@@ -230,7 +230,7 @@ export const SeekerBrowse: React.FC = () => {
                           </Badge>
                         )}
                       </div>
-                      <h2 className="text-4xl lg:text-7xl mat-text-display-pro text-white leading-none">
+                      <h2 className="text-4xl lg:text-7xl mat-text-display-pro text-white leading-tight break-words overflow-visible-important py-2 pr-4">
                         {selectedProfile.full_name}
                       </h2>
                       <div className="flex items-center gap-6 lg:gap-8 mat-text-label-pro text-mat-gold not-italic">
@@ -241,7 +241,7 @@ export const SeekerBrowse: React.FC = () => {
 
                     <div className="space-y-6">
                       <h4 className="mat-text-label-pro text-white/40">The Soul Story</h4>
-                      <p className="text-lg lg:text-2xl text-white/80 leading-relaxed italic font-medium">
+                      <p className="text-lg lg:text-2xl text-white/80 leading-relaxed italic font-medium break-words">
                         {selectedProfile.bio || "This seeker has yet to weave their story into words, but their presence speaks of depth and intention."}
                       </p>
                     </div>

@@ -122,9 +122,9 @@ const LandingPage: React.FC = () => {
                 </Badge>
               </div>
               
-              <h1 className="mat-text-display-pro text-white lowercase tracking-tighter">
+              <h1 className="mat-text-display-pro text-white lowercase tracking-tighter overflow-visible py-2 px-1">
                 <DecryptedText text="Her" animateOn="view" speed={120} className="inline-block" sequential /> heart <span className="mat-text-gradient-gold">decides.</span><br />
-                <span className="italic block mt-2 lg:mt-4 border-l-4 border-mat-gold pl-4 lg:pl-6">Everything</span> <span className="text-white/40">else follows.</span>
+                <span className="italic block mt-2 lg:mt-4 border-l-4 border-mat-gold pl-4 lg:pl-6 overflow-visible">Everything</span> <span className="text-white/40">else follows.</span>
               </h1>
               
               <p className="text-lg lg:text-xl text-white/50 leading-relaxed font-medium italic max-w-xl mx-auto lg:mx-0">
@@ -337,7 +337,7 @@ const LandingPage: React.FC = () => {
                 <div className="grid lg:grid-cols-2 gap-24 items-center">
                    <div className="space-y-10">
                       <Badge variant="gold" className="px-5 py-2 uppercase tracking-[0.3em] font-black text-[9px] bg-mat-gold/10 text-mat-gold">The Seeker's Journey</Badge>
-                      <h2 className="text-7xl mat-text-display-pro text-white leading-tight uppercase">Excellence of <br/><span className="mat-text-gradient-gold ring-mat-gold/20">Heart.</span></h2>
+                      <h2 className="text-6xl lg:text-7xl mat-text-display-pro text-white leading-tight uppercase overflow-visible py-2">Excellence of <br/><span className="mat-text-gradient-gold ring-mat-gold/20">Heart.</span></h2>
                       <p className="text-xl text-white/50 leading-relaxed italic font-medium">
                         On MATRIARCH, attention isn't a commodity to be bought or spammed. It is qualified for through excellence, authenticity, and verified standing.
                       </p>
@@ -433,7 +433,7 @@ const LandingPage: React.FC = () => {
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-20 pointer-events-none" />
                 <ShieldCheck className="w-24 h-24 text-matriarch-violetBright relative z-10 animate-pulse" strokeWidth={1.5} />
              </div>
-             <h2 className="text-7xl mat-text-display-pro text-white mb-12 uppercase leading-tight tracking-tighter shadow-mat-violet/10">True grace comes <br/>with <span className="text-mat-gold">peace of mind.</span></h2>
+             <h2 className="text-6xl lg:text-7xl mat-text-display-pro text-white mb-12 uppercase leading-tight tracking-tighter shadow-mat-violet/10 overflow-visible py-2">True grace comes <br/>with <span className="text-mat-gold">peace of mind.</span></h2>
              <p className="text-2xl text-white/40 italic font-medium mb-20 max-w-3xl mx-auto">
                MATRIARCH is designed to give women absolute, gentle control. Safety is not a feature; it is the fundamental heart of our sanctuary.
              </p>
@@ -548,7 +548,7 @@ const LandingPage: React.FC = () => {
              <div className="mat-panel mat-glass-premium p-24 lg:p-40 text-center rounded-[5rem] border-none shadow-[0_0_150px_rgba(110,63,243,0.15)] overflow-hidden relative group">
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-20" />
                 <div className="relative z-10 space-y-16">
-                   <h2 className="text-9xl mat-text-display-pro text-white leading-[0.9] lowercase tracking-tighter">
+                   <h2 className="text-7xl lg:text-9xl mat-text-display-pro text-white leading-[0.9] lowercase tracking-tighter overflow-visible py-4 px-2">
                       Start Your <br/>
                       <span className="mat-text-gradient-gold ring-mat-gold/20 italic">Story</span> 
                       <br/>Today.
