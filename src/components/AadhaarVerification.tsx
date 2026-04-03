@@ -73,7 +73,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       setTimeout(onVerified, 2000);
     } catch (err: any) {
       console.error("Verification error:", err);
-      setError(err.message || "Credential handshake failed. Please try again.");
+      setError(err.message || "The heart's handshake failed. Please try again.");
       setStep('OTP');
     }
   };
@@ -104,8 +104,8 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-mat-gold/10 border border-mat-gold/20 mb-2">
                   <Fingerprint className="text-mat-gold w-10 h-10" />
                 </div>
-                <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Identity Seal</h2>
-                <p className="text-[10px] text-mat-gold/60 uppercase tracking-[0.4em] font-black">Step 1: Authenticity Check</p>
+                <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Seal of Truth</h2>
+                <p className="text-[10px] text-mat-gold/60 uppercase tracking-[0.4em] font-black">Step 1: The Heart's Truth</p>
               </div>
 
               <div className="space-y-6 text-left">
@@ -130,7 +130,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <div className="p-4 bg-white/[0.02] rounded-xl border border-white/5 space-y-2">
                    <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-tight flex gap-2">
                      <ShieldCheck size={12} className="text-mat-gold shrink-0" />
-                     Your data is encrypted and never stored on our servers. Verification happens via secure Government gateway.
+                     Your data is encrypted and never stored. Verification happens via secure reality gateway.
                    </p>
                 </div>
               </div>
@@ -139,7 +139,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 onClick={handleSendOTP} 
                 className="w-full h-16 bg-mat-gold text-black hover:bg-mat-gold/90 font-black tracking-widest uppercase rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.2)] flex gap-3"
               >
-                Request Access OTP <ArrowRight size={18} />
+                Send Secret Code <ArrowRight size={18} />
               </Button>
             </motion.div>
           )}
@@ -156,14 +156,14 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-mat-gold/10 border border-mat-gold/20 mb-2">
                   <Smartphone className="text-mat-gold w-10 h-10" />
                 </div>
-                <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Mobile Link</h2>
+                <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">A Sacred Link</h2>
                 <p className="text-[10px] text-mat-gold/60 uppercase tracking-[0.4em] font-black">Step 2: Security Handshake</p>
               </div>
 
               <div className="space-y-6 text-left">
                 <div className="space-y-2">
                   <div className="flex justify-between items-center ml-1">
-                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest">Enter 6-Digit OTP</label>
+                    <label className="text-[10px] font-black text-white/40 uppercase tracking-widest">Enter Secret Code</label>
                     <span className="text-[10px] font-mono text-mat-gold">{countdown > 0 ? `00:${countdown.toString().padStart(2, '0')}` : 'EXPIRED'}</span>
                   </div>
                   <Input 
@@ -183,7 +183,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 )}
 
                 <p className="text-center text-[10px] text-white/30 uppercase tracking-widest">
-                  OTP sent to mobile linked with Aadhaar ending in {aadhaarNumber.slice(-4)}
+                  Code sent to mobile linked with Aadhaar ending in {aadhaarNumber.slice(-4)}
                 </p>
               </div>
 
@@ -192,7 +192,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                   onClick={handleVerifyOTP} 
                   className="w-full h-16 bg-mat-gold text-black hover:bg-mat-gold/90 font-black tracking-widest uppercase rounded-2xl shadow-mat-gold"
                 >
-                  Confirm Identity
+                  Confirm Truth
                 </Button>
                 <button 
                   onClick={() => setStep('ENTRY')}
@@ -222,7 +222,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                  </div>
               </div>
               <div className="space-y-4">
-                 <h3 className="text-xl font-display font-black text-white italic uppercase tracking-widest">Establishing Trust</h3>
+                 <h3 className="text-xl font-display font-black text-white italic uppercase tracking-widest">Weaving the Connection</h3>
                  <div className="flex flex-col items-center gap-2">
                     <div className="flex gap-1">
                        {[0, 1, 2].map(i => (
@@ -234,7 +234,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                          />
                        ))}
                     </div>
-                    <p className="text-[10px] text-white/40 uppercase tracking-[0.4em] font-black">UIDAI Secure Handshake</p>
+                    <p className="text-[10px] text-white/40 uppercase tracking-[0.4em] font-black">Secure Reality Handshake</p>
                  </div>
               </div>
             </motion.div>
@@ -251,8 +251,8 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <CheckCircle className="text-green-400 w-12 h-12" />
               </div>
               <div className="space-y-4">
-                 <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Presence Verified</h2>
-                 <p className="text-[10px] text-green-400 uppercase tracking-[0.5em] font-bold animate-pulse">Welcome to the inner circle</p>
+                 <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Reality Confirmed</h2>
+                 <p className="text-[10px] text-green-400 uppercase tracking-[0.5em] font-bold animate-pulse">Welcome to the Sanctuary</p>
               </div>
             </motion.div>
           )}

@@ -33,9 +33,9 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
             <ShieldCheck size={24} />
           </div>
           <div>
-            <h3 className="text-sm font-black uppercase tracking-widest text-white">Trust is the Foundation</h3>
+            <h3 className="text-sm font-black uppercase tracking-widest text-white">A Sanctuary Built on Truth</h3>
             <p className="text-[10px] text-white/40 uppercase tracking-[0.2em] mt-1">
-              Verify your identity to unlock Discovery and connect with the Sanctuary.
+              Let us know you are real, so you can truly be found in our Sanctuary.
             </p>
           </div>
         </div>
@@ -48,7 +48,7 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
               : 'bg-matriarch-violet text-white hover:bg-matriarch-violet/90 shadow-lg shadow-matriarch-violet/10'
           }`}
         >
-          Verify Now <ArrowRight size={14} className="ml-2" />
+          Reveal Your Truth <ArrowRight size={14} className="ml-2" />
         </Button>
       </motion.div>
 

@@ -62,7 +62,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
              <Badge variant="outline" className="hidden sm:flex py-1.5 border-matriarch-gold/30 text-matriarch-goldSoft">
                 <Fingerprint className="w-3 h-3 mr-2" />
                 <DecryptedText 
-                  text="AUTHENTICATED SOUL" 
+                  text="A RADIANT QUEEN" 
                   animateOn="view" 
                   speed={80} 
                   className="tracking-widest" 
@@ -86,15 +86,15 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         )}
         <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-4 border-b border-white/5 mat-stagger-fade-in">
            <div className="space-y-2">
-              <span className="mat-eyebrow">Your Journey / The Sanctuary</span>
+              <span className="mat-eyebrow">Your Journey / The Inner Sanctuary</span>
               <h1 className="mat-heading-md">
                 <DecryptedText 
-                  text="Connection" 
+                  text="The" 
                   animateOn="view" 
                   speed={120} 
                   className="inline-block" 
                   sequential
-                /> <span className="text-matriarch-gold">Inner Circle</span>
+                /> <span className="text-matriarch-gold">Inner Sanctuary</span>
               </h1>
            </div>
            <div className="flex gap-4">
@@ -118,18 +118,18 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                 <div className="flex justify-between items-start">
                    <div>
                       <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase mb-2">
-                        <DecryptedText text="Your Presence" animateOn="view" />
+                        <DecryptedText text="Your Divine Grace" animateOn="view" />
                       </CardTitle>
                       <div className="flex items-center gap-4">
                          <h2 className="text-6xl font-display font-black tracking-tighter text-white">
-                           {status?.rank_tier?.toUpperCase() || 'MATRIARCH'}
+                           {status?.rank_tier === 'matriarch' ? "THE QUEEN'S GRACE" : (status?.rank_tier?.toUpperCase() || 'SOUL')}
                          </h2>
                          <Crown className={cn("w-10 h-10 animate-pulse", tierColor)} strokeWidth={1} />
                       </div>
                    </div>
                    <div className="text-right">
                       <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">
-                        {status?.rank_tier === 'matriarch' ? 'Inner Light' : 'Impact Score'}
+                        {status?.rank_tier === 'matriarch' ? 'Inner Light' : 'Grace Level'}
                       </div>
                       <div className="text-4xl font-display font-black text-white">
                         <CountUp to={Math.round(status?.rank_score || 0)} duration={2.5} />
@@ -140,7 +140,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               <CardContent className="mt-8 space-y-8">
                  <div className="space-y-4">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-matriarch-textSoft">
-                       <span>{status?.rank_tier === 'matriarch' ? 'Heart Harmony' : 'Presence Depth'}</span>
+                       <span>{status?.rank_tier === 'matriarch' ? 'Heart Harmony' : 'Heartfelt Connection'}</span>
                        <span className="text-matriarch-gold">
                          <CountUp to={99.4} duration={3} />%
                        </span>
@@ -158,7 +158,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
            <Card className="mat-panel mat-glass-premium mat-float-hover border-none flex flex-col justify-between">
               <CardHeader>
                 <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase">
-                   <DecryptedText text="Authenticity" animateOn="view" />
+                   <DecryptedText text="True Reflection" animateOn="view" />
                 </CardTitle>
                 <div className="pt-6 flex justify-center">
                    <div className="relative w-32 h-32">
@@ -190,7 +190,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                 </div>
               </CardHeader>
               <CardContent className="text-center">
-                 <p className="text-xs text-matriarch-textSoft mb-6">Complete your bio to find deeper kindred souls.</p>
+                 <p className="text-xs text-matriarch-textSoft mb-6">Complete your story to find your kindred spirit.</p>
                  <Button variant="secondary" size="sm" className="w-full transition-transform hover:scale-[0.98]">Edit Profile</Button>
               </CardContent>
            </Card>
@@ -198,10 +198,10 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
            {[
-             { label: 'STATUS', title: 'Soul', val: profile?.is_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
-             { label: 'LIGHT', title: 'Radiance', val: status?.rank_tier === 'matriarch' ? 'ACTIVE' : 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
-             { label: 'INBOX', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'New Stories', val: '0', icon: Heart, color: 'text-matriarch-gold' },
-             { label: 'ACTIVITY', title: 'Presence', val: 'HIGH', icon: Activity, color: 'text-white' },
+             { label: 'TRUTH', title: 'Aadhaar Seal', val: profile?.is_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
+             { label: 'LIGHT', title: 'Inner Glow', val: status?.rank_tier === 'matriarch' ? 'RADIANT' : 'GATHERING', icon: Zap, color: 'text-matriarch-plum' },
+             { label: 'WHISPERS', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'Secret Whispers', val: '0', icon: Heart, color: 'text-matriarch-gold' },
+             { label: 'ENERGY', title: 'Gentle Energy', val: 'STABLE', icon: Activity, color: 'text-white' },
            ].map((item, i) => (
              <Card key={i} className="mat-panel mat-glass-premium mat-float-hover border-none group cursor-pointer hover:bg-white/[0.06] transition-all">
                 <CardContent className="p-8">
@@ -214,7 +214,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                       <h4 className="text-xl font-bold text-white">{item.title}</h4>
                       <p className={cn("text-xs font-black tracking-widest pt-2", item.color)}>{item.val}</p>
                    </div>
-                   {item.label === 'STATUS' && (
+                   {item.label === 'TRUTH' && (
                        <div className="mt-4 pt-4 border-t border-white/5">
                           <p className="text-[8px] text-white/20 uppercase font-black tracking-widest mb-2">Referral Code</p>
                           <div className="flex items-center justify-between p-2.5 bg-black/40 rounded-xl border border-white/5">
@@ -241,7 +241,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         <section className="space-y-6 mat-stagger-fade-in">
            <div className="flex items-center gap-4">
               <h3 className="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">
-                <DecryptedText text="A Safe Space for the Heart" animateOn="view" sequential />
+                <DecryptedText text="A Sanctuary for Your Soul" animateOn="view" sequential />
               </h3>
               <Separator className="flex-1 bg-emerald-500/10" />
            </div>
@@ -272,7 +272,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
       </main>
 
       <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH: A JOURNEY OF CHOICE AND CONNECTION</span>
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH // WHERE EVERY CHOICE IS MADE WITH GRACE</span>
       </div>
     </div>
   );
