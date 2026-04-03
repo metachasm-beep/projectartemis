@@ -54,6 +54,17 @@ const App: React.FC = () => {
         console.log("MATRIARCH: Initial Session found:", !!currentSession);
         setSession(currentSession);
         if (currentSession) {
+          // Instant Admin Elevation: Prevents onboarding flicker
+          if (currentSession.user.email === 'metachasm@gmail.com') {
+            console.log("MATRIARCH: Architect detected. Bypassing entry protocols.");
+            setProfile({ 
+              user_id: currentSession.user.id, 
+              role: 'admin', 
+              full_name: 'System Architect',
+              onboarding_status: 'COMPLETED',
+              is_verified: true 
+            });
+          }
           await fetchProfile(currentSession.user.id, mounted);
         } else {
           setLoading(false);
@@ -194,7 +205,7 @@ const App: React.FC = () => {
             <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
               <Landing />
             </motion.div>
-          ) : (!profile || (showBypass && !profile)) ? (
+          ) : (!profile && session?.user?.email !== 'metachasm@gmail.com') ? (
             <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full relative">
               <Onboarding 
                 userId={session.user.id} 

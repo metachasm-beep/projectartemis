@@ -104,8 +104,18 @@ export const Dashboard: React.FC = () => {
         profile={profile} 
         status={status} 
         handleLogout={handleLogout} 
-        handleBoost={handleBoost} 
       />
+    );
+  }
+
+  if (profile?.role === 'admin') {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
+        <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
+          <Crown style={{ color: '#D4AF37', width: '48px', height: '48px' }} />
+        </motion.div>
+        <p className="mt-6 text-[9px] text-[#D4AF37]/40 font-black uppercase tracking-[0.6em]">Verifying Command Authority...</p>
+      </div>
     );
   }
 
