@@ -8,23 +8,34 @@ import { User, ArrowRight, Camera, ShieldCheck, Trophy } from 'lucide-react';
 
 interface OnboardingProps {
   userId: string;
+  metadata?: any;
   onComplete: () => void;
 }
 
 type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'BIO_INTENT' | 'LEGAL';
 
-export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) => {
+export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComplete }) => {
   const [step, setStep] = useState<OnboardingStep>('ROLE');
   const [loading, setLoading] = useState(false);
   const [strength, setStrength] = useState(10);
+  const [referredBy, setReferredBy] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get('ref');
+    if (ref) {
+      console.log("MATRIARCH: Referred by:", ref);
+      setReferredBy(ref);
+    }
+  }, []);
   const [formData, setFormData] = useState({
-    full_name: '',
+    full_name: metadata?.full_name || metadata?.name || '',
     role: '' as 'woman' | 'man' | '',
     date_of_birth: '',
     bio: '',
     city: '',
     intent: 'LONG_TERM',
-    photos: [] as string[],
+    photos: metadata?.avatar_url ? [metadata.avatar_url] : [] as string[],
   });
 
   // Strength calculation logic (Gamify.txt)
@@ -40,31 +51,73 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
 
   const updateProfile = async () => {
     setLoading(true);
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .upsert({
-          user_id: userId,
-          display_name: formData.full_name,
-          date_of_birth: formData.date_of_birth,
-          bio: formData.bio,
-          city: formData.city,
-          role: formData.role,
-          intent: formData.intent,
-          profile_strength: strength,
-          onboarding_status: 'COMPLETED',
-          is_verified: false,
-          is_active: false, // Dormant until Aadhaar
-          rank_score: formData.role === 'man' ? 500 : 0, // Initial seed rank
-          rank_tier: formData.role === 'man' ? 'BRONZE' : 'OBSERVER',
-          updated_at: new Date().toISOString(),
-        });
+    const fullData = {
+      user_id: userId,
+      display_name: formData.full_name,
+      date_of_birth: formData.date_of_birth,
+      bio: formData.bio,
+      city: formData.city,
+      role: formData.role,
+      intent: formData.intent,
+      profile_strength: strength,
+      onboarding_status: 'COMPLETED',
+      is_verified: false,
+      is_active: false,
+      rank_score: formData.role === 'man' ? 500 : 0,
+      rank_tier: formData.role === 'man' ? 'BRONZE' : 'OBSERVER',
+      tokens: 0, // Initial tokens
+      referral_code: userId.slice(0, 8).toUpperCase(), // Unique referral code
+      referred_by: referredBy,
+      rank_boost_count: 0,
+      updated_at: new Date().toISOString(),
+      created_at: new Date().toISOString(), // Vital for ranking
+    };
 
+    try {
+      const { error } = await supabase.from('profiles').upsert(fullData);
       if (error) throw error;
+
+      // Referral Reward Logic
+      if (referredBy) {
+        console.log("MATRIARCH: Crediting Referrer...");
+        try {
+           const { data: referrer } = await supabase
+             .from('profiles')
+             .select('tokens')
+             .eq('user_id', referredBy)
+             .single();
+           
+           if (referrer) {
+             await supabase
+               .from('profiles')
+               .update({ tokens: (referrer.tokens || 0) + 500 })
+               .eq('user_id', referredBy);
+           }
+        } catch (refErr) {
+           console.warn("MATRIARCH: Could not credit referrer (columns might be missing):", refErr);
+        }
+      }
+
       onComplete();
-    } catch (err) {
-      console.error("Error updates profile:", err);
-      alert("We couldn't save your story. Let's try again.");
+    } catch (err: any) {
+      console.error("MATRIARCH: Full profile upsert failed, attempting safe fallback...", err);
+      // Fallback: Only essential columns if extended ones like rank_score don't exist yet
+      const safeData = {
+        user_id: userId,
+        display_name: formData.full_name,
+        role: formData.role,
+        updated_at: new Date().toISOString(),
+      };
+      
+      const { error: fallbackError } = await supabase.from('profiles').upsert(safeData);
+      
+      if (fallbackError) {
+        console.error("MATRIARCH: Safe fallback also failed:", fallbackError);
+        alert(`Critical: ${err.message || fallbackError.message}. \n\nThe database might be missing required columns. Check console.`);
+      } else {
+        console.warn("MATRIARCH: Profile saved using fallback. Some metrics may be missing.");
+        onComplete();
+      }
     } finally {
       setLoading(false);
     }

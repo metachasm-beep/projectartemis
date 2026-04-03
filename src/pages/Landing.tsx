@@ -14,7 +14,8 @@ import {
   ChevronRight,
   ShieldCheck,
   ZapOff,
-  Crown
+  Crown,
+  Trophy
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -73,7 +74,7 @@ const LandingPage: React.FC = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: window.location.origin,
+          redirectTo: "https://matriarch.vercel.app",
         },
       });
       if (error) throw error;
@@ -450,6 +451,63 @@ const LandingPage: React.FC = () => {
                </div>
             </div>
         </section>
+        {/* 8.5 PRICING SECTION */}
+        <section className="mat-section mb-32 px-8">
+          <div className="mat-container">
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="mat-heading-lg uppercase tracking-tight">The <span className="text-matriarch-gold">Value</span> of Intent</h2>
+              <p className="mat-copy text-matriarch-textSoft font-bold tracking-widest uppercase text-xs">Excellence is preserved through discipline.</p>
+            </div>
+            
+            <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {/* Women's Card */}
+              <Card className="mat-panel mat-glass-premium p-12 border-none rounded-[2.5rem] relative overflow-hidden group hover:scale-[1.02] transition-all duration-500">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                   <Crown size={120} />
+                </div>
+                <div className="space-y-8 relative z-10">
+                   <div>
+                      <span className="text-[10px] font-black text-matriarch-violetBright tracking-[0.4em] uppercase mb-4 block">The Invitation</span>
+                      <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Matriarch</h3>
+                   </div>
+                   <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black text-white">₹0</span>
+                      <span className="text-xs font-bold text-matriarch-textFaint uppercase tracking-widest">/ Lifetime</span>
+                   </div>
+                   <ul className="space-y-4 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-violetBright" /> Selective Architecture</li>
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-violetBright" /> Verified Soul Access</li>
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-violetBright" /> Inner Circle Privacy</li>
+                   </ul>
+                   <Button variant="outline" className="w-full border-matriarch-violetBright/30 text-matriarch-violetBright uppercase tracking-widest text-[10px] h-14 rounded-2xl">By Selection Only</Button>
+                </div>
+              </Card>
+
+              {/* Men's Card */}
+              <Card className="mat-panel mat-glass-premium p-12 border-mat-gold/20 bg-mat-gold/[0.02] rounded-[2.5rem] relative overflow-hidden group hover:scale-[1.02] transition-all duration-500 shadow-2xl shadow-mat-gold/5">
+                <div className="absolute top-0 right-0 p-8 opacity-[0.05] group-hover:opacity-[0.1] transition-opacity">
+                   <Trophy size={120} className="text-matriarch-gold" />
+                </div>
+                <div className="space-y-8 relative z-10">
+                   <div>
+                      <span className="text-[10px] font-black text-matriarch-gold tracking-[0.4em] uppercase mb-4 block">The Presence</span>
+                      <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase text-matriarch-gold">The Seeker</h3>
+                   </div>
+                   <div className="flex items-baseline gap-2">
+                      <span className="text-5xl font-black text-white">₹2,499</span>
+                      <span className="text-xs font-bold text-matriarch-textFaint uppercase tracking-widest">/ Month</span>
+                   </div>
+                   <ul className="space-y-4 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-gold" /> Rank Ladder Access</li>
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-gold" /> Presence Impact Hub</li>
+                      <li className="flex items-center gap-3"><ShieldCheck className="w-4 h-4 text-matriarch-gold" /> Full Discovery Visibility</li>
+                   </ul>
+                   <Button variant="gold" className="w-full h-14 uppercase tracking-widest text-[10px] rounded-2xl shadow-mat-gold">Scale the Ladder</Button>
+                </div>
+              </Card>
+            </div>
+          </div>
+        </section>
 
         {/* 9. FINAL CTA (Waitlist) */}
         <section className="mat-section mb-20 px-8">
@@ -496,11 +554,12 @@ const LandingPage: React.FC = () => {
               </div>
 
               <div className="space-y-8">
-                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Promise</h5>
+                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Protocol</h5>
                  <ul className="space-y-6 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Safety</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Privacy Promise</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Authenticity</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Terms & Conditions</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Privacy Policy</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Refund/Cancellation Policy</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Contact Us</li>
                  </ul>
               </div>
 

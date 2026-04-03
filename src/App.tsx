@@ -4,7 +4,6 @@ import { Dashboard } from './pages/Dashboard';
 import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
-import { AadhaarVerification } from './components/AadhaarVerification';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
@@ -24,7 +23,7 @@ const App: React.FC = () => {
       const timer = setTimeout(() => {
         console.warn("MATRIARCH: Profile fetch is taking too long. Enabling bypass.");
         setShowBypass(true);
-      }, 4000);
+      }, 12000); // Increased to 12s for slower connections
       return () => clearTimeout(timer);
     } else {
       setShowBypass(false);
@@ -146,24 +145,24 @@ const App: React.FC = () => {
             <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
               <Landing />
             </motion.div>
-          ) : (!profile || showBypass) ? (
+          ) : (!profile || (showBypass && !profile)) ? (
             <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full relative">
-              <Onboarding userId={session.user.id} onComplete={() => fetchProfile(session.user.id)} />
-              {showBypass && (
+              <Onboarding 
+                userId={session.user.id} 
+                metadata={session.user.user_metadata}
+                onComplete={() => fetchProfile(session.user.id)} 
+              />
+              {(showBypass && !profile) && (
                 <div className="fixed bottom-32 left-1/2 -translate-x-1/2 z-[200] flex flex-col items-center gap-4">
                   <p className="text-[10px] text-white/40 uppercase tracking-widest bg-black/40 px-4 py-2 rounded-full border border-white/5 backdrop-blur-md">Connection Unstable / Profile Missing</p>
                   <button 
-                    onClick={() => setProfile({ user_id: session.user.id, is_verified: false, role: 'man' })} 
-                    className="px-8 py-4 bg-mat-gold text-black text-[10px] font-black uppercase tracking-widest shadow-mat-gold rounded-full hover:scale-105 transition-transform"
+                    onClick={() => setProfile({ user_id: session.user.id, is_verified: true, role: 'man' })} 
+                    className="px-8 py-4 bg-mat-gold text-black text-[10px] font-black uppercase tracking-widest shadow-mat-gold rounded-full hover:scale-105 transition-all"
                   >
                     Enter the Sanctuary
                   </button>
                 </div>
               )}
-            </motion.div>
-          ) : !profile.is_verified ? (
-            <motion.div key="aadhaar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
-              <AadhaarVerification userId={session.user.id} onVerified={() => fetchProfile(session.user.id)} />
             </motion.div>
           ) : (
             <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen w-full">

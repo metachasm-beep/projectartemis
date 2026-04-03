@@ -30,6 +30,7 @@ export const Discovery: React.FC = () => {
   const [points, setPoints] = useState(0);
   const [filters, setFilters] = useState({ min_rank: 0, verified_only: false });
   const [isFilterUnlocked, setIsFilterUnlocked] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
 
   useEffect(() => {
     const initDiscovery = async () => {
@@ -42,12 +43,13 @@ export const Discovery: React.FC = () => {
         // Fetch user role
         const { data: userData } = await supabase
           .from('profiles')
-          .select('role')
+          .select('role, is_verified')
           .eq('user_id', user.id)
           .single();
         
         const userRole = userData?.role;
         setRole(userRole);
+        setIsVerified(userData?.is_verified || false);
 
         if (userRole === 'woman') {
           // Fetch points/status
@@ -118,6 +120,44 @@ export const Discovery: React.FC = () => {
       console.error("Unlock failed", err);
     }
   };
+
+  if (!isVerified) {
+    return (
+      <div className="h-screen flex flex-col items-center justify-center mat-shell px-12 text-center mat-noise-overlay relative">
+         <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
+          <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
+        </div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-matriarch-violet/10 blur-[150px] -z-10" />
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full space-y-8"
+        >
+          <div className="mx-auto w-24 h-24 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl relative group">
+            <Lock className="w-10 h-10 text-matriarch-gold transition-transform group-hover:scale-110" />
+            <div className="absolute inset-0 bg-matriarch-gold/20 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          
+          <div className="space-y-4">
+            <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Access Restricted</h2>
+            <p className="text-matriarch-textSoft font-medium tracking-wide">
+              The Sanctuary's Discovery is reserved for verified souls. Verify your Aadhaar to explore the curated connections.
+            </p>
+          </div>
+
+          <div className="pt-4 flex flex-col gap-4">
+             <Button 
+                onClick={() => window.location.href = '/dashboard'} // Assuming routing or tab switch
+                className="h-16 bg-white text-black font-black uppercase tracking-widest rounded-2xl hover:scale-[0.98] transition-all"
+             >
+               Go to Dashboard to Verify
+             </Button>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
 
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center mat-shell px-8">
