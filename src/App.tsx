@@ -18,25 +18,45 @@ const App: React.FC = () => {
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      if (session) fetchProfile(session.user.id);
-      else setLoading(false);
-    });
+    let mounted = true;
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const initializeAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!mounted) return;
+        
+        setSession(session);
+        if (session) {
+          await fetchProfile(session.user.id, mounted);
+        } else {
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error("Auth init error:", err);
+        if (mounted) setLoading(false);
+      }
+    };
+
+    initializeAuth();
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (!mounted) return;
       setSession(session);
-      if (session) fetchProfile(session.user.id);
-      else {
+      if (session) {
+        await fetchProfile(session.user.id, mounted);
+      } else {
         setProfile(null);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
-  const fetchProfile = async (userId: string) => {
+  const fetchProfile = async (userId: string, mounted: boolean = true) => {
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -45,21 +65,24 @@ const App: React.FC = () => {
         .single();
       
       if (error && error.code !== 'PGRST116') throw error;
-      setProfile(data);
-      if (data?.role === 'woman') setActiveTab('discovery');
+      if (mounted) {
+        setProfile(data);
+        if (data?.role === 'woman') setActiveTab('discovery');
+      }
     } catch (err) {
       console.error("Profile fetch error:", err);
-      setProfile(null);
+      if (mounted) setProfile(null);
     } finally {
-      setLoading(false);
+      if (mounted) setLoading(false);
     }
   };
 
   useEffect(() => {
     if (!loading) {
       window.postMessage('MATRIARCH_PROTOCOL_READY', '*');
+      console.log("MATRIARCH: Protocol Ready. Session:", !!session, "Profile:", !!profile);
     }
-  }, [loading]);
+  }, [loading, session, profile]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -71,8 +94,14 @@ const App: React.FC = () => {
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
           <Crown style={{ color: '#D4AF37', width: '64px', height: '64px' }} />
         </motion.div>
+        <p className="mt-8 text-[10px] text-matriarch-gold/40 font-black uppercase tracking-[0.8em]">Initializing Protocol...</p>
       </div>
     );
+  }
+
+  // Safety Fallback for "Black Screen" scenarios
+  if (session && !profile && !loading) {
+     console.log("MATRIARCH: Entering Onboarding Layer");
   }
 
   return (
