@@ -13,15 +13,24 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ height: '100vh', width: '100vw', background: '#0A0A0B', color: '#D4AF37', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'Sora, sans-serif' }}>
-          <h1 style={{ fontSize: '24px', fontStyle: 'italic', fontWeight: 900, letterSpacing: '-0.05em' }}>SYSTEM RECOVERY</h1>
-          <p style={{ fontSize: '10px', marginTop: '10px', opacity: 0.5, letterSpacing: '0.4em' }}>Protocol error detected. Refreshing designation...</p>
-          <button onClick={() => window.location.reload()} style={{ marginTop: '30px', padding: '10px 20px', border: '1px solid #D4AF37', background: 'transparent', color: '#D4AF37', fontSize: '10px', fontWeight: 'bold' }}>RE-INITIALIZE</button>
+        <div style={{ height: '100vh', width: '100vw', background: '#0A0A0B', color: '#FF0000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace' }}>
+          <h1 style={{ fontSize: '24px', fontWeight: 900 }}>PROTOCOL BREACH</h1>
+          <p style={{ fontSize: '12px', marginTop: '10px' }}>Critical React Failure. Check Console.</p>
+          <button onClick={() => window.location.reload()} style={{ marginTop: '30px', padding: '10px 20px', border: '1px solid #FF0000', background: 'transparent', color: '#FF0000', fontSize: '10px', fontWeight: 'bold' }}>RE-INITIALIZE</button>
         </div>
       );
     }
     return this.props.children;
   }
+}
+
+// Execution Tracker
+// @ts-ignore
+window.__BUNDLE_START__ = true;
+const diagnostic = document.getElementById('diagnostic-console');
+if (diagnostic) {
+  diagnostic.style.display = 'block';
+  diagnostic.innerHTML += '<div>> [SYSTEM] Bundle execution confirmed. Rendering root...</div>';
 }
 
 // Emergency Protocol Cache Purge
@@ -45,11 +54,24 @@ if (rootElement) {
     </StrictMode>,
   );
   
-  // Dismiss boot loader only after successful initialization
-  setTimeout(() => {
-    const loader = document.getElementById('boot-loader');
-    if (loader) loader.style.display = 'none';
-  }, 500);
+  // Handshake Listener: Dismiss loader only when app signals it's ready
+  window.addEventListener('message', (event) => {
+    if (event.data === 'MATRIARCH_PROTOCOL_READY') {
+      const loader = document.getElementById('boot-loader');
+      if (loader) {
+        if (diagnostic) diagnostic.innerHTML += '<div>> [SUCCESS] Protocol Handshake received. Removing shell.</div>';
+        setTimeout(() => {
+          loader.style.opacity = '0';
+          setTimeout(() => {
+            loader.style.display = 'none';
+          }, 500);
+        }, 1000);
+      }
+    }
+  });
 } else {
+  if (diagnostic) {
+    diagnostic.innerHTML += '<div style="color: #FF0000">> [FATAL] Root container missing. Check index.html.</div>';
+  }
   console.error("Fatal: Selection Protocol Root missing.");
 }
