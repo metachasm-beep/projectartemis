@@ -16,6 +16,7 @@ type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'BIO_INTENT' | 'LEGAL';
 
 export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComplete }) => {
   const [step, setStep] = useState<OnboardingStep>('ROLE');
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [strength, setStrength] = useState(10);
   const [referredBy, setReferredBy] = useState<string | null>(null);
@@ -74,8 +75,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
     };
 
     try {
-      const { error } = await supabase.from('profiles').upsert(fullData);
-      if (error) throw error;
+      setError(null);
+      const { error: upsertError } = await supabase.from('profiles').upsert(fullData);
+      if (upsertError) throw upsertError;
 
       // Referral Reward Logic
       if (referredBy) {
@@ -113,9 +115,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
       
       if (fallbackError) {
         console.error("MATRIARCH: Safe fallback also failed:", fallbackError);
-        alert(`Critical: ${err.message || fallbackError.message}. \n\nThe database might be missing required columns. Check console.`);
+        setError(`Connection failed. The database might need a schema update. ${fallbackError.message}`);
       } else {
-        console.warn("MATRIARCH: Profile saved using fallback. Some metrics may be missing.");
+        console.warn("MATRIARCH: Profile saved using fallback.");
         onComplete();
       }
     } finally {
@@ -165,6 +167,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
         }`} />
         
         <CardContent className="p-12">
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-[10px] font-black uppercase tracking-widest text-center"
+            >
+              {error}
+            </motion.div>
+          )}
           <AnimatePresence mode="wait">
             {step === 'ROLE' && (
               <motion.div key="role" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="space-y-10">

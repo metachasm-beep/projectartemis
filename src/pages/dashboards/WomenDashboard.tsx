@@ -198,7 +198,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
            {[
-             { label: 'STATUS', title: 'Soul', val: status?.is_aadhaar_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
+             { label: 'STATUS', title: 'Soul', val: profile?.is_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
              { label: 'LIGHT', title: 'Radiance', val: status?.rank_tier === 'matriarch' ? 'ACTIVE' : 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
              { label: 'INBOX', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'New Stories', val: '0', icon: Heart, color: 'text-matriarch-gold' },
              { label: 'ACTIVITY', title: 'Presence', val: 'HIGH', icon: Activity, color: 'text-white' },
