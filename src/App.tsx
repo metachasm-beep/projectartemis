@@ -86,6 +86,14 @@ const App: React.FC = () => {
     };
   }, []);
 
+  // Admin Auto-Navigation
+  useEffect(() => {
+    if (profile?.role === 'admin' && activeTab !== 'admin') {
+      console.log("MATRIARCH: Directing Architect to Command Center.");
+      setActiveTab('admin');
+    }
+  }, [profile, activeTab]);
+
   const fetchProfile = async (userId: string, mounted: boolean = true) => {
     if (!userId) return;
     console.log("MATRIARCH: Fetching profile for:", userId);
@@ -105,20 +113,27 @@ const App: React.FC = () => {
       
       let finalProfile = data;
 
-      // Admin Bootstrap Logic
-      if (userEmail === 'metachasm@gmail.com' && data && data.role !== 'admin') {
-        console.log("MATRIARCH: Promoting metachasm@gmail.com to Admin Sanctuary...");
+      // Admin Bootstrap Logic: Enforce Admin Role and Bypass Onboarding
+      if (userEmail === 'metachasm@gmail.com' && (!data || data.role !== 'admin')) {
+        console.log("MATRIARCH: Initializing the Architect...");
         const { data: updatedProfile, error: updateError } = await supabase
           .from('profiles')
-          .update({ role: 'admin' })
-          .eq('user_id', userId)
+          .upsert({ 
+            user_id: userId,
+            role: 'admin',
+            full_name: data?.full_name || 'System Architect',
+            onboarding_status: 'COMPLETED',
+            is_verified: true,
+            is_active: true,
+            updated_at: new Date().toISOString()
+          })
           .select()
           .single();
         
         if (!updateError) {
           finalProfile = updatedProfile;
         } else {
-          console.error("MATRIARCH: Admin Promotion Failed:", updateError);
+          console.error("MATRIARCH: Architect Initialization Failed:", updateError);
         }
       }
       
