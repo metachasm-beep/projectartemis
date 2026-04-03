@@ -53,7 +53,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
     setLoading(true);
     const fullData = {
       user_id: userId,
-      display_name: formData.full_name,
+      full_name: formData.full_name,
       date_of_birth: formData.date_of_birth,
       bio: formData.bio,
       city: formData.city,
@@ -104,7 +104,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
       // Fallback: Only essential columns if extended ones like rank_score don't exist yet
       const safeData = {
         user_id: userId,
-        display_name: formData.full_name,
+        full_name: formData.full_name,
         role: formData.role,
         updated_at: new Date().toISOString(),
       };

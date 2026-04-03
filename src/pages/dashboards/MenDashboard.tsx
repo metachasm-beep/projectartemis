@@ -315,8 +315,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
            {[
              { label: 'IDENTITY', title: 'Aadhaar Seal', val: status?.is_aadhaar_verified ? 'SECURED' : 'PENDING', icon: ShieldCheck, color: 'text-green-500' },
+             { label: 'IMPACT', title: 'Profile Views', val: `${profile?.view_count || 0}`, icon: Target, color: 'text-mat-gold' },
              { label: 'NETWORK', title: 'Connection Density', val: 'VIBRANT', icon: Zap, color: 'text-mat-gold' },
-             { label: 'INTERESTS', title: 'Heartbeat Monitor', val: '4 NEW', icon: Target, color: 'text-amber-500' },
              { label: 'DISCOVERY', title: 'Aura Visibility', val: 'ELEVATED', icon: TrendingUp, color: 'text-white' },
            ].map((item, i) => (
              <Card key={i} className="mat-panel mat-glass-premium border-none group cursor-pointer hover:bg-white/[0.06] transition-all rounded-[1.5rem] bg-white/[0.02]">

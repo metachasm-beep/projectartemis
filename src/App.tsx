@@ -30,6 +30,17 @@ const App: React.FC = () => {
     }
   }, [session, profile, loading]);
 
+  // Watchdog: Force end loading if stuck
+  useEffect(() => {
+    if (loading) {
+      const timer = setTimeout(() => {
+        console.warn("MATRIARCH: Global Timeout. Forcing Entry.");
+        setLoading(false);
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
   useEffect(() => {
     let mounted = true;
 
@@ -48,6 +59,7 @@ const App: React.FC = () => {
         }
       } catch (err) {
         console.error("Matriarch Sanctuary Error:", err);
+      } finally {
         if (mounted) setLoading(false);
       }
     };
@@ -94,10 +106,9 @@ const App: React.FC = () => {
       }
     } catch (err) {
       console.error("Profile fetch catch:", err);
-      if (mounted) {
-        setProfile(null);
-        setLoading(false);
-      }
+      if (mounted) setProfile(null);
+    } finally {
+      if (mounted) setLoading(false);
     }
   };
 
@@ -172,7 +183,7 @@ const App: React.FC = () => {
                 {activeTab === 'profile' && (
                   <div className="h-screen flex flex-col items-center justify-center space-y-8">
                     <div className="text-center">
-                       <h2 className="text-4xl font-display font-black text-white italic tracking-tighter uppercase mb-2">{profile.display_name || 'Designation Pending'}</h2>
+                       <h2 className="text-4xl font-display font-black text-white italic tracking-tighter uppercase mb-2">{profile.full_name || 'Designation Pending'}</h2>
                        <p className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Authentically You</p>
                     </div>
                     <button 
