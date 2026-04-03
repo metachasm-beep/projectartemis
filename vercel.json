@@ -18,12 +18,12 @@
     },
     {
       "src": "/assets/(.*)",
-      "dest": "pwa/assets/$1",
+      "dest": "/assets/$1",
       "check": true
     },
     {
       "src": "/(.*)",
-      "dest": "pwa/$1",
+      "dest": "/$1",
       "check": true
     },
     {
@@ -31,7 +31,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/pwa/index.html"
+      "dest": "/index.html"
     }
   ]
 }
