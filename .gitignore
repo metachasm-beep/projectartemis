@@ -1,0 +1,27 @@
+# Matriarch Monorepo .gitignore
+
+# 1. Ignore everything by default
+/*
+
+# 2. Whitelist project folders
+!/pwa/
+!/backend/
+
+# 3. Whitelist config files
+!.gitignore
+!docker-compose.yml
+!vercel.json
+!README.md
+
+# 4. Ignore build artifacts & dependencies within whitelisted folders
+**/node_modules
+**/dist
+**/build
+**/.next
+**/.vercel
+**/.venv
+**/__pycache__
+**/*.pyc
+**/.env
+**/.env.local
+**/.DS_Store
