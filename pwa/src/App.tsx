@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LiquidChrome as Background } from './components/Background';
 import { Dashboard } from './pages/Dashboard';
 import { Discovery } from './pages/Discovery';
-import { Landing } from './pages/Landing';
+import Landing from './pages/Landing';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LayoutDashboard, Users, User, Bell, LogOut } from 'lucide-react';
 
@@ -12,8 +12,9 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const handleLogin = () => {
-    // Simulate high-fidelity Google login
+  const handleLogin = (inviteCode?: string) => {
+    console.log("Verified Sovereign Access with code:", inviteCode);
+    // Simulate high-fidelity Google login / Session creation
     setTimeout(() => {
       setIsAuthenticated(true);
     }, 800);

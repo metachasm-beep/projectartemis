@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, legal, verification, discovery, rank
+from app.api import health, legal, verification, discovery, rank, auth
 from app.core.config import settings
+from app.services.backfill_service import backfill_service
+from fastapi import BackgroundTasks
 
 app = FastAPI(
     title="MATRIARCH API",
@@ -26,6 +28,16 @@ app.include_router(legal.router, prefix="/api/v1/legal", tags=["Legal"])
 app.include_router(verification.router, prefix="/api/v1/verification", tags=["Verification"])
 app.include_router(discovery.router, prefix="/api/v1/discovery", tags=["Discovery"])
 app.include_router(rank.router, prefix="/api/v1/rank", tags=["Rank"])
+app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
+
+
+@app.post("/api/v1/admin/trigger-backfill", tags=["Admin"])
+async def trigger_backfill(background_tasks: BackgroundTasks):
+    """
+    Triggers the Elite Backfill process in the background.
+    """
+    background_tasks.add_task(backfill_service.run_elite_backfill)
+    return {"message": "Elite Backfill started in background."}
 
 
 @app.get("/")

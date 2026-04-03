@@ -23,6 +23,11 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
+    # Sovereign Invite-Only Flow
+    invite_code_used: Optional[str] = Field(default=None, index=True)
+    is_verified_sovereign: bool = Field(default=False)
+    invited_by: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
+
 
 class Profile(SQLModel, table=True):
     __tablename__ = "profiles"
@@ -90,3 +95,18 @@ class FemalePreferences(SQLModel, table=True):
     max_distance_km: int = Field(default=50)
     aadhaar_verified_only: bool = Field(default=False)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class InviteCode(SQLModel, table=True):
+    __tablename__ = "invite_codes"
+
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    code: str = Field(unique=True, index=True)
+    creator_id: uuid.UUID = Field(foreign_key="users.id")
+    is_used: bool = Field(default=False)
+    used_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
+    created_at: datetime = Field(default_factory=datetime.utcnow)
+    used_at: Optional[datetime] = None
+    expires_at: Optional[datetime] = None
+    max_uses: int = Field(default=1)
+    current_uses: int = Field(default=0)
