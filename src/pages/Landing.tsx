@@ -28,6 +28,39 @@ import { supabase } from "@/lib/supabase";
 // Standard components from react-bits
 // import ShinyText from "@/components/ui/react-bits/ShinyText"; // Removed for performance
 
+const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
+  const images = [
+    "/assets/slideshow/desi-1.png",
+    "/assets/slideshow/desi-2.png",
+    "/assets/slideshow/desi-3.png",
+    "/assets/slideshow/desi-4.png"
+  ];
+  const [index, setIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 2000);
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div className={`relative w-full h-full overflow-hidden ${className}`}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={index}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: opacity, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 1, ease: "easeInOut" }}
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: `url(${images[index]})` }}
+        />
+      </AnimatePresence>
+    </div>
+  );
+};
+
 const LandingPage: React.FC = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [error, setError] = useState("");
@@ -59,6 +92,12 @@ const LandingPage: React.FC = () => {
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] mix-blend-overlay" />
         {/* Subtle Geometric Grid */}
         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:100px_100px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+        
+        {/* Generated Hero Visual as Slideshow Overlay */}
+        <HeroSlideshow 
+          opacity={0.15} 
+          className="absolute inset-0 z-[-5] mix-blend-screen pointer-events-none" 
+        />
       </div>
 
       {/* Navigation */}
@@ -131,8 +170,12 @@ const LandingPage: React.FC = () => {
                   {/* Mockup Content */}
                   <div className="p-8 h-full flex flex-col">
                     <div className="flex-1 flex items-center justify-center">
-                      <div className="w-full aspect-[3/4] rounded-2xl bg-gradient-to-br from-matriarch-violet/10 via-matriarch-plum/5 to-transparent border border-white/5 p-6 flex flex-col justify-end relative group overflow-hidden">
-                        <div className="absolute inset-0 bg-mat-violet-glow opacity-20" />
+                      <div className="w-full aspect-[3/4] rounded-2xl bg-matriarch-bg border border-white/5 p-6 flex flex-col justify-end relative group overflow-hidden">
+                        <HeroSlideshow 
+                          opacity={0.6} 
+                          className="absolute inset-0 grayscale group-hover:grayscale-0 transition-all duration-700" 
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-matriarch-bg via-transparent to-transparent opacity-80" />
                         
                         <div className="relative z-10">
                           <Badge variant="gold" className="mb-4">IMPACT #12 — ELITE</Badge>
@@ -250,7 +293,8 @@ const LandingPage: React.FC = () => {
                 </div>
               </div>
               
-              <div className="bg-matriarch-surface p-12 lg:p-20 relative overflow-hidden">
+              <div className="bg-matriarch-surface p-12 lg:p-20 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-[url('/assets/curated-discovery.png')] bg-cover bg-center opacity-[0.05] group-hover:opacity-10 transition-opacity duration-700 pointer-events-none" />
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-5" />
                 <div className="relative z-10">
                   <div className="flex items-center gap-4 mb-10">
@@ -365,8 +409,9 @@ const LandingPage: React.FC = () => {
         {/* 7. SAFETY / TRUST */}
         <section className="mat-section">
           <div className="mat-container text-center max-w-4xl">
-             <div className="inline-flex mb-12 p-8 rounded-full bg-matriarch-violet/10 border border-matriarch-violet/20 shadow-mat-premium">
-                <ShieldCheck className="w-16 h-16 text-matriarch-violetBright" strokeWidth={1} />
+             <div className="inline-flex mb-12 p-8 rounded-full bg-matriarch-violet/10 border border-matriarch-violet/20 shadow-mat-premium relative group">
+                <div className="absolute inset-0 bg-[url('/assets/trust-journey.png')] bg-cover bg-center opacity-10 rounded-full group-hover:opacity-20 transition-opacity" />
+                <ShieldCheck className="w-16 h-16 text-matriarch-violetBright relative z-10" strokeWidth={1} />
              </div>
              <h2 className="mat-heading-lg mb-8 uppercase italic tracking-tighter">True grace comes <br/>with <span className="text-matriarch-violetBright">peace of mind.</span></h2>
              <p className="mat-copy-lg mb-16">
@@ -409,7 +454,8 @@ const LandingPage: React.FC = () => {
         {/* 9. FINAL CTA (Waitlist) */}
         <section className="mat-section mb-20 px-8">
           <div className="mat-container">
-             <div className="mat-panel bg-mat-panel-premium p-20 lg:p-32 text-center rounded-[3rem] border-none shadow-mat-premium overflow-hidden relative">
+             <div className="mat-panel bg-mat-panel-premium p-20 lg:p-32 text-center rounded-[3rem] border-none shadow-mat-premium overflow-hidden relative group">
+                <div className="absolute inset-0 bg-[url('/assets/hero-sanctuary.png')] bg-cover bg-center opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-1000" />
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-10" />
                 <div className="relative z-10">
                    <h2 className="mat-heading-xl mb-8 uppercase leading-tight tracking-tighter">Start Your <br/><span className="text-matriarch-violetBright italic">Story</span> Today.</h2>
