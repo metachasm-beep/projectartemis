@@ -14,7 +14,6 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 
-import { api } from '@/services/api';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -22,19 +21,30 @@ import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { MatriarchLogo } from "@/components/MatriarchLogo";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/lib/supabase";
+import { LogOut } from 'lucide-react';
 
 // Standard components from react-bits
 import ShinyText from "@/components/ui/react-bits/ShinyText";
+import DecryptedText from "@/components/ui/react-bits/DecryptedText";
+import CountUp from "@/components/ui/react-bits/CountUp";
+import SoftAurora from "@/components/ui/react-bits/SoftAurora";
 
 export const Dashboard: React.FC = () => {
   const [status, setStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchStatus = async () => {
       setLoading(true);
       try {
-        const data = await api.getRankStatus('male_demo');
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        setUser(user);
+
+        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/${user.id}/status`);
+        const data = await response.json();
         if (data) {
           setStatus(data);
         }
@@ -46,6 +56,10 @@ export const Dashboard: React.FC = () => {
     };
     fetchStatus();
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
 
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center mat-shell">
@@ -72,15 +86,35 @@ export const Dashboard: React.FC = () => {
   const tierColor = status?.rank_tier === 'elite' ? 'text-matriarch-gold' : status?.rank_tier === 'high' ? 'text-matriarch-violetBright' : 'text-matriarch-textSoft';
 
   return (
-    <div className="mat-shell pb-32">
+    <div className="mat-shell pb-32 mat-noise-overlay relative overflow-hidden">
+      {/* Sovereign Background Aura */}
+      <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
+        <SoftAurora 
+          speed={0.1} 
+          brightness={0.8} 
+          color1="#6E3FF3" 
+          color2="#24152E" 
+          enableMouseInteraction={false}
+        />
+      </div>
+
       {/* Premium Dashboard Header */}
       <header className="border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl sticky top-0 z-50">
         <div className="mat-container flex h-20 items-center justify-between">
           <MatriarchLogo />
           <div className="flex items-center gap-4">
+             <Button variant="ghost" size="icon" onClick={handleLogout} className="text-matriarch-textSoft hover:text-white">
+                <LogOut className="w-5 h-5" />
+             </Button>
              <Badge variant="outline" className="hidden sm:flex py-1.5 border-matriarch-gold/30 text-matriarch-goldSoft">
                <Fingerprint className="w-3 h-3 mr-2" />
-               V-PROTOCOL ACTIVE
+               <DecryptedText 
+                 text="V-PROTOCOL ACTIVE" 
+                 animateOn="view" 
+                 speed={80} 
+                 className="tracking-widest" 
+                 sequential
+               />
              </Badge>
              <div className="w-10 h-10 rounded-full border border-white/10 bg-white/5 grid place-items-center">
                 <Users className="w-5 h-5 text-matriarch-textSoft" />
@@ -91,17 +125,25 @@ export const Dashboard: React.FC = () => {
 
       <main className="mat-container pt-12 space-y-12">
         {/* Welcome Section */}
-        <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-4 border-b border-white/5">
+        <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-4 border-b border-white/5 mat-stagger-fade-in">
            <div className="space-y-2">
               <span className="mat-eyebrow">Protocol View / Dashboard</span>
-              <h1 className="mat-heading-md">Sovereign <span className="text-matriarch-gold">Scoreboard</span></h1>
+              <h1 className="mat-heading-md">
+                <DecryptedText 
+                  text="Sovereign" 
+                  animateOn="view" 
+                  speed={120} 
+                  className="inline-block" 
+                  sequential
+                /> <span className="text-matriarch-gold">Scoreboard</span>
+              </h1>
            </div>
            <div className="flex gap-4">
-              <Button variant="secondary" className="gap-2">
+              <Button variant="secondary" className="gap-2 transition-transform hover:scale-95">
                 <TrendingUp className="w-4 h-4" />
                 History
               </Button>
-              <Button variant="gold" className="gap-2">
+              <Button variant="gold" className="gap-2 shadow-mat-gold">
                 <Zap className="w-4 h-4" />
                 Boost Visibility
               </Button>
@@ -109,49 +151,59 @@ export const Dashboard: React.FC = () => {
         </section>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mat-stagger-fade-in">
            {/* Rank Card */}
-           <Card className="md:col-span-2 mat-panel-premium border-none relative overflow-hidden group">
+           <Card className="md:col-span-2 mat-glass-premium mat-float-hover border-none relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none group-hover:opacity-[0.05] transition-opacity duration-1000">
                 <Trophy size={200} />
               </div>
               <CardHeader>
                 <div className="flex justify-between items-start">
                    <div>
-                      <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase mb-2">Global Standing</CardTitle>
+                      <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase mb-2">
+                        <DecryptedText text="Protocol Standing" animateOn="view" />
+                      </CardTitle>
                       <div className="flex items-center gap-4">
                          <h2 className="text-6xl font-display font-black tracking-tighter text-white">
-                           {status?.rank_tier?.toUpperCase() || 'ELITE'}
+                           {status?.rank_tier?.toUpperCase() || 'SOVEREIGN'}
                          </h2>
                          <Crown className={cn("w-10 h-10 animate-pulse", tierColor)} strokeWidth={1} />
                       </div>
                    </div>
                    <div className="text-right">
-                      <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">Sovereignty Score</div>
-                      <div className="text-4xl font-display font-black text-white">{Math.round(status?.rank_score || 0)}</div>
+                      <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">
+                        {status?.rank_tier === 'matriarch' ? 'Selection Power' : 'Sovereignty Score'}
+                      </div>
+                      <div className="text-4xl font-display font-black text-white">
+                        <CountUp to={Math.round(status?.rank_score || 0)} duration={2.5} />
+                      </div>
                    </div>
                 </div>
               </CardHeader>
               <CardContent className="mt-8 space-y-8">
                  <div className="space-y-4">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-matriarch-textSoft">
-                       <span>Visibility saturation</span>
-                       <span className="text-matriarch-gold">99.4%</span>
+                       <span>{status?.rank_tier === 'matriarch' ? 'Selection Fidelity' : 'Visibility saturation'}</span>
+                       <span className="text-matriarch-gold">
+                         <CountUp to={99.4} duration={3} />%
+                       </span>
                     </div>
                     <Progress value={99} className="h-2 bg-white/5" />
                  </div>
                  <div className="flex flex-wrap gap-4">
-                    <Badge variant="violet">Top 0.1% Globally</Badge>
+                    <Badge variant="violet">{status?.rank_tier === 'matriarch' ? 'Arch-Matriarch' : 'Top 0.1% Globally'}</Badge>
                     <Badge variant="violet">Premium Verified</Badge>
-                    <Badge variant="violet">High Intent</Badge>
+                    <Badge variant="violet">Sovereign Protocol</Badge>
                  </div>
               </CardContent>
            </Card>
 
            {/* Vertical Profile Health */}
-           <Card className="mat-panel border-none flex flex-col justify-between">
+           <Card className="mat-panel mat-glass-premium mat-float-hover border-none flex flex-col justify-between">
               <CardHeader>
-                <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase">Profile Integrity</CardTitle>
+                <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase">
+                   <DecryptedText text="Profile Integrity" animateOn="view" />
+                </CardTitle>
                 <div className="pt-6 flex justify-center">
                    <div className="relative w-32 h-32">
                       <svg className="w-full h-full" viewBox="0 0 100 100">
@@ -166,7 +218,7 @@ export const Dashboard: React.FC = () => {
                            className="text-matriarch-violetBright" 
                            strokeWidth="8" 
                            strokeDasharray="251.2" 
-                           strokeDashoffset={251.2 * (1 - 0.85)} 
+                           strokeDashoffset={251.2 * (1 - ((status?.profile_completeness_pct || 0) / 100))} 
                            strokeLinecap="round" 
                            stroke="currentColor" 
                            fill="transparent" 
@@ -174,27 +226,29 @@ export const Dashboard: React.FC = () => {
                          />
                       </svg>
                       <div className="absolute inset-0 flex items-center justify-center">
-                         <span className="text-2xl font-black">85%</span>
+                         <span className="text-2xl font-black">
+                           <CountUp to={status?.profile_completeness_pct || 0} duration={3} />%
+                         </span>
                       </div>
                    </div>
                 </div>
               </CardHeader>
               <CardContent className="text-center">
                  <p className="text-xs text-matriarch-textSoft mb-6">Complete your bio to reach Elite visibility status.</p>
-                 <Button variant="secondary" size="sm" className="w-full">Edit Profile</Button>
+                 <Button variant="secondary" size="sm" className="w-full transition-transform hover:scale-[0.98]">Edit Profile</Button>
               </CardContent>
            </Card>
         </div>
 
         {/* Secondary Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
            {[
              { label: 'STATUS', title: 'Identity', val: status?.is_aadhaar_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
-             { label: 'POWER', title: 'Signal Boost', val: 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
-             { label: 'INBOX', title: 'Selections', val: '0', icon: Heart, color: 'text-matriarch-gold' },
+             { label: 'POWER', title: 'Signal Boost', val: status?.rank_tier === 'matriarch' ? 'ACTIVE' : 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
+             { label: 'INBOX', title:  status?.rank_tier === 'matriarch' ? 'Selections' : 'Pending', val: '0', icon: Heart, color: 'text-matriarch-gold' },
              { label: 'ACTIVITY', title: 'Exposure', val: 'HIGH', icon: Activity, color: 'text-white' },
            ].map((item, i) => (
-             <Card key={i} className="mat-panel border-none group cursor-pointer hover:bg-white/[0.06] transition-all">
+             <Card key={i} className="mat-panel mat-glass-premium mat-float-hover border-none group cursor-pointer hover:bg-white/[0.06] transition-all">
                 <CardContent className="p-8">
                    <div className="flex justify-between items-start mb-6">
                       <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={1.5} />
@@ -210,53 +264,43 @@ export const Dashboard: React.FC = () => {
            ))}
         </div>
 
-        {/* Strategy Section */}
-        <section className="space-y-6">
+        {/* Sovereign Guard Protocol (007 Integration) */}
+        <section className="space-y-6 mat-stagger-fade-in">
            <div className="flex items-center gap-4">
-              <h3 className="text-xs font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Selection Strategy</h3>
-              <Separator className="flex-1 bg-white/5" />
+              <h3 className="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">
+                <DecryptedText text="Sovereign Guard Protocol" animateOn="view" sequential />
+              </h3>
+              <Separator className="flex-1 bg-emerald-500/10" />
            </div>
            
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <Card className="mat-panel border-none bg-matriarch-plum/5">
-                 <CardContent className="p-10 flex gap-8">
-                    <div className="w-16 h-16 rounded-2xl bg-matriarch-plum/10 border border-matriarch-plum/20 flex items-center justify-center flex-shrink-0">
-                       <Users className="text-matriarch-plum w-8 h-8" />
+           <Card className="mat-panel mat-glass-premium border-emerald-500/20 bg-emerald-500/[0.02]">
+              <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-8">
+                 <div className="flex items-center gap-6">
+                    <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center animate-pulse-slow">
+                       <ShieldCheck className="text-emerald-500 w-6 h-6" />
                     </div>
                     <div>
-                       <h4 className="text-xl font-bold mb-4">Discovery Insights</h4>
-                       <p className="mat-copy mb-6 leading-relaxed">
-                         Your profile was reviewed by 14 Sovereign users this week. Visibility is tracking 12% higher than average.
-                       </p>
-                       <Button variant="link" className="p-0 h-auto text-matriarch-plum">View Details <ChevronRight className="w-4 h-4 ml-1" /></Button>
+                       <h4 className="text-lg font-bold text-white">Advanced Threat Protection Active</h4>
+                       <p className="text-sm text-matriarch-textSoft">Account audited 2 hours ago. No shadow-risk patterns detected.</p>
                     </div>
-                 </CardContent>
-              </Card>
-
-              <div className="space-y-4">
-                 {(status?.tips || [
-                    "Complete your 'Intentional Goals' section for a +15 score boost.",
-                    "Profiles with verified social links see 3x more selections.",
-                    "Wait time for selection cycle: 4 days estimated."
-                 ]).map((tip: string, i: number) => (
-                    <motion.div 
-                      key={i}
-                      initial={{ opacity: 0, x: 10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.1 }}
-                      className="mat-panel p-6 border-none bg-white/[0.03] flex items-center gap-6 group hover:bg-white/[0.05] transition-all cursor-default"
-                    >
-                       <div className="w-2 h-2 rounded-full bg-matriarch-goldSoft shrink-0 shadow-mat-gold" />
-                       <p className="text-sm font-medium text-matriarch-textSoft group-hover:text-white transition-colors">{tip}</p>
-                    </motion.div>
-                 ))}
-              </div>
-           </div>
+                 </div>
+                 <div className="flex items-center gap-4">
+                    <div className="text-right hidden sm:block">
+                       <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Integrity Score</div>
+                       <div className="text-2xl font-black text-white">
+                         <CountUp to={98} duration={1.5} onStart={() => console.log('Sovereign integrity verified.')} />/100
+                       </div>
+                    </div>
+                    <Button variant="outline" className="border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 shadow-sm">Full Audit</Button>
+                 </div>
+              </CardContent>
+           </Card>
         </section>
       </main>
 
-      {/* Decorative Glow */}
-      <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[60%] h-[30%] bg-matriarch-violet/5 blur-[100px] pointer-events-none -z-10" />
+      <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">PROTOCOL ARCHIVE 02.4.9 — SOVEREIGN STATUS CONFIRMED</span>
+      </div>
     </div>
   );
 };

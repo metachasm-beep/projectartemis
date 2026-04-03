@@ -161,20 +161,20 @@ void main() {
 `;
 
 export default function SoftAurora({
-  speed = 0.6,
-  scale = 1.5,
-  brightness = 1.0,
-  color1 = '#f7f7f7',
-  color2 = '#e100ff',
-  noiseFrequency = 2.5,
-  noiseAmplitude = 1.0,
+  speed = 0.2,
+  scale = 1.2,
+  brightness = 0.8,
+  color1 = '#6E3FF3',
+  color2 = '#24152E',
+  noiseFrequency = 2.0,
+  noiseAmplitude = 0.8,
   bandHeight = 0.5,
-  bandSpread = 1.0,
+  bandSpread = 0.8,
   octaveDecay = 0.1,
   layerOffset = 0,
-  colorSpeed = 1.0,
+  colorSpeed = 0.5,
   enableMouseInteraction = true,
-  mouseInfluence = 0.25
+  mouseInfluence = 0.15
 }: SoftAuroraProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -277,3 +277,5 @@ export default function SoftAurora({
 
   return <div ref={containerRef} className="w-full h-full" />;
 }
+鼓
+鼓

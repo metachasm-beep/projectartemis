@@ -21,16 +21,16 @@ type Direction = 'forward' | 'reverse';
 
 export default function DecryptedText({
   text,
-  speed = 50,
-  maxIterations = 10,
-  sequential = false,
+  speed = 40,
+  maxIterations = 12,
+  sequential = true,
   revealDirection = 'start',
   useOriginalCharsOnly = false,
   characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+',
   className = '',
   parentClassName = '',
   encryptedClassName = '',
-  animateOn = 'hover',
+  animateOn = 'view',
   clickMode = 'once',
   ...props
 }: DecryptedTextProps) {

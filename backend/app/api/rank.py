@@ -19,30 +19,59 @@ class RankStatusResponse(BaseModel):
 @router.get("/{user_id}/status", response_model=RankStatusResponse)
 async def get_rank_status(user_id: str):
     """
-    Returns a man's current rank score from Supabase.
+    Returns a user's current status and protocol standing.
     """
-    response = supabase_client.table("profiles").select("*").eq("user_id", user_id).execute()
+    # 1. Fetch User Role
+    user_res = supabase_client.table("users").select("role").eq("id", user_id).execute()
+    if not user_res.data:
+        raise HTTPException(status_code=404, detail="Sovereign user not found.")
     
-    if not response.data:
-        raise HTTPException(status_code=404, detail="Sovereign profile not found.")
+    role = user_res.data[0]["role"]
     
-    profile = response.data[0]
-    
-    # Calculate fresh tips based on current state
-    tips = []
-    if not profile.get("is_aadhaar_verified"):
-        tips.append("✅ Complete Aadhaar verification to unlock +20 rank points")
-    if profile.get("profile_completeness", 0) < 100:
-        tips.append(f"📝 Complete your profile — currently {profile.get('profile_completeness')}%")
-    if profile.get("rank_score", 0) < 50:
-        tips.append("👥 Refer trusted friends to earn rank credits")
+    profile_res = supabase_client.table("profiles").select("*").eq("user_id", user_id).execute()
+    profile = profile_res.data[0] if profile_res.data else {}
 
-    return {
-        "user_id": profile["user_id"],
-        "rank_score": profile["rank_score"],
-        "rank_tier": profile["rank_tier"],
-        "profile_completeness_pct": profile["profile_completeness"],
-        "is_aadhaar_verified": profile["is_aadhaar_verified"],
-        "is_elite": profile["is_elite"],
-        "tips": tips,
-    }
+    if role == "man":
+        # Petitioner logic
+        rank_res = supabase_client.table("male_rank_profiles").select("*").eq("user_id", user_id).execute()
+        rank_data = rank_res.data[0] if rank_res.data else {"rank_score": 0}
+        score = rank_data.get("rank_score", 0)
+        tier = "elite" if score > 80 else "high" if score > 50 else "standard"
+        
+        # Calculate dynamic tips
+        tips = []
+        is_verified = profile.get("aadhaar_verified", False)
+        completeness = profile.get("completeness_score", 0)
+        
+        if not is_verified:
+            tips.append("⚠️ Verify Aadhaar to unlock +20 Sovereignty Points")
+        else:
+            tips.append("✅ Aadhaar identity confirmed")
+            
+        if completeness < 100:
+            tips.append(f"📝 Complete profile ({completeness}%) to reach Priority visibility")
+        
+        if score < 50:
+            tips.append("👥 Refer highly-vetted friends to gain Referral Credits")
+            
+        return {
+            "user_id": user_id,
+            "rank_score": score,
+            "rank_tier": tier,
+            "profile_completeness_pct": completeness,
+            "is_aadhaar_verified": is_verified,
+            "is_elite": score > 90,
+            "tips": tips
+        }
+    else:
+        # Matriarch logic
+        selection_count = supabase_client.table("selection_events").select("id", count="exact").eq("woman_id", user_id).execute()
+        return {
+            "user_id": user_id,
+            "rank_score": float(selection_count.count or 0),
+            "rank_tier": "matriarch",
+            "profile_completeness_pct": 100,
+            "is_aadhaar_verified": True,
+            "is_elite": True,
+            "tips": ["Observation Protocol Active — Select to connect."]
+        }
