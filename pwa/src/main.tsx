@@ -24,10 +24,32 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}
   }
 }
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </StrictMode>,
-)
+// Emergency Protocol Cache Purge
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    for (let registration of registrations) {
+      registration.unregister();
+      console.log("Protocol Cache Purged: Unregistered SW");
+    }
+  });
+}
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  const root = createRoot(rootElement);
+  root.render(
+    <StrictMode>
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
+    </StrictMode>,
+  );
+  
+  // Dismiss boot loader only after successful initialization
+  setTimeout(() => {
+    const loader = document.getElementById('boot-loader');
+    if (loader) loader.style.display = 'none';
+  }, 500);
+} else {
+  console.error("Fatal: Selection Protocol Root missing.");
+}

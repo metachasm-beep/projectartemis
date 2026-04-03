@@ -63,11 +63,6 @@ const App: React.FC = () => {
   if (loading) {
     return (
       <div style={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: '#0A0A0B', position: 'relative', overflow: 'hidden' }}>
-        <Background 
-          baseColor={[0.1, 0.05, 0.2]} 
-          speed={0.12}
-          amplitude={0.3}
-        />
         <div style={{ position: 'relative', zIndex: 10, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '24px' }}>
           <motion.div
             animate={{ rotate: 360 }}
