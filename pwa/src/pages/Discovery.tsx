@@ -17,7 +17,6 @@ import { MatriarchLogo } from "@/components/MatriarchLogo";
 import { Clock, Eye, TrendingUp } from 'lucide-react';
 
 // Standard components from react-bits
-import ShinyText from "@/components/ui/react-bits/ShinyText";
 import DecryptedText from "@/components/ui/react-bits/DecryptedText";
 import SoftAurora from "@/components/ui/react-bits/SoftAurora";
 

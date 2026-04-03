@@ -7,7 +7,6 @@ import {
   Users, 
   Heart, 
   Crown,
-  ChevronRight,
   TrendingUp,
   Fingerprint,
   Activity,
@@ -33,7 +32,7 @@ import SoftAurora from "@/components/ui/react-bits/SoftAurora";
 export const Dashboard: React.FC = () => {
   const [status, setStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [_user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const fetchStatus = async () => {
