@@ -30,15 +30,15 @@ window.__BUNDLE_START__ = true;
 const diagnostic = document.getElementById('diagnostic-console');
 if (diagnostic) {
   diagnostic.style.display = 'block';
-  diagnostic.innerHTML += '<div>> [SYSTEM] Bundle execution confirmed. Rendering root...</div>';
+  diagnostic.innerHTML += '<div>> [SYSTEM] Bundle v1.0.2 execution confirmed.</div>';
 }
 
-// Emergency Protocol Cache Purge
+// Emergency Protocol Cache Purge (Redundant but safe)
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then(registrations => {
     for (let registration of registrations) {
       registration.unregister();
-      console.log("Protocol Cache Purged: Unregistered SW");
+      if (diagnostic) diagnostic.innerHTML += '<div>> [SW] Legacy ServiceWorker purged.</div>';
     }
   });
 }
@@ -46,6 +46,7 @@ if ('serviceWorker' in navigator) {
 const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = createRoot(rootElement);
+  if (diagnostic) diagnostic.innerHTML += '<div>> [SYSTEM] Rendering React Root...</div>';
   root.render(
     <StrictMode>
       <ErrorBoundary>
@@ -59,7 +60,7 @@ if (rootElement) {
     if (event.data === 'MATRIARCH_PROTOCOL_READY') {
       const loader = document.getElementById('boot-loader');
       if (loader) {
-        if (diagnostic) diagnostic.innerHTML += '<div>> [SUCCESS] Protocol Handshake received. Removing shell.</div>';
+        if (diagnostic) diagnostic.innerHTML += '<div style="color: #00F2FF">> [SUCCESS] App Handshake received. Dismantling shell...</div>';
         setTimeout(() => {
           loader.style.opacity = '0';
           setTimeout(() => {
@@ -71,7 +72,6 @@ if (rootElement) {
   });
 } else {
   if (diagnostic) {
-    diagnostic.innerHTML += '<div style="color: #FF0000">> [FATAL] Root container missing. Check index.html.</div>';
+    diagnostic.innerHTML += '<div style="color: #FF0000">> [FATAL] Root container missing (#root).</div>';
   }
-  console.error("Fatal: Selection Protocol Root missing.");
 }
