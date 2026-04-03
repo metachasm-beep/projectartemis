@@ -40,7 +40,7 @@ const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opa
   React.useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
-    }, 2000);
+    }, 6000);
     return () => clearInterval(timer);
   }, []);
 
@@ -52,7 +52,7 @@ const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opa
           initial={{ opacity: 0, scale: 1.05 }}
           animate={{ opacity: opacity, scale: 1 }}
           exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 1, ease: "easeInOut" }}
+          transition={{ duration: 1.5, ease: "easeInOut" }}
           className="absolute inset-0 bg-cover bg-center"
           style={{ backgroundImage: `url(${images[index]})` }}
         />
