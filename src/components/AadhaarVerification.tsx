@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Shield, CheckCircle, ArrowRight, Lock, Fingerprint } from 'lucide-react';
+import { Shield, CheckCircle, ArrowRight, Lock, Fingerprint, ExternalLink, Phone } from 'lucide-react';
 import { Button } from './ui/button';
 import { supabase } from '@/lib/supabase';
 
@@ -12,10 +12,18 @@ interface AadhaarVerificationProps {
 export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId, onVerified }) => {
   const [verifying, setVerifying] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isPortalVisited, setIsPortalVisited] = useState(false);
 
-  const handleVerify = async () => {
+  const UIDAI_URL = "https://myaadhaar.uidai.gov.in/verifyAadhaar";
+
+  const handleVisitPortal = () => {
+    window.open(UIDAI_URL, '_blank', 'noopener,noreferrer');
+    setIsPortalVisited(true);
+  };
+
+  const handleFinalizeSync = async () => {
     setVerifying(true);
-    // Simulate Aadhaar Handshake
+    // Simulate Protocol Handshake
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
@@ -33,20 +41,20 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       setSuccess(true);
       setTimeout(onVerified, 1500);
     } catch (err) {
-      console.error("Verification failed:", err);
-      alert("Aadhaar synchronization failed. Please retry.");
+      console.error("Verification sync failed:", err);
+      alert("Protocol synchronization failed. Please retry.");
     } finally {
       setVerifying(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-y-auto overflow-x-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-y-auto overflow-x-hidden py-20">
       <div className="absolute inset-0 bg-gradient-to-br from-mat-violet/10 to-mat-gold/5 pointer-events-none" />
       
       <motion.div 
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md mat-panel-premium p-10 rounded-[2.5rem] shadow-premium relative overflow-hidden text-center space-y-8"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-mat-gold via-mat-violet to-mat-gold" />
@@ -60,41 +68,90 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
             )}
           </div>
           <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">
-            {success ? "Identity Verified" : "Identity Protocol"}
+            {success ? "Protocol Verified" : "Identity Protocol"}
           </h2>
           <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">
-            {success ? "Welcome to the Matriarch" : "Aadhaar Synchronization Required"}
+            {success ? "Sync Complete" : "Official Aadhaar Validation"}
           </p>
         </div>
 
-        <div className="surface-raised p-6 rounded-2xl text-left space-y-4">
-          <div className="flex items-start gap-4">
-            <Shield className="text-matriarch-violet w-5 h-5 shrink-0 mt-1" />
-            <p className="text-[11px] text-matriarch-textSoft leading-relaxed">
-              To maintain the integrity of our selection, all profiles must sync with Aadhaar. Your data is encrypted and never stored locally.
-            </p>
+        {!success && (
+          <div className="space-y-6">
+            <div className="surface-raised p-6 rounded-2xl text-left space-y-6">
+              <div className="space-y-2">
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
+                  <Shield size={14} className="text-mat-gold" /> How it functions
+                </h4>
+                <div className="space-y-3 pt-2">
+                  <div className="flex gap-3">
+                    <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">1</div>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Click the button below to reach the secure UIDAI Portal.</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">2</div>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Enter your Aadhaar number and the security CAPTCHA.</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="text-[9px] font-black w-4 h-4 rounded-full bg-matriarch-violet/20 flex items-center justify-center shrink-0 border border-matriarch-violet/30 text-matriarch-violet">
+                      <Phone size={8} className="fill-current" />
+                    </div>
+                    <p className="text-[11px] text-matriarch-violetBright leading-relaxed font-black uppercase tracking-tighter">Mobile number must be connected to receive OTP.</p>
+                  </div>
+                  <div className="flex gap-3">
+                    <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">3</div>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Once verified there, return here to finalize your protocol sync.</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-4 bg-mat-gold/5 rounded-xl border border-mat-gold/10">
+                 <p className="text-[10px] text-mat-gold/80 italic font-medium leading-relaxed">
+                   "Integrity is the foundation of the Matriarch. Verified identities ensure the quality of the discovery queue."
+                 </p>
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-4">
+              <Button 
+                onClick={handleVisitPortal}
+                className="w-full h-16 bg-white/[0.03] border border-white/10 text-white hover:bg-white/10 font-bold tracking-widest uppercase rounded-2xl flex gap-3 group transition-all"
+              >
+                Reach UIDAI Portal <ExternalLink size={16} className="opacity-40 group-hover:opacity-100" />
+              </Button>
+
+              <Button 
+                onClick={handleFinalizeSync}
+                disabled={!isPortalVisited || verifying}
+                className={`w-full h-20 font-black tracking-[0.2em] uppercase rounded-2xl shadow-2xl flex gap-3 transition-all ${isPortalVisited ? 'bg-matriarch-violet text-white shadow-matriarch-violet/20' : 'bg-white/5 text-white/20 border border-white/5 pointer-events-none'}`}
+              >
+                {verifying ? "Syncing Identity..." : (
+                  <>Finalize Protocol Sync <ArrowRight size={18} /></>
+                )}
+              </Button>
+            </div>
           </div>
-          <div className="flex items-start gap-4">
-            <Lock className="text-matriarch-violet w-5 h-5 shrink-0 mt-1" />
-            <p className="text-[11px] text-matriarch-textSoft leading-relaxed">
-              Profiles remain <span className="text-mat-gold font-bold">DORMANT</span> and invisible to others until verification is complete.
-            </p>
+        )}
+
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="py-10"
+          >
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-widest animate-pulse">
+              Identity Locked & Verified
+            </div>
+          </motion.div>
+        )}
+
+        <div className="pt-4 space-y-2">
+          <div className="flex items-center justify-center gap-2 text-[9px] text-matriarch-textFaint uppercase tracking-widest">
+            <Lock size={10} /> End-to-End Encrypted Handshake
           </div>
+          <p className="text-[8px] text-matriarch-textFaint uppercase tracking-[0.2em]">
+            Secured by Matriarch Trust Network v1.0
+          </p>
         </div>
-
-        <Button 
-          onClick={handleVerify}
-          disabled={verifying || success}
-          className="w-full h-20 bg-white text-black hover:bg-neutral-200 font-black tracking-widest uppercase rounded-2xl shadow-2xl flex gap-3"
-        >
-          {verifying ? "Syncing..." : success ? "Verified" : (
-            <>Verify Identity <ArrowRight size={18} /></>
-          )}
-        </Button>
-
-        <p className="text-[9px] text-matriarch-textFaint uppercase tracking-widest">
-          Secured by Matriarch Trust Network
-        </p>
       </motion.div>
     </div>
   );

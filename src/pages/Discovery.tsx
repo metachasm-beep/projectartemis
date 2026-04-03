@@ -141,10 +141,7 @@ export const Discovery: React.FC = () => {
   if (role === 'man') {
     return (
       <div className="h-screen flex flex-col mat-shell overflow-hidden relative mat-noise-overlay">
-        {/* Matriarch Background Aura */}
-        <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
-          <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
-        </div>
+        {/* Matriarch Background Aura - Removed for performance as it overlaps global background */}
 
         <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl">
           <div className="mat-container flex h-20 items-center justify-between">
@@ -153,12 +150,13 @@ export const Discovery: React.FC = () => {
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col items-center justify-center p-8 text-center relative mat-stagger-fade-in">
+      <main className="flex-1 flex flex-col items-center justify-center p-8 text-center relative mat-stagger-fade-in will-change-transform">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[40%] bg-mat-gold/5 blur-[120px] -z-10" />
           
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
+            style={{ willChange: 'transform, opacity' }}
             className="max-w-2xl w-full mat-panel-premium mat-glass-premium mat-float-hover p-12 rounded-[3rem] border-none shadow-mat-premium space-y-10"
           >
             <div className="mx-auto w-24 h-24 rounded-3xl bg-mat-gold/10 flex items-center justify-center border border-mat-gold/20 shadow-xl shadow-mat-gold/5">
@@ -234,10 +232,7 @@ export const Discovery: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col mat-shell overflow-hidden mat-noise-overlay relative">
-      {/* Matriarch Background Aura */}
-      <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
-        <SoftAurora speed={0.1} brightness={0.8} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
-      </div>
+      {/* Background Aura - Overlapping global background, removed for protocol speed */}
 
       {/* Matriarch Header */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl">
@@ -305,10 +300,11 @@ export const Discovery: React.FC = () => {
              <AnimatePresence mode="wait">
                 <motion.div
                   key={profile?.user_id || 'empty'}
-                  initial={{ opacity: 0, x: direction * 50, scale: 0.9 }}
+                  initial={{ opacity: 0, x: direction * 50, scale: 0.95 }}
                   animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: -direction * 50, scale: 0.9 }}
-                  transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                  exit={{ opacity: 0, x: -direction * 50, scale: 0.95 }}
+                  style={{ willChange: 'transform, opacity' }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   className="w-full h-full"
                 >
                   <div className="mat-panel-premium mat-glass-premium p-3 rounded-[2.5rem] border-none shadow-mat-premium group relative">

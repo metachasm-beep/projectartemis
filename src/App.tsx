@@ -119,6 +119,12 @@ const App: React.FC = () => {
     }
   }, [loading]);
 
+  const backgroundProps = React.useMemo(() => ({
+    baseColor: [0.1, 0.05, 0.2] as [number, number, number],
+    speed: 0.12,
+    amplitude: 0.3
+  }), []);
+
   if (loading) {
     return (
       <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
@@ -132,7 +138,7 @@ const App: React.FC = () => {
 
   return (
     <div className="relative min-h-screen bg-[#0A0A0B] text-[#F6F3EE] overflow-y-auto overflow-x-hidden font-inter selection:bg-matriarch-violet/30">
-      <Background baseColor={[0.1, 0.05, 0.2]} speed={0.12} amplitude={0.3} />
+      <Background {...backgroundProps} />
       
       <main className="relative z-10 w-full min-h-screen">
         <AnimatePresence mode="wait">

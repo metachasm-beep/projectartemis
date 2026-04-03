@@ -12,8 +12,8 @@ interface LiquidChromeProps {
   children?: React.ReactNode;
 }
 
-export const LiquidChrome: React.FC<LiquidChromeProps> = ({
-  baseColor = [0.1, 0.1, 0.1], // Defaulting to a darker shade
+export const LiquidChrome: React.FC<LiquidChromeProps> = React.memo(({
+  baseColor = [0.1, 0.1, 0.1],
   speed = 0.2,
   amplitude = 0.3,
   frequencyX = 3,
@@ -32,7 +32,9 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
     let gl: any = null;
 
     try {
-      renderer = new Renderer({ antialias: true, alpha: true });
+      // Limit DPR to 1.5 for performance, even on high-res screens
+      const dpr = Math.min(window.devicePixelRatio, 1.5);
+      renderer = new Renderer({ antialias: false, alpha: true, dpr });
       gl = renderer.gl;
       if (!gl) throw new Error("Could not create WebGL context");
       gl.clearColor(0, 0, 0, 0);
@@ -62,36 +64,24 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       uniform vec2 uMouse;
       varying vec2 vUv;
 
-      vec4 renderImage(vec2 uvCoord) {
-          vec2 fragCoord = uvCoord * uResolution.xy;
+      void main() {
+          vec2 fragCoord = vUv * uResolution.xy;
           vec2 uv = (2.0 * fragCoord - uResolution.xy) / min(uResolution.x, uResolution.y);
 
-          for (float i = 1.0; i < 10.0; i++){
+          // Optimized loops: 10 -> 6 for faster computation
+          for (float i = 1.0; i < 7.0; i++){
               uv.x += uAmplitude / i * cos(i * uFrequencyX * uv.y + uTime + uMouse.x * 3.14159);
               uv.y += uAmplitude / i * cos(i * uFrequencyY * uv.x + uTime + uMouse.y * 3.14159);
           }
 
-          vec2 diff = (uvCoord - uMouse);
+          vec2 diff = (vUv - uMouse);
           float dist = length(diff);
-          float falloff = exp(-dist * 20.0);
-          float ripple = sin(10.0 * dist - uTime * 2.0) * 0.03;
+          float falloff = exp(-dist * 15.0);
+          float ripple = sin(8.0 * dist - uTime * 1.5) * 0.02;
           uv += (diff / (dist + 0.0001)) * ripple * falloff;
 
           vec3 color = uBaseColor / abs(sin(uTime - uv.y - uv.x));
-          return vec4(color, 1.0);
-      }
-
-      void main() {
-          vec4 col = vec4(0.0);
-          int samples = 0;
-          for (int i = -1; i <= 1; i++){
-              for (int j = -1; j <= 1; j++){
-                  vec2 offset = vec2(float(i), float(j)) * (1.0 / min(uResolution.x, uResolution.y));
-                  col += renderImage(vUv + offset);
-                  samples++;
-              }
-          }
-          gl_FragColor = col / float(samples);
+          gl_FragColor = vec4(color, 1.0);
       }
     `;
 
@@ -108,9 +98,10 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
         uAmplitude: { value: amplitude },
         uFrequencyX: { value: frequencyX },
         uFrequencyY: { value: frequencyY },
-        uMouse: { value: new Float32Array([0, 0]) }
+        uMouse: { value: new Float32Array([0.5, 0.5]) }
       }
     });
+
     const mesh = new Mesh(gl, { geometry, program });
 
     function resize() {
@@ -134,20 +125,8 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       mouseUniform[1] = y;
     }
 
-    function handleTouchMove(event: TouchEvent) {
-      if (!container || event.touches.length === 0) return;
-      const touch = event.touches[0];
-      const rect = container.getBoundingClientRect();
-      const x = (touch.clientX - rect.left) / rect.width;
-      const y = 1 - (touch.clientY - rect.top) / rect.height;
-      const mouseUniform = program.uniforms.uMouse.value as Float32Array;
-      mouseUniform[0] = x;
-      mouseUniform[1] = y;
-    }
-
     if (interactive) {
       container.addEventListener('mousemove', handleMouseMove);
-      container.addEventListener('touchmove', handleTouchMove);
     }
 
     let animationId: number;
@@ -158,7 +137,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
         program.uniforms.uTime.value = t * 0.001 * speed;
         renderer.render({ scene: mesh });
       } catch (err) {
-        console.warn("Animation update failed - terminating protocol background", err);
+        console.warn("Background protocol update failed", err);
         cancelAnimationFrame(animationId);
       }
     }
@@ -171,7 +150,6 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
       window.removeEventListener('resize', resize);
       if (interactive) {
         container.removeEventListener('mousemove', handleMouseMove);
-        container.removeEventListener('touchmove', handleTouchMove);
       }
       if (gl.canvas.parentElement) {
         gl.canvas.parentElement.removeChild(gl.canvas);
@@ -193,10 +171,8 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = ({
         zIndex: -1,
         pointerEvents: 'none'
       }} 
-    >
-      {children}
-    </div>
+    />
   );
-};
+});
 
 export default LiquidChrome;
