@@ -123,8 +123,9 @@ export const AdminDashboard: React.FC = () => {
   });
 
   return (
-    <div className="min-h-screen p-8 pt-24 space-y-12">
-      {/* Header */}
+    <div className="min-h-screen pt-24 space-y-12">
+      <div className="px-8 space-y-12">
+        {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
           <h1 className="text-4xl font-display font-black text-white italic tracking-tight uppercase mb-2 flex items-center gap-4">
@@ -170,9 +171,10 @@ export const AdminDashboard: React.FC = () => {
           </motion.div>
         ))}
       </div>
+      </div>
 
       {/* Soul Matrix (User List) */}
-      <div className="mat-panel-premium rounded-[2.5rem] border border-white/5 overflow-hidden flex flex-col">
+      <div className="mat-panel-premium rounded-none md:rounded-[2.5rem] border-x-0 md:border border-white/5 overflow-visible flex flex-col">
         <div className="p-8 border-b border-white/5 flex flex-col md:flex-row gap-6 justify-between items-center">
            <h3 className="text-xl font-display font-black text-white italic uppercase tracking-widest">Soul Matrix</h3>
            <div className="flex gap-4 w-full md:w-auto">
@@ -199,7 +201,7 @@ export const AdminDashboard: React.FC = () => {
            </div>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-visible">
           <table className="w-full text-left">
             <thead>
               <tr className="bg-white/[0.02] border-b border-white/5">
@@ -290,7 +292,7 @@ export const AdminDashboard: React.FC = () => {
                             <motion.div 
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
-                              className="absolute right-0 mt-2 w-56 mat-panel-premium border border-white/10 rounded-2xl shadow-2xl z-[70] overflow-hidden backdrop-blur-3xl"
+                              className="absolute right-0 top-full mt-2 w-56 mat-panel-premium border border-white/10 rounded-2xl shadow-2xl z-[70] overflow-hidden backdrop-blur-3xl"
                             >
                                <div className="p-2 border-b border-white/5 bg-white/[0.02]">
                                   <p className="px-3 py-1 text-[8px] font-black text-white/20 uppercase tracking-widest text-center">Divine Controls</p>
