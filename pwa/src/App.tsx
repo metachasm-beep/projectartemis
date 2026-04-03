@@ -4,9 +4,8 @@ import { Dashboard } from './pages/Dashboard';
 import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
-import AdminDashboard from './pages/AdminDashboard';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LayoutDashboard, Users, User, Bell, LogOut, Crown } from 'lucide-react';
+import { LayoutDashboard, Users, User, LogOut, Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
 
 type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications';
