@@ -8,7 +8,9 @@ import {
   Search, 
   MoreHorizontal, 
   UserCheck, 
-  UserMinus,
+  UserX,
+  RotateCcw,
+  Trash2,
   ArrowUpRight,
   RefreshCw,
   Crown
@@ -37,6 +39,7 @@ export const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'man' | 'woman' | 'verified'>('all');
+  const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
@@ -70,34 +73,44 @@ export const AdminDashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  const toggleVerification = async (userId: string, currentStatus: boolean) => {
+  const updateUserProfile = async (userId: string, updates: any) => {
     try {
       const { error } = await supabase
         .from('profiles')
-        .update({ is_verified: !currentStatus })
+        .update(updates)
         .eq('user_id', userId);
       
       if (!error) {
-        setUsers(users.map(u => u.user_id === userId ? { ...u, is_verified: !currentStatus } : u));
+        setUsers(users.map(u => u.user_id === userId ? { ...u, ...updates } : u));
+        setActiveMenuUserId(null);
+      } else {
+         throw error;
       }
     } catch (err) {
-      console.error("Toggle verification failed:", err);
+      console.error("MATRIARCH: Profile update failed:", err);
+      alert("Divine Intervention Interrupted: Database rejected the change.");
     }
   };
 
-  const adjustTokens = async (userId: string, currentTokens: number, amount: number) => {
+  const handleDeleteUser = async (userId: string) => {
+    if (!window.confirm("ARE YOU CERTAIN? This soul will be purged from the Sanctuary records.")) return;
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ tokens: Math.max(0, currentTokens + amount) })
-        .eq('user_id', userId);
-      
-      if (!error) {
-        setUsers(users.map(u => u.user_id === userId ? { ...u, tokens: Math.max(0, currentTokens + amount) } : u));
-      }
+       const { error } = await supabase.from('profiles').delete().eq('user_id', userId);
+       if (!error) {
+         setUsers(users.filter(u => u.user_id !== userId));
+         setActiveMenuUserId(null);
+       }
     } catch (err) {
-      console.error("Token adjustment failed:", err);
+       console.error("Purge failed:", err);
     }
+  };
+
+  const toggleVerification = async (userId: string, currentStatus: boolean) => {
+    await updateUserProfile(userId, { is_verified: !currentStatus });
+  };
+
+  const adjustTokens = async (userId: string, currentTokens: number, amount: number) => {
+    await updateUserProfile(userId, { tokens: Math.max(0, currentTokens + amount) });
   };
 
   const filteredUsers = users.filter(u => {
@@ -260,35 +273,91 @@ export const AdminDashboard: React.FC = () => {
                     </div>
                   </td>
                   <td className="px-8 py-6 text-right">
-                    <div className="flex justify-end gap-2">
-                       <Button 
-                         variant="ghost" 
-                         size="sm"
-                         onClick={() => toggleVerification(u.user_id, u.is_verified)}
-                         title={u.is_verified ? "Revoke Verification" : "Grant Verification"}
-                         className="h-10 w-10 p-0 hover:bg-white/5 rounded-xl text-white/40 hover:text-white"
-                       >
-                         {u.is_verified ? <UserMinus size={18} /> : <UserCheck size={18} />}
-                       </Button>
-                       <Button 
-                         variant="ghost" 
-                         size="sm"
-                         onClick={() => adjustTokens(u.user_id, u.tokens || 0, 1000)}
-                         title="Grant 1000 Tokens"
-                         className="h-10 w-10 p-0 hover:bg-white/5 rounded-xl text-mat-gold/40 hover:text-mat-gold"
-                       >
-                         <Coins size={18} />
-                       </Button>
-                       <Button 
-                         variant="ghost" 
-                         size="sm"
-                         className="h-10 w-10 p-0 hover:bg-white/5 rounded-xl text-white/20 hover:text-white"
-                       >
-                         <MoreHorizontal size={18} />
-                       </Button>
-                    </div>
-                  </td>
-                </tr>
+                      <div className="relative">
+                        <Button 
+                          variant="ghost" 
+                          size="sm"
+                          onClick={() => setActiveMenuUserId(activeMenuUserId === u.user_id ? null : u.user_id)}
+                          className={`h-10 w-10 p-0 hover:bg-white/5 rounded-xl transition-all ${activeMenuUserId === u.user_id ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white'}`}
+                        >
+                          <MoreHorizontal size={18} />
+                        </Button>
+
+                        {/* Administrative Dropdown Menu */}
+                        {activeMenuUserId === u.user_id && (
+                          <>
+                            <div className="fixed inset-0 z-[60]" onClick={() => setActiveMenuUserId(null)} />
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              className="absolute right-0 mt-2 w-56 mat-panel-premium border border-white/10 rounded-2xl shadow-2xl z-[70] overflow-hidden backdrop-blur-3xl"
+                            >
+                               <div className="p-2 border-b border-white/5 bg-white/[0.02]">
+                                  <p className="px-3 py-1 text-[8px] font-black text-white/20 uppercase tracking-widest text-center">Divine Controls</p>
+                               </div>
+                               <div className="p-2 flex flex-col gap-1">
+                                  <button 
+                                    onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
+                                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${u.is_active === false ? 'text-green-400 hover:bg-green-400/10' : 'text-red-400 hover:bg-red-400/10'}`}
+                                  >
+                                    {u.is_active === false ? <UserCheck size={14} /> : <UserX size={14} />}
+                                    {u.is_active === false ? 'Restore Soul' : 'Purge Access'}
+                                  </button>
+                                  
+                                  <button 
+                                    onClick={() => toggleVerification(u.user_id, u.is_verified)}
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-white/60 uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
+                                  >
+                                    <ShieldCheck size={14} />
+                                    {u.is_verified ? 'Revoke Seal' : 'Grant Seal'}
+                                  </button>
+
+                                  <button 
+                                    onClick={() => {
+                                       const amt = window.prompt("Enter token adjustment (+ to add, - to remove):", "1000");
+                                       if (amt) adjustTokens(u.user_id, u.tokens || 0, parseInt(amt));
+                                    }}
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-mat-gold/60 uppercase tracking-widest hover:bg-mat-gold/10 hover:text-mat-gold transition-all"
+                                  >
+                                    <Coins size={14} />
+                                    Modify Wealth
+                                  </button>
+
+                                  <button 
+                                    onClick={() => updateUserProfile(u.user_id, { onboarding_status: 'PENDING' })}
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-white/40 uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
+                                  >
+                                    <RotateCcw size={14} />
+                                    Reset Journey
+                                  </button>
+
+                                  <div className="h-[1px] bg-white/5 my-1" />
+
+                                  <button 
+                                    onClick={() => {
+                                       const newRole = u.role === 'man' ? 'woman' : u.role === 'woman' ? 'admin' : 'man';
+                                       updateUserProfile(u.user_id, { role: newRole });
+                                    }}
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-matriarch-violet/60 uppercase tracking-widest hover:bg-matriarch-violet/10 hover:text-matriarch-violet transition-all"
+                                  >
+                                    <RefreshCw size={14} />
+                                    Cycle Role: {u.role === 'man' ? 'Woman' : u.role === 'woman' ? 'Admin' : 'Man'}
+                                  </button>
+
+                                  <button 
+                                    onClick={() => handleDeleteUser(u.user_id)}
+                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-red-600/40 uppercase tracking-widest hover:bg-red-600/10 hover:text-red-600 transition-all"
+                                  >
+                                    <Trash2 size={14} />
+                                    Absolute Purge
+                                  </button>
+                               </div>
+                            </motion.div>
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
               ))}
             </tbody>
           </table>
