@@ -73,7 +73,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
   const next = (nextStep: OnboardingStep) => setStep(nextStep);
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-y-auto overflow-x-hidden">
       {/* Dynamic Background Glow based on Role */}
       <AnimatePresence>
         {formData.role === 'woman' && (

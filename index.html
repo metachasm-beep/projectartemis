@@ -48,15 +48,27 @@
     <div id="root"></div>
     <script>
       // Handshake to remove loader
+      const removeLoader = () => {
+        const loader = document.getElementById('root-loader');
+        if (loader) {
+          loader.style.opacity = '0';
+          setTimeout(() => loader.remove(), 800);
+        }
+      };
+
       window.addEventListener('message', (event) => {
         if (event.data === 'MATRIARCH_PROTOCOL_READY') {
-          const loader = document.getElementById('root-loader');
-          if (loader) {
-            loader.style.opacity = '0';
-            setTimeout(() => loader.remove(), 800);
-          }
+          removeLoader();
         }
       });
+
+      // Fail-safe: If we are in an Oauth redirect, or it's been too long, force remove loader
+      if (window.location.hash.includes('access_token')) {
+        console.log("MATRIARCH_BOOT: Auth redirect detected. Prioritizing protocol UI.");
+        setTimeout(removeLoader, 500); 
+      }
+      
+      setTimeout(removeLoader, 5000); 
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -41,7 +41,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-[#0A0A0B]">
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-y-auto overflow-x-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-mat-violet/10 to-mat-gold/5 pointer-events-none" />
       
       <motion.div 

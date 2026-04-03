@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { LiquidChrome as Background } from './components/Background';
+import { Dashboard } from './pages/Dashboard';
+import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
 import { AadhaarVerification } from './components/AadhaarVerification';
-import { WomanDashboard } from './pages/WomanDashboard';
-import { MenDashboard } from './pages/MenDashboard';
-import { WomenDiscovery } from './pages/WomenDiscovery';
-import { ProfileEditor } from './components/ProfileEditor';
-import { Navigation } from './components/Navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Crown } from 'lucide-react';
 import { supabase } from './lib/supabase';
@@ -70,7 +67,6 @@ const App: React.FC = () => {
       if (error && error.code !== 'PGRST116') throw error;
       if (mounted) {
         setProfile(data);
-        if (data?.role === 'woman') setActiveTab('discovery');
       }
     } catch (err) {
       console.error("Profile fetch error:", err);
@@ -87,21 +83,17 @@ const App: React.FC = () => {
     }
   }, [loading, session, profile]);
 
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-  };
-
   // Diagnostic Heartbeat
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (loading && session) {
-        console.warn("MATRIARCH: Auth initialization is taking longer than expected. Attempting protocol recovery...");
-        setLoading(false); // Force break the loader
+      if (loading) {
+        console.warn("MATRIARCH: Auth initialization timeout. Breaking loader.");
+        setLoading(false); 
       }
-    }, 6000); // 6 second fail-safe
+    }, 6000); 
 
     return () => clearTimeout(timeout);
-  }, [loading, session]);
+  }, [loading]);
 
   if (loading) {
     return (
@@ -119,39 +111,46 @@ const App: React.FC = () => {
       <Background baseColor={[0.1, 0.05, 0.2]} speed={0.12} amplitude={0.3} />
       
       <main className="relative z-10 w-full min-h-screen">
-        <AnimatePresence mode="wait">
+        <AnimatePresence>
           {!session ? (
-            <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.8 }}>
+            <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <Landing />
             </motion.div>
           ) : !profile ? (
-            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <Onboarding userId={session.user.id} onComplete={() => fetchProfile(session.user.id)} />
             </motion.div>
           ) : !profile.is_verified ? (
-            <motion.div key="aadhaar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+            <motion.div key="aadhaar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
               <AadhaarVerification userId={session.user.id} onVerified={() => fetchProfile(session.user.id)} />
             </motion.div>
           ) : (
-            <motion.div key="app" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }}>
-              <div className="min-h-screen flex flex-col pb-24 md:pb-0">
-                {activeTab === 'dashboard' && (profile.role === 'woman' ? <WomanDashboard profile={profile} /> : <MenDashboard profile={profile} />)}
-                {activeTab === 'discovery' && <WomenDiscovery />}
-                {activeTab === 'profile' && <ProfileEditor profile={profile} onUpdate={() => fetchProfile(session.user.id)} />}
+            <motion.div key="app" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+              <div className="min-h-screen">
+                {activeTab === 'dashboard' && <Dashboard />}
+                {activeTab === 'discovery' && <Discovery />}
+                {activeTab === 'profile' && (
+                  <div className="h-screen flex flex-col items-center justify-center">
+                    <h2 className="text-2xl font-black">{profile.display_name}</h2>
+                    <p className="opacity-50">Profile Protocol Active</p>
+                    <button onClick={() => supabase.auth.signOut()} className="mt-8 text-red-500 uppercase tracking-widest text-[10px] font-black">Reboot Protocol (Logout)</button>
+                  </div>
+                )}
               </div>
-              <Navigation 
-                activeTab={activeTab} 
-                setActiveTab={setActiveTab} 
-                onLogout={handleLogout}
-                role={profile.role}
-              />
+              
+              {/* Navigation Placeholder */}
+              <nav className="fixed bottom-0 left-0 right-0 z-50 p-6 flex justify-center gap-4 bg-black/20 backdrop-blur-xl border-t border-white/5">
+                <button onClick={() => setActiveTab('dashboard')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Core</button>
+                <button onClick={() => setActiveTab('discovery')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'discovery' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Discovery</button>
+                <button onClick={() => setActiveTab('profile')} className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-white/40'}`}>Identity</button>
+              </nav>
             </motion.div>
           )}
         </AnimatePresence>
       </main>
 
       {/* Persistence Diagnostic Layer */}
-      {(!loading && !session) && (
+      {!session && (
         <div className="fixed bottom-4 right-4 opacity-10 hover:opacity-100 transition-opacity z-50">
            <button onClick={() => window.location.reload()} className="text-[8px] text-white/20 font-mono">REBOOT_PROTOCOL</button>
         </div>
