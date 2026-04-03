@@ -88,7 +88,7 @@ export const Dashboard: React.FC = () => {
       }
     } catch (err) {
       console.error("Boost failed", err);
-      alert("System error during boost protocol.");
+      alert("System error during beauty boost.");
     }
   };
 
@@ -110,7 +110,7 @@ export const Dashboard: React.FC = () => {
           <Crown className="w-12 h-12 text-matriarch-gold" strokeWidth={1} />
         </div>
       </motion.div>
-      <span className="text-xs font-black tracking-[0.6em] mat-shimmer uppercase font-bold">Verifying Matriarch Standing...</span>
+      <span className="text-xs font-black tracking-[0.6em] mat-shimmer uppercase font-bold">Opening your Sanctuary...</span>
     </div>
   );
 
@@ -140,7 +140,7 @@ export const Dashboard: React.FC = () => {
              <Badge variant="outline" className="hidden sm:flex py-1.5 border-matriarch-gold/30 text-matriarch-goldSoft">
                <Fingerprint className="w-3 h-3 mr-2" />
                <DecryptedText 
-                 text="V-PROTOCOL ACTIVE" 
+                 text="AUTHENTICATED SOUL" 
                  animateOn="view" 
                  speed={80} 
                  className="tracking-widest" 
@@ -158,15 +158,15 @@ export const Dashboard: React.FC = () => {
         {/* Welcome Section */}
         <section className="flex flex-col md:flex-row justify-between items-end gap-8 pb-4 border-b border-white/5 mat-stagger-fade-in">
            <div className="space-y-2">
-              <span className="mat-eyebrow">Protocol View / Dashboard</span>
+              <span className="mat-eyebrow">Your Journey / The Sanctuary</span>
               <h1 className="mat-heading-md">
                 <DecryptedText 
-                  text="Selection" 
+                  text="Connection" 
                   animateOn="view" 
                   speed={120} 
                   className="inline-block" 
                   sequential
-                /> <span className="text-matriarch-gold">Leaderboard</span>
+                /> <span className="text-matriarch-gold">Inner Circle</span>
               </h1>
            </div>
            <div className="flex gap-4">
@@ -192,7 +192,7 @@ export const Dashboard: React.FC = () => {
                 <div className="flex justify-between items-start">
                    <div>
                       <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase mb-2">
-                        <DecryptedText text="Protocol Standing" animateOn="view" />
+                        <DecryptedText text="Your Presence" animateOn="view" />
                       </CardTitle>
                       <div className="flex items-center gap-4">
                          <h2 className="text-6xl font-display font-black tracking-tighter text-white">
@@ -203,7 +203,7 @@ export const Dashboard: React.FC = () => {
                    </div>
                    <div className="text-right">
                       <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">
-                        {status?.rank_tier === 'matriarch' ? 'Selection Power' : 'Selection Score'}
+                        {status?.rank_tier === 'matriarch' ? 'Inner Light' : 'Impact Score'}
                       </div>
                       <div className="text-4xl font-display font-black text-white">
                         <CountUp to={Math.round(status?.rank_score || 0)} duration={2.5} />
@@ -214,7 +214,7 @@ export const Dashboard: React.FC = () => {
               <CardContent className="mt-8 space-y-8">
                  <div className="space-y-4">
                     <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-matriarch-textSoft">
-                       <span>{status?.rank_tier === 'matriarch' ? 'Selection Fidelity' : 'Visibility saturation'}</span>
+                       <span>{status?.rank_tier === 'matriarch' ? 'Heart Harmony' : 'Presence Depth'}</span>
                        <span className="text-matriarch-gold">
                          <CountUp to={99.4} duration={3} />%
                        </span>
@@ -224,7 +224,7 @@ export const Dashboard: React.FC = () => {
                  <div className="flex flex-wrap gap-4">
                     <Badge variant="violet">{status?.rank_tier === 'matriarch' ? 'Arch-Matriarch' : 'Top 0.1% Globally'}</Badge>
                     <Badge variant="violet">Premium Verified</Badge>
-                    <Badge variant="violet">Matriarch Protocol</Badge>
+                    <Badge variant="violet">Matriarch Story</Badge>
                  </div>
               </CardContent>
            </Card>
@@ -233,7 +233,7 @@ export const Dashboard: React.FC = () => {
            <Card className="mat-panel mat-glass-premium mat-float-hover border-none flex flex-col justify-between">
               <CardHeader>
                 <CardTitle className="text-sm font-black tracking-[0.2em] text-matriarch-textFaint uppercase">
-                   <DecryptedText text="Profile Integrity" animateOn="view" />
+                   <DecryptedText text="Authenticity" animateOn="view" />
                 </CardTitle>
                 <div className="pt-6 flex justify-center">
                    <div className="relative w-32 h-32">
@@ -265,7 +265,7 @@ export const Dashboard: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent className="text-center">
-                 <p className="text-xs text-matriarch-textSoft mb-6">Complete your bio to reach Elite visibility status.</p>
+                 <p className="text-xs text-matriarch-textSoft mb-6">Complete your bio to find deeper kindred souls.</p>
                  <Button variant="secondary" size="sm" className="w-full transition-transform hover:scale-[0.98]">Edit Profile</Button>
               </CardContent>
            </Card>
@@ -274,10 +274,10 @@ export const Dashboard: React.FC = () => {
         {/* Secondary Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
            {[
-             { label: 'STATUS', title: 'Identity', val: status?.is_aadhaar_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
-             { label: 'POWER', title: 'Signal Boost', val: status?.rank_tier === 'matriarch' ? 'ACTIVE' : 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
-             { label: 'INBOX', title:  status?.rank_tier === 'matriarch' ? 'Selections' : 'Pending', val: '0', icon: Heart, color: 'text-matriarch-gold' },
-             { label: 'ACTIVITY', title: 'Exposure', val: 'HIGH', icon: Activity, color: 'text-white' },
+             { label: 'STATUS', title: 'Soul', val: status?.is_aadhaar_verified ? 'VERIFIED' : 'PENDING', icon: ShieldCheck, color: 'text-matriarch-violetBright' },
+             { label: 'LIGHT', title: 'Radiance', val: status?.rank_tier === 'matriarch' ? 'ACTIVE' : 'IDLE', icon: Zap, color: 'text-matriarch-plum' },
+             { label: 'INBOX', title:  status?.rank_tier === 'matriarch' ? 'Heartbeats' : 'New Stories', val: '0', icon: Heart, color: 'text-matriarch-gold' },
+             { label: 'ACTIVITY', title: 'Presence', val: 'HIGH', icon: Activity, color: 'text-white' },
            ].map((item, i) => (
              <Card key={i} className="mat-panel mat-glass-premium mat-float-hover border-none group cursor-pointer hover:bg-white/[0.06] transition-all">
                 <CardContent className="p-8">
@@ -295,11 +295,11 @@ export const Dashboard: React.FC = () => {
            ))}
         </div>
 
-        {/* Matriarch Guard Protocol (007 Integration) */}
+        {/* Matriarch Sanctuary Guard */}
         <section className="space-y-6 mat-stagger-fade-in">
            <div className="flex items-center gap-4">
               <h3 className="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">
-                <DecryptedText text="Matriarch Guard Protocol" animateOn="view" sequential />
+                <DecryptedText text="A Safe Space for the Heart" animateOn="view" sequential />
               </h3>
               <Separator className="flex-1 bg-emerald-500/10" />
            </div>
@@ -311,15 +311,15 @@ export const Dashboard: React.FC = () => {
                        <ShieldCheck className="text-emerald-500 w-6 h-6" />
                     </div>
                     <div>
-                       <h4 className="text-lg font-bold text-white">Advanced Threat Protection Active</h4>
-                       <p className="text-sm text-matriarch-textSoft">Account audited 2 hours ago. No shadow-risk patterns detected.</p>
+                       <h4 className="text-lg font-bold text-white">Your Space is Secure and Private</h4>
+                       <p className="text-sm text-matriarch-textSoft">Your privacy is our highest priority.</p>
                     </div>
                  </div>
                  <div className="flex items-center gap-4">
                     <div className="text-right hidden sm:block">
-                       <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Integrity Score</div>
+                       <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Trust Rating</div>
                        <div className="text-2xl font-black text-white">
-                         <CountUp to={98} duration={1.5} onStart={() => console.log('Matriarch integrity verified.')} />/100
+                         <CountUp to={98} duration={1.5} onStart={() => console.log('Matriarch verified.')} />/100
                        </div>
                     </div>
                     <Button variant="outline" className="border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 shadow-sm">Full Audit</Button>
@@ -330,7 +330,7 @@ export const Dashboard: React.FC = () => {
       </main>
 
       <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">PROTOCOL ARCHIVE 02.4.9 — MATRIARCH STATUS CONFIRMED</span>
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH: A JOURNEY OF CHOICE AND CONNECTION</span>
       </div>
     </div>
   );

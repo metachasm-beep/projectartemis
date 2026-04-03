@@ -131,7 +131,7 @@ export const Discovery: React.FC = () => {
         </div>
       </motion.div>
       <DecryptedText 
-        text="Scanning Matriarch Database..." 
+        text="Preparing the Sanctuary..." 
         animateOn="view" 
         className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-[0.8em]"
       />
@@ -146,7 +146,7 @@ export const Discovery: React.FC = () => {
         <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl">
           <div className="mat-container flex h-20 items-center justify-between">
             <MatriarchLogo />
-            <Badge variant="gold" className="font-mono">PETITIONER ACTIVE</Badge>
+            <Badge variant="gold" className="font-mono">SEEKER ACTIVE</Badge>
           </div>
         </header>
 
@@ -164,25 +164,25 @@ export const Discovery: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Matriarch Queue Active</h2>
-              <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Your profile is visible to the Matriarchs</p>
+              <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Awaiting Her Gaze</h2>
+              <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Your story is shared with those who choose.</p>
             </div>
 
             <div className="grid grid-cols-3 gap-6">
               <div className="mat-panel mat-glass-premium bg-white/[0.03] p-6 rounded-2xl border-white/5">
                 <Eye className="w-4 h-4 text-mat-gold mb-3 mx-auto" />
                 <div className="text-xl font-display font-black text-white">42</div>
-                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Profile Scans</div>
+                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Kindred Souls</div>
               </div>
               <div className="mat-panel mat-glass-premium bg-white/[0.03] p-6 rounded-2xl border-white/5">
                 <TrendingUp className="w-4 h-4 text-matriarch-violet mb-3 mx-auto" />
                 <div className="text-xl font-display font-black text-white">Top 8%</div>
-                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Rank Standing</div>
+                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Your Presence</div>
               </div>
               <div className="mat-panel mat-glass-premium bg-white/[0.03] p-6 rounded-2xl border-white/5">
                 <Shield className="w-4 h-4 text-green-500 mb-3 mx-auto" />
                 <div className="text-xl font-display font-black text-white">Active</div>
-                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Protocol Sync</div>
+                <div className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest mt-1">Heart Harmony</div>
               </div>
             </div>
 
@@ -191,21 +191,21 @@ export const Discovery: React.FC = () => {
                 <Crown size={20} className="text-white" />
               </div>
               <div>
-                <h4 className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Observation Protocol</h4>
+                <h4 className="text-[10px] font-black text-white uppercase tracking-widest mb-1">The Art of Waiting</h4>
                 <p className="text-[11px] text-matriarch-textSoft italic font-medium leading-normal">
-                  Petitioners do not initiate connection. connection begins when a Matriarch selects your designation. Ensure your profile intelligence is at maximum fidelity.
+                  Seekers walk a path of patience. Connection begins when she is ready. Let your story speak for the heart you carry.
                 </p>
               </div>
             </div>
 
             <Button className="w-full h-16 bg-white text-black font-black uppercase tracking-widest rounded-2xl transition-transform hover:scale-[0.98]">
-              Enhance Profile Rank
+              Deepen Your Story
             </Button>
           </motion.div>
         </main>
 
         <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">CONNECTION BEGINS WITH HER CHOICE — Matriarch 1.0</span>
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">A JOURNEY OF HEART AND CHOICE — MATRIARCH</span>
         </div>
       </div>
     );
@@ -222,9 +222,9 @@ export const Discovery: React.FC = () => {
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-matriarch-violet/10 blur-[150px] -z-10" />
         <Crown className="w-20 h-20 text-mat-gold mb-8 opacity-20" strokeWidth={1} />
-        <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase mb-4">The Matriarch Queue is Empty</h2>
+        <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase mb-4">The Sanctuary is Quiet</h2>
         <p className="text-matriarch-textSoft max-w-sm font-medium tracking-wide">
-          All currently high-ranking Petitioners have been scanned. Check back soon for the next elite selection batch.
+          The seekers have all been met. A moment of peace before the next stories unfold. Check back soon.
         </p>
       </div>
     );
@@ -232,7 +232,7 @@ export const Discovery: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col mat-shell overflow-hidden mat-noise-overlay relative">
-      {/* Background Aura - Overlapping global background, removed for protocol speed */}
+      {/* Background Aura - Overlapping global background, removed for performance */}
 
       {/* Matriarch Header */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl">
@@ -241,10 +241,10 @@ export const Discovery: React.FC = () => {
           <div className="flex items-center gap-6">
            <div className="flex gap-4 items-center">
               <div className="text-right hidden sm:block">
-                 <div className="text-[8px] font-black text-matriarch-gold tracking-widest uppercase mb-1">Selection Power</div>
+                 <div className="text-[8px] font-black text-matriarch-gold tracking-widest uppercase mb-1">Inner Light</div>
                  <div className="text-xs font-black text-white">{points} PTS</div>
               </div>
-              <Badge variant="gold" className="hidden sm:flex">ELITE DISCOVERY</Badge>
+              <Badge variant="gold" className="hidden sm:flex">CURATED CONNECTIONS</Badge>
               <div className="flex gap-2">
                 <div className="w-8 h-1 bg-matriarch-violetBright rounded-full" />
                 <div className="w-8 h-1 bg-white/10 rounded-full" />
@@ -263,7 +263,7 @@ export const Discovery: React.FC = () => {
            {/* Controls Left - Hidden on Mobile */}
            <div className="hidden lg:flex flex-col gap-6 col-span-1 h-full justify-center">
                <div className="mat-panel mat-glass-premium p-6 space-y-4 border-none bg-white/[0.02] relative overflow-hidden group">
-                  <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest">Selection Filters</div>
+                  <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest">Search the Sanctuary</div>
                   {!isFilterUnlocked ? (
                     <div className="space-y-4">
                        <Button variant="ghost" size="sm" onClick={() => unlockFilter('session')} className="w-full text-[8px] h-10 border border-white/5 bg-white/5 hover:bg-matriarch-violet/20 font-black">
@@ -285,7 +285,7 @@ export const Discovery: React.FC = () => {
                          onClick={() => setFilters(f => ({ ...f, min_rank: f.min_rank === 90 ? 0 : 90 }))}
                          className={`w-full p-2 text-[8px] font-black rounded border ${filters.min_rank === 90 ? `"bg-mat-gold/20 border-mat-gold text-mat-gold"` : `"bg-white/5 border-white/5 text-white/40"`}`}
                        >
-                         ELITE QUEUE (90+)
+                         SOULS OF SUBSTANCE (90+)
                        </button>
                     </div>
                   )}
@@ -321,12 +321,12 @@ export const Discovery: React.FC = () => {
                                    <div>
                                       <div className="flex items-center gap-2 mb-4">
                                         <Badge variant="gold">
-                                          <DecryptedText text={`RANK ${Math.round(profile?.rank_score || 0)}`} animateOn="view" speed={100} sequential />
+                                          <DecryptedText text={`IMPACT ${Math.round(profile?.rank_score || 0)}`} animateOn="view" speed={100} sequential />
                                         </Badge>
                                         {profile?.trust_score !== undefined && profile.trust_score > 85 && (
                                           <span className="text-[10px] font-black px-2 py-0.5 rounded-sm bg-emerald-500 text-white uppercase tracking-tighter flex items-center gap-1 shadow-sm animate-pulse-slow">
                                             <Shield className="w-2.5 h-2.5 fill-current" />
-                                            AI Verified
+                                            Authentically You
                                           </span>
                                         )}
                                       </div>
@@ -396,7 +396,7 @@ export const Discovery: React.FC = () => {
       <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
           <span className="text-[10px] font-black uppercase tracking-[2em] text-white">
             <DecryptedText 
-              text="Matriarch Selection Protocol Active — Archive 024.9" 
+              text="MATRIARCH: WHERE EVERY STORY BEGINS WITH HER CHOICE" 
               animateOn="view" 
               speed={150} 
               sequential

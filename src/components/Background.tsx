@@ -19,8 +19,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = React.memo(({
   frequencyX = 3,
   frequencyY = 3,
   interactive = true,
-  className = '',
-  children
+  className = ''
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -137,7 +136,7 @@ export const LiquidChrome: React.FC<LiquidChromeProps> = React.memo(({
         program.uniforms.uTime.value = t * 0.001 * speed;
         renderer.render({ scene: mesh });
       } catch (err) {
-        console.warn("Background protocol update failed", err);
+        console.warn("Background update failed", err);
         cancelAnimationFrame(animationId);
       }
     }

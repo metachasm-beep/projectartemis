@@ -64,7 +64,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
       onComplete();
     } catch (err) {
       console.error("Error updates profile:", err);
-      alert("Protocol synchronization failed. Re-attempting...");
+      alert("We couldn't save your story. Let's try again.");
     } finally {
       setLoading(false);
     }
@@ -94,7 +94,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
       {formData.role === 'man' && step !== 'ROLE' && (
          <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="fixed top-12 w-full max-w-md px-8 z-50">
             <div className="flex justify-between items-end mb-2">
-               <span className="text-[10px] font-black text-mat-gold tracking-widest uppercase">Petitioner Strength</span>
+               <span className="text-[10px] font-black text-mat-gold tracking-widest uppercase">Your Journey Progress</span>
                <span className="text-xl font-mono text-white italic">{strength}%</span>
             </div>
             <div className="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
@@ -116,8 +116,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
             {step === 'ROLE' && (
               <motion.div key="role" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="space-y-10">
                 <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Enter the Matriarch</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Declare your position</p>
+                  <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Begin Your Story</h2>
+                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Find your place in the sanctuary</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -127,12 +127,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                   </button>
                   <button onClick={() => setFormData({ ...formData, role: 'man' })} className={`p-8 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${formData.role === 'man' ? 'bg-mat-gold/10 border-mat-gold' : 'bg-white/5 border-white/5 hover:border-white/10'}`}>
                     <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${formData.role === 'man' ? 'bg-mat-gold text-black' : 'bg-white/5 text-mat-gold'}`}><User size={28} /></div>
-                    <span className="font-black text-[10px] uppercase tracking-widest text-white">The Petitioner</span>
+                    <span className="font-black text-[10px] uppercase tracking-widest text-white">The Seeker</span>
                   </button>
                 </div>
 
                 <Button disabled={!formData.role} onClick={() => next('BASICS')} className="w-full h-20 bg-white text-black hover:bg-neutral-200 font-black tracking-widest uppercase rounded-2xl group flex gap-3">
-                  Initiate Sequence <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  Start the Journey <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
             )}
@@ -140,19 +140,19 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
             {step === 'BASICS' && (
               <motion.div key="basics" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
                 <div className="text-center space-y-4">
-                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase tracking-widest">Base Identity</h2>
+                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase tracking-widest">Getting to know you</h2>
                 </div>
                 <div className="space-y-6">
                    <div className="space-y-2">
                      <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Full Name</label>
-                     <Input value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} placeholder="DESIGNATION" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
+                     <Input value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} placeholder="YOUR NAME" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
                    </div>
                    <div className="space-y-2">
-                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">City Hub</label>
-                     <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} placeholder="LOCATION CODE" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
+                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Your City</label>
+                     <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} placeholder="WHERE YOU ABODE" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
                    </div>
                    <div className="space-y-2">
-                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Temporal Origin (DOB)</label>
+                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Your Roots (DOB)</label>
                      <Input type="date" value={formData.date_of_birth} onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })} className="h-16 bg-white/5 border-white/10 rounded-2xl text-white [color-scheme:dark]" />
                    </div>
                 </div>
@@ -163,8 +163,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
             {step === 'PHOTO' && (
               <motion.div key="photo" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 text-center">
                 <div className="space-y-4">
-                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Visual Verification</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Transmit your high-fidelity image</p>
+                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">A Glimpse of You</h2>
+                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Share a photo that captures your essence</p>
                 </div>
                 <div className="aspect-[3/4] w-full max-w-[240px] mx-auto bg-white/5 border-2 border-dashed border-white/10 rounded-[2rem] flex flex-col items-center justify-center gap-4 relative overflow-hidden group cursor-pointer hover:border-mat-gold/30 transition-all">
                    {formData.photos.length > 0 ? (
@@ -172,28 +172,28 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                    ) : (
                       <>
                         <Camera className="text-white/20 w-12 h-12 group-hover:text-mat-gold transition-colors" />
-                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest group-hover:text-mat-gold">Upload Probe</span>
+                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest group-hover:text-mat-gold">Upload Photo</span>
                       </>
                    )}
                    <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => {
                       if (e.target.files) setFormData({ ...formData, photos: [URL.createObjectURL(e.target.files[0])] });
                    }} />
                 </div>
-                <Button disabled={formData.photos.length === 0} onClick={() => next('BIO_INTENT')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Verify Transmission</Button>
+                <Button disabled={formData.photos.length === 0} onClick={() => next('BIO_INTENT')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Looking Good</Button>
               </motion.div>
             )}
 
             {step === 'BIO_INTENT' && (
                <motion.div key="bio" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
                   <div className="text-center space-y-4">
-                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Neural Matrix</h2>
-                    <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Describe your resonance</p>
+                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Your Story</h2>
+                    <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">What makes your heart beat?</p>
                   </div>
                   <div className="space-y-6">
                     <textarea 
                       value={formData.bio} 
                       onChange={(e) => setFormData({ ...formData, bio: e.target.value })} 
-                      placeholder="CORE ESSENCE..." 
+                      placeholder="Share a bit about yourself..." 
                       className="w-full h-40 p-6 bg-white/5 border border-white/10 rounded-[2rem] text-white uppercase font-mono tracking-widest focus:border-mat-gold outline-none resize-none" 
                     />
                     <div className="grid grid-cols-2 gap-4">
@@ -204,7 +204,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                        ))}
                     </div>
                   </div>
-                  <Button disabled={!formData.bio} onClick={() => next('LEGAL')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Neural Sync</Button>
+                  <Button disabled={!formData.bio} onClick={() => next('LEGAL')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Continue</Button>
                </motion.div>
             )}
 
@@ -214,17 +214,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                     <ShieldCheck className="text-green-400 w-10 h-10" />
                  </div>
                  <div className="space-y-4">
-                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase leading-tight">Matriarch Command Accepted</h2>
+                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase leading-tight">A Promise of Kindness</h2>
                     <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-mono px-4">
-                       I AGREE TO THE PROTOCOLS OF CONDUCT, DATA RETENTION, AND IDENTITY VERIFICATION WITHIN THE MATRIARCH NETWORK.
+                       I PROMISE TO RESPECT THE SANCTUARY, ITS PEOPLE, AND THE JOURNEY WE SHARE.
                     </p>
                  </div>
                  <div className="space-y-4 pt-4">
                     <Button onClick={updateProfile} disabled={loading} className={`w-full h-24 font-black tracking-widest uppercase rounded-2xl shadow-2xl transition-all scale-105 active:scale-100 ${
                        formData.role === 'woman' ? 'bg-matriarch-violet text-white hover:bg-matriarch-violet/90' : 'bg-mat-gold text-black hover:bg-mat-gold/90 shadow-mat-gold/20'
                     }`}>
-                       {loading ? "INITIALIZING..." : (
-                          <span className="flex items-center gap-3 text-lg">ENTER SYSTEM <Trophy size={20} /></span>
+                       {loading ? "PREPARING..." : (
+                          <span className="flex items-center gap-3 text-lg">ENTER THE SANCTUARY <Trophy size={20} /></span>
                        )}
                     </Button>
                  </div>
@@ -234,7 +234,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
         </CardContent>
       </Card>
       
-      <p className="fixed bottom-12 text-[8px] text-white/10 font-black tracking-[0.8em] uppercase">Protocol: Deep Recovery v1.0.2</p>
+      <p className="fixed bottom-12 text-[8px] text-white/10 font-black tracking-[0.8em] uppercase">Matriarch: Nurturing Connection</p>
     </div>
   );
 };

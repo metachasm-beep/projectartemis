@@ -35,7 +35,7 @@ const App: React.FC = () => {
     let mounted = true;
 
     const initializeAuth = async () => {
-      console.log("MATRIARCH: Initializing Auth Protocol...");
+      console.log("MATRIARCH: Opening the Sanctuary doors...");
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (!mounted) return;
@@ -48,7 +48,7 @@ const App: React.FC = () => {
           setLoading(false);
         }
       } catch (err) {
-        console.error("Auth init error:", err);
+        console.error("Matriarch Sanctuary Error:", err);
         if (mounted) setLoading(false);
       }
     };
@@ -105,8 +105,8 @@ const App: React.FC = () => {
   // Handshake to index.html
   useEffect(() => {
     if (!loading) {
-      console.log("MATRIARCH: Signaling Readiness to Shell.");
-      window.postMessage('MATRIARCH_PROTOCOL_READY', '*');
+      console.log("MATRIARCH: Signaling Harmony to Shell.");
+      window.postMessage('MATRIARCH_SANCTUARY_READY', '*');
       
       // Fallback: Manually hide any loader after a delay if the postMessage fails
       setTimeout(() => {
@@ -131,7 +131,7 @@ const App: React.FC = () => {
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
           <Crown style={{ color: '#D4AF37', width: '64px', height: '64px' }} />
         </motion.div>
-        <p className="mt-8 text-[10px] text-[#D4AF37]/40 font-black uppercase tracking-[0.8em] animate-pulse">Initializing Protocol...</p>
+        <p className="mt-8 text-[10px] text-[#D4AF37]/40 font-black uppercase tracking-[0.8em] animate-pulse">Preparing your space...</p>
       </div>
     );
   }
@@ -156,7 +156,7 @@ const App: React.FC = () => {
                     onClick={() => setProfile({ user_id: session.user.id, is_verified: false, role: 'man' })} 
                     className="px-8 py-4 bg-mat-gold text-black text-[10px] font-black uppercase tracking-widest shadow-mat-gold rounded-full hover:scale-105 transition-transform"
                   >
-                    Force Protocol Entry
+                    Enter the Sanctuary
                   </button>
                 </div>
               )}
@@ -174,13 +174,13 @@ const App: React.FC = () => {
                   <div className="h-screen flex flex-col items-center justify-center space-y-8">
                     <div className="text-center">
                        <h2 className="text-4xl font-display font-black text-white italic tracking-tighter uppercase mb-2">{profile.display_name || 'Designation Pending'}</h2>
-                       <p className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Protocol Identity Verified</p>
+                       <p className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Authentically You</p>
                     </div>
                     <button 
                       onClick={() => supabase.auth.signOut()} 
                       className="px-10 py-4 border border-red-500/30 text-red-500 hover:bg-red-500/10 text-[10px] font-black uppercase tracking-[0.4em] transition-all rounded-full"
                     >
-                      Reboot Protocol (Logout)
+                      Sign Out
                     </button>
                   </div>
                 )}
@@ -191,7 +191,7 @@ const App: React.FC = () => {
                   onClick={() => setActiveTab('dashboard')} 
                   className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'dashboard' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                 >
-                  Core
+                  Home
                 </button>
                 <button 
                   onClick={() => setActiveTab('discovery')} 
@@ -203,7 +203,7 @@ const App: React.FC = () => {
                   onClick={() => setActiveTab('profile')} 
                   className={`px-8 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeTab === 'profile' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                 >
-                  Identity
+                  You
                 </button>
               </nav>
             </motion.div>
@@ -212,8 +212,7 @@ const App: React.FC = () => {
       </main>
 
       <div className="fixed bottom-4 left-4 opacity-5 hover:opacity-100 transition-opacity z-[100] flex gap-4">
-         <button onClick={() => window.location.reload()} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">REFRESH_SYNC</button>
-         <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">PURGE_PROTOCOL</button>
+          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">RESET_APP</button>
       </div>
     </div>
   );

@@ -78,16 +78,16 @@ const LandingPage: React.FC = () => {
           <div className="mat-container grid lg:grid-cols-2 gap-16 items-center">
             <div className="fade-up">
               <Badge variant="secondary" className="mb-8 py-2 px-4">
-                Women-First Selection Platform
+                A Sanctuary for Her Choice
               </Badge>
               
               <h1 className="mat-heading-xl mb-6 leading-[1.1]">
-                She chooses.<br />
+                Her heart decides.<br />
                 <span className="text-mat-gold-text italic">Everything</span> else follows.
               </h1>
               
               <p className="mat-copy-lg mb-8 max-w-xl">
-                MATRIARCH is a women-first dating platform where men don’t swipe, chase, or flood inboxes. They build their profile, earn their visibility, and wait to be chosen.
+                MATRIARCH is a sanctuary where connections are nurtured, and every journey begins with her choice. A space built for intention, not noise.
               </p>
               
               <div className="flex flex-wrap gap-4 mb-12">
@@ -103,7 +103,7 @@ const LandingPage: React.FC = () => {
               <div className="flex flex-wrap gap-x-8 gap-y-4 border-t border-white/5 pt-8">
                 {[
                   "Women-first architecture",
-                  "Ranked discovery",
+                  "Curated discovery",
                   "Communication on her terms",
                   "Safety built in"
                 ].map(item => (
@@ -135,7 +135,7 @@ const LandingPage: React.FC = () => {
                         <div className="absolute inset-0 bg-mat-violet-glow opacity-20" />
                         
                         <div className="relative z-10">
-                          <Badge variant="gold" className="mb-4">RANK #12 — ELITE</Badge>
+                          <Badge variant="gold" className="mb-4">IMPACT #12 — ELITE</Badge>
                           <div className="h-6 w-3/4 bg-white/20 rounded-md mb-2" />
                           <div className="h-4 w-1/2 bg-white/10 rounded-md" />
                         </div>
@@ -149,7 +149,7 @@ const LandingPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="mt-8 space-y-4">
-                      <span className="text-[10px] tracking-[0.4em] text-center block opacity-40 font-bold mat-shimmer uppercase">Selection Protocol Active</span>
+                      <span className="text-[10px] tracking-[0.4em] text-center block opacity-40 font-bold mat-shimmer uppercase">Looking for a spark...</span>
                       <div className="flex gap-4">
                         <div className="flex-1 h-12 rounded-xl bg-white/5 border border-white/10" />
                         <div className="w-12 h-12 rounded-xl bg-matriarch-violetBright grid place-items-center shadow-mat-violet">
@@ -188,9 +188,9 @@ const LandingPage: React.FC = () => {
         <section id="how-it-works" className="mat-section">
           <div className="mat-container">
             <div className="text-center mb-20">
-              <Badge variant="violet" className="mb-6">The Selection Workflow</Badge>
+              <Badge variant="violet" className="mb-6">The Journey Forward</Badge>
               <h2 className="mat-heading-lg mb-4 uppercase tracking-tight">How Matriarch Works</h2>
-              <p className="mat-copy max-w-2xl mx-auto">A three-tiered system of intentional engagement designed for quality over noise.</p>
+              <p className="mat-copy max-w-2xl mx-auto">A sanctuary for intentional engagement, designed for hearts that value depth over noise.</p>
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
@@ -198,10 +198,10 @@ const LandingPage: React.FC = () => {
                 <div className="mb-8 p-5 rounded-2xl bg-matriarch-violet/10 border border-matriarch-violet/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <Eye className="w-10 h-10 text-matriarch-violetBright" />
                 </div>
-                <h3 className="text-matriarch-violetBright text-sm font-bold uppercase tracking-[0.3em] mb-4">For Women</h3>
-                <h4 className="mat-heading-sm mb-6 leading-tight">Review.<br/>Decide.</h4>
+                <h3 className="text-matriarch-violetBright text-sm font-bold uppercase tracking-[0.3em] mb-4">Her Choice</h3>
+                <h4 className="mat-heading-sm mb-6 leading-tight">Observe.<br/>Decide.</h4>
                 <p className="mat-copy leading-relaxed">
-                  Browse ranked profiles of men who meet your exacting criteria. Match only when excellence is evident.
+                  Browse profiles of men who share your values. Connect only when you feel a genuine spark.
                 </p>
               </div>
 
@@ -209,10 +209,10 @@ const LandingPage: React.FC = () => {
                 <div className="mb-8 p-5 rounded-2xl bg-matriarch-gold/10 border border-matriarch-gold/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <UserCheck className="w-10 h-10 text-matriarch-goldSoft" />
                 </div>
-                <h3 className="text-matriarch-goldSoft text-sm font-bold uppercase tracking-[0.3em] mb-4">For Men</h3>
-                <h4 className="mat-heading-sm mb-6 leading-tight">Build.<br/>Earn. Wait.</h4>
+                <h3 className="text-matriarch-goldSoft text-sm font-bold uppercase tracking-[0.3em] mb-4">The Seeker</h3>
+                <h4 className="mat-heading-sm mb-6 leading-tight">Grow.<br/>Be Found.</h4>
                 <p className="mat-copy leading-relaxed">
-                  No swiping. No random chasing. Construct a profile of substance, earn your rank, and await discovery by the right women.
+                  No chasing. Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart.
                 </p>
               </div>
 
@@ -220,10 +220,10 @@ const LandingPage: React.FC = () => {
                 <div className="mb-8 p-5 rounded-2xl bg-matriarch-plum/10 border border-matriarch-plum/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <MessageSquare className="w-10 h-10 text-matriarch-plum" />
                 </div>
-                <h3 className="text-matriarch-plum text-sm font-bold uppercase tracking-[0.3em] mb-4">Execution</h3>
+                <h3 className="text-matriarch-plum text-sm font-bold uppercase tracking-[0.3em] mb-4">Grace</h3>
                 <h4 className="mat-heading-sm mb-6 leading-tight">Her Terms.<br/>Always.</h4>
                 <p className="mat-copy leading-relaxed">
-                  Communication begins only how and when she defines. Once a match is made, she choose the mode of interaction.
+                  Connection begins only how and when she defines. Once a match is made, she chooses the way you both talk.
                 </p>
               </div>
             </div>
@@ -259,7 +259,7 @@ const LandingPage: React.FC = () => {
                   </div>
                   <h2 className="mat-heading-md mb-8">Matriarch rewards <span className="text-matriarch-violetBright italic">quality</span>.</h2>
                   <div className="space-y-6">
-                    {["Female-controlled matching", "Ranked male visibility", "Deliberate discovery", "Structured communication", "Premium trust and safety"].map(item => (
+                    {["Female-controlled matching", "Curated male visibility", "Deliberate discovery", "Structured communication", "Premium trust and safety"].map(item => (
                       <div key={item} className="flex items-center gap-4 text-matriarch-text">
                         <Check className="w-5 h-5 text-matriarch-violetBright" />
                         <span className="text-lg font-semibold">{item}</span>
@@ -283,7 +283,7 @@ const LandingPage: React.FC = () => {
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 { title: "Women-first matching", desc: "Men do not browse women. Women decide who gets access to their time.", icon: UserCheck },
-                { title: "Ranked Discovery", desc: "Profiles are accessed through a smart system based on quality and relevance.", icon: Zap },
+                { title: "Curated Discovery", desc: "Profiles are accessed through a smart system based on quality and relevance.", icon: Zap },
                 { title: "Communication Modes", desc: "After matching, the woman selects exactly how the interaction starts.", icon: Shield },
                 { title: "High-trust profiles", desc: "Verification and elite referrals are built into the core experience.", icon: Star },
                 { title: "Intentional Standing", desc: "Men improve visibility through substance, not swiping volume.", icon: Crown },
@@ -307,8 +307,8 @@ const LandingPage: React.FC = () => {
              <div className="mat-panel-premium p-16 lg:p-24 overflow-hidden">
                 <div className="grid lg:grid-cols-2 gap-20 items-center">
                    <div>
-                      <Badge variant="gold" className="mb-8">Men's Ranking Protocol</Badge>
-                      <h2 className="mat-heading-lg mb-8 leading-none uppercase tracking-tighter">Visibility is <span className="text-matriarch-gold">Earned.</span></h2>
+                      <Badge variant="gold" className="mb-8">The Seeker's Journey</Badge>
+                      <h2 className="mat-heading-lg mb-8 leading-none uppercase tracking-tighter">Excellence of <span className="text-matriarch-gold">Heart.</span></h2>
                       <p className="mat-copy-lg mb-12">
                         On MATRIARCH, attention isn't a commodity to be bought or spammed. It is qualified for through excellence, authenticity, and verified standing.
                       </p>
@@ -334,7 +334,7 @@ const LandingPage: React.FC = () => {
                       <div className="relative z-10 space-y-10">
                          <div className="flex justify-between items-center">
                             <div className="space-y-1">
-                               <span className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Matriarch Standing</span>
+                               <span className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Heart Impact</span>
                                <h4 className="text-3xl font-display font-black tracking-tighter italic text-white uppercase">Elite Tier</h4>
                             </div>
                             <Crown className="w-12 h-12 text-matriarch-gold animate-pulse" strokeWidth={1} />
@@ -368,15 +368,15 @@ const LandingPage: React.FC = () => {
              <div className="inline-flex mb-12 p-8 rounded-full bg-matriarch-violet/10 border border-matriarch-violet/20 shadow-mat-premium">
                 <ShieldCheck className="w-16 h-16 text-matriarch-violetBright" strokeWidth={1} />
              </div>
-             <h2 className="mat-heading-lg mb-8 uppercase italic tracking-tighter">Power means nothing <br/>without <span className="text-matriarch-violetBright">protection.</span></h2>
+             <h2 className="mat-heading-lg mb-8 uppercase italic tracking-tighter">True grace comes <br/>with <span className="text-matriarch-violetBright">peace of mind.</span></h2>
              <p className="mat-copy-lg mb-16">
-               MATRIARCH is designed to give women absolute, secure control. Safety is not a feature; it is the fundamental architecture of the selection cycle.
+               MATRIARCH is designed to give women absolute, gentle control. Safety is not a feature; it is the fundamental heart of our sanctuary.
              </p>
              
              <div className="grid md:grid-cols-3 gap-6">
                 {[
                   "Communication isolation",
-                  "Verification protocols",
+                  "Verification journey",
                   "Privacy infrastructure",
                   "Selective discovery",
                   "Moderated mechanics",
@@ -392,7 +392,7 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* 8. PREMIUM BRAND STATEMENT */}
-        <section className="mat-section relative overflow-hidden bg-white/[0.01]">
+        <section className="mat-section relative overflow-hidden bg-white/[0.01] border-y border-white/5">
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-full bg-[radial-gradient(circle,rgba(110,63,243,0.06)_0%,transparent_70%)]" />
             <div className="mat-container text-center relative z-10">
                <h2 className="mat-heading-lg mb-12 uppercase tracking-[0.2em] opacity-40">A Private System for <br/>Modern Selection</h2>
@@ -412,8 +412,8 @@ const LandingPage: React.FC = () => {
              <div className="mat-panel bg-mat-panel-premium p-20 lg:p-32 text-center rounded-[3rem] border-none shadow-mat-premium overflow-hidden relative">
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-10" />
                 <div className="relative z-10">
-                   <h2 className="mat-heading-xl mb-8 uppercase leading-tight tracking-tighter">The Era of <br/><span className="text-matriarch-violetBright italic">Selection</span> Begins.</h2>
-                   <p className="mat-copy-lg mb-12 font-semibold">Create your account and join the platform redefining connection.</p>
+                   <h2 className="mat-heading-xl mb-8 uppercase leading-tight tracking-tighter">Start Your <br/><span className="text-matriarch-violetBright italic">Story</span> Today.</h2>
+                   <p className="mat-copy-lg mb-12 font-semibold">Join a sanctuary redefining connection.</p>
                    
                    <div className="max-w-md mx-auto space-y-8">
                        <Button variant="gold" size="lg" className="w-full h-20 text-2xl font-black uppercase tracking-widest shadow-mat-gold" onClick={() => setShowSignIn(true)}>
@@ -441,20 +441,20 @@ const LandingPage: React.FC = () => {
               </div>
               
               <div className="space-y-8">
-                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Archive</h5>
+                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Stories</h5>
                  <ul className="space-y-6 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
                     <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">About</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">The Protocol</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Archive Records</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Our Way</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Shared Stories</li>
                  </ul>
               </div>
 
               <div className="space-y-8">
-                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Security</h5>
+                 <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Promise</h5>
                  <ul className="space-y-6 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Matriarch Safety</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Privacy Pact</li>
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Verification</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Safety</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Privacy Promise</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Authenticity</li>
                  </ul>
               </div>
 

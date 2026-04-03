@@ -9,12 +9,12 @@ class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}
     this.state = { hasError: false };
   }
   static getDerivedStateFromError() { return { hasError: true }; }
-  componentDidCatch(error: any, errorInfo: any) { console.error("Matriarch Protocol Error:", error, errorInfo); }
+  componentDidCatch(error: any, errorInfo: any) { console.error("Matriarch Sanctuary Error:", error, errorInfo); }
   render() {
     if (this.state.hasError) {
       return (
         <div style={{ height: '100vh', width: '100vw', background: '#0A0A0B', color: '#FF0000', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontFamily: 'monospace' }}>
-          <h1 style={{ fontSize: '24px', fontWeight: 900 }}>PROTOCOL BREACH</h1>
+          <h1 style={{ fontSize: '24px', fontWeight: 900 }}>SANCTUARY INTERRUPTION</h1>
           <p style={{ fontSize: '12px', marginTop: '10px' }}>Critical React Failure. Check Console.</p>
           <button onClick={() => window.location.reload()} style={{ marginTop: '30px', padding: '10px 20px', border: '1px solid #FF0000', background: 'transparent', color: '#FF0000', fontSize: '10px', fontWeight: 'bold' }}>RE-INITIALIZE</button>
         </div>
@@ -57,7 +57,7 @@ if (rootElement) {
   
   // Handshake Listener: Dismiss loader only when app signals it's ready
   window.addEventListener('message', (event) => {
-    if (event.data === 'MATRIARCH_PROTOCOL_READY') {
+    if (event.data === 'MATRIARCH_SANCTUARY_READY') {
       const loader = document.getElementById('root-loader');
       if (loader) {
         console.log("MATRIARCH: App Handshake received. Dismantling shell...");

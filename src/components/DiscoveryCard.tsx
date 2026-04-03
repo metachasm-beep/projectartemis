@@ -104,7 +104,8 @@ export const DiscoveryCard: React.FC<TiltedCardProps> = ({
           height: '100%',
           rotateX,
           rotateY,
-          scale
+          scale,
+          willChange: 'transform'
         }}
       >
         <motion.img

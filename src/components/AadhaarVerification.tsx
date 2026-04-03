@@ -23,7 +23,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
 
   const handleFinalizeSync = async () => {
     setVerifying(true);
-    // Simulate Protocol Handshake
+    // Simulate Trust Handshake
     await new Promise(resolve => setTimeout(resolve, 2000));
     
     try {
@@ -42,7 +42,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       setTimeout(onVerified, 1500);
     } catch (err) {
       console.error("Verification sync failed:", err);
-      alert("Protocol synchronization failed. Please retry.");
+      alert("Handshake failed. Please retry.");
     } finally {
       setVerifying(false);
     }
@@ -55,6 +55,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
+        style={{ willChange: 'transform' }}
         className="w-full max-w-md mat-panel-premium p-10 rounded-[2.5rem] shadow-premium relative overflow-hidden text-center space-y-8"
       >
         <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-mat-gold via-mat-violet to-mat-gold" />
@@ -68,10 +69,10 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
             )}
           </div>
           <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">
-            {success ? "Protocol Verified" : "Identity Protocol"}
+            {success ? "Trust Established" : "Building Trust"}
           </h2>
           <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">
-            {success ? "Sync Complete" : "Official Aadhaar Validation"}
+            {success ? "Welcome to the Sanctuary" : "Authenticity Check"}
           </p>
         </div>
 
@@ -80,33 +81,33 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
             <div className="surface-raised p-6 rounded-2xl text-left space-y-6">
               <div className="space-y-2">
                 <h4 className="text-[10px] font-black text-white uppercase tracking-widest flex items-center gap-2">
-                  <Shield size={14} className="text-mat-gold" /> How it functions
+                  <Shield size={14} className="text-mat-gold" /> How we stay safe
                 </h4>
                 <div className="space-y-3 pt-2">
                   <div className="flex gap-3">
                     <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">1</div>
-                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Click the button below to reach the secure UIDAI Portal.</p>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Click the button below to reach the secure UIDAI Sanctuary.</p>
                   </div>
                   <div className="flex gap-3">
                     <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">2</div>
-                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Enter your Aadhaar number and the security CAPTCHA.</p>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Briefly enter your details and the security code on their site.</p>
                   </div>
                   <div className="flex gap-3">
                     <div className="text-[9px] font-black w-4 h-4 rounded-full bg-matriarch-violet/20 flex items-center justify-center shrink-0 border border-matriarch-violet/30 text-matriarch-violet">
                       <Phone size={8} className="fill-current" />
                     </div>
-                    <p className="text-[11px] text-matriarch-violetBright leading-relaxed font-black uppercase tracking-tighter">Mobile number must be connected to receive OTP.</p>
+                    <p className="text-[11px] text-matriarch-violetBright leading-relaxed font-black uppercase tracking-tighter">Your mobile link is the key to this magic.</p>
                   </div>
                   <div className="flex gap-3">
                     <div className="text-[9px] font-black w-4 h-4 rounded-full bg-white/10 flex items-center justify-center shrink-0">3</div>
-                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Once verified there, return here to finalize your protocol sync.</p>
+                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-medium">Once verified there, return here to start your story.</p>
                   </div>
                 </div>
               </div>
 
               <div className="p-4 bg-mat-gold/5 rounded-xl border border-mat-gold/10">
                  <p className="text-[10px] text-mat-gold/80 italic font-medium leading-relaxed">
-                   "Integrity is the foundation of the Matriarch. Verified identities ensure the quality of the discovery queue."
+                   "Trust is the heartbeat of the Matriarch. An authentic presence creates a safer space for everyone."
                  </p>
               </div>
             </div>
@@ -116,7 +117,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 onClick={handleVisitPortal}
                 className="w-full h-16 bg-white/[0.03] border border-white/10 text-white hover:bg-white/10 font-bold tracking-widest uppercase rounded-2xl flex gap-3 group transition-all"
               >
-                Reach UIDAI Portal <ExternalLink size={16} className="opacity-40 group-hover:opacity-100" />
+                Visit UIDAI Port <ExternalLink size={16} className="opacity-40 group-hover:opacity-100" />
               </Button>
 
               <Button 
@@ -124,8 +125,8 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 disabled={!isPortalVisited || verifying}
                 className={`w-full h-20 font-black tracking-[0.2em] uppercase rounded-2xl shadow-2xl flex gap-3 transition-all ${isPortalVisited ? 'bg-matriarch-violet text-white shadow-matriarch-violet/20' : 'bg-white/5 text-white/20 border border-white/5 pointer-events-none'}`}
               >
-                {verifying ? "Syncing Identity..." : (
-                  <>Finalize Protocol Sync <ArrowRight size={18} /></>
+                {verifying ? "Confirming Authenticity..." : (
+                  <>Begin Your Story <ArrowRight size={18} /></>
                 )}
               </Button>
             </div>
@@ -136,20 +137,21 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
+            style={{ willChange: 'transform' }}
             className="py-10"
           >
             <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-widest animate-pulse">
-              Identity Locked & Verified
+              Authentically You
             </div>
           </motion.div>
         )}
 
         <div className="pt-4 space-y-2">
           <div className="flex items-center justify-center gap-2 text-[9px] text-matriarch-textFaint uppercase tracking-widest">
-            <Lock size={10} /> End-to-End Encrypted Handshake
+            <Lock size={10} /> Your privacy is our promise.
           </div>
           <p className="text-[8px] text-matriarch-textFaint uppercase tracking-[0.2em]">
-            Secured by Matriarch Trust Network v1.0
+            Nurtured by the Matriarch Trust Network
           </p>
         </div>
       </motion.div>

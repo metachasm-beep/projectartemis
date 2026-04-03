@@ -78,11 +78,11 @@ const AdminDashboard: React.FC = () => {
         <div className="min-h-screen bg-matriarch-bg p-8 pt-24 space-y-12 pb-32">
             <header className="flex justify-between items-end mb-12">
                 <div className="space-y-2">
-                    <Badge variant="gold" className="px-3 py-1">ADMINISTRATIVE COMMAND</Badge>
-                    <h1 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Protocol Oversight</h1>
+                    <Badge variant="gold" className="px-3 py-1">SANCTUARY STEWARDSHIP</Badge>
+                    <h1 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Sanctuary Oversight</h1>
                 </div>
                 <div className="text-right">
-                    <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest mb-1">System Operator</div>
+                    <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest mb-1">Sanctuary Steward</div>
                     <div className="text-sm font-bold text-matriarch-gold">{user?.email}</div>
                 </div>
             </header>
@@ -90,10 +90,10 @@ const AdminDashboard: React.FC = () => {
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 {[
-                    { label: 'TOTAL CORE', val: stats?.total_users || 0, icon: Users, color: 'text-white' },
+                    { label: 'TOTAL SOULS', val: stats?.total_users || 0, icon: Users, color: 'text-white' },
                     { label: 'MATRIARCHS', val: stats?.matriarchs || 0, icon: Crown, color: 'text-matriarch-violetBright' },
-                    { label: 'PETITIONERS', val: stats?.petitioners || 0, icon: ShieldCheck, color: 'text-mat-gold' },
-                    { label: 'VERIFIED', val: stats?.verified_users || 0, icon: Activity, color: 'text-emerald-500' }
+                    { label: 'SEEKERS', val: stats?.petitioners || 0, icon: ShieldCheck, color: 'text-mat-gold' },
+                    { label: 'TRUSTED', val: stats?.verified_users || 0, icon: Activity, color: 'text-emerald-500' }
                 ].map((s, i) => (
                     <Card key={i} className="mat-panel mat-glass-premium border-none bg-white/[0.02]">
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -130,7 +130,7 @@ const AdminDashboard: React.FC = () => {
                     <table className="w-full text-left border-collapse">
                         <thead>
                             <tr className="bg-white/[0.03] border-b border-white/5">
-                                {['Designation', 'Access', 'Security', 'Actions'].map(h => (
+                                {['Identity', 'Presence', 'Trust', 'Grace Actions'].map(h => (
                                     <th key={h} className="p-6 text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest">{h}</th>
                                 ))}
                             </tr>
@@ -151,7 +151,7 @@ const AdminDashboard: React.FC = () => {
                                     </td>
                                     <td className="p-6">
                                         <Badge variant={u.role === 'woman' ? 'violet' : 'outline'} className="uppercase text-[9px] font-black px-2">
-                                            {u.role === 'woman' ? 'MATRIARCH' : 'PETITIONER'}
+                                            {u.role === 'woman' ? 'MATRIARCH' : 'SEEKER'}
                                         </Badge>
                                     </td>
                                     <td className="p-6">
