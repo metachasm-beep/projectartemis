@@ -42,7 +42,7 @@ class RankService:
         # Determine Tier
         tier = "BRONZE"
         if score >= 90:
-            tier = "SOVEREIGN_ELITE"
+            tier = "Matriarch_ELITE"
         elif score >= 70:
             tier = "GOLD"
         elif score >= 40:

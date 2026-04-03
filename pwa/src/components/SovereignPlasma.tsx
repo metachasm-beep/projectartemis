@@ -58,7 +58,7 @@ void mainImage(out vec4 C, in vec2 U) {
     d += s * 0.75;
   }
 
-  // Sovereign Color Palette: Plum and Gold
+  // Matriarch Color Palette: Plum and Gold
   vec3 plum = vec3(0.416, 0.106, 0.604); // #6A1B9A
   vec3 gold = vec3(1.0, 0.843, 0.0);    // #FFD700
   
@@ -82,7 +82,7 @@ void main() {
 }
 `;
 
-const SovereignPlasma: React.FC<{ opacity?: number }> = ({ opacity = 0.4 }) => {
+const MatriarchPlasma: React.FC<{ opacity?: number }> = ({ opacity = 0.4 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<Renderer | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -143,10 +143,10 @@ const SovereignPlasma: React.FC<{ opacity?: number }> = ({ opacity = 0.4 }) => {
         inset: 0, 
         zIndex: -1, 
         pointerEvents: 'none',
-        background: '#060010' // Deep Sovereign background base
+        background: '#060010' // Deep Matriarch background base
       }} 
     />
   );
 };
 
-export default SovereignPlasma;
+export default MatriarchPlasma;

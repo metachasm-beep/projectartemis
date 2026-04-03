@@ -20,6 +20,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
     date_of_birth: '',
     bio: '',
     city: '',
+    referral_code: '',
   });
 
   const updateProfile = async () => {
@@ -43,13 +44,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
          await supabase.from('users').update({ role: formData.role }).eq('id', userId);
       }
 
-      // Consume the invite code if it exists in localStorage
-      const pendingCode = localStorage.getItem('pending_invite_code');
-      if (pendingCode) {
+      // Handle Invitation/Referral Code
+      const inviteCode = formData.referral_code || localStorage.getItem('pending_invite_code');
+      if (inviteCode) {
         await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/auth/consume-invite`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code: pendingCode, user_id: userId }),
+          body: JSON.stringify({ code: inviteCode, user_id: userId }),
         });
         localStorage.removeItem('pending_invite_code');
       }
@@ -89,7 +90,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                     <Sparkles className="text-mat-gold w-8 h-8" />
                   </div>
                   <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Protocol Identity</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Select your role within the Sovereign</p>
+                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Select your role within the Matriarch</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -131,7 +132,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                   onClick={nextStep}
                   className="w-full h-16 bg-white text-black hover:bg-neutral-200 font-black tracking-widest uppercase rounded-2xl group flex gap-3"
                 >
-                  Confirm Sovereignty <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                  Confirm Matriarchty <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </Button>
               </motion.div>
             )}
@@ -214,19 +215,26 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, onComplete }) =>
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-8"
               >
-                <div className="text-center space-y-4">
-                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Sovereign Bio</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Declare your purpose within the system</p>
-                </div>
-
-                <div className="space-y-2">
-                  <textarea
-                    value={formData.bio}
-                    onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
-                    placeholder="DESCRIBE YOUR ESSENCE..."
-                    className="w-full h-48 p-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/10 uppercase font-mono tracking-widest focus:border-mat-gold outline-none transition-all resize-none"
-                  />
-                  <p className="text-[8px] font-black text-matriarch-textFaint uppercase tracking-widest text-right">Encrypted Transmission</p>
+                <div className="space-y-6">
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest ml-1">Invitation Code (Optional)</label>
+                    <Input
+                      value={formData.referral_code}
+                      onChange={(e) => setFormData({ ...formData, referral_code: e.target.value })}
+                      placeholder="ENTER MATRIARCH CODE"
+                      className="h-16 bg-white/5 border-white/10 rounded-2xl text-white placeholder:text-white/10 uppercase font-mono tracking-widest focus:ring-mat-gold"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest ml-1">Matriarch Bio</label>
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                      placeholder="DESCRIBE YOUR ESSENCE..."
+                      className="w-full h-32 p-6 bg-white/5 border border-white/10 rounded-2xl text-white placeholder:text-white/10 uppercase font-mono tracking-widest focus:border-mat-gold outline-none transition-all resize-none"
+                    />
+                  </div>
                 </div>
 
                 <Button 

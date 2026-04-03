@@ -25,9 +25,8 @@ import { Separator } from "@/components/ui/separator";
 import { MatriarchLogo } from "@/components/MatriarchLogo";
 import { supabase } from "@/lib/supabase";
 
-// Standard components from react-bits that we want to keep for the "wow" factor
-import ShinyText from "@/components/ui/react-bits/ShinyText";
-import SpotlightCard from "@/components/ui/react-bits/SpotlightCard";
+// Standard components from react-bits
+// import ShinyText from "@/components/ui/react-bits/ShinyText"; // Removed for performance
 
 const LandingPage: React.FC = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -89,13 +88,9 @@ const LandingPage: React.FC = () => {
         {/* 1. HERO SECTION */}
         <section className="mat-section relative overflow-hidden">
           <div className="mat-container grid lg:grid-cols-2 gap-16 items-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
+            <div className="fade-up">
               <Badge variant="secondary" className="mb-8 py-2 px-4">
-                Sovereign Selection Architecture
+                Women-First Selection Platform
               </Badge>
               
               <h1 className="mat-heading-xl mb-6 leading-[1.1]">
@@ -130,15 +125,10 @@ const LandingPage: React.FC = () => {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
 
             {/* Hero Mockup */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1, delay: 0.2 }}
-              className="relative lg:block hidden"
-            >
+            <div className="relative lg:block hidden fade-in">
               <div className="relative z-10 p-4 rounded-[2.5rem] bg-gradient-to-br from-white/10 to-transparent border border-white/10 shadow-2xl backdrop-blur-2xl">
                 <div className="rounded-[2rem] bg-matriarch-bg overflow-hidden aspect-[4/5] relative border border-white/5">
                   {/* Mockup Header */}
@@ -171,7 +161,7 @@ const LandingPage: React.FC = () => {
                       </div>
                     </div>
                     <div className="mt-8 space-y-4">
-                      <ShinyText text="SELECTION PROTOCOL ACTIVE" className="text-[10px] tracking-[0.4em] text-center block opacity-40 font-bold" />
+                      <span className="text-[10px] tracking-[0.4em] text-center block opacity-40 font-bold mat-shimmer uppercase">Selection Protocol Active</span>
                       <div className="flex gap-4">
                         <div className="flex-1 h-12 rounded-xl bg-white/5 border border-white/10" />
                         <div className="w-12 h-12 rounded-xl bg-matriarch-violetBright grid place-items-center shadow-mat-violet">
@@ -185,7 +175,7 @@ const LandingPage: React.FC = () => {
               {/* Decorative Accents */}
               <div className="absolute -top-12 -right-12 w-64 h-64 bg-matriarch-violet/20 blur-[100px] rounded-full" />
               <div className="absolute -bottom-12 -left-12 w-64 h-64 bg-matriarch-gold/10 blur-[100px] rounded-full" />
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -216,8 +206,8 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="grid lg:grid-cols-3 gap-8">
-              <SpotlightCard className="mat-card border-none p-10 group bg-mat-panel-premium">
-                <div className="mb-8 p-5 rounded-2xl bg-matriarch-violet/10 border border-matriarch-violet/20 w-fit group-hover:scale-110 transition-transform">
+              <div className="mat-card mat-glass-premium border-none p-10 group hover:bg-white/[0.07] transition-all duration-300">
+                <div className="mb-8 p-5 rounded-2xl bg-matriarch-violet/10 border border-matriarch-violet/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <Eye className="w-10 h-10 text-matriarch-violetBright" />
                 </div>
                 <h3 className="text-matriarch-violetBright text-sm font-bold uppercase tracking-[0.3em] mb-4">For Women</h3>
@@ -225,10 +215,10 @@ const LandingPage: React.FC = () => {
                 <p className="mat-copy leading-relaxed">
                   Browse ranked profiles of men who meet your exacting criteria. Match only when excellence is evident.
                 </p>
-              </SpotlightCard>
+              </div>
 
-              <SpotlightCard className="mat-card border-none p-10 group">
-                <div className="mb-8 p-5 rounded-2xl bg-matriarch-gold/10 border border-matriarch-gold/20 w-fit group-hover:scale-110 transition-transform">
+              <div className="mat-card mat-glass-premium border-none p-10 group hover:bg-white/[0.07] transition-all duration-300">
+                <div className="mb-8 p-5 rounded-2xl bg-matriarch-gold/10 border border-matriarch-gold/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <UserCheck className="w-10 h-10 text-matriarch-goldSoft" />
                 </div>
                 <h3 className="text-matriarch-goldSoft text-sm font-bold uppercase tracking-[0.3em] mb-4">For Men</h3>
@@ -236,10 +226,10 @@ const LandingPage: React.FC = () => {
                 <p className="mat-copy leading-relaxed">
                   No swiping. No random chasing. Construct a profile of substance, earn your rank, and await discovery by the right women.
                 </p>
-              </SpotlightCard>
+              </div>
 
-              <SpotlightCard className="mat-card border-none p-10 group">
-                <div className="mb-8 p-5 rounded-2xl bg-matriarch-plum/10 border border-matriarch-plum/20 w-fit group-hover:scale-110 transition-transform">
+              <div className="mat-card mat-glass-premium border-none p-10 group hover:bg-white/[0.07] transition-all duration-300">
+                <div className="mb-8 p-5 rounded-2xl bg-matriarch-plum/10 border border-matriarch-plum/20 w-fit group-hover:scale-110 transition-transform duration-300">
                   <MessageSquare className="w-10 h-10 text-matriarch-plum" />
                 </div>
                 <h3 className="text-matriarch-plum text-sm font-bold uppercase tracking-[0.3em] mb-4">Execution</h3>
@@ -247,7 +237,7 @@ const LandingPage: React.FC = () => {
                 <p className="mat-copy leading-relaxed">
                   Communication begins only how and when she defines. Once a match is made, she choose the mode of interaction.
                 </p>
-              </SpotlightCard>
+              </div>
             </div>
           </div>
         </section>
@@ -356,7 +346,7 @@ const LandingPage: React.FC = () => {
                       <div className="relative z-10 space-y-10">
                          <div className="flex justify-between items-center">
                             <div className="space-y-1">
-                               <span className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Sovereign Standing</span>
+                               <span className="text-[10px] text-matriarch-gold font-black uppercase tracking-[0.4em]">Matriarch Standing</span>
                                <h4 className="text-3xl font-display font-black tracking-tighter italic text-white uppercase">Elite Tier</h4>
                             </div>
                             <Crown className="w-12 h-12 text-matriarch-gold animate-pulse" strokeWidth={1} />
@@ -435,14 +425,14 @@ const LandingPage: React.FC = () => {
                 <div className="absolute inset-0 bg-mat-violet-glow opacity-10" />
                 <div className="relative z-10">
                    <h2 className="mat-heading-xl mb-8 uppercase leading-tight tracking-tighter">The Era of <br/><span className="text-matriarch-violetBright italic">Selection</span> Begins.</h2>
-                   <p className="mat-copy-lg mb-12 font-semibold">Join the private waitlist for sovereign access priority.</p>
+                   <p className="mat-copy-lg mb-12 font-semibold">Create your account and join the platform redefining connection.</p>
                    
                    <div className="max-w-md mx-auto space-y-8">
-                      <Button variant="gold" size="lg" className="w-full h-20 text-2xl font-black uppercase tracking-widest shadow-mat-gold animate-pulse hover:animate-none" onClick={() => setShowSignIn(true)}>
-                        Reserve Your Place
+                       <Button variant="gold" size="lg" className="w-full h-20 text-2xl font-black uppercase tracking-widest shadow-mat-gold" onClick={() => setShowSignIn(true)}>
+                         Sign In with Google
                       </Button>
                       <p className="text-[10px] text-matriarch-textFaint uppercase tracking-[0.5em] font-black">
-                        Women receive priority. Men join the ranked waitlist.
+                         Women-first. By invitation of merit.
                       </p>
                    </div>
                 </div>
@@ -474,7 +464,7 @@ const LandingPage: React.FC = () => {
               <div className="space-y-8">
                  <h5 className="text-[11px] font-black text-matriarch-textFaint uppercase tracking-[0.4em]">Security</h5>
                  <ul className="space-y-6 text-xs font-bold text-matriarch-textSoft tracking-widest uppercase">
-                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Sovereign Safety</li>
+                    <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Matriarch Safety</li>
                     <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Privacy Pact</li>
                     <li className="hover:text-matriarch-violetBright transition-colors cursor-pointer">Verification</li>
                  </ul>
@@ -533,7 +523,7 @@ const LandingPage: React.FC = () => {
                 <Crown className="w-10 h-10 text-matriarch-violetBright" strokeWidth={1} />
               </div>
 
-              <h2 className="text-3xl font-display font-black mb-4 italic tracking-tight uppercase text-white">Sovereign Access</h2>
+              <h2 className="text-3xl font-display font-black mb-4 italic tracking-tight uppercase text-white">Matriarch Access</h2>
               <p className="mat-copy mb-10 font-medium leading-relaxed text-sm">
                 Sign in with Google to access Matriarch's private selective architecture.
               </p>
@@ -563,7 +553,7 @@ const LandingPage: React.FC = () => {
               </Button>
 
               <p className="text-matriarch-textFaint text-[10px] font-bold uppercase tracking-[0.3em] mt-8">
-                By signing in, you agree to the Sovereign Privacy Pact.
+                By signing in, you agree to the Matriarch Privacy Pact.
               </p>
             </motion.div>
           </motion.div>

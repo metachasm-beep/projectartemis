@@ -17,7 +17,7 @@ class InviteVerifyResponse(BaseModel):
 @router.post("/verify-invite", response_model=InviteVerifyResponse)
 async def verify_invite(request: InviteVerifyRequest):
     """
-    Verifies if a Sovereign invite code is valid and has uses remaining.
+    Verifies if a Matriarch invite code is valid and has uses remaining.
     """
     # Normalize code
     code = request.code.strip().upper()
@@ -29,7 +29,7 @@ async def verify_invite(request: InviteVerifyRequest):
         .execute()
     
     if not response.data:
-        return {"valid": False, "message": "Invalid Sovereign code. Access denied."}
+        return {"valid": False, "message": "Invalid Matriarch code. Access denied."}
     
     invite = response.data[0]
     
@@ -37,11 +37,11 @@ async def verify_invite(request: InviteVerifyRequest):
     if invite.get("expires_at"):
         expires_at = datetime.fromisoformat(invite["expires_at"].replace('Z', '+00:00'))
         if expires_at < datetime.now(timezone.utc):
-            return {"valid": False, "message": "This Sovereign code has expired."}
+            return {"valid": False, "message": "This Matriarch code has expired."}
     
     # Check uses and is_used flag
     if invite.get("is_used") or invite["current_uses"] >= invite["max_uses"]:
-        return {"valid": False, "message": "This Sovereign code has already been consumed."}
+        return {"valid": False, "message": "This Matriarch code has already been consumed."}
     
     creator_name = "A Matriarch Founder"
     try:
@@ -63,7 +63,7 @@ class ConsumeInviteRequest(BaseModel):
 @router.post("/consume-invite")
 async def consume_invite(request: ConsumeInviteRequest):
     """
-    Consumes a Sovereign invite code, marking it as used and linking it to a user.
+    Consumes a Matriarch invite code, marking it as used and linking it to a user.
     """
     code = request.code.strip().upper()
     
@@ -98,10 +98,39 @@ async def consume_invite(request: ConsumeInviteRequest):
         .eq("code", code) \
         .execute()
 
-    # 3. Update the user profile (optional but good for tracking)
+    # 3. Update the user profile and award points
+    # Referee (Joining user) gets 100 points
+    supabase_client.table("profiles") \
+        .update({
+            "points": 100, 
+            "referred_by_id": invite["creator_id"]
+        }) \
+        .eq("user_id", request.user_id) \
+        .execute()
+
+    # Referrer (Creator of the code) gets 100 points
+    referrer_profile = supabase_client.table("profiles") \
+        .select("points") \
+        .eq("user_id", invite["creator_id"]) \
+        .execute()
+    
+    if referrer_profile.data:
+        new_points = (referrer_profile.data[0].get("points") or 0) + 100
+        supabase_client.table("profiles") \
+            .update({"points": new_points}) \
+            .eq("user_id", invite["creator_id"]) \
+            .execute()
+
+    # 4. Record transactions for ledger
+    supabase_client.table("point_transactions").insert([
+        {"user_id": request.user_id, "delta": 100, "transaction_type": "registration_bonus", "notes": f"Joined via code {code}"},
+        {"user_id": invite["creator_id"], "delta": 100, "transaction_type": "referral_credit", "notes": f"Referred user {request.user_id}"}
+    ]).execute()
+
+    # 5. Full Auth update
     supabase_client.table("users") \
-        .update({"invite_code_used": code, "is_verified_sovereign": True, "invited_by": invite["creator_id"]}) \
+        .update({"invite_code_used": code, "is_verified_Matriarch": True, "invited_by": invite["creator_id"]}) \
         .eq("id", request.user_id) \
         .execute()
 
-    return {"status": "success", "message": "Sovereign access granted."}
+    return {"status": "success", "message": "Matriarch access granted."}

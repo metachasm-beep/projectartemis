@@ -23,9 +23,9 @@ class User(SQLModel, table=True):
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    # Sovereign Invite-Only Flow
+    # Matriarch Invite-Only Flow
     invite_code_used: Optional[str] = Field(default=None, index=True)
-    is_verified_sovereign: bool = Field(default=False)
+    is_verified_Matriarch: bool = Field(default=False)
     invited_by: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
 
 

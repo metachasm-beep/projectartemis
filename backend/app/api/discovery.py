@@ -26,8 +26,18 @@ class SelectionRequest(BaseModel):
     man_id: uuid.UUID
     action: str # 'match', 'skip', 'save'
 
+class UnlockFilterRequest(BaseModel):
+    user_id: uuid.UUID
+    unlock_type: str # 'session' (10 pts) or 'day' (50 pts)
+
 @router.get("/potential-matches", response_model=List[DiscoveryResponse])
-async def get_potential_matches(user_id: uuid.UUID, limit: int = 20, offset: int = 0):
+async def get_potential_matches(
+    user_id: uuid.UUID, 
+    limit: int = 20, 
+    offset: int = 0,
+    min_rank: Optional[float] = None,
+    verified_only: bool = False
+):
     """
     Discovery Engine 2.0:
     Step 1: Eligibility Filter (blocked, matched, skipped)
@@ -38,7 +48,7 @@ async def get_potential_matches(user_id: uuid.UUID, limit: int = 20, offset: int
     # 1. Verify User Role
     user_res = supabase_client.table("users").select("role").eq("id", str(user_id)).execute()
     if not user_res.data:
-        raise HTTPException(status_code=404, detail="Sovereign user not found")
+        raise HTTPException(status_code=404, detail="Matriarch user not found")
     
     role = user_res.data[0]["role"]
     if role != UserRole.woman:
@@ -60,13 +70,9 @@ async def get_potential_matches(user_id: uuid.UUID, limit: int = 20, offset: int
     # Exclude self (though filter by role does this, good for safety)
     exclude_ids = matched_ids.union(skipped_ids).union(blocked_ids)
 
-    # 3. Fetch Potential Candidates (Step 2: Rank Ordering)
-    query = supabase_client.table("male_rank_profiles") \
-        .select("rank_score, user_id, profiles!inner(*)") \
-        .eq("is_visible", True) \
-        .eq("is_shadowbanned", False) \
-        .order("rank_score", desc=True)
-
+    if min_rank is not None:
+        query = query.gte("rank_score", min_rank)
+    
     response = query.execute()
     
     # 4. Filter and Apply Step 3: Feed Balancing (Freshness)
@@ -79,6 +85,10 @@ async def get_potential_matches(user_id: uuid.UUID, limit: int = 20, offset: int
             continue
             
         profile = item["profiles"]
+        
+        # 3.5 Verified Only Filter
+        if verified_only and not profile.get("aadhaar_verified"):
+            continue
         
         # Freshness Check
         created_at_str = profile.get("created_at")
@@ -94,7 +104,7 @@ async def get_potential_matches(user_id: uuid.UUID, limit: int = 20, offset: int
             today = date.today()
             age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
 
-        # Step 3: Sovereign Rank Boost (Freshness + Trust)
+        # Step 3: Matriarch Rank Boost (Freshness + Trust)
         trust_val = profile.get("trust_score", 0)
         boosted_rank = item["rank_score"] + (10.0 if is_new else 0.0) + (trust_val / 5.0)
 
@@ -166,3 +176,35 @@ async def select_petitioner(request: SelectionRequest, woman_id: uuid.UUID):
             return {"status": "matched", "message": "Connection established. Choose communication mode next."}
 
     return {"status": "recorded", "action": request.action}
+
+@router.post("/unlock-filter")
+async def unlock_advanced_filter(request: UnlockFilterRequest):
+    """
+    Spends points to unlock advanced discovery controls for a Matriarch.
+    """
+    # 1. Verify Role
+    user_res = supabase_client.table("users").select("role").eq("id", str(request.user_id)).execute()
+    if not user_res.data or user_res.data[0]["role"] != UserRole.woman:
+        raise HTTPException(status_code=403, detail="Discovery filters are managed by Matriarchs.")
+
+    # 2. Check points
+    cost = 50 if request.unlock_type == 'day' else 10
+    profile_res = supabase_client.table("profiles").select("points").eq("user_id", str(request.user_id)).execute()
+    points = profile_res.data[0].get("points") or 0
+    
+    if points < cost:
+        raise HTTPException(status_code=400, detail="Insufficient points to unlock advanced filters.")
+
+    # 3. Deduct Points
+    new_points = points - cost
+    supabase_client.table("profiles").update({"points": new_points}).eq("user_id", str(request.user_id)).execute()
+
+    # 4. Record Transaction
+    supabase_client.table("point_transactions").insert({
+        "user_id": str(request.user_id),
+        "delta": -cost,
+        "transaction_type": "filter_unlock",
+        "notes": f"Unlocked filters ({request.unlock_type})"
+    }).execute()
+
+    return {"status": "success", "new_points": new_points, "unlock_type": request.unlock_type}

@@ -20,7 +20,7 @@ class CohereModerationService:
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are the Matriarch Sovereign Moderator. Your goal is to ensure all profile bios are elite, respectful, and free of toxicity, harassment, or illegal content. Be STRICT."
+                        "content": "You are the Matriarch Matriarch Moderator. Your goal is to ensure all profile bios are elite, respectful, and free of toxicity, harassment, or illegal content. Be STRICT."
                     },
                     {
                         "role": "user",

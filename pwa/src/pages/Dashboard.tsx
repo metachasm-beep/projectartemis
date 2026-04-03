@@ -24,7 +24,7 @@ import { supabase } from "@/lib/supabase";
 import { LogOut } from 'lucide-react';
 
 // Standard components from react-bits
-import ShinyText from "@/components/ui/react-bits/ShinyText";
+// import ShinyText from "@/components/ui/react-bits/ShinyText"; // Removed for performance
 import DecryptedText from "@/components/ui/react-bits/DecryptedText";
 import CountUp from "@/components/ui/react-bits/CountUp";
 import SoftAurora from "@/components/ui/react-bits/SoftAurora";
@@ -60,6 +60,38 @@ export const Dashboard: React.FC = () => {
     await supabase.auth.signOut();
   };
 
+  const handleBoost = async () => {
+    if (!status || status.points < 100) {
+      alert("Insufficient points for a boost. Refer others to earn more.");
+      return;
+    }
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/boost`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, points_to_spend: 100 }),
+      });
+
+      const data = await response.json();
+      if (data.status === 'success') {
+        // Refresh status
+        const statusRes = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/${user.id}/status`);
+        const statusData = await statusRes.json();
+        setStatus(statusData);
+        alert("Visibility boost active! +5 Rank Score.");
+      } else {
+        alert(data.detail || "Boost failed.");
+      }
+    } catch (err) {
+      console.error("Boost failed", err);
+      alert("System error during boost protocol.");
+    }
+  };
+
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center mat-shell">
       <motion.div 
@@ -78,7 +110,7 @@ export const Dashboard: React.FC = () => {
           <Crown className="w-12 h-12 text-matriarch-gold" strokeWidth={1} />
         </div>
       </motion.div>
-      <ShinyText text="VERIFYING SOVEREIGN STANDING..." className="text-xs font-black tracking-[0.6em]" />
+      <span className="text-xs font-black tracking-[0.6em] mat-shimmer uppercase font-bold">Verifying Matriarch Standing...</span>
     </div>
   );
 
@@ -86,7 +118,7 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="mat-shell pb-32 mat-noise-overlay relative overflow-hidden">
-      {/* Sovereign Background Aura */}
+      {/* Matriarch Background Aura */}
       <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
         <SoftAurora 
           speed={0.1} 
@@ -129,12 +161,12 @@ export const Dashboard: React.FC = () => {
               <span className="mat-eyebrow">Protocol View / Dashboard</span>
               <h1 className="mat-heading-md">
                 <DecryptedText 
-                  text="Sovereign" 
+                  text="Selection" 
                   animateOn="view" 
                   speed={120} 
                   className="inline-block" 
                   sequential
-                /> <span className="text-matriarch-gold">Scoreboard</span>
+                /> <span className="text-matriarch-gold">Leaderboard</span>
               </h1>
            </div>
            <div className="flex gap-4">
@@ -142,9 +174,9 @@ export const Dashboard: React.FC = () => {
                 <TrendingUp className="w-4 h-4" />
                 History
               </Button>
-              <Button variant="gold" className="gap-2 shadow-mat-gold">
+              <Button variant="gold" className="gap-2 shadow-mat-gold" onClick={handleBoost} disabled={status?.points < 100}>
                 <Zap className="w-4 h-4" />
-                Boost Visibility
+                {status?.points >= 100 ? "Boost Visibility" : "Need 100 Points"}
               </Button>
            </div>
         </section>
@@ -164,14 +196,14 @@ export const Dashboard: React.FC = () => {
                       </CardTitle>
                       <div className="flex items-center gap-4">
                          <h2 className="text-6xl font-display font-black tracking-tighter text-white">
-                           {status?.rank_tier?.toUpperCase() || 'SOVEREIGN'}
+                           {status?.rank_tier?.toUpperCase() || 'MATRIARCH'}
                          </h2>
                          <Crown className={cn("w-10 h-10 animate-pulse", tierColor)} strokeWidth={1} />
                       </div>
                    </div>
                    <div className="text-right">
                       <div className="text-xs font-bold text-matriarch-gold mb-1 uppercase tracking-widest">
-                        {status?.rank_tier === 'matriarch' ? 'Selection Power' : 'Sovereignty Score'}
+                        {status?.rank_tier === 'matriarch' ? 'Selection Power' : 'Selection Score'}
                       </div>
                       <div className="text-4xl font-display font-black text-white">
                         <CountUp to={Math.round(status?.rank_score || 0)} duration={2.5} />
@@ -192,7 +224,7 @@ export const Dashboard: React.FC = () => {
                  <div className="flex flex-wrap gap-4">
                     <Badge variant="violet">{status?.rank_tier === 'matriarch' ? 'Arch-Matriarch' : 'Top 0.1% Globally'}</Badge>
                     <Badge variant="violet">Premium Verified</Badge>
-                    <Badge variant="violet">Sovereign Protocol</Badge>
+                    <Badge variant="violet">Matriarch Protocol</Badge>
                  </div>
               </CardContent>
            </Card>
@@ -263,11 +295,11 @@ export const Dashboard: React.FC = () => {
            ))}
         </div>
 
-        {/* Sovereign Guard Protocol (007 Integration) */}
+        {/* Matriarch Guard Protocol (007 Integration) */}
         <section className="space-y-6 mat-stagger-fade-in">
            <div className="flex items-center gap-4">
               <h3 className="text-xs font-black text-emerald-500 uppercase tracking-[0.4em]">
-                <DecryptedText text="Sovereign Guard Protocol" animateOn="view" sequential />
+                <DecryptedText text="Matriarch Guard Protocol" animateOn="view" sequential />
               </h3>
               <Separator className="flex-1 bg-emerald-500/10" />
            </div>
@@ -287,7 +319,7 @@ export const Dashboard: React.FC = () => {
                     <div className="text-right hidden sm:block">
                        <div className="text-[10px] font-black text-emerald-500 uppercase tracking-widest">Integrity Score</div>
                        <div className="text-2xl font-black text-white">
-                         <CountUp to={98} duration={1.5} onStart={() => console.log('Sovereign integrity verified.')} />/100
+                         <CountUp to={98} duration={1.5} onStart={() => console.log('Matriarch integrity verified.')} />/100
                        </div>
                     </div>
                     <Button variant="outline" className="border-emerald-500/30 text-emerald-500 hover:bg-emerald-500/10 shadow-sm">Full Audit</Button>
@@ -298,7 +330,7 @@ export const Dashboard: React.FC = () => {
       </main>
 
       <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">PROTOCOL ARCHIVE 02.4.9 — SOVEREIGN STATUS CONFIRMED</span>
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">PROTOCOL ARCHIVE 02.4.9 — MATRIARCH STATUS CONFIRMED</span>
       </div>
     </div>
   );

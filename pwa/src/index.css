@@ -155,7 +155,7 @@
     letter-spacing: 0.14em;
   }
 
-  /* Sovereign Overhaul - Antigravity Extension */
+  /* Matriarch Overhaul - Antigravity Extension */
 
   .mat-glass-premium {
     background: rgba(255, 255, 255, 0.03);
@@ -230,5 +230,38 @@
 
   .animate-pulse-slow {
     animation: matPulseSoft 3s ease-in-out infinite;
+  }
+
+  /* Shimmer & Entrance Utilities */
+  .mat-shimmer {
+    background-image: linear-gradient(
+      120deg, 
+      rgba(255, 255, 255, 0) 40%, 
+      rgba(255, 255, 255, 0.4) 50%, 
+      rgba(255, 255, 255, 0) 60%
+    );
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    animation: matShimmer 4s infinite linear;
+  }
+
+  @keyframes matShimmer {
+    0% { background-position: 150% center; }
+    100% { background-position: -50% center; }
+  }
+
+  .fade-up {
+    animation: matFadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+
+  .fade-in {
+    animation: matFadeIn 0.8s ease-out forwards;
+  }
+
+  @keyframes matFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }

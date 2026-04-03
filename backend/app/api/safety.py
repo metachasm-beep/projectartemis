@@ -40,7 +40,7 @@ async def submit_report(request: ReportRequest, reporter_id: uuid.UUID):
 
 async def _check_and_auto_block(target_user_id: str):
     """
-    Sovereign Guard: Automatically shadowbans users with >= 3 reports.
+    Matriarch Guard: Automatically shadowbans users with >= 3 reports.
     """
     # 1. Get current report count
     count_res = supabase_client.table("safety_profiles").select("report_count").eq("user_id", target_user_id).execute()

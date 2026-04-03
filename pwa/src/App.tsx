@@ -162,19 +162,19 @@ const App: React.FC = () => {
                        <div className="mb-8 rounded-2xl bg-[#D4AF37]/10 p-4 border border-[#D4AF37]/20 shadow-glow">
                           <User className="w-12 h-12 text-[#D4AF37]" strokeWidth={1.5} />
                        </div>
-                       <h2 className="text-4xl font-black text-[#F6F3EE] mb-2 tracking-tighter uppercase font-sora italic">Sovereign Profile</h2>
+                       <h2 className="text-4xl font-black text-[#F6F3EE] mb-2 tracking-tighter uppercase font-sora italic">Matriarch Profile</h2>
                        <div className="text-[10px] tracking-[0.6em] font-black text-[#6E3FF3] uppercase mb-12">Authenticated Identity</div>
                        
                        <div className="w-full max-w-sm surface-premium p-10 rounded-xl space-y-6 shadow-premium border-none relative overflow-hidden group">
                           <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-[#D4AF37]/30 to-transparent" />
                           <div className="flex justify-between items-center text-[10px] tracking-[0.3em] font-black uppercase text-[#A6A0B3]">
                              <span>Protocol ID</span>
-                             <span className="text-[#F6F3EE]">SOV_MALE_721</span>
+                             <span className="text-[#F6F3EE]">MAT_MALE_721</span>
                           </div>
                           <div className="h-px bg-white/5" />
                           <div className="flex justify-between items-center text-[10px] tracking-[0.3em] font-black uppercase text-[#A6A0B3]">
                              <span>Access Tier</span>
-                             <span className="text-[#D4AF37]">ELITE_PROTO_X</span>
+                             <span className="text-[#D4AF37]">ELITE_SELECT_X</span>
                           </div>
                           <div className="h-px bg-white/5" />
                           <div className="flex justify-between items-center text-[10px] tracking-[0.3em] font-black uppercase text-[#A6A0B3]">
@@ -231,7 +231,7 @@ const App: React.FC = () => {
                   className={`flex-1 py-4 flex flex-col items-center gap-2 transition-all duration-500 rounded-lg ${activeTab === 'profile' ? 'bg-[#6E3FF3]/10 text-[#6E3FF3]' : 'text-[#A6A0B3]/40 hover:text-[#A6A0B3]'}`}
                 >
                   <User size={20} strokeWidth={activeTab === 'profile' ? 2.5 : 1.5} />
-                  <span className="text-[8px] font-black tracking-[0.3em] uppercase">Sovereign</span>
+                  <span className="text-[8px] font-black tracking-[0.3em] uppercase">Matriarch</span>
                 </button>
               </motion.div>
             </nav>

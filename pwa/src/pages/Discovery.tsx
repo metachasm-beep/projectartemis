@@ -27,6 +27,9 @@ export const Discovery: React.FC = () => {
   const [direction, setDirection] = useState(0);
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState<'woman' | 'man' | null>(null);
+  const [points, setPoints] = useState(0);
+  const [filters, setFilters] = useState({ min_rank: 0, verified_only: false });
+  const [isFilterUnlocked, setIsFilterUnlocked] = useState(false);
 
   useEffect(() => {
     const initDiscovery = async () => {
@@ -47,7 +50,14 @@ export const Discovery: React.FC = () => {
         setRole(userRole);
 
         if (userRole === 'woman') {
-          const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/discovery/potential-matches?user_id=${user.id}`);
+          // Fetch points/status
+          const statusRes = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/${user.id}/status`);
+          const statusData = await statusRes.json();
+          setPoints(statusData.points || 0);
+
+          const response = await fetch(
+            `${import.meta.env.VITE_API_URL || ''}/api/v1/discovery/potential-matches?user_id=${user.id}${filters.min_rank ? `&min_rank=${filters.min_rank}` : ''}${filters.verified_only ? '&verified_only=true' : ''}`
+          );
           const data = await response.json();
           setProfiles(data || []);
         } else {
@@ -85,6 +95,30 @@ export const Discovery: React.FC = () => {
     }, 10);
   };
 
+  const unlockFilter = async (type: 'session' | 'day') => {
+    const cost = type === 'day' ? 50 : 10;
+    if (points < cost) {
+      alert("Insufficient points for this selection filter.");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/discovery/unlock-filter`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ user_id: user.id, unlock_type: type })
+      });
+      const data = await response.json();
+      if (data.status === 'success') {
+        setPoints(data.new_points);
+        setIsFilterUnlocked(true);
+        alert(`Advanced Filters Unlocked (${type})`);
+      }
+    } catch (err) {
+      console.error("Unlock failed", err);
+    }
+  };
+
   if (loading) return (
     <div className="h-screen flex flex-col items-center justify-center mat-shell px-8">
       <motion.div 
@@ -97,7 +131,7 @@ export const Discovery: React.FC = () => {
         </div>
       </motion.div>
       <DecryptedText 
-        text="Scanning Sovereign Database..." 
+        text="Scanning Matriarch Database..." 
         animateOn="view" 
         className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-[0.8em]"
       />
@@ -107,7 +141,7 @@ export const Discovery: React.FC = () => {
   if (role === 'man') {
     return (
       <div className="h-screen flex flex-col mat-shell overflow-hidden relative mat-noise-overlay">
-        {/* Sovereign Background Aura */}
+        {/* Matriarch Background Aura */}
         <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
           <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
         </div>
@@ -132,7 +166,7 @@ export const Discovery: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Sovereign Queue Active</h2>
+              <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Matriarch Queue Active</h2>
               <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Your profile is visible to the Matriarchs</p>
             </div>
 
@@ -173,7 +207,7 @@ export const Discovery: React.FC = () => {
         </main>
 
         <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
-          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">CONNECTION BEGINS WITH HER CHOICE — SOVEREIGN 1.0</span>
+          <span className="text-[10px] font-black uppercase tracking-[2em] text-white">CONNECTION BEGINS WITH HER CHOICE — Matriarch 1.0</span>
         </div>
       </div>
     );
@@ -184,13 +218,13 @@ export const Discovery: React.FC = () => {
   if (!profile && role === 'woman') {
     return (
       <div className="h-screen flex flex-col items-center justify-center mat-shell px-12 text-center mat-noise-overlay">
-        {/* Sovereign Background Aura */}
+        {/* Matriarch Background Aura */}
         <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
           <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
         </div>
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-matriarch-violet/10 blur-[150px] -z-10" />
         <Crown className="w-20 h-20 text-mat-gold mb-8 opacity-20" strokeWidth={1} />
-        <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase mb-4">The Sovereign Queue is Empty</h2>
+        <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase mb-4">The Matriarch Queue is Empty</h2>
         <p className="text-matriarch-textSoft max-w-sm font-medium tracking-wide">
           All currently high-ranking Petitioners have been scanned. Check back soon for the next elite selection batch.
         </p>
@@ -200,22 +234,28 @@ export const Discovery: React.FC = () => {
 
   return (
     <div className="h-screen flex flex-col mat-shell overflow-hidden mat-noise-overlay relative">
-      {/* Sovereign Background Aura */}
+      {/* Matriarch Background Aura */}
       <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
         <SoftAurora speed={0.1} brightness={0.8} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
       </div>
 
-      {/* Sovereign Header */}
+      {/* Matriarch Header */}
       <header className="fixed top-0 w-full z-50 border-b border-white/5 bg-matriarch-bg/40 backdrop-blur-xl">
         <div className="mat-container flex h-20 items-center justify-between">
           <MatriarchLogo />
           <div className="flex items-center gap-6">
-             <Badge variant="gold" className="hidden sm:flex">ELITE DISCOVERY</Badge>
-             <div className="flex gap-2">
+           <div className="flex gap-4 items-center">
+              <div className="text-right hidden sm:block">
+                 <div className="text-[8px] font-black text-matriarch-gold tracking-widest uppercase mb-1">Selection Power</div>
+                 <div className="text-xs font-black text-white">{points} PTS</div>
+              </div>
+              <Badge variant="gold" className="hidden sm:flex">ELITE DISCOVERY</Badge>
+              <div className="flex gap-2">
                 <div className="w-8 h-1 bg-matriarch-violetBright rounded-full" />
                 <div className="w-8 h-1 bg-white/10 rounded-full" />
                 <div className="w-8 h-1 bg-white/10 rounded-full" />
              </div>
+           </div>
           </div>
         </div>
       </header>
@@ -227,11 +267,34 @@ export const Discovery: React.FC = () => {
         <div className="w-full max-w-4xl grid lg:grid-cols-5 gap-12 items-center">
            {/* Controls Left - Hidden on Mobile */}
            <div className="hidden lg:flex flex-col gap-6 col-span-1 h-full justify-center">
-              <div className="mat-panel mat-glass-premium p-6 space-y-4 border-none bg-white/[0.02]">
-                 <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest">Current Batch</div>
-                 <div className="text-3xl font-display font-black text-white italic">00{currentIndex + 1}</div>
-                 <div className="text-[10px] font-bold text-matriarch-violetSoft uppercase tracking-tight italic">Protocol Active</div>
-              </div>
+               <div className="mat-panel mat-glass-premium p-6 space-y-4 border-none bg-white/[0.02] relative overflow-hidden group">
+                  <div className="text-[10px] font-black text-matriarch-textFaint uppercase tracking-widest">Selection Filters</div>
+                  {!isFilterUnlocked ? (
+                    <div className="space-y-4">
+                       <Button variant="ghost" size="sm" onClick={() => unlockFilter('session')} className="w-full text-[8px] h-10 border border-white/5 bg-white/5 hover:bg-matriarch-violet/20 font-black">
+                         UNLOCK SESSION (10)
+                       </Button>
+                       <Button variant="ghost" size="sm" onClick={() => unlockFilter('day')} className="w-full text-[8px] h-10 border border-white/5 bg-white/5 hover:bg-matriarch-gold/20 font-black">
+                         UNLOCK DAY (50)
+                       </Button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                       <button 
+                         onClick={() => setFilters(f => ({ ...f, verified_only: !f.verified_only }))}
+                         className={`w-full p-2 text-[8px] font-black rounded border ${filters.verified_only ? `"bg-emerald-500/20 border-emerald-500 text-emerald-500"` : `"bg-white/5 border-white/5 text-white/40"`}`}
+                       >
+                         VERIFIED ONLY
+                       </button>
+                       <button 
+                         onClick={() => setFilters(f => ({ ...f, min_rank: f.min_rank === 90 ? 0 : 90 }))}
+                         className={`w-full p-2 text-[8px] font-black rounded border ${filters.min_rank === 90 ? `"bg-mat-gold/20 border-mat-gold text-mat-gold"` : `"bg-white/5 border-white/5 text-white/40"`}`}
+                       >
+                         ELITE QUEUE (90+)
+                       </button>
+                    </div>
+                  )}
+               </div>
               <Button variant="secondary" onClick={() => handleAction('skip')} className="h-16 w-full rounded-2xl group border-white/5 hover:border-matriarch-red/20 mat-glass-premium mat-float-hover">
                  <X className="w-6 h-6 text-matriarch-textSoft group-hover:text-matriarch-red transition-colors" />
               </Button>
@@ -337,7 +400,7 @@ export const Discovery: React.FC = () => {
       <div className="fixed bottom-0 w-full py-6 text-center pointer-events-none opacity-[0.05]">
           <span className="text-[10px] font-black uppercase tracking-[2em] text-white">
             <DecryptedText 
-              text="Sovereign Selection Protocol Active — Archive 024.9" 
+              text="Matriarch Selection Protocol Active — Archive 024.9" 
               animateOn="view" 
               speed={150} 
               sequential
