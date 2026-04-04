@@ -52,6 +52,13 @@
   --bg-image-mat-panel: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
   --bg-image-mat-panel-premium: linear-gradient(180deg, rgba(110, 63, 243, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
   --bg-image-mat-hero: radial-gradient(circle at top, rgba(110, 63, 243, 0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(212, 175, 55, 0.08), transparent 30%);
+
+  --animate-marquee: marquee 15s linear infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
 }
 
 @layer base {

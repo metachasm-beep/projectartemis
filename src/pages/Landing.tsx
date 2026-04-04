@@ -73,7 +73,7 @@ const LandingPage: React.FC = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://matriarch.vercel.app",
+          redirectTo: "https://www.matriarchindia.com",
         },
       });
       if (error) throw error;
@@ -331,34 +331,34 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* 6. MEN'S RANKING SECTION */}
-        <section className="mat-section relative overflow-hidden px-8">
+        <section className="mat-section relative overflow-hidden px-4 lg:px-8">
            <div className="mat-container">
-             <div className="mat-panel-premium p-16 lg:p-32 rounded-[4rem] border-white/5 bg-white/[0.01] shadow-2xl relative">
-                <div className="grid lg:grid-cols-2 gap-24 items-center">
-                   <div className="space-y-10">
-                      <Badge variant="gold" className="px-5 py-2 uppercase tracking-[0.3em] font-black text-[9px] bg-mat-gold/10 text-mat-gold">The Seeker's Journey</Badge>
-                      <h2 className="text-6xl lg:text-7xl mat-text-display-pro text-white leading-tight uppercase overflow-visible py-2">Excellence of <br/><span className="mat-text-gradient-gold ring-mat-gold/20">Heart.</span></h2>
-                      <p className="text-xl text-white/50 leading-relaxed italic font-medium">
+             <div className="mat-panel-premium p-8 lg:p-32 rounded-[2.5rem] lg:rounded-[4rem] border-white/5 bg-white/[0.01] shadow-2xl relative">
+                <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                   <div className="space-y-8 lg:space-y-10">
+                      <Badge variant="gold" className="px-5 py-2 uppercase tracking-[0.3em] font-black text-[8px] lg:text-[9px] bg-mat-gold/10 text-mat-gold">The Seeker's Journey</Badge>
+                      <h2 className="text-4xl lg:text-7xl mat-text-display-pro text-white leading-tight uppercase overflow-visible py-2">Excellence of <br/><span className="mat-text-gradient-gold ring-mat-gold/20">Heart.</span></h2>
+                      <p className="text-lg lg:text-xl text-white/50 leading-relaxed italic font-medium">
                         On MATRIARCH, attention isn't a commodity to be bought or spammed. It is qualified for through excellence, authenticity, and verified standing.
                       </p>
                       
-                      <div className="grid grid-cols-2 gap-12">
+                      <div className="grid grid-cols-2 gap-6 lg:gap-12">
                         {[
                           { label: "Profile Integrity", val: "99%" },
                           { label: "Elite Standing", val: "Top 1%" },
                           { label: "Verification", val: "Verified" },
                           { label: "Referral Count", val: "Elite" }
                         ].map(item => (
-                          <div key={item.label} className="border-l-2 border-matriarch-gold/30 pl-8 space-y-3">
-                            <span className="mat-text-label-pro !text-[10px] !not-italic">{item.label}</span>
-                            <span className="text-3xl mat-text-display-pro text-white block">{item.val}</span>
+                          <div key={item.label} className="border-l-2 border-matriarch-gold/30 pl-4 lg:pl-8 space-y-2 lg:space-y-3">
+                            <span className="mat-text-label-pro !text-[8px] lg:!text-[10px] !not-italic">{item.label}</span>
+                            <span className="text-xl lg:text-3xl mat-text-display-pro text-white block">{item.val}</span>
                           </div>
                         ))}
                       </div>
                    </div>
 
                    {/* Ranking UI Demo */}
-                   <div className="mat-panel mat-glass-premium p-12 lg:p-16 rounded-[3.5rem] border-white/10 bg-white/[0.03] shadow-[0_0_100px_rgba(212,175,55,0.1)] relative group">
+                   <div className="mat-panel mat-glass-premium p-8 lg:p-16 rounded-[2.5rem] lg:rounded-[3.5rem] border-white/10 bg-white/[0.03] shadow-[0_0_100px_rgba(212,175,55,0.1)] relative group">
                       <div className="absolute inset-0 bg-mat-gold-glow opacity-10 group-hover:opacity-20 transition-opacity" />
                       <div className="relative z-10 space-y-12">
                          <div className="flex justify-between items-center">
@@ -394,10 +394,10 @@ const LandingPage: React.FC = () => {
         {/* 6.5 DIVINE ECONOMY (DAILY REWARDS) */}
         <section className="mat-section relative overflow-hidden">
            <div className="mat-container flex flex-col items-center">
-              <div className="text-center mb-24 max-w-2xl space-y-8">
+              <div className="text-center mb-16 lg:mb-24 max-w-2xl space-y-6 lg:space-y-8">
                  <Badge variant="secondary" className="px-6 py-2 uppercase tracking-[0.3em] font-black text-[9px] opacity-60">The Economy of Devotion</Badge>
-                 <h2 className="text-7xl mat-text-display-pro text-white leading-tight uppercase">Devotion is <span className="mat-text-gradient-gold ring-mat-gold/20">Recognized.</span></h2>
-                 <p className="text-xl text-white/40 italic font-medium">Every day the sanctuary doors open, your presence is honored through token blessings. Consistency amplifies your radiance.</p>
+                 <h2 className="text-4xl lg:text-7xl mat-text-display-pro text-white leading-tight uppercase">Devotion is <span className="mat-text-gradient-gold ring-mat-gold/20">Recognized.</span></h2>
+                 <p className="text-lg lg:text-xl text-white/40 italic font-medium">Every day the sanctuary doors open, your presence is honored through token blessings. Consistency amplifies your radiance.</p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-10 w-full">
@@ -406,9 +406,9 @@ const LandingPage: React.FC = () => {
                    { title: "7 Day Streak", reward: "+100", desc: "A week of dedicated intention.", icon: Star },
                    { title: "30 Day Devotion", reward: "+1000", desc: "Monthly absolute alignment.", icon: Crown }
                  ].map((item, i) => (
-                   <div key={i} className="mat-panel mat-glass-premium p-12 border-none bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 group overflow-hidden relative rounded-[3rem]">
-                      <div className="absolute -top-10 -right-10 p-12 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-1000">
-                         <item.icon size={180} className="text-matriarch-gold" strokeWidth={1} />
+                   <div key={i} className="mat-panel mat-glass-premium p-8 lg:p-12 border-none bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 group overflow-hidden relative rounded-[2rem] lg:rounded-[3rem]">
+                      <div className="absolute -top-10 -right-10 p-8 lg:p-12 opacity-[0.03] group-hover:opacity-[0.1] transition-all duration-1000">
+                         <item.icon size={120} className="text-matriarch-gold lg:size-[180px]" strokeWidth={1} />
                       </div>
                       <div className="relative z-10 space-y-10">
                          <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 group-hover:bg-mat-gold group-hover:text-black transition-all duration-500">
@@ -416,7 +416,7 @@ const LandingPage: React.FC = () => {
                          </div>
                          <div>
                             <h4 className="mat-text-label-pro !text-white/40 !not-italic mb-2">{item.title}</h4>
-                            <div className="text-6xl mat-text-display-pro text-white leading-tight mat-text-glow-gold">{item.reward} <span className="text-[10px] uppercase tracking-[0.5em] opacity-40 not-italic block mt-2">Tokens</span></div>
+                            <div className="text-4xl lg:text-6xl mat-text-display-pro text-white leading-tight mat-text-glow-gold">{item.reward} <span className="text-[8px] lg:text-[10px] uppercase tracking-[0.5em] opacity-40 not-italic block mt-1 lg:mt-2">Tokens</span></div>
                          </div>
                          <p className="text-[11px] text-white/40 uppercase font-black tracking-widest leading-relaxed italic">{item.desc}</p>
                       </div>

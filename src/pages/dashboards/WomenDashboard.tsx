@@ -222,7 +222,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                                className="h-6 text-[8px] text-matriarch-violetBright/60 p-1 font-black uppercase tracking-widest"
                                onClick={(e: React.MouseEvent) => {
                                  e.stopPropagation();
-                                 navigator.clipboard.writeText(`https://matriarch.vercel.app/onboarding?ref=${profile?.user_id}`);
+                                 navigator.clipboard.writeText(`${window.location.origin}/onboarding?ref=${profile?.user_id}`);
                                  alert("Referral Link Copied!");
                                }}
                              >COPY</Button>
