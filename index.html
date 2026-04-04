@@ -57,7 +57,7 @@
       };
 
       window.addEventListener('message', (event) => {
-        if (event.data === 'MATRIARCH_PROTOCOL_READY') {
+        if (event.data === 'MATRIARCH_PROTOCOL_READY' || event.data === 'MATRIARCH_SANCTUARY_READY') {
           removeLoader();
         }
       });

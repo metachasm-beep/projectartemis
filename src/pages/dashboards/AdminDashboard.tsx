@@ -136,26 +136,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
         {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
-          <h1 className="text-4xl font-display font-black text-white italic tracking-tight uppercase mb-2 flex items-center gap-4">
-            Command Center <Activity className="text-mat-gold animate-pulse" />
+          <h1 className="text-3xl sm:text-4xl font-display font-black text-white italic tracking-tight uppercase mb-2 flex items-center gap-4">
+            Command Center <Activity className="text-mat-gold animate-pulse hidden sm:block" />
           </h1>
-          <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.6em]">System Oversight & Divine Intervention</p>
+          <p className="text-[9px] sm:text-[10px] text-white/40 font-black uppercase tracking-[0.4em] sm:tracking-[0.6em]">System Oversight & Divine Intervention</p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 w-full sm:w-auto">
           <Button 
             onClick={handleLogout}
-            className="h-14 px-8 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 rounded-2xl flex gap-3 items-center backdrop-blur-xl transition-all"
+            className="flex-1 sm:flex-none h-12 sm:h-14 px-4 sm:px-8 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 rounded-2xl flex gap-2 sm:gap-3 items-center backdrop-blur-xl transition-all"
           >
-            <LogOut size={16} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Sign Out</span>
+            <LogOut size={14} />
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Sign Out</span>
           </Button>
           <Button 
             onClick={fetchData} 
             disabled={loading}
-            className="h-14 px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex gap-3 items-center backdrop-blur-xl"
+            className="flex-1 sm:flex-none h-12 sm:h-14 px-4 sm:px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex gap-2 sm:gap-3 items-center backdrop-blur-xl"
           >
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-            <span className="text-[10px] font-black uppercase tracking-widest">Synchronize</span>
+            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Sync</span>
           </Button>
         </div>
       </div>
@@ -192,24 +192,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
 
       {/* Soul Matrix (User List) */}
       <div className="mat-panel-premium rounded-none md:rounded-[2.5rem] border-x-0 md:border border-white/5 overflow-visible flex flex-col">
-        <div className="p-8 border-b border-white/5 flex flex-col md:flex-row gap-6 justify-between items-center">
-           <h3 className="text-xl font-display font-black text-white italic uppercase tracking-widest">Soul Matrix</h3>
-           <div className="flex gap-4 w-full md:w-auto">
-             <div className="relative flex-1 md:w-80">
+        <div className="p-6 md:p-8 border-b border-white/5 flex flex-col lg:flex-row gap-6 justify-between lg:items-center">
+           <h3 className="text-lg md:text-xl font-display font-black text-white italic uppercase tracking-widest">Soul Matrix</h3>
+           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+             <div className="relative w-full sm:w-64 lg:w-80">
                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
                <Input 
-                 placeholder="SEARCH BY NAME OR ID" 
+                 placeholder="SEARCH SOULS..." 
                  value={searchQuery}
                  onChange={(e) => setSearchQuery(e.target.value)}
                  className="pl-12 h-12 bg-white/5 border-white/10 rounded-xl text-[10px] uppercase font-black"
                />
              </div>
-             <div className="flex bg-white/5 rounded-xl border border-white/10 p-1">
+             <div className="flex bg-white/5 rounded-xl border border-white/10 p-1 overflow-x-auto no-scrollbar">
                {(['all', 'man', 'woman', 'verified'] as const).map(f => (
                  <button
                    key={f}
                    onClick={() => setFilter(f)}
-                   className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                   className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filter === f ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
                  >
                    {f}
                  </button>
@@ -218,15 +218,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
            </div>
         </div>
 
-        <div className="overflow-visible">
-          <table className="w-full text-left">
+        <div className="overflow-x-auto no-scrollbar">
+          <table className="w-full text-left min-w-[700px]">
             <thead>
               <tr className="bg-white/[0.02] border-b border-white/5">
-                <th className="px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Profile</th>
-                <th className="px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Identity</th>
-                <th className="px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Status</th>
-                <th className="px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Tokens</th>
-                <th className="px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest text-right">Actions</th>
+                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Profile</th>
+                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Identity</th>
+                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Status</th>
+                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Tokens</th>
+                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">

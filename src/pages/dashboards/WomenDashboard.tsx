@@ -26,6 +26,7 @@ import { FAQ } from '@/components/FAQ';
 interface WomenDashboardProps {
   profile: any;
   status: any;
+  handleLogout: () => void;
   handleBoost: () => void;
 }
 
@@ -59,7 +60,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 lg:gap-8 pb-6 border-b border-white/5 mat-stagger-fade-in font-display">
            <div className="space-y-2">
               <span className="mat-text-label-pro">Your Journey / The Inner Sanctuary</span>
-              <h1 className="mat-text-display-pro text-white leading-none">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase">
                 <DecryptedText 
                   text="The" 
                   animateOn="view" 
@@ -95,13 +96,13 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               </h1>
            </div>
            <div className="flex items-center gap-3 w-full lg:w-auto">
-              <Button variant="secondary" className="flex-1 lg:flex-none h-14 lg:h-12 gap-2 transition-transform hover:scale-95 font-black uppercase text-[10px] tracking-widest px-6">
+              <Button variant="secondary" className="flex-1 lg:flex-none h-12 lg:h-12 gap-2 transition-transform hover:scale-95 font-black uppercase text-[9px] sm:text-[10px] tracking-wider sm:tracking-widest px-4 sm:px-6">
                 <TrendingUp className="w-4 h-4" />
                 History
               </Button>
-              <Button variant="gold" className="flex-1 lg:flex-none gap-2 shadow-mat-gold h-14 lg:h-12 px-6 lg:px-8 font-black uppercase text-[10px] tracking-widest shrink-0" onClick={handleBoost} disabled={status?.points < 100}>
+              <Button variant="gold" className="flex-1 lg:flex-none gap-2 shadow-mat-gold h-12 lg:h-12 px-4 sm:px-8 font-black uppercase text-[9px] sm:text-[10px] tracking-wider sm:tracking-widest shrink-0" onClick={handleBoost} disabled={status?.points < 100}>
                 <Zap className="w-4 h-4" />
-                {status?.points >= 100 ? ( <span className="whitespace-nowrap">Boost Visibility</span> ) : ( <span className="whitespace-nowrap">Need 100 Pts</span> )}
+                {status?.points >= 100 ? ( <span className="whitespace-nowrap">Boost</span> ) : ( <span className="whitespace-nowrap">100 Pts Req</span> )}
               </Button>
            </div>
         </section>
@@ -248,17 +249,17 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
           className="fixed bottom-0 left-0 right-0 z-[60] p-4"
         >
           <div className="mat-container">
-            <div className="bg-matriarch-violetBright/10 border border-matriarch-violetBright/20 backdrop-blur-xl p-4 rounded-2xl flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-matriarch-violetBright text-white flex items-center justify-center animate-pulse">
+            <div className="bg-matriarch-violetBright/10 border border-matriarch-violetBright/20 backdrop-blur-xl p-4 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3 w-full">
+                <div className="w-10 h-10 rounded-xl bg-matriarch-violetBright text-white flex items-center justify-center animate-pulse shrink-0">
                    <Zap size={20} />
                 </div>
                 <div>
-                  <p className="mat-text-label-pro text-matriarch-violetBright">Awaiting Activation</p>
-                  <p className="text-[9px] text-white/60 uppercase font-medium">The Sanctuary is synchronizing your truth. This usually takes just a few moments.</p>
+                  <p className="mat-text-label-pro text-matriarch-violetBright text-[10px]">Awaiting Activation</p>
+                  <p className="text-[8px] sm:text-[9px] text-white/60 uppercase font-medium leading-relaxed">The Sanctuary is synchronizing your truth. This usually takes a few moments.</p>
                 </div>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => window.location.reload()} className="text-[9px] font-black uppercase tracking-widest text-matriarch-violetBright hover:bg-matriarch-violetBright/10">Sync</Button>
+              <Button size="sm" variant="ghost" onClick={() => window.location.reload()} className="w-full sm:w-auto text-[9px] font-black uppercase tracking-widest text-matriarch-violetBright hover:bg-matriarch-violetBright/10 border border-matriarch-violetBright/20 sm:border-none h-10">Sync</Button>
             </div>
           </div>
         </motion.div>

@@ -22,11 +22,26 @@ function cn(...inputs: ClassValue[]) {
 
 type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications' | 'admin';
 
+const ADMIN_EMAILS = ['metachasm@gmail.com', 'testeradmin@gmail.com'];
+
 const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<any>(null);
+
+  // Developer Bypass Logic
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('dev_auth') === 'secure_bypass') {
+      console.log("MATRIARCH_DEV: Activating Sanctuary Bypass...");
+      localStorage.setItem('MATRIARCH_DEV_BYPASS', 'ENABLED');
+      // Remove the param from URL for cleanliness
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
+      window.location.reload();
+    }
+  }, []);
 
   // Watchdog: Force end loading if stuck
   useEffect(() => {
@@ -44,17 +59,46 @@ const App: React.FC = () => {
 
     const initializeAuth = async () => {
       console.log("MATRIARCH: Opening the Sanctuary doors...");
+      
+      // Check for Developer Bypass first
+      const isBypassEnabled = localStorage.getItem('MATRIARCH_DEV_BYPASS') === 'ENABLED';
+      if (isBypassEnabled) {
+        console.log("MATRIARCH_DEV: Bypass Active. Setting tester session.");
+        const mockSession = { 
+          user: { 
+            id: 'dev-tester-admin-001', 
+            email: 'testeradmin@gmail.com',
+            user_metadata: { full_name: 'Tester Admin' }
+          } 
+        };
+        const mockProfile = {
+          user_id: 'dev-tester-admin-001',
+          role: 'admin',
+          full_name: 'Tester Admin',
+          onboarding_status: 'COMPLETED',
+          is_verified: true,
+          is_active: true
+        };
+        
+        if (mounted) {
+          setSession(mockSession);
+          setProfile(mockProfile);
+          setLoading(false);
+        }
+        return;
+      }
+
       try {
         const { data: { session: currentSession } } = await supabase.auth.getSession();
         if (!mounted) return;
         
         setSession(currentSession);
         if (currentSession) {
-          if (currentSession.user.email === 'metachasm@gmail.com') {
+          if (ADMIN_EMAILS.includes(currentSession.user.email || '')) {
             setProfile({ 
               user_id: currentSession.user.id, 
               role: 'admin', 
-              full_name: 'System Architect',
+              full_name: currentSession.user.user_metadata.full_name || 'System Architect',
               onboarding_status: 'COMPLETED',
               is_verified: true 
             });
@@ -74,6 +118,14 @@ const App: React.FC = () => {
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
       if (!mounted) return;
+      
+      // If bypass is active, ignore auth state changes unless logout
+      if (localStorage.getItem('MATRIARCH_DEV_BYPASS') === 'ENABLED' && !currentSession) {
+        localStorage.removeItem('MATRIARCH_DEV_BYPASS');
+        window.location.reload();
+        return;
+      }
+
       setSession(currentSession);
       if (currentSession) {
         await fetchProfile(currentSession.user.id, mounted);

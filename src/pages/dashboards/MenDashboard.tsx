@@ -23,6 +23,7 @@ import { FAQ } from '@/components/FAQ';
 interface MenDashboardProps {
   profile: any;
   status: any;
+  handleLogout: () => void;
 }
 
 const RANK_LADDER = [
@@ -140,7 +141,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 lg:gap-8 pb-6 border-b border-white/5 mat-stagger-fade-in">
            <div className="space-y-2">
               <span className="mat-text-label-pro">Your Journey / The Spotlight</span>
-              <h1 className="mat-text-display-pro text-white leading-none">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase">
                 <DecryptedText 
                   text="Your Charisma" 
                   animateOn="view" 
@@ -150,10 +151,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20 block lg:inline-block mt-2 lg:mt-0">/ & Connections</span>
               </h1>
            </div>
-           <div className="flex items-center gap-4 w-full lg:w-auto">
-              <div className="flex-1 lg:flex-none flex flex-col items-start lg:items-end justify-center px-6 py-3 bg-white/5 rounded-2xl border border-white/10 group relative cursor-help">
-                 <span className="mat-text-label-pro mb-1">Tokens</span>
-                 <span className="text-xl lg:text-2xl font-display font-black text-white italic tracking-tighter">₹{profile?.tokens || 0}</span>
+           <div className="flex items-center gap-2 sm:gap-4 w-full lg:w-auto">
+              <div className="flex-1 lg:flex-none flex flex-col items-start lg:items-end justify-center px-4 sm:px-6 py-3 bg-white/5 rounded-2xl border border-white/10 group relative cursor-help">
+                 <span className="mat-text-label-pro mb-0.5 sm:mb-1">Tokens</span>
+                 <span className="text-lg sm:text-xl lg:text-2xl font-display font-black text-white italic tracking-tighter">₹{profile?.tokens || 0}</span>
                  
                  {/* Divine Blessings Info */}
                  <div className="absolute top-full mt-4 right-0 w-56 p-5 bg-[#0F0F10] border border-mat-gold/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left">
@@ -177,10 +178,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     </div>
                  </div>
               </div>
-              <Button variant="gold" className="gap-2 shadow-mat-gold h-14 lg:h-12 px-6 lg:px-8 shrink-0" onClick={handleBuyTokens}>
+              <Button variant="gold" className="gap-2 shadow-mat-gold h-12 lg:h-12 px-4 sm:px-8 shrink-0" onClick={handleBuyTokens}>
                 <Zap className="w-4 h-4" />
                 <span className="hidden sm:inline">Get Tokens</span>
-                <span className="sm:hidden">Buy</span>
+                <span className="sm:hidden text-[10px] font-black uppercase tracking-widest">Get</span>
               </Button>
            </div>
         </section>
@@ -293,13 +294,13 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                            <h4 className="mat-text-label-pro text-mat-gold">Step into the Spotlight</h4>
                            <Zap className="w-4 h-4 text-mat-gold" />
                         </div>
-                        <p className="text-[9px] text-white/40 leading-relaxed uppercase tracking-[0.2em] font-medium">Spend 49 tokens to override joining time disadvantage and scale the ladder instantly.</p>
+                        <p className="text-[9px] text-white/40 leading-relaxed uppercase tracking-[0.1em] sm:tracking-[0.2em] font-medium">Scale the ladder instantly for 49 tokens.</p>
                         <Button 
                           onClick={handleBumpRank} 
                           disabled={isBumping || (profile?.tokens || 0) < 49}
-                          className="w-full h-12 bg-mat-gold text-black hover:bg-mat-gold/90 font-black tracking-widest uppercase rounded-xl shadow-mat-gold"
+                          className="w-full h-12 bg-mat-gold text-black hover:bg-mat-gold/90 font-black tracking-wider sm:tracking-widest uppercase rounded-xl shadow-mat-gold text-[9px] sm:text-[10px] px-2"
                         >
-                           {isBumping ? "Bumping..." : "Shine Brighter for 49 Tokens"}
+                           {isBumping ? "Bumping..." : "Shine Brighter (49 Tokens)"}
                         </Button>
                      </div>
                   </div>

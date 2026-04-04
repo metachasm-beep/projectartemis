@@ -11,11 +11,24 @@ export const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<any>(null);
 
   useEffect(() => {
+    // Global Watchdog: Force end loading if it takes too long
+    const watchdog = setTimeout(() => {
+      if (loading) {
+        console.warn("MATRIARCH_DASHBOARD: Synchronization timeout. Forcing UI entry.");
+        setLoading(false);
+      }
+    }, 10000);
+
     const fetchData = async () => {
-      setLoading(true);
+      console.log("MATRIARCH_API: Connecting to sanctuary at", import.meta.env.VITE_API_URL || 'RELATIVE_PATH');
+      
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) return;
+        if (!user) {
+          console.warn("MATRIARCH_DASHBOARD: No user found. Redirecting to landing.");
+          setLoading(false);
+          return;
+        }
 
         // Fetch Profile
         const { data: profileData } = await supabase
@@ -26,19 +39,33 @@ export const Dashboard: React.FC = () => {
         
         setProfile(profileData);
 
-        // Fetch Status from API
-        const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/${user.id}/status`);
-        const data = await response.json();
-        if (data) {
-          setStatus(data);
+        // Fetch Status from API with timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        try {
+          const response = await fetch(`${import.meta.env.VITE_API_URL || ''}/api/v1/rank/${user.id}/status`, {
+            signal: controller.signal
+          });
+          const data = await response.json();
+          if (data) {
+            setStatus(data);
+          }
+        } catch (fetchErr) {
+          console.warn("MATRIARCH_API: Failed to fetch rank status (possibly offline or timeout). Continuing with profile data only.", fetchErr);
+        } finally {
+          clearTimeout(timeoutId);
         }
       } catch (err) {
-        console.error("Failed to fetch dashboard data", err);
+        console.error("MATRIARCH_DASHBOARD: Critical fetch failure", err);
       } finally {
         setLoading(false);
+        clearTimeout(watchdog);
       }
     };
     fetchData();
+    
+    return () => clearTimeout(watchdog);
   }, []);
 
   const handleLogout = async () => {

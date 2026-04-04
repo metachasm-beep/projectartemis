@@ -132,12 +132,12 @@ const LandingPage: React.FC = () => {
                 MATRIARCH is a sanctuary where connections are nurtured, and every journey begins with her choice. A space built for intention, not noise.
               </p>
               
-              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-4 lg:px-0">
-                <Button variant="gold" size="lg" className="h-16 px-12 rounded-2xl shadow-mat-gold font-black uppercase tracking-widest text-[11px] w-full sm:w-auto" onClick={() => setShowSignIn(true)}>
+              <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-2 sm:px-0">
+                <Button variant="gold" size="lg" className="h-16 px-6 sm:px-12 rounded-2xl shadow-mat-gold font-black uppercase tracking-wider sm:tracking-widest text-[10px] sm:text-[11px] w-full sm:w-auto" onClick={() => setShowSignIn(true)}>
                   Sign In with Google
                   <ArrowRight className="ml-3 w-5 h-5" />
                 </Button>
-                <Button variant="secondary" size="lg" className="h-16 px-12 rounded-2xl font-black uppercase tracking-widest text-[11px] w-full sm:w-auto" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
+                <Button variant="secondary" size="lg" className="h-16 px-6 sm:px-12 rounded-2xl font-black uppercase tracking-wider sm:tracking-widest text-[10px] sm:text-[11px] w-full sm:w-auto" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
                   See How It Works
                 </Button>
               </div>
@@ -378,12 +378,12 @@ const LandingPage: React.FC = () => {
                             <Progress value={99} className="h-4 bg-white/5" />
                          </div>
 
-                         <div className="mat-panel bg-black/40 p-8 flex items-center justify-between border-matriarch-gold/20 rounded-3xl group-hover:border-matriarch-gold/40 transition-all duration-500">
-                            <div className="flex items-center gap-6">
-                               <div className="w-4 h-4 rounded-full bg-matriarch-gold shadow-[0_0_15px_rgba(212,175,55,0.8)]" />
-                               <span className="mat-text-label-pro !text-white !not-italic">Referral Code Required</span>
+                         <div className="mat-panel bg-black/40 p-6 lg:p-10 flex items-center justify-between border-matriarch-gold/20 rounded-3xl group-hover:border-matriarch-gold/40 transition-all duration-500">
+                            <div className="flex items-center gap-4 lg:gap-6">
+                               <div className="w-3 h-3 lg:w-4 lg:h-4 rounded-full bg-matriarch-gold shadow-[0_0_15px_rgba(212,175,55,0.8)] shrink-0" />
+                               <span className="mat-text-label-pro !text-white !not-italic !text-[9px] lg:!text-[10px]">Referral Code Required</span>
                             </div>
-                            <ChevronRight className="w-6 h-6 text-matriarch-gold group-hover:translate-x-1 transition-transform" />
+                            <ChevronRight className="w-5 h-5 lg:w-6 lg:h-6 text-matriarch-gold group-hover:translate-x-1 transition-transform shrink-0" />
                          </div>
                       </div>
                    </div>
@@ -506,7 +506,7 @@ const LandingPage: React.FC = () => {
                         </li>
                       ))}
                    </ul>
-                   <Button variant="outline" className="w-full border-matriarch-violetBright/30 text-matriarch-violetBright uppercase tracking-[0.4em] text-[11px] font-black h-20 rounded-[2rem] hover:bg-matriarch-violetBright/10 transition-all">By Selection Only</Button>
+                   <Button variant="outline" className="w-full border-matriarch-violetBright/30 text-matriarch-violetBright uppercase tracking-wider sm:tracking-[0.4em] text-[10px] sm:text-[11px] font-black h-16 sm:h-20 rounded-[1.5rem] sm:rounded-[2rem] hover:bg-matriarch-violetBright/10 transition-all">By Selection Only</Button>
                 </div>
               </div>
 
@@ -536,7 +536,7 @@ const LandingPage: React.FC = () => {
                         </li>
                       ))}
                    </ul>
-                   <Button variant="gold" className="w-full h-20 uppercase tracking-[0.4em] text-[11px] font-black rounded-[2rem] shadow-mat-gold transition-all hover:scale-[1.02]">Scale the Ladder</Button>
+                   <Button variant="gold" className="w-full h-16 sm:h-20 uppercase tracking-wider sm:tracking-[0.4em] text-[10px] sm:text-[11px] font-black rounded-[1.5rem] sm:rounded-[2rem] shadow-mat-gold transition-all hover:scale-[1.02]">Scale the Ladder</Button>
                 </div>
               </div>
             </div>

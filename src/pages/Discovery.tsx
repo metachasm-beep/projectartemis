@@ -85,9 +85,9 @@ export const Discovery: React.FC = () => {
           <div className="pt-4 flex flex-col gap-4">
              <Button 
                 onClick={() => window.location.href = '/dashboard'} 
-                className="h-16 bg-white text-black font-black uppercase tracking-[0.2em] text-[11px] rounded-2xl hover:scale-[0.98] transition-all shadow-2xl"
+                className="h-14 sm:h-16 bg-white text-black font-black uppercase tracking-wider sm:tracking-[0.2em] text-[10px] sm:text-[11px] rounded-2xl hover:scale-[0.98] transition-all shadow-2xl"
              >
-               Go to Dashboard to Verify
+                Go to Dashboard to Verify
              </Button>
           </div>
         </motion.div>
@@ -100,10 +100,10 @@ export const Discovery: React.FC = () => {
       <motion.div 
         animate={{ rotate: 360 }}
         transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-        className="mb-12 p-1.5 rounded-full bg-gradient-to-tr from-matriarch-violetBright to-mat-gold shadow-2xl"
+        className="mb-12 p-1 rounded-full bg-gradient-to-tr from-matriarch-violetBright to-mat-gold shadow-2xl"
       >
-        <div className="bg-[#0F0F10] rounded-full p-8">
-          <Crown className="w-16 h-16 text-mat-gold" strokeWidth={0.5} />
+        <div className="bg-[#0F0F10] rounded-full p-6 sm:p-8">
+          <Crown className="w-12 h-12 sm:w-16 sm:h-16 text-mat-gold" strokeWidth={0.5} />
         </div>
       </motion.div>
       <div className="space-y-4 text-center">
@@ -137,27 +137,27 @@ export const Discovery: React.FC = () => {
               <p className="mat-text-label-pro opacity-40 italic">Your story is shared with those who choose.</p>
             </div>
 
-            <div className="grid grid-cols-3 gap-4 lg:gap-8 py-12">
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-mat-gold group-hover:text-black">
-                   <Eye size={18} />
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-8 py-8 lg:py-12">
+              <div className="space-y-3 sm:space-y-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-mat-gold group-hover:text-black">
+                   <Eye size={16} className="sm:size-[18px]" />
                 </div>
-                <div className="text-3xl lg:text-4xl mat-text-display-pro text-white">42</div>
-                <div className="mat-text-label-pro !text-[7px] lg:!text-[8px] !not-italic opacity-40">Kindred Souls</div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">42</div>
+                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Kindred Souls</div>
               </div>
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-matriarch-violetBright group-hover:text-white">
-                   <TrendingUp size={18} />
+              <div className="space-y-3 sm:space-y-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-matriarch-violetBright group-hover:text-white">
+                   <TrendingUp size={16} className="sm:size-[18px]" />
                 </div>
-                <div className="text-3xl lg:text-4xl mat-text-display-pro text-white">Top 8%</div>
-                <div className="mat-text-label-pro !text-[7px] lg:!text-[8px] !not-italic opacity-40">Your Presence</div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">Top 8%</div>
+                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Your Presence</div>
               </div>
-              <div className="space-y-4">
-                <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-green-500 group-hover:text-black">
-                   <Shield size={18} />
+              <div className="space-y-3 sm:space-y-4">
+                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-green-500 group-hover:text-black">
+                   <Shield size={16} className="sm:size-[18px]" />
                 </div>
-                <div className="text-3xl lg:text-4xl mat-text-display-pro text-white">Active</div>
-                <div className="mat-text-label-pro !text-[7px] lg:!text-[8px] !not-italic opacity-40">Heart Harmony</div>
+                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">Active</div>
+                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Heart Harmony</div>
               </div>
             </div>
 
@@ -173,7 +173,7 @@ export const Discovery: React.FC = () => {
               </div>
             </div>
 
-            <Button className="w-full h-18 bg-white text-black font-black uppercase tracking-[0.3em] text-[11px] rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-2xl">
+            <Button className="w-full h-16 sm:h-18 bg-white text-black font-black uppercase tracking-wider sm:tracking-[0.3em] text-[10px] sm:text-[11px] rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-2xl">
               Deepen Your Story
             </Button>
           </motion.div>
