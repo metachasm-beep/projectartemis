@@ -1,0 +1,10 @@
+User-agent: Mediapartners-Google
+Allow: /
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /auth/
+
+Sitemap: https://www.matriarchindia.com/sitemap.xml

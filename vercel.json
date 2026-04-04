@@ -1,5 +1,15 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/index.html" }
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "matriarchindia.com"
+        }
+      ],
+      "destination": "https://www.matriarchindia.com/$1",
+      "permanent": true
+    }
   ]
 }
