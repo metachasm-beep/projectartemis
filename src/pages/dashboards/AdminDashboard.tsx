@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import { 
   Users, 
   ShieldCheck, 
@@ -7,17 +6,12 @@ import {
   Activity, 
   Search, 
   MoreHorizontal, 
-  UserCheck, 
-  UserX,
-  RotateCcw,
-  Trash2,
   ArrowUpRight,
   RefreshCw,
   LogOut
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
 
 interface AdminStats {
   totalUsers: number;
@@ -78,7 +72,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   }, []);
 
   const updateUserProfile = async (userId: string, updates: any) => {
-    console.log(`MATRIARCH: Absolute Intervention Initiated for ${userId}:`, updates);
     try {
       const { error } = await supabase
         .from('profiles')
@@ -88,18 +81,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
       if (!error) {
         setUsers(prev => prev.map(u => u.user_id === userId ? { ...u, ...updates } : u));
         setActiveMenuUserId(null);
-        console.log(`MATRIARCH: Soul ${userId} successfully evolved.`);
       } else {
          throw error;
       }
     } catch (err) {
       console.error("MATRIARCH: Profile update failed:", err);
-      alert("Divine Intervention Interrupted: Database rejected the change.");
     }
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm("ARE YOU CERTAIN? This soul will be purged from the Sanctuary records.")) return;
+    if (!window.confirm("ARE YOU CERTAIN? This record will be purged.")) return;
     try {
        const { error } = await supabase.from('profiles').delete().eq('user_id', userId);
        if (!error) {
@@ -112,7 +103,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   };
 
   const toggleVerification = async (userId: string, currentStatus: any) => {
-    // Explicitly toggle based on truthy/falsy to handle nulls
     const targetStatus = !currentStatus;
     await updateUserProfile(userId, { is_verified: targetStatus });
   };
@@ -131,265 +121,208 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   });
 
   return (
-    <div className="min-h-screen pt-24 space-y-12">
-      <div className="px-8 space-y-12">
-        {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-        <div>
-          <h1 className="text-3xl sm:text-4xl font-display font-black text-white italic tracking-tight uppercase mb-2 flex items-center gap-4">
-            Command Center <Activity className="text-mat-gold animate-pulse hidden sm:block" />
-          </h1>
-          <p className="text-[9px] sm:text-[10px] text-white/40 font-black uppercase tracking-[0.4em] sm:tracking-[0.6em]">System Oversight & Divine Intervention</p>
-        </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <Button 
-            onClick={handleLogout}
-            className="flex-1 sm:flex-none h-12 sm:h-14 px-4 sm:px-8 bg-red-500/5 border border-red-500/10 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 rounded-2xl flex gap-2 sm:gap-3 items-center backdrop-blur-xl transition-all"
-          >
-            <LogOut size={14} />
-            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Sign Out</span>
-          </Button>
-          <Button 
-            onClick={fetchData} 
-            disabled={loading}
-            className="flex-1 sm:flex-none h-12 sm:h-14 px-4 sm:px-8 bg-white/5 border border-white/10 hover:bg-white/10 text-white rounded-2xl flex gap-2 sm:gap-3 items-center backdrop-blur-xl"
-          >
-            <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
-            <span className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest">Sync</span>
-          </Button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-white">
+      <main className="mat-container pt-24 space-y-24">
+        {/* Command Header */}
+        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-black/10">
+           <div className="space-y-6">
+              <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-black/10 rounded-none">Protocol // Oversight</Badge>
+              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
+                Matrix <br />
+                <span className="text-black/20">Control.</span>
+              </h1>
+           </div>
+           
+           <div className="flex items-center gap-px bg-black/5 border border-black/5 p-px w-full lg:w-auto">
+              <button 
+                className="bg-white text-black px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-50 transition-all h-full border border-black/5 flex items-center gap-4"
+                onClick={fetchData}
+              >
+                <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
+                Synchronize
+              </button>
+              <button 
+                className="bg-black text-white px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-800 transition-all h-full flex items-center gap-4"
+                onClick={handleLogout}
+              >
+                <LogOut size={14} />
+                Purge Session
+              </button>
+           </div>
+        </section>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: 'Total Souls', value: stats.totalUsers, icon: Users, color: 'text-white' },
-          { label: 'Verified Truth', value: stats.verifiedUsers, icon: ShieldCheck, color: 'text-green-400' },
-          { label: 'Token Flow', value: stats.totalTokens.toLocaleString(), icon: Coins, color: 'text-mat-gold' },
-          { label: 'Sanctuary Balance', value: `${stats.totalMen}:${stats.totalWomen}`, icon: Activity, color: 'text-matriarch-violet' },
-        ].map((stat, i) => (
-          <motion.div 
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="mat-panel-premium p-8 rounded-[2rem] border border-white/5 space-y-4"
-          >
-            <div className="flex justify-between items-start">
-              <div className={`p-3 rounded-xl bg-white/5 ${stat.color}`}>
-                <stat.icon size={20} />
+        {/* Stats Registry */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5 border border-black/5">
+           {[
+             { label: 'Souls Arch-Total', val: stats.totalUsers, icon: Users },
+             { label: 'Truth Verified', val: stats.verifiedUsers, icon: ShieldCheck },
+             { label: 'Token Flow Volume', val: stats.totalTokens.toLocaleString(), icon: Coins },
+             { label: 'Symmetry Ratio', val: `${stats.totalMen}:${stats.totalWomen}`, icon: Activity },
+           ].map((item, i) => (
+             <div key={i} className="bg-white p-12 space-y-12 group hover:bg-black/5 transition-all">
+                <div className="flex justify-between items-start">
+                   <item.icon className="w-6 h-6 text-black" strokeWidth={1} />
+                   <ArrowUpRight className="w-4 h-4 text-black/10 group-hover:text-black transition-colors" />
+                </div>
+                <div className="space-y-4">
+                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">{item.label}</span>
+                   <h4 className="text-4xl font-bold text-black uppercase tracking-tight">{item.val}</h4>
+                </div>
+             </div>
+           ))}
+        </div>
+
+        {/* Soul matrix visualization */}
+        <div className="space-y-12">
+           <div className="flex flex-col lg:flex-row gap-12 justify-between items-start lg:items-end">
+              <div className="space-y-6">
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Active Soul Matrix</h3>
+                 <div className="flex bg-black/5 border border-black/5 p-px h-12">
+                   {(['all', 'man', 'woman', 'verified'] as const).map(f => (
+                     <button
+                       key={f}
+                       onClick={() => setFilter(f)}
+                       className={`px-8 h-full text-[9px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-black text-white' : 'bg-white text-black/40 hover:text-black'}`}
+                     >
+                       {f}
+                     </button>
+                   ))}
+                 </div>
               </div>
-              <ArrowUpRight size={16} className="text-white/20" />
-            </div>
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-white/40 mb-1">{stat.label}</p>
-              <h3 className="text-3xl font-mono font-black text-white italic">{stat.value}</h3>
-            </div>
-          </motion.div>
-        ))}
-      </div>
-      </div>
+              <div className="relative w-full lg:w-96">
+                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={16} />
+                 <input 
+                   placeholder="ARCHIVE SEARCH..." 
+                   value={searchQuery}
+                   onChange={(e) => setSearchQuery(e.target.value)}
+                   className="w-full h-16 pl-16 pr-6 bg-white border border-black/10 text-[11px] uppercase font-black tracking-widest focus:outline-none focus:border-black"
+                 />
+              </div>
+           </div>
 
-      {/* Soul Matrix (User List) */}
-      <div className="mat-panel-premium rounded-none md:rounded-[2.5rem] border-x-0 md:border border-white/5 overflow-visible flex flex-col">
-        <div className="p-6 md:p-8 border-b border-white/5 flex flex-col lg:flex-row gap-6 justify-between lg:items-center">
-           <h3 className="text-lg md:text-xl font-display font-black text-white italic uppercase tracking-widest">Soul Matrix</h3>
-           <div className="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-             <div className="relative w-full sm:w-64 lg:w-80">
-               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
-               <Input 
-                 placeholder="SEARCH SOULS..." 
-                 value={searchQuery}
-                 onChange={(e) => setSearchQuery(e.target.value)}
-                 className="pl-12 h-12 bg-white/5 border-white/10 rounded-xl text-[10px] uppercase font-black"
-               />
-             </div>
-             <div className="flex bg-white/5 rounded-xl border border-white/10 p-1 overflow-x-auto no-scrollbar">
-               {(['all', 'man', 'woman', 'verified'] as const).map(f => (
-                 <button
-                   key={f}
-                   onClick={() => setFilter(f)}
-                   className={`flex-1 sm:flex-none px-3 sm:px-4 py-2 rounded-lg text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filter === f ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
-                 >
-                   {f}
-                 </button>
-               ))}
-             </div>
+           <div className="border border-black/5 overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-black/5">
+                   <tr>
+                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Soul Identity</th>
+                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Standing</th>
+                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Verification</th>
+                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Wealth</th>
+                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40 text-right">Intervention</th>
+                   </tr>
+                </thead>
+                <tbody className="divide-y divide-black/5">
+                   {loading ? (
+                     <tr>
+                        <td colSpan={5} className="py-24 text-center">
+                           <RefreshCw className="animate-spin text-black mx-auto mb-4" size={32} />
+                           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Archiving Matrix...</p>
+                        </td>
+                     </tr>
+                   ) : filteredUsers.length === 0 ? (
+                     <tr>
+                        <td colSpan={5} className="py-24 text-center">
+                           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Matrix Vacant.</p>
+                        </td>
+                     </tr>
+                   ) : filteredUsers.map((u) => (
+                     <tr key={u.user_id} className="hover:bg-black/[0.02] transition-colors">
+                        <td className="px-12 py-8">
+                           <div className="flex items-center gap-6">
+                              <div className="w-16 h-16 bg-black/5 border border-black/5 overflow-hidden">
+                                 {u.photos?.[0] ? (
+                                   <img src={u.photos[0]} alt="" className="w-full h-full object-cover grayscale" />
+                                 ) : (
+                                   <div className="w-full h-full flex items-center justify-center text-black/10">
+                                      <Users size={24} />
+                                   </div>
+                                 )}
+                              </div>
+                              <div>
+                                 <p className="text-sm font-black text-black uppercase tracking-tighter">{u.full_name || 'ANONYMOUS'}</p>
+                                 <p className="text-[9px] font-black text-black/20 uppercase tracking-widest">{u.user_id.slice(0, 12)}</p>
+                              </div>
+                           </div>
+                        </td>
+                        <td className="px-12 py-8">
+                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black">
+                              {u.role || 'GHOST'}
+                           </span>
+                        </td>
+                        <td className="px-12 py-8">
+                           {u.is_verified ? (
+                             <Badge variant="outline" className="border-black/20 text-black px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-none">SEALED</Badge>
+                           ) : (
+                             <Badge variant="outline" className="border-dashed border-black/20 text-black/20 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-none">VOID</Badge>
+                           )}
+                        </td>
+                        <td className="px-12 py-8">
+                           <span className="text-sm font-black text-black tracking-tight">₹{u.tokens || 0}</span>
+                        </td>
+                        <td className="px-12 py-8 text-right relative">
+                           <button 
+                             onClick={() => setActiveMenuUserId(activeMenuUserId === u.user_id ? null : u.user_id)}
+                             className="p-4 hover:bg-black hover:text-white transition-all text-black/40"
+                           >
+                             <MoreHorizontal size={20} />
+                           </button>
+
+                           {activeMenuUserId === u.user_id && (
+                             <div className="absolute right-12 top-full z-[100] w-64 bg-white border border-black shadow-[0_30px_60px_rgba(0,0,0,0.2)] p-2 space-y-px">
+                                <div className="px-4 py-2 border-b border-black/5 mb-2">
+                                   <p className="text-[9px] font-black text-black/20 uppercase tracking-[0.4em]">Protocols</p>
+                                </div>
+                                <button 
+                                  onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
+                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                                >
+                                   {u.is_active === false ? 'Restore access' : 'Sever access'}
+                                </button>
+                                <button 
+                                  onClick={() => toggleVerification(u.user_id, u.is_verified)}
+                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                                >
+                                   {u.is_verified ? 'Revoke truth' : 'Seal truth'}
+                                </button>
+                                <button 
+                                  onClick={() => {
+                                     const amt = window.prompt("Wealth Delta:", "1000");
+                                     if (amt) adjustTokens(u.user_id, u.tokens || 0, parseInt(amt));
+                                  }}
+                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                                >
+                                   Modify wealth
+                                </button>
+                                <button 
+                                  onClick={() => updateUserProfile(u.user_id, { onboarding_status: 'PENDING' })}
+                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
+                                >
+                                   Reset evolution
+                                </button>
+                                <div className="h-px bg-black/5 my-2" />
+                                <button 
+                                  onClick={() => handleDeleteUser(u.user_id)}
+                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all"
+                                >
+                                   Matrix purge
+                                </button>
+                             </div>
+                           )}
+                        </td>
+                     </tr>
+                   ))}
+                </tbody>
+              </table>
            </div>
         </div>
 
-        <div className="overflow-x-auto no-scrollbar">
-          <table className="w-full text-left min-w-[700px]">
-            <thead>
-              <tr className="bg-white/[0.02] border-b border-white/5">
-                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Profile</th>
-                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Identity</th>
-                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Status</th>
-                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest">Tokens</th>
-                <th className="px-6 sm:px-8 py-6 text-[10px] font-black text-white/40 uppercase tracking-widest text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {loading ? (
-                <tr>
-                   <td colSpan={5} className="p-20 text-center">
-                      <div className="flex flex-col items-center gap-4">
-                        <RefreshCw className="animate-spin text-mat-gold" size={32} />
-                        <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Reading the database...</span>
-                      </div>
-                   </td>
-                </tr>
-              ) : filteredUsers.length === 0 ? (
-                <tr>
-                   <td colSpan={5} className="p-20 text-center">
-                      <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">No souls found matching your query.</p>
-                   </td>
-                </tr>
-              ) : filteredUsers.map((u) => (
-                <tr key={u.user_id} className="hover:bg-white/[0.01] transition-colors group">
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-xl bg-white/5 overflow-hidden border border-white/10">
-                        {u.photos?.[0] ? (
-                          <img src={u.photos[0]} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center text-white/20">
-                            <Users size={20} />
-                          </div>
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-sm font-black text-white uppercase tracking-tighter">{u.full_name || 'PENDING'}</p>
-                        <p className="text-[9px] font-mono text-white/20">{u.user_id.slice(0, 8)}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${
-                      u.role === 'man' ? 'bg-mat-gold/10 text-mat-gold' : 
-                      u.role === 'woman' ? 'bg-matriarch-violet/10 text-matriarch-violet' :
-                      'bg-white/10 text-white'
-                    }`}>
-                      {u.role || 'GHOST'}
-                    </span>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-2">
-                       {u.is_verified ? (
-                         <div className="flex items-center gap-1.5 px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-[9px] font-black uppercase tracking-widest">
-                            <ShieldCheck size={10} /> Verified
-                         </div>
-                       ) : (
-                         <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500/10 text-red-400 rounded-full text-[9px] font-black uppercase tracking-widest">
-                            <Activity size={10} /> Pending
-                         </div>
-                       )}
-                    </div>
-                  </td>
-                  <td className="px-8 py-6">
-                    <div className="flex items-center gap-3">
-                       <span className="text-sm font-mono font-bold text-mat-gold">{u.tokens || 0}</span>
-                    </div>
-                  </td>
-                  <td className="px-8 py-6 text-right">
-                      <div className="relative">
-                        <Button 
-                          variant="ghost" 
-                          size="sm"
-                          onClick={() => setActiveMenuUserId(activeMenuUserId === u.user_id ? null : u.user_id)}
-                          className={`h-10 w-10 p-0 hover:bg-white/5 rounded-xl transition-all ${activeMenuUserId === u.user_id ? 'bg-white/10 text-white' : 'text-white/20 hover:text-white'}`}
-                        >
-                          <MoreHorizontal size={18} />
-                        </Button>
-
-                        {/* Administrative Dropdown Menu */}
-                        {activeMenuUserId === u.user_id && (
-                          <>
-                            <div className="fixed inset-0 z-[60]" onClick={() => setActiveMenuUserId(null)} />
-                            <motion.div 
-                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                              animate={{ opacity: 1, scale: 1, y: 0 }}
-                              className="absolute right-0 top-full mt-2 w-56 mat-panel-premium border border-white/10 rounded-2xl shadow-2xl z-[70] overflow-hidden backdrop-blur-3xl"
-                            >
-                               <div className="p-2 border-b border-white/5 bg-white/[0.02]">
-                                  <p className="px-3 py-1 text-[8px] font-black text-white/20 uppercase tracking-widest text-center">Divine Controls</p>
-                               </div>
-                               <div className="p-2 flex flex-col gap-1">
-                                  <button 
-                                    onClick={(e) => {
-                                       e.stopPropagation();
-                                       updateUserProfile(u.user_id, { is_active: !u.is_active });
-                                    }}
-                                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${u.is_active === false ? 'text-green-400 hover:bg-green-400/10' : 'text-red-400 hover:bg-red-400/10'}`}
-                                  >
-                                    {u.is_active === false ? <UserCheck size={14} /> : <UserX size={14} />}
-                                    {u.is_active === false ? 'Restore Soul' : 'Purge Access'}
-                                  </button>
-                                  
-                                  <button 
-                                    onClick={(e) => {
-                                       e.stopPropagation();
-                                       toggleVerification(u.user_id, u.is_verified);
-                                    }}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-white/60 uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
-                                  >
-                                    <ShieldCheck size={14} />
-                                    {u.is_verified ? 'Revoke Seal' : 'Grant Seal'}
-                                  </button>
-
-                                  <button 
-                                    onClick={() => {
-                                       const amt = window.prompt("Enter token adjustment (+ to add, - to remove):", "1000");
-                                       if (amt) adjustTokens(u.user_id, u.tokens || 0, parseInt(amt));
-                                    }}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-mat-gold/60 uppercase tracking-widest hover:bg-mat-gold/10 hover:text-mat-gold transition-all"
-                                  >
-                                    <Coins size={14} />
-                                    Modify Wealth
-                                  </button>
-
-                                  <button 
-                                    onClick={() => updateUserProfile(u.user_id, { onboarding_status: 'PENDING' })}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-white/40 uppercase tracking-widest hover:bg-white/5 hover:text-white transition-all"
-                                  >
-                                    <RotateCcw size={14} />
-                                    Reset Journey
-                                  </button>
-
-                                  <div className="h-[1px] bg-white/5 my-1" />
-
-                                  <button 
-                                    onClick={() => {
-                                       const newRole = u.role === 'man' ? 'woman' : u.role === 'woman' ? 'admin' : 'man';
-                                       updateUserProfile(u.user_id, { role: newRole });
-                                    }}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-matriarch-violet/60 uppercase tracking-widest hover:bg-matriarch-violet/10 hover:text-matriarch-violet transition-all"
-                                  >
-                                    <RefreshCw size={14} />
-                                    Cycle Role: {u.role === 'man' ? 'Woman' : u.role === 'woman' ? 'Admin' : 'Man'}
-                                  </button>
-
-                                  <button 
-                                    onClick={() => handleDeleteUser(u.user_id)}
-                                    className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-[10px] font-black text-red-600/40 uppercase tracking-widest hover:bg-red-600/10 hover:text-red-600 transition-all"
-                                  >
-                                    <Trash2 size={14} />
-                                    Absolute Purge
-                                  </button>
-                               </div>
-                            </motion.div>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-              ))}
-            </tbody>
-          </table>
+        {/* Swiss Footer */}
+        <div className="py-40 text-center border-t border-black/5">
+          <p className="text-[11px] font-black uppercase tracking-[1.5em] text-black/10">
+            MATRIARCH // SUPREME OVERSIGHT // SECURED
+          </p>
         </div>
-      </div>
-
-      {/* Footer Branding Removed as per request */}
+      </main>
     </div>
   );
 };

@@ -1,18 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-matriarch-bg: #0A0A0B;
-  --color-matriarch-surface: #111114;
-  --color-matriarch-surface2: #16161B;
-  --color-matriarch-surface3: #1D1B24;
-  --color-matriarch-panel: #24152E;
-  --color-matriarch-line: rgba(255, 255, 255, 0.08);
-  --color-matriarch-line-strong: rgba(255, 255, 255, 0.14);
+  --color-matriarch-bg: #FFFFFF;
+  --color-matriarch-surface: #F8F8F8;
+  --color-matriarch-surface2: #F1F1F1;
+  --color-matriarch-surface3: #E5E5E5;
+  --color-matriarch-panel: #FFFFFF;
+  --color-matriarch-line: rgba(0, 0, 0, 0.05);
+  --color-matriarch-line-strong: rgba(0, 0, 0, 0.12);
 
-  --color-matriarch-text: #F6F3EE;
-  --color-matriarch-text-soft: #D8D2C9;
-  --color-matriarch-text-muted: #A6A0B3;
-  --color-matriarch-text-faint: rgba(246, 243, 238, 0.45);
+  --color-matriarch-text: #000000;
+  --color-matriarch-text-soft: #444444;
+  --color-matriarch-text-muted: #888888;
+  --color-matriarch-text-faint: rgba(0, 0, 0, 0.2);
 
   --color-matriarch-violet: #6E3FF3;
   --color-matriarch-violet-bright: #8A63FF;
@@ -27,31 +27,27 @@
   --color-mat-surface: var(--color-matriarch-surface);
   --color-mat-violet: var(--color-matriarch-violet);
   --color-mat-gold: var(--color-matriarch-gold);
-  --color-mat-plum: var(--color-matriarch-plum);
-  --color-mat-red: var(--color-matriarch-red);
+  --color-mat-plum: #F1F1F5;
+  --color-mat-red: #EF4444;
 
-  --color-matriarch-plum: #24152E;
-  --color-matriarch-red: #EF4444;
+  --font-display: "Helvetica", "Arial", sans-serif;
+  --font-body: "Helvetica", "Arial", sans-serif;
 
-  --font-display: Sora, Inter, sans-serif;
-  --font-body: Inter, sans-serif;
-
-  --radius-mat-sm: 12px;
-  --radius-mat-md: 18px;
-  --radius-mat-lg: 24px;
-  --radius-mat-xl: 32px;
+  --radius-mat-sm: 8px;
+  --radius-mat-md: 12px;
+  --radius-mat-lg: 16px;
+  --radius-mat-xl: 24px;
   --radius-mat-pill: 999px;
 
-  --shadow-mat-base: 0 12px 40px rgba(0, 0, 0, 0.35);
-  --shadow-mat-premium: 0 20px 60px rgba(0, 0, 0, 0.45);
-  --shadow-mat-violet: 0 0 40px rgba(110, 63, 243, 0.18);
-  --shadow-mat-gold: 0 0 30px rgba(212, 175, 55, 0.16);
+  --shadow-mat-base: 0 4px 20px rgba(0, 0, 0, 0.04);
+  --shadow-mat-premium: 0 10px 40px rgba(0, 0, 0, 0.08);
+  --shadow-mat-violet: 0 8px 30px rgba(110, 63, 243, 0.1);
+  --shadow-mat-gold: 0 8px 30px rgba(212, 175, 55, 0.15);
 
-  --bg-image-mat-primary: linear-gradient(135deg, #6E3FF3 0%, #8A63FF 100%);
+  --bg-image-mat-primary: linear-gradient(135deg, #000000 0%, #333333 100%);
   --bg-image-mat-gold: linear-gradient(135deg, #A9861D 0%, #D4AF37 45%, #E7C96D 100%);
-  --bg-image-mat-panel: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.03) 100%);
-  --bg-image-mat-panel-premium: linear-gradient(180deg, rgba(110, 63, 243, 0.12) 0%, rgba(255, 255, 255, 0.03) 100%);
-  --bg-image-mat-hero: radial-gradient(circle at top, rgba(110, 63, 243, 0.22), transparent 35%), radial-gradient(circle at bottom right, rgba(212, 175, 55, 0.08), transparent 30%);
+  --bg-image-mat-panel: linear-gradient(180deg, #FFFFFF 0%, #FAFAFA 100%);
+  --bg-image-mat-hero: radial-gradient(circle at top, rgba(0, 0, 0, 0.02), transparent 50%);
 
   --animate-marquee: marquee 15s linear infinite;
 
@@ -63,7 +59,7 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html {
@@ -76,11 +72,13 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: -0.01em;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     color: var(--color-matriarch-text);
+    font-weight: 700;
   }
 }
 
@@ -96,155 +94,106 @@
     margin-right: auto;
     width: 100%;
     max-width: 80rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
-  }
-
-  @media (min-width: 640px) {
-    .mat-container {
-      padding-left: 1.5rem;
-      padding-right: 1.5rem;
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .mat-container {
-      padding-left: 2rem;
-      padding-right: 2rem;
-    }
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 
   .mat-section {
-    padding-top: 3rem;
-    padding-bottom: 3rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 1024px) {
     .mat-section {
-      padding-top: 5rem;
-      padding-bottom: 5rem;
+      padding-top: 8rem;
+      padding-bottom: 8rem;
     }
   }
 
   .mat-eyebrow {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.26em;
+    letter-spacing: 0.3em;
+    font-weight: 800;
     color: var(--color-matriarch-text-muted);
   }
 
-  /* Utility aliases using standard Tailwind or custom vars */
+  /* Swiss Minimalist Panels */
   .mat-panel {
-    border-radius: var(--radius-mat-lg);
+    border-radius: var(--radius-mat-md);
     border: 1px solid var(--color-matriarch-line);
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: #FFFFFF;
     box-shadow: var(--shadow-mat-base);
-    backdrop-filter: blur(12px);
   }
 
   .mat-panel-premium {
-    border-radius: var(--radius-mat-lg);
-    border: 1px solid var(--color-matriarch-line);
-    background-image: var(--bg-image-mat-panel-premium);
+    border-radius: var(--radius-mat-md);
+    border: 1.5px solid #000000;
+    background-color: #FFFFFF;
     box-shadow: var(--shadow-mat-premium);
-    backdrop-filter: blur(12px);
   }
 
   .mat-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: var(--radius-mat-pill);
-    padding: 0.875rem 1.5rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.2s;
+    border-radius: var(--radius-mat-sm);
+    padding: 1rem 2rem;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
   }
 
   .mat-button-primary {
-    background-image: var(--bg-image-mat-primary);
+    background-color: #000000;
     color: white;
-    box-shadow: var(--shadow-mat-violet);
+  }
+
+  .mat-button-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
   }
 
   .mat-button-gold {
-    background-image: var(--bg-image-mat-gold);
-    color: black;
-    box-shadow: var(--shadow-mat-gold);
+    background-color: var(--color-matriarch-gold);
+    color: white;
   }
 
   .mat-badge {
     display: inline-flex;
     align-items: center;
-    border-radius: var(--radius-mat-pill);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
+    border-radius: var(--radius-mat-md);
+    border: 1px solid #000000;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.65rem;
+    font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
   }
 
-  /* Matriarch Overhaul - Antigravity Extension */
-
+  /* Lightened Glass for Swiss Aesthetic */
   .mat-glass-premium {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(16px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     box-shadow: var(--shadow-mat-premium);
     position: relative;
-    /* overflow: hidden; -- Removed to prevent text clipping */
-  }
-
-  .mat-glass-premium::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, rgba(255,255,255,0) 30%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 70%);
-    transform: translateX(-100%);
-    transition: transform 0.6s ease-in-out;
-  }
-
-  .mat-glass-premium:hover::after {
-    transform: translateX(100%);
-  }
-
-  .mat-noise-overlay {
-    position: relative;
-  }
-
-  .mat-noise-overlay::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    opacity: 0.02;
-    pointer-events: none;
-    z-index: 10;
   }
 
   .mat-float-hover {
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
   .mat-float-hover:hover {
-    transform: translateY(-8px) scale(1.02);
+    transform: translateY(-4px);
   }
-
-  .mat-stagger-fade-in > * {
-    opacity: 0;
-    animation: matFadeInUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-  }
-
-  .mat-stagger-fade-in > *:nth-child(1) { animation-delay: 0.1s; }
-  .mat-stagger-fade-in > *:nth-child(2) { animation-delay: 0.2s; }
-  .mat-stagger-fade-in > *:nth-child(3) { animation-delay: 0.3s; }
-  .mat-stagger-fade-in > *:nth-child(4) { animation-delay: 0.4s; }
-  .mat-stagger-fade-in > *:nth-child(5) { animation-delay: 0.5s; }
 
   @keyframes matFadeInUp {
     from {
       opacity: 0;
-      transform: translateY(20px);
+      transform: translateY(10px);
     }
     to {
       opacity: 1;
@@ -252,107 +201,36 @@
     }
   }
 
-  @keyframes matPulseSoft {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.7; transform: scale(0.95); }
-  }
-
-  .animate-pulse-slow {
-    animation: matPulseSoft 3s ease-in-out infinite;
-  }
-
-  /* Shimmer & Entrance Utilities */
-  .mat-shimmer {
-    background-image: linear-gradient(
-      120deg, 
-      rgba(255, 255, 255, 0) 40%, 
-      rgba(255, 255, 255, 0.4) 50%, 
-      rgba(255, 255, 255, 0) 60%
-    );
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    color: transparent;
-    animation: matShimmer 4s infinite linear;
-  }
-
-  @keyframes matShimmer {
-    0% { background-position: 150% center; }
-    100% { background-position: -50% center; }
-  }
-
   .fade-up {
-    animation: matFadeInUp 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: matFadeInUp 0.6s cubic-bezier(0.2, 0, 0, 1) forwards;
   }
 
-  .fade-in {
-    animation: matFadeIn 0.8s ease-out forwards;
-  }
-
-  @keyframes matFadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  /* --- UI-UX-PRO-MAX TYPOGRAPHY --- */
+  /* --- SWISS TYPOGRAPHY (HELVETICA) --- */
 
   .mat-text-gradient-gold {
-    background: linear-gradient(135deg, #A9861D 0%, #D4AF37 30%, #E7C96D 50%, #D4AF37 70%, #A9861D 100%);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: matShimmer 4s linear infinite;
+    color: var(--color-matriarch-gold);
   }
 
   .mat-text-label-pro {
-    font-size: 0.625rem; /* 10px */
-    font-weight: 900;
+    font-size: 0.625rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 0.5em;
-    color: rgba(255, 255, 255, 0.35);
+    letter-spacing: 0.4em;
+    color: rgba(0, 0, 0, 0.4);
     line-height: 1;
   }
 
   .mat-text-display-pro {
     font-family: var(--font-display);
     font-weight: 900;
-    font-style: italic;
-    letter-spacing: -0.02em; /* Relaxed from -0.05em to prevent clipping */
-    line-height: 1.1;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
     text-transform: uppercase;
-    font-size: clamp(2rem, 8vw, 8rem); /* Slightly smaller mobile start */
-  }
-
-  .mat-text-glow-gold {
-    text-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-  }
-
-  .mat-text-glow-violet {
-    text-shadow: 0 0 20px rgba(138, 99, 255, 0.4);
-  }
-
-  /* Micro-shimmer for secondary values */
-  .mat-text-shimmer-subtle {
-    background: linear-gradient(
-      90deg,
-      rgba(255,255,255,0.4) 0%,
-      rgba(255,255,255,1) 50%,
-      rgba(255,255,255,0.4) 100%
-    );
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: matShimmer 6s linear infinite;
+    font-size: clamp(2.5rem, 10vw, 12rem);
   }
 
   /* Pro Max Utilities */
   .pb-safe {
     padding-bottom: max(1.5rem, env(safe-area-inset-bottom));
-  }
-  
-  .overflow-visible-important {
-    overflow: visible !important;
   }
 }

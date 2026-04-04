@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { LiquidChrome as Background } from './components/Background';
 import { Dashboard } from './pages/Dashboard';
 import { AdminDashboard } from './pages/dashboards/AdminDashboard';
 import { Discovery } from './pages/Discovery';
@@ -209,19 +208,13 @@ const App: React.FC = () => {
     }
   }, [loading]);
 
-  const backgroundProps = React.useMemo(() => ({
-    baseColor: [0.1, 0.05, 0.2] as [number, number, number],
-    speed: 0.12,
-    amplitude: 0.3
-  }), []);
-
   if (loading) {
     return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
+      <div className="h-screen w-screen flex flex-col items-center justify-center bg-white">
         <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-          <Crown style={{ color: '#D4AF37', width: '64px', height: '64px' }} />
+          <Crown style={{ color: '#000000', width: '48px', height: '48px' }} />
         </motion.div>
-        <p className="mt-8 text-[10px] text-[#D4AF37]/40 font-black uppercase tracking-[0.8em] animate-pulse">Preparing your space...</p>
+        <p className="mt-8 text-[10px] text-black/20 font-black uppercase tracking-[0.8em] animate-pulse">Synchronizing Sanctuary...</p>
       </div>
     );
   }
@@ -229,9 +222,7 @@ const App: React.FC = () => {
   const showNav = session && profile && profile.onboarding_status === 'COMPLETED';
 
   return (
-    <div className="relative min-h-screen bg-[#0A0A0B] text-[#F6F3EE] overflow-y-auto overflow-x-hidden font-inter selection:bg-matriarch-violet/30">
-      <Background {...backgroundProps} />
-      
+    <div className="relative min-h-screen bg-white text-black overflow-y-auto overflow-x-hidden font-body selection:bg-black selection:text-white">
       <main className="relative z-10 w-full min-h-screen">
         <AnimatePresence mode="wait">
           {!session ? (
@@ -239,7 +230,7 @@ const App: React.FC = () => {
               <Landing />
             </motion.div>
           ) : (!profile && session?.user?.email !== 'metachasm@gmail.com') ? (
-            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full relative">
+            <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full bg-white relative">
               <Onboarding 
                 userId={session.user.id} 
                 metadata={session.user.user_metadata}
@@ -259,20 +250,20 @@ const App: React.FC = () => {
                 {activeTab === 'profile' && (
                   <div className="h-[80vh] flex flex-col items-center justify-center space-y-12 px-8">
                     <div className="text-center space-y-4">
-                       <h2 className="text-5xl mat-text-display-pro text-white leading-tight lowercase">
-                         {profile.full_name || 'Designation Pending'}
+                       <h2 className="text-5xl mat-text-display-pro text-black leading-tight lowercase">
+                         {profile?.full_name || 'Designation Pending'}
                        </h2>
-                       <p className="mat-text-label-pro !text-mat-gold">Authentically You</p>
+                       <p className="mat-text-label-pro !text-black/40">Authentically You</p>
                     </div>
                     
                     <div className="w-full max-w-sm space-y-4">
-                       <button className="w-full h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between px-8 text-white/60 hover:text-white transition-all">
-                          <span className="mat-text-label-pro !not-italic">Edit Sacred Story</span>
-                          <Crown size={16} className="text-mat-gold" />
+                       <button className="w-full h-16 rounded-2xl bg-black/5 border border-black/10 flex items-center justify-between px-8 text-black/60 hover:text-black transition-all font-bold uppercase tracking-widest text-[9px]">
+                          <span>Edit Sacred Story</span>
+                          <Crown size={16} className="text-black" />
                        </button>
                        <button 
                          onClick={() => supabase.auth.signOut()} 
-                         className="w-full h-16 rounded-2xl border border-red-500/20 bg-red-500/5 text-red-500 flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.4em] transition-all hover:bg-red-500/10"
+                         className="w-full h-16 rounded-2xl border border-black/10 bg-black text-white flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.4em] transition-all hover:bg-neutral-800"
                        >
                          Sever Connection
                        </button>
@@ -294,7 +285,7 @@ const App: React.FC = () => {
       </main>
 
       <div className="fixed bottom-4 left-4 opacity-5 hover:opacity-100 transition-opacity z-[120] flex gap-4">
-          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-white/40 font-mono hover:text-white transition-colors">RESET_APP</button>
+          <button onClick={() => { localStorage.clear(); window.location.reload(); }} className="text-[8px] text-black/40 font-mono hover:text-black transition-colors">RESET_APP</button>
       </div>
     </div>
   );

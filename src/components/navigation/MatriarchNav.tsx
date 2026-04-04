@@ -32,7 +32,7 @@ export const MatriarchNav: React.FC<MatriarchNavProps> = ({
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-[100] pb-safe">
       <div className="mx-auto max-w-md px-6 pb-8">
-        <div className="flex items-center justify-around p-2 bg-[#0F0F10]/80 backdrop-blur-2xl border border-white/5 shadow-2xl rounded-[2.5rem]">
+        <div className="flex items-center justify-around p-2 bg-white/80 backdrop-blur-2xl border border-black/5 shadow-2xl rounded-3xl">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.id;
             const Icon = tab.icon;
@@ -46,23 +46,23 @@ export const MatriarchNav: React.FC<MatriarchNavProps> = ({
                 {isActive && (
                   <motion.div
                     layoutId="nav-glow"
-                    className="absolute inset-0 bg-white shadow-[0_0_20px_rgba(255,255,255,0.15)] rounded-2xl"
+                    className="absolute inset-0 bg-black rounded-2xl"
                     transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                   />
                 )}
                 
                 <div className="relative z-10 flex flex-col items-center gap-1">
                   <Icon 
-                    size={20} 
+                    size={18} 
                     className={cn(
                       "transition-all duration-300",
-                      isActive ? "text-black scale-110" : "text-white/40 group-hover:text-white/60"
+                      isActive ? "text-white scale-110" : "text-black/20 group-hover:text-black/40"
                     )} 
                     strokeWidth={isActive ? 2.5 : 1.5}
                   />
                   <span className={cn(
                     "mat-text-label-pro !tracking-[0.2em] !text-[7px]",
-                    isActive ? "!text-black" : "!text-white/20"
+                    isActive ? "!text-white" : "!text-black/10"
                   )}>
                     {tab.label}
                   </span>

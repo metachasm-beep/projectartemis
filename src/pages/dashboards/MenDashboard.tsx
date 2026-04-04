@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { 
   Trophy, 
   ShieldCheck, 
@@ -11,11 +10,8 @@ import {
   Check
 } from 'lucide-react';
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import DecryptedText from "@/components/ui/react-bits/DecryptedText";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { supabase } from '@/lib/supabase';
 import { FAQ } from '@/components/FAQ';
@@ -122,262 +118,206 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const progressToNext = ((status?.rank_score || 0) - currentLevel.min) / (nextLevel.min - currentLevel.min) * 100;
 
   return (
-    <div className="mat-shell pb-32 mat-noise-overlay relative overflow-hidden bg-[#0F0F10]">
-      {/* High-Grit Background Accents */}
-      <div className="fixed inset-0 -z-50 pointer-events-none overflow-hidden">
-        <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-mat-gold/5 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-amber-900/10 blur-[100px] rounded-full" />
-      </div>
-
-      <main className="mat-container pt-12 space-y-12">
+    <div className="min-h-screen bg-white">
+      <main className="mat-container pt-24 space-y-24">
         {!profile?.is_verified && (
-          <VerificationPrompt 
-            userId={profile?.user_id} 
-            role="man" 
-            onVerified={() => window.location.reload()} 
-          />
+          <div className="bg-black text-white p-12 border border-black mb-12">
+             <VerificationPrompt 
+               userId={profile?.user_id} 
+               role="man" 
+               onVerified={() => window.location.reload()} 
+             />
+          </div>
         )}
+
         {/* Presence Header */}
-        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6 lg:gap-8 pb-6 border-b border-white/5 mat-stagger-fade-in">
-           <div className="space-y-2">
-              <span className="mat-text-label-pro">Your Journey / The Spotlight</span>
-              <h1 className="text-3xl sm:text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase">
-                <DecryptedText 
-                  text="Your Charisma" 
-                  animateOn="view" 
-                  speed={120} 
-                  className="inline-block overflow-visible" 
-                  sequential
-                /> <br className="lg:hidden" /> <span className="mat-text-gradient-gold ring-mat-gold/20 block lg:inline-block mt-2 lg:mt-0">/ & Connections</span>
+        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-black/10">
+           <div className="space-y-6">
+              <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-black/10 rounded-none">Protocol // Standing</Badge>
+              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
+                Your <br />
+                <span className="text-black/20">Charisma.</span>
               </h1>
            </div>
-           <div className="flex items-center gap-2 sm:gap-4 w-full lg:w-auto">
-              <div className="flex-1 lg:flex-none flex flex-col items-start lg:items-end justify-center px-4 sm:px-6 py-3 bg-white/5 rounded-2xl border border-white/10 group relative cursor-help">
-                 <span className="mat-text-label-pro mb-0.5 sm:mb-1">Tokens</span>
-                 <span className="text-lg sm:text-xl lg:text-2xl font-display font-black text-white italic tracking-tighter">₹{profile?.tokens || 0}</span>
-                 
-                 {/* Divine Blessings Info */}
-                 <div className="absolute top-full mt-4 right-0 w-56 p-5 bg-[#0F0F10] border border-mat-gold/20 rounded-3xl opacity-0 group-hover:opacity-100 transition-all duration-300 pointer-events-none z-[100] shadow-[0_20px_50px_rgba(0,0,0,0.5)] text-left">
-                    <div className="flex items-center gap-2 mb-3">
-                       <Zap size={12} className="text-mat-gold" />
-                       <span className="mat-text-label-pro text-mat-gold">Divine Blessings</span>
-                    </div>
-                    <div className="space-y-2">
-                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
-                          <span className="text-white/40">Daily Entry</span>
-                          <span className="text-white">+10</span>
-                       </div>
-                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
-                          <span className="text-white/40">7 Day Streak</span>
-                          <span className="text-mat-gold">+100</span>
-                       </div>
-                       <div className="flex justify-between items-center text-[8px] font-bold uppercase tracking-widest">
-                          <span className="text-white/40">30 Day Streak</span>
-                          <span className="text-mat-gold">+1000</span>
-                       </div>
-                    </div>
-                 </div>
+           
+           <div className="flex items-center gap-px bg-black/5 border border-black/5 p-px w-full lg:w-auto">
+              <div className="bg-white px-12 py-8 flex flex-col items-start min-w-[200px]">
+                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 mb-2">Tokens</span>
+                 <span className="text-4xl mat-text-display-pro text-black">₹{profile?.tokens || 0}</span>
               </div>
-              <Button variant="gold" className="gap-2 shadow-mat-gold h-12 lg:h-12 px-4 sm:px-8 shrink-0" onClick={handleBuyTokens}>
-                <Zap className="w-4 h-4" />
-                <span className="hidden sm:inline">Get Tokens</span>
-                <span className="sm:hidden text-[10px] font-black uppercase tracking-widest">Get</span>
-              </Button>
+              <button 
+                className="bg-black text-white px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-800 transition-all h-full"
+                onClick={handleBuyTokens}
+              >
+                Augment Standing
+              </button>
            </div>
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mat-stagger-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-black/5 border border-black/5">
            {/* Rank Ladder Visualization */}
-           <Card className="lg:col-span-4 mat-panel-premium bg-black/40 border-white/5 rounded-[2rem] p-6 lg:p-8 space-y-8">
+           <div className="lg:col-span-4 bg-white p-12 space-y-12">
               <div className="flex items-center justify-between">
-                 <h3 className="mat-text-label-pro">Path to Her Heart</h3>
-                 <Trophy className="w-4 h-4 text-mat-gold" />
+                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Ladder Status</h3>
+                 <Trophy className="w-5 h-5 text-black" strokeWidth={1} />
               </div>
               
-              <div className="space-y-4 relative">
-                 <div className="absolute left-[15px] top-4 bottom-4 w-[1px] bg-white/5" />
+              <div className="space-y-6">
                  {RANK_LADDER.map((rank, i) => {
                     const isCurrent = currentLevel.id === rank.id;
                     const isPast = RANK_LADDER.indexOf(currentLevel) >= i;
                     
                     return (
                       <div key={rank.id} className={cn(
-                        "flex items-center gap-4 relative transition-all duration-500",
-                        isCurrent ? "scale-105 pl-2" : "opacity-40"
+                        "flex items-center gap-6 p-4 transition-all duration-500",
+                        isCurrent ? "bg-black text-white" : "text-black/40"
                       )}>
                         <div className={cn(
-                          "w-8 h-8 rounded-full border flex items-center justify-center z-10 bg-black",
-                          isCurrent ? "border-mat-gold ring-4 ring-mat-gold/20" : isPast ? "border-mat-gold/40" : "border-white/10"
+                          "w-6 h-6 border flex items-center justify-center font-black text-[9px]",
+                          isCurrent ? "border-white/20" : "border-black/10"
                         )}>
-                          {isCurrent ? <Crown className="w-4 h-4 text-mat-gold" /> : <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                          {i + 1}
                         </div>
                         <div className="flex-1">
-                           <div className={cn("text-[10px] font-black uppercase tracking-widest", rank.color)}>
+                           <div className="text-[10px] font-black uppercase tracking-widest">
                               {rank.name}
                            </div>
-                           {isCurrent && (
-                             <div className="text-[9px] text-white/40 font-mono mt-1 uppercase">
-                                Next Tier: {nextLevel.name} in {nextLevel.min - (status?.rank_score || 0)} pts
-                             </div>
-                           )}
                         </div>
+                        {isCurrent && <Crown className="w-4 h-4 text-white" strokeWidth={1} />}
                       </div>
                     );
                  })}
               </div>
-           </Card>
+           </div>
 
            {/* Presence Centerpiece */}
-           <Card className="lg:col-span-8 mat-panel-premium bg-black/40 border-none relative overflow-hidden group rounded-[2rem] lg:rounded-[2.5rem]">
-              <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/5 via-transparent to-transparent pointer-events-none" />
-              
-              <CardHeader className="p-8 lg:p-12 pb-0">
-                 <div className="flex flex-col lg:flex-row justify-between items-start gap-6">
-                    <div className="space-y-4">
-                       <span className="mat-text-label-pro text-mat-gold">Your Place in Her World</span>
-                       <h2 className="text-7xl lg:text-9xl mat-text-display-pro text-white leading-none pt-2">
-                          #{absRank || '--'}
-                       </h2>
-                    </div>
-                    <div className="lg:text-right space-y-2">
-                       <Badge variant="outline" className="border-mat-gold/30 text-mat-gold py-1.5 text-[8px] lg:text-[9px] uppercase tracking-widest whitespace-nowrap">
-                          Among {totalMen} Waiting Hearts
-                       </Badge>
-                       <p className="mat-text-label-pro opacity-30 mt-1">Score: {Math.round(status?.rank_score || 0)}</p>
-                    </div>
+           <div className="lg:col-span-8 bg-white p-12 lg:p-24 space-y-24">
+              <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
+                 <div className="space-y-6">
+                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Standing Index</span>
+                    <h2 className="text-8xl lg:text-[12rem] mat-text-display-pro text-black leading-none tracking-tighter">
+                       #{absRank || '--'}
+                    </h2>
                  </div>
-              </CardHeader>
-              
-              <CardContent className="p-8 lg:p-12 space-y-12">
-                 <div className="space-y-4">
-                    <div className="flex justify-between mat-text-label-pro text-white/40">
-                       <span>Becoming Your Best Self</span>
-                       <span className="text-mat-gold">{Math.round(progressToNext)}%</span>
-                    </div>
-                    <div className="h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
-                       <motion.div 
-                          initial={{ width: 0 }}
-                          animate={{ width: `${progressToNext}%` }}
-                          className="h-full bg-mat-gold shadow-[0_0_20px_rgba(212,175,55,0.4)]"
-                       />
-                    </div>
+                 <div className="lg:text-right space-y-4">
+                    <Badge variant="outline" className="border-black/10 text-black px-4 py-1 text-[9px] uppercase tracking-widest rounded-none">
+                       Among {totalMen} Aspirants
+                    </Badge>
+                    <p className="text-xl font-medium text-black/40">Score // {Math.round(status?.rank_score || 0)}</p>
                  </div>
+              </div>
+              
+              <div className="space-y-6">
+                 <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black/40">
+                    <span>Evolution Progress</span>
+                    <span className="text-black">{Math.round(progressToNext)}%</span>
+                 </div>
+                 <div className="h-4 bg-black/5 relative">
+                    <div className="absolute inset-y-0 left-0 bg-black" style={{ width: `${progressToNext}%` }} />
+                 </div>
+              </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
-                     <div className="space-y-4 p-8 rounded-3xl bg-white/[0.03] border border-white/5">
-                        <div className="flex justify-between items-center">
-                           <h4 className="mat-text-label-pro text-mat-gold">Steps to Shine Brighter</h4>
-                           <TrendingUp className="w-4 h-4 text-mat-gold" />
-                        </div>
-                        <div className="space-y-3">
-                           <div className="flex items-center gap-3 text-[10px] font-bold text-white/60">
-                              <div className={cn("w-4 h-4 rounded-full border border-white/20 flex items-center justify-center", profile?.is_verified && "bg-mat-gold border-none")}>
-                                 {profile?.is_verified && <Check className="w-2.5 h-2.5 text-black" />}
-                              </div>
-                              <span className="uppercase tracking-widest text-[9px]">Verify Identity (Aadhaar Seal)</span>
-                           </div>
-                           <div className="flex items-center gap-3 text-[10px] font-bold text-white/60">
-                              <div className="w-4 h-4 rounded-full border border-white/20 flex items-center justify-center" />
-                              <span className="uppercase tracking-widest text-[9px]">Refer a Friend (+500 Tokens)</span>
-                           </div>
-                           <div className="flex items-center gap-3 text-[10px] font-bold text-white/60">
-                              <div className={cn("w-4 h-4 rounded-full border border-white/20 flex items-center justify-center", (profile?.rank_boost_count > 0) && "bg-mat-gold border-none")}>
-                                 {(profile?.rank_boost_count > 0) && <Check className="w-2.5 h-2.5 text-black" />}
-                              </div>
-                              <span className="uppercase tracking-widest text-[9px]">Gentle Nudges (Steps: {profile?.rank_boost_count || 0})</span>
-                           </div>
-                        </div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/5 border border-black/5">
+                  <div className="bg-white p-12 space-y-8">
+                     <div className="flex justify-between items-center">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Requirement Archive</h4>
                      </div>
-                     
-                     <div className="space-y-4 p-8 rounded-3xl bg-mat-gold/[0.02] border border-mat-gold/10">
-                        <div className="flex justify-between items-center">
-                           <h4 className="mat-text-label-pro text-mat-gold">Step into the Spotlight</h4>
-                           <Zap className="w-4 h-4 text-mat-gold" />
-                        </div>
-                        <p className="text-[9px] text-white/40 leading-relaxed uppercase tracking-[0.1em] sm:tracking-[0.2em] font-medium">Scale the ladder instantly for 49 tokens.</p>
-                        <Button 
-                          onClick={handleBumpRank} 
-                          disabled={isBumping || (profile?.tokens || 0) < 49}
-                          className="w-full h-12 bg-mat-gold text-black hover:bg-mat-gold/90 font-black tracking-wider sm:tracking-widest uppercase rounded-xl shadow-mat-gold text-[9px] sm:text-[10px] px-2"
-                        >
-                           {isBumping ? "Bumping..." : "Shine Brighter (49 Tokens)"}
-                        </Button>
+                     <div className="space-y-6">
+                        {[
+                          { label: "Identity Seal", status: profile?.is_verified },
+                          { label: "Social standing", status: false },
+                          { label: "Referral integrity", status: false }
+                        ].map((item, i) => (
+                          <div key={i} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-black/60">
+                             <div className={cn("w-4 h-4 border flex items-center justify-center", item.status ? "bg-black border-black text-white" : "border-black/10")}>
+                                {item.status && <Check className="w-3 h-3" />}
+                             </div>
+                             <span>{item.label}</span>
+                          </div>
+                        ))}
                      </div>
                   </div>
-              </CardContent>
-           </Card>
+                  
+                  <div className="bg-black text-white p-12 space-y-8">
+                     <div className="flex justify-between items-center">
+                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Instant Elevation</h4>
+                        <Zap className="w-4 h-4 text-white" />
+                     </div>
+                     <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest font-black">Augment visibility for 49 tokens.</p>
+                     <button 
+                       onClick={handleBumpRank} 
+                       disabled={isBumping || (profile?.tokens || 0) < 49}
+                       className="w-full h-16 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] hover:bg-neutral-200 transition-all"
+                     >
+                        {isBumping ? "Processing..." : "Augment Rank"}
+                     </button>
+                  </div>
+               </div>
+           </div>
         </div>
 
         {/* Secondary Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mat-stagger-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5 border border-black/5">
             {[
-              { label: 'TRUTH', title: 'Aadhaar Seal', val: profile?.is_verified ? 'SECURED' : 'PENDING', icon: ShieldCheck, color: 'text-green-500' },
-              { label: 'ADMIRATION', title: 'Who\'s Noticing You', val: `${profile?.view_count || 0}`, icon: Target, color: 'text-mat-gold' },
-              { label: 'HEARTS', title: 'Hearts Reached', val: 'VIBRANT', icon: Zap, color: 'text-mat-gold' },
-              { label: 'RADIANCE', title: 'Your Radiant Glow', val: 'ELEVATED', icon: TrendingUp, color: 'text-white' },
+              { label: 'TRUTH', title: 'Identity Seal', val: profile?.is_verified ? 'SECURED' : 'PENDING', icon: ShieldCheck },
+              { label: 'ATTENTION', title: 'Admiration Index', val: `${profile?.view_count || 0}`, icon: Target },
+              { label: 'DEVOTION', title: 'Hearts Reached', val: 'VIBRANT', icon: Zap },
+              { label: 'RADIANCE', title: 'Standing Score', val: 'ELEVATED', icon: TrendingUp },
             ].map((item, i) => (
-             <Card key={i} className="mat-panel mat-glass-premium border-none group cursor-pointer hover:bg-white/[0.06] transition-all rounded-[1.5rem] bg-white/[0.02]">
-                <CardContent className="p-8">
-                   <div className="flex justify-between items-start mb-6">
-                      <item.icon className={cn("w-6 h-6", item.color)} strokeWidth={1} />
-                      <ArrowUpRight className="w-4 h-4 text-white/10 group-hover:text-white/40 transition-colors" />
-                   </div>
-                   <div className="space-y-1 overflow-visible">
-                      <span className="mat-text-label-pro">{item.label}</span>
-                      <h4 className="text-lg font-bold text-white uppercase tracking-tight">{item.title}</h4>
-                      <p className={cn("text-[10px] font-black tracking-widest pt-2 mat-text-shimmer-subtle", item.color)}>{item.val}</p>
-                   </div>
-                   {item.label === 'HEARTS' && (
-                      <div className="mt-4 pt-4 border-t border-white/5">
-                         <p className="mat-text-label-pro mb-3">Referral Code</p>
-                         <div className="flex items-center justify-between p-3 bg-black/40 rounded-xl border border-white/5">
-                            <span className="text-xs font-mono text-mat-gold">{profile?.referral_code || '---'}</span>
-                            <Button 
-                              variant="ghost" 
-                              size="sm" 
-                              className="h-6 text-[8px] text-mat-gold/60 p-1 font-black tracking-widest"
-                              onClick={() => {
-                                navigator.clipboard.writeText(`${window.location.origin}/onboarding?ref=${profile?.user_id}`);
-                                alert("Referral Link Copied!");
-                              }}
-                            >COPY LINK</Button>
-                         </div>
+             <div key={i} className="bg-white p-12 space-y-12 group hover:bg-black/5 transition-all">
+                <div className="flex justify-between items-start">
+                   <item.icon className="w-6 h-6 text-black" strokeWidth={1} />
+                   <ArrowUpRight className="w-4 h-4 text-black/10 group-hover:text-black transition-colors" />
+                </div>
+                <div className="space-y-4">
+                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">{item.label}</span>
+                   <h4 className="text-xl font-bold text-black uppercase tracking-tight">{item.title}</h4>
+                   <p className="text-[11px] font-black tracking-widest text-black/60 uppercase">{item.val}</p>
+                </div>
+                {item.label === 'DEVOTION' && (
+                   <div className="pt-8 border-t border-black/5 space-y-4">
+                      <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/40">Referral Protocol</span>
+                      <div className="flex items-center justify-between p-4 bg-black/5 border border-black/5">
+                         <span className="text-xs font-mono font-bold text-black">{profile?.referral_code || '---'}</span>
+                         <button 
+                           className="text-[9px] font-black uppercase tracking-widest text-black hover:underline"
+                           onClick={() => {
+                             navigator.clipboard.writeText(`${window.location.origin}/onboarding?ref=${profile?.user_id}`);
+                             alert("Protocol Link Archived.");
+                           }}
+                         >COPY</button>
                       </div>
-                   )}
-                </CardContent>
-             </Card>
+                   </div>
+                )}
+             </div>
            ))}
         </div>
 
-      <FAQ />
+        <FAQ />
 
-      {/* Industrial Footer */}
-      <div className="py-20 text-center opacity-[0.03] pointer-events-none">
-        <span className="text-[10px] font-black uppercase tracking-[2em] text-white">MATRIARCH // A GARDEN OF SACRED CONNECTIONS // STANDING SECURED</span>
-      </div>
-    </main>
+        {/* Swiss Footer */}
+        <div className="py-40 text-center border-t border-black/5">
+          <p className="text-[11px] font-black uppercase tracking-[1.5em] text-black/10">
+            MATRIARCH // ABSOLUTE STANDING // SECURED
+          </p>
+        </div>
+      </main>
 
       {profile?.is_verified && !profile?.is_active && (
-        <motion.div 
-          initial={{ y: 100 }}
-          animate={{ y: 0 }}
-          className="fixed bottom-0 left-0 right-0 z-[60] p-4"
-        >
-          <div className="mat-container">
-            <div className="bg-amber-500/10 border border-amber-500/20 backdrop-blur-xl p-4 rounded-2xl flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-amber-500 text-black flex items-center justify-center animate-pulse">
+        <div className="fixed bottom-12 left-12 right-12 z-[60] bg-black text-white p-8 border border-white/20">
+            <div className="flex items-center justify-between gap-8">
+              <div className="flex items-center gap-6">
+                <div className="w-12 h-12 border border-white/20 flex items-center justify-center animate-pulse">
                    <Zap size={20} />
                 </div>
                 <div>
-                  <p className="mat-text-label-pro text-amber-500">Profile Inactive</p>
-                  <p className="text-[9px] text-white/60 uppercase font-medium">Your truth is sealed, but your presence is still being woven. This usually takes a few moments.</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Profile Status</p>
+                  <p className="text-[11px] font-black uppercase tracking-widest">Truth Sealed // Alignment Processing</p>
                 </div>
               </div>
-              <Button size="sm" variant="ghost" onClick={() => window.location.reload()} className="text-[9px] font-black uppercase tracking-widest text-amber-500 hover:bg-amber-500/10">Synchronize</Button>
+              <button onClick={() => window.location.reload()} className="text-[11px] font-black uppercase tracking-[0.4em] hover:underline">Synchronize</button>
             </div>
-          </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );

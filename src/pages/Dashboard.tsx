@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Crown } from 'lucide-react';
-import { motion } from 'framer-motion';
 import { supabase } from "@/lib/supabase";
 import { MenDashboard } from './dashboards/MenDashboard';
 import { WomenDashboard } from './dashboards/WomenDashboard';
+import { AdminDashboard } from './dashboards/AdminDashboard';
 
 export const Dashboard: React.FC = () => {
   const [status, setStatus] = useState<any>(null);
@@ -116,24 +116,14 @@ export const Dashboard: React.FC = () => {
   };
 
   if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
-      <motion.div 
-        animate={{ 
-          scale: [1, 1.1, 1],
-          opacity: [0.5, 1, 0.5]
-        }}
-        transition={{ 
-          duration: 2,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-        className="mb-8 p-1 rounded-full bg-gradient-to-tr from-mat-gold to-matriarch-violet"
-      >
-        <div className="bg-[#0A0A0B] rounded-full p-6">
-          <Crown className="w-12 h-12 text-matriarch-gold" strokeWidth={1} />
+    <div className="h-screen flex flex-col items-center justify-center bg-white">
+      <div className="mb-8 relative">
+        <div className="w-16 h-16 border-2 border-black/10 flex items-center justify-center">
+          <Crown className="w-8 h-8 text-black animate-pulse" strokeWidth={1} />
         </div>
-      </motion.div>
-      <span className="text-[10px] font-black tracking-[0.6em] text-matriarch-gold/40 uppercase animate-pulse">Synchronizing Sanctuary...</span>
+        <div className="absolute inset-0 border-t-2 border-black animate-spin" />
+      </div>
+      <span className="text-[10px] font-black tracking-[0.6em] text-black/40 uppercase">Synchronizing Protocol...</span>
     </div>
   );
 
@@ -149,12 +139,7 @@ export const Dashboard: React.FC = () => {
 
   if (profile?.role === 'admin') {
     return (
-      <div className="h-screen flex flex-col items-center justify-center bg-[#0A0A0B]">
-        <motion.div animate={{ rotate: 360 }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }}>
-          <Crown style={{ color: '#D4AF37', width: '48px', height: '48px' }} />
-        </motion.div>
-        <p className="mt-6 text-[9px] text-[#D4AF37]/40 font-black uppercase tracking-[0.6em]">Verifying Command Authority...</p>
-      </div>
+      <AdminDashboard handleLogout={handleLogout} />
     );
   }
 
