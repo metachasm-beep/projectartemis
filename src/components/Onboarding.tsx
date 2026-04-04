@@ -7,11 +7,12 @@ import { CameraCapture } from './CameraCapture';
 import { compressImage } from '@/lib/image-utils';
 import { turso, tursoHelpers } from '@/lib/turso';
 import { uploadToCloudinary } from '@/lib/cloudinary';
+import { MatriarchProfile } from '@/types';
 
 export interface OnboardingProps {
   userId: string;
   metadata: any;
-  onComplete: () => void;
+  onComplete: (profile: MatriarchProfile) => void;
 }
 
 // 🏛️ Progressive UI: Reducing friction to the minimum viable ritual.
@@ -62,6 +63,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     setLoading(true);
     setError(null);
     try {
+      const onboarding_status = 'COMPLETED';
+      const updated_at = new Date().toISOString();
       const sql = `
         INSERT INTO profiles (
           user_id, full_name, date_of_birth, bio, city, role, intent,
@@ -80,15 +83,46 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         parseInt(formData.height) || null, formData.religion, formData.marital_status,
         formData.mother_tongue, tursoHelpers.serialize(formData.hobbies), formData.diet,
         formData.smoking ? 1 : 0, formData.drinking ? 1 : 0, tursoHelpers.serialize(formData.photos),
-        strength, 'COMPLETED', new Date().toISOString()
+        strength, onboarding_status, updated_at
       ];
 
       await turso.execute(sql, args);
+      
+      // Construct the optimistic profile object
+      const finalizedProfile: MatriarchProfile = {
+        user_id: userId,
+        full_name: formData.full_name,
+        date_of_birth: formData.date_of_birth || '1990-01-01',
+        bio: formData.bio,
+        city: formData.city,
+        role: formData.role as any,
+        intent: formData.intent as any,
+        occupation: formData.occupation,
+        education: formData.education,
+        height: parseInt(formData.height) || null,
+        religion: formData.religion,
+        marital_status: formData.marital_status as any,
+        mother_tongue: formData.mother_tongue,
+        hobbies: formData.hobbies,
+        diet: formData.diet as any,
+        smoking: formData.smoking,
+        drinking: formData.drinking,
+        photos: formData.photos,
+        profile_strength: strength,
+        onboarding_status: onboarding_status as any,
+        is_verified: false,
+        rank_boost_count: 0,
+        consecutive_days: 1,
+        last_login_at: updated_at,
+        created_at: updated_at,
+        updated_at: updated_at
+      };
+
       // Wait for the state to settle briefly before signaling completion
       await new Promise(r => setTimeout(r, 400));
-      onComplete();
+      onComplete(finalizedProfile);
     } catch (err: any) {
-      console.error("Sanctuary Error:", err);
+      console.error("Sanctuary Error Ritual:", err);
       setError('Connection with the archive was interrupted. Please try again.');
     } finally {
       setLoading(false);
@@ -142,8 +176,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[{r:'woman', l:'I am a Woman', e:'🌸'}, {r:'man', l:'I am a Man', e:'🌿'}].map(item => (
                            <button key={item.r} onClick={() => setFormData({...formData, role: item.r as any})} className={`p-10 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 ${formData.role === item.r ? 'border-mat-wine bg-mat-wine/5 shadow-lg scale-105' : 'border-mat-fog hover:border-mat-rose/20'}`}>
-                              <span className="text-4xl">{item.e}</span>
-                              <span className="text-lg font-bold text-mat-wine italic">{item.l}</span>
+                               <span className="text-4xl">{item.e}</span>
+                               <span className="text-lg font-bold text-mat-wine italic">{item.l}</span>
                            </button>
                         ))}
                      </div>

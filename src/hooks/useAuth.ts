@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { turso, tursoHelpers } from '@/lib/turso';
-import { MatriarchProfile } from '@/types';
+import type { MatriarchProfile } from '@/types';
 import { SanctuaryService } from '@/services/sanctuary';
 
 export const useAuth = () => {
@@ -10,10 +10,60 @@ export const useAuth = () => {
   const [profile, setProfile] = useState<MatriarchProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchingProfile, setFetchingProfile] = useState(false);
+  const streakProcessed = useRef<string | null>(null);
+
+  /**
+   * 🛡️ Identity Synchronization: The Silent Ritual of Continuity.
+   * Backgrounds streak updates to prevent blocking the sanctuary entrance.
+   */
+  const syncStreak = useCallback(async (p: MatriarchProfile) => {
+    if (streakProcessed.current === p.user_id + p.last_login_at) return;
+    streakProcessed.current = p.user_id + p.last_login_at;
+
+    const now = new Date();
+    const lastLogin = p.last_login_at ? new Date(p.last_login_at) : null;
+    let newStreak = p.consecutive_days || 0;
+    let rankBonus = 0;
+    let bonusReason = "";
+
+    if (!lastLogin) {
+      newStreak = 1;
+    } else {
+      const diffMs = now.getTime() - lastLogin.getTime();
+      const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+      if (diffDays === 1) {
+        newStreak += 1;
+        if (newStreak === 7) { rankBonus = 100; bonusReason = "7-Day Resonance Continuity"; }
+        if (newStreak === 30) { rankBonus = 1000; bonusReason = "30-Day Sovereign Presence"; }
+      } else if (diffDays > 1) {
+        newStreak = 1;
+      } else if (diffDays === 0) {
+        return; // Already processed resonance today
+      }
+    }
+
+    try {
+      if (rankBonus > 0) {
+        await SanctuaryService.rewardRank(p.user_id, rankBonus, bonusReason);
+      }
+      
+      await turso.execute(
+        "UPDATE profiles SET consecutive_days = ?, last_login_at = ? WHERE user_id = ?",
+        [newStreak, now.toISOString(), p.user_id]
+      );
+      
+      // Update local state silently to reflect the new streak and timestamp
+      setProfile(prev => prev ? { ...prev, consecutive_days: newStreak, last_login_at: now.toISOString() } : null);
+    } catch (e) {
+      console.warn("Streak synchronization ritual interrupted:", e);
+    }
+  }, []);
 
   const fetchProfile = useCallback(async (userId: string) => {
     if (!userId) {
        setProfile(null);
+       setLoading(false);
        return;
     }
     
@@ -35,69 +85,36 @@ export const useAuth = () => {
           consecutive_days: Number(rawProfile.consecutive_days || 0)
         };
 
-        const now = new Date();
-        const lastLogin = data.last_login_at ? new Date(data.last_login_at) : null;
-        let newStreak = data.consecutive_days || 0;
-        let rankBonus = 0;
-        let bonusReason = "";
-
-        if (!lastLogin) {
-          newStreak = 1;
-        } else {
-          const diffMs = now.getTime() - lastLogin.getTime();
-          const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-
-          if (diffDays === 1) {
-            newStreak += 1;
-            if (newStreak === 7) { rankBonus = 10; bonusReason = "7-Day Resonance Continuity"; }
-            if (newStreak === 30) { rankBonus = 50; bonusReason = "30-Day Sovereign Presence"; }
-          } else if (diffDays > 1) {
-            newStreak = 1;
-          }
-        }
-
-        if (newStreak !== (data.consecutive_days || 0) || rankBonus > 0 || !lastLogin) {
-          data.consecutive_days = newStreak;
-          data.last_login_at = now.toISOString();
-          
-          if (rankBonus > 0) {
-            await SanctuaryService.rewardRank(userId, rankBonus, bonusReason);
-            data.rank_boost_count = (data.rank_boost_count || 0) + rankBonus;
-          }
-          
-          await turso.execute(
-            "UPDATE profiles SET consecutive_days = ?, last_login_at = ? WHERE user_id = ?",
-            [newStreak, data.last_login_at, userId]
-          );
-        }
         setProfile(data);
+        // 🔮 Trigger streak processing in the background
+        syncStreak(data);
       } else {
-        // Explicitly set to null if no record found, to trigger onboarding
         setProfile(null);
       }
     } catch (err) {
       console.error("Auth Hook Exception:", err);
-      setProfile(null);
+      // Don't clear profile on transient errors if we already have it
+      if (!profile) setProfile(null);
     } finally {
       setFetchingProfile(false);
       setLoading(false);
     }
-  }, []);
+  }, [syncStreak, profile]);
 
   const refreshProfile = useCallback(async () => {
-    // Force a re-fetch of the session first to ensure we have the latest user context
     const { data: { session: freshSession } } = await supabase.auth.getSession();
     const targetUserId = freshSession?.user?.id || user?.id;
     if (targetUserId) {
        await fetchProfile(targetUserId);
     }
-  }, [user, fetchProfile]);
+  }, [user?.id, fetchProfile]);
 
   const signOut = useCallback(async () => {
     await supabase.auth.signOut();
     setSession(null);
     setUser(null);
     setProfile(null);
+    streakProcessed.current = null;
   }, []);
 
   useEffect(() => {
@@ -127,5 +144,5 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
-  return { session, user, profile, loading, fetchingProfile, refreshProfile, signOut };
+  return { session, user, profile, loading, fetchingProfile, setProfile, refreshProfile, signOut };
 };
