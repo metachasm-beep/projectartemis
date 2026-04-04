@@ -37,7 +37,19 @@ export const Dashboard: React.FC = () => {
           .eq('user_id', user.id)
           .single();
         
-        setProfile(profileData);
+        let finalProfile = profileData;
+        
+        // Admin Force Logic (Matching App.tsx)
+        const ADMIN_EMAILS = ['metachasm@gmail.com', 'testeradmin@gmail.com'];
+        if (user.email && ADMIN_EMAILS.includes(user.email)) {
+          finalProfile = {
+            ...profileData,
+            role: 'admin',
+            onboarding_status: 'COMPLETED'
+          };
+        }
+
+        setProfile(finalProfile);
 
         // Fetch Status from API with timeout
         const controller = new AbortController();

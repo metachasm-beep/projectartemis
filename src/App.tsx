@@ -102,6 +102,7 @@ const App: React.FC = () => {
               onboarding_status: 'COMPLETED',
               is_verified: true 
             });
+            setActiveTab('admin');
           }
           await fetchProfile(currentSession.user.id, mounted);
         } else {
@@ -179,6 +180,9 @@ const App: React.FC = () => {
       
       if (mounted) {
         setProfile(finalProfile);
+        if (finalProfile?.role === 'admin' || ADMIN_EMAILS.includes(userEmail || '')) {
+           setActiveTab('admin');
+        }
         setLoading(false);
       }
     } catch (err) {
