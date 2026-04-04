@@ -21,6 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import MatriarchLogo from "@/components/MatriarchLogo";
 import { supabase } from "@/lib/supabase";
+import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
@@ -58,6 +59,7 @@ const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opa
 const LandingPage: React.FC = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [error, setError] = useState("");
+  const [activeOverlay, setActiveOverlay] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
 
@@ -601,18 +603,18 @@ const LandingPage: React.FC = () => {
               <div className="space-y-8">
                  <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Archive</h5>
                  <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
-                    <li className="hover:text-white transition-all cursor-pointer">Protocol</li>
-                    <li className="hover:text-white transition-all cursor-pointer">Philosophy</li>
-                    <li className="hover:text-white transition-all cursor-pointer">Case Studies</li>
+                    <li onClick={() => setActiveOverlay('protocol')} className="hover:text-white transition-all cursor-pointer">Protocol</li>
+                    <li onClick={() => setActiveOverlay('philosophy')} className="hover:text-white transition-all cursor-pointer">Philosophy</li>
+                    <li onClick={() => setActiveOverlay('case-studies')} className="hover:text-white transition-all cursor-pointer">Case Studies</li>
                  </ul>
               </div>
 
               <div className="space-y-8">
                  <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Legal</h5>
                  <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
-                    <li className="hover:text-white transition-all cursor-pointer">Privacy Pact</li>
-                    <li className="hover:text-white transition-all cursor-pointer">Terms of Merit</li>
-                    <li className="hover:text-white transition-all cursor-pointer">Refund Policy</li>
+                    <li onClick={() => setActiveOverlay('privacy-pact')} className="hover:text-white transition-all cursor-pointer">Privacy Pact</li>
+                    <li onClick={() => setActiveOverlay('terms-of-merit')} className="hover:text-white transition-all cursor-pointer">Terms of Merit</li>
+                    <li onClick={() => setActiveOverlay('refund-policy')} className="hover:text-white transition-all cursor-pointer">Refund Policy</li>
                  </ul>
               </div>
 
@@ -767,6 +769,11 @@ const LandingPage: React.FC = () => {
           animation: marquee 60s linear infinite;
         }
       ` }} />
+
+       <LegalArchiveOverlay 
+         slug={activeOverlay} 
+         onClose={() => setActiveOverlay(null)} 
+       />
     </div>
   );
 };

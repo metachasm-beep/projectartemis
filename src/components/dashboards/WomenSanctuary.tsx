@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
-import { Button, Card, CardBody, CardHeader, Chip } from "@heroui/react";
+import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import InfiniteMenu from '@/components/ui/InfiniteMenu';
+import MenDiscovery from '@/components/discovery/MenDiscovery';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -24,6 +25,7 @@ const DUMMY_MEN = [
 
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing, onBeginDiscovery }) => {
   const [isBrowsingArray, setIsBrowsingArray] = useState(false);
+  const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   if (isBrowsingArray) {
@@ -33,26 +35,28 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
          <div className="absolute top-0 left-0 w-full p-8 z-50 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
             <Button 
                onPress={() => setIsBrowsingArray(false)} 
-               variant="flat" 
-               color="default"
-               radius="full"
-               className="pointer-events-auto bg-white/10 text-white backdrop-blur-md"
-               startContent={<ArrowLeft size={16} />}
+               variant="ghost" 
+               className="pointer-events-auto bg-white/10 text-white backdrop-blur-md rounded-full px-6 flex items-center gap-2"
             >
+               <ArrowLeft size={16} />
                Return to Sanctuary
             </Button>
             <div className="text-right">
-               <h2 className="text-mat-gold font-bold italic tracking-widest text-lg">THE ARRAY</h2>
-               <p className="text-[10px] text-white/50 uppercase tracking-[0.3em]">Sovereign Browsing Active</p>
+               <h2 className="text-mat-gold font-bold italic tracking-widest text-lg uppercase underline decoration-mat-gold/20 underline-offset-8">The Array</h2>
+               <p className="text-[10px] text-white/50 uppercase tracking-[0.3em] mt-1">Sovereign Browsing Active</p>
             </div>
          </div>
          
          {/* 3D Infinite Menu (ReactBits Component) */}
          <div className="flex-1 w-full h-full">
-           <InfiniteMenu items={DUMMY_MEN} scale={1.2} />
+            <InfiniteMenu items={DUMMY_MEN} scale={1.2} />
          </div>
       </div>
     );
+  }
+
+  if (isBrowsingDirectory) {
+    return <MenDiscovery onClose={() => setIsBrowsingDirectory(false)} />;
   }
 
   return (
@@ -82,7 +86,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                     <Button 
                        isIconOnly
                        onPress={() => setIsEditing(true)}
-                       className="absolute -bottom-4 -right-4 w-14 h-14 bg-mat-wine text-mat-cream rounded-full shadow-lg hover:scale-110"
+                       className="absolute -bottom-4 -right-4 w-14 h-14 bg-mat-wine text-mat-cream rounded-full shadow-lg hover:scale-110 flex items-center justify-center p-0"
                     >
                        <Camera size={20} />
                     </Button>
@@ -95,13 +99,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
               
               <div className="space-y-6">
                  <Chip
-                   startContent={<Crown size={14} className="text-mat-rose" />}
-                   variant="flat"
+                   variant="soft"
                    color="danger"
-                   radius="full"
-                   className="bg-mat-wine/5 border border-mat-rose/10 pointer-events-none"
+                   className="bg-mat-wine/5 border border-mat-rose/10 pointer-events-none rounded-full h-8 px-4"
                  >
-                    <span className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-wine">Sovereign Presence</span>
+                    <div className="flex items-center gap-2">
+                       <Crown size={14} className="text-mat-rose" />
+                       <span className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-wine">Sovereign Presence</span>
+                    </div>
                  </Chip>
                  <h1 className="mat-text-display-pro text-mat-wine leading-[0.8] tracking-tighter text-[5rem] sm:text-[6rem] md:text-[8rem]">
                     {firstName}
@@ -111,25 +116,43 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                  </p>
               </div>
 
-              {/* The Massive Portal Action (HeroUI Refactor) */}
-              <div className="pt-8">
+              {/* The Massive Portal Actions */}
+              <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                  <Button 
                    onPress={() => setIsBrowsingArray(true)} 
-                   className="group relative w-full lg:w-[80%] h-auto aspect-[4/1] md:aspect-[5/1] rounded-[3rem] overflow-hidden shadow-2xl shadow-mat-rose/20 bg-mat-wine"
+                   className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-mat-rose/20 bg-mat-wine border-none p-0"
                  >
                     <div className="absolute inset-0 bg-gradient-to-r from-mat-wine via-mat-rose-deep to-mat-wine" />
-                    
-                    <div className="relative h-full w-full flex items-center justify-between px-8 md:px-12 text-mat-cream">
-                       <div className="flex items-center gap-6">
-                          <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
-                             <Sparkles size={24} className="text-mat-gold group-hover:animate-pulse" />
+                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-cream">
+                       <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
+                             <Sparkles size={20} className="text-mat-gold group-hover:animate-pulse" />
                           </div>
-                          <div className="text-left space-y-1">
-                             <h3 className="text-xl md:text-2xl font-bold italic tracking-wide">Enter the Array</h3>
-                             <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.2em] text-white/60">Begin Sovereign Browsing</p>
+                          <div className="text-left">
+                             <h3 className="text-lg font-bold italic">The Array</h3>
+                             <p className="text-[8px] font-black uppercase tracking-widest text-white/60 text-left">3D Discovery</p>
                           </div>
                        </div>
-                       <ChevronRight size={32} className="text-mat-gold/50 group-hover:text-mat-gold group-hover:translate-x-2 transition-transform duration-300" />
+                       <ChevronRight size={24} className="text-mat-gold/50 group-hover:text-mat-gold group-hover:translate-x-1" />
+                    </div>
+                 </Button>
+
+                 <Button 
+                   onPress={() => setIsBrowsingDirectory(true)} 
+                   variant="outline"
+                   className="group relative w-full h-24 rounded-[2rem] overflow-hidden border-mat-wine/20 bg-white hover:bg-mat-wine/5 transition-all duration-500 p-0"
+                 >
+                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-wine">
+                       <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-mat-wine/5 flex items-center justify-center backdrop-blur-md">
+                             <Lock size={20} className="text-mat-rose group-hover:animate-bounce" />
+                          </div>
+                          <div className="text-left">
+                             <h3 className="text-lg font-bold italic text-left">The Directory</h3>
+                             <p className="text-[8px] font-black uppercase tracking-widest text-mat-wine/30 text-left">Vertical Feed</p>
+                          </div>
+                       </div>
+                       <ChevronRight size={24} className="text-mat-wine/20 group-hover:text-mat-wine group-hover:translate-x-1" />
                     </div>
                  </Button>
               </div>
@@ -137,59 +160,59 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
 
         </div>
 
-        {/* ─── SCENE 2: SOVEREIGN METRICS (HeroUI Cards) ─── */}
+        {/* ─── SCENE 2: SOVEREIGN METRICS ─── */}
         <div className="mt-32 border-t border-mat-rose/10 pt-20">
            
            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               
               {/* Metric 1 */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white" shadow="none">
-                 <CardHeader className="flex justify-between items-center px-4 pt-4">
+              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white">
+                 <CardHeader className="flex justify-between items-center px-4 pt-4 border-none bg-transparent">
                     <div className="w-12 h-12 bg-mat-wine/5 rounded-2xl flex items-center justify-center text-mat-wine/40">
                        <Heart size={20} />
                     </div>
                     <span className="text-[9px] uppercase tracking-[0.3em] font-black text-mat-slate/30">Matches</span>
                  </CardHeader>
-                 <CardBody className="px-4 pb-6 overflow-hidden">
+                 <CardContent className="px-4 pb-6 overflow-hidden">
                     <h4 className="text-5xl font-serif font-black italic text-mat-wine">{metrics.matches}</h4>
                     <p className="text-xs text-mat-slate/40 mt-4 font-medium uppercase tracking-widest">Resonances</p>
-                 </CardBody>
+                 </CardContent>
               </Card>
 
               {/* Metric 2 */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white" shadow="none">
-                 <CardHeader className="flex justify-between items-center px-4 pt-4">
+              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white">
+                 <CardHeader className="flex justify-between items-center px-4 pt-4 border-none bg-transparent">
                     <div className="w-12 h-12 bg-mat-gold/5 rounded-2xl flex items-center justify-center text-mat-gold/60">
                        <Clock size={20} />
                     </div>
                     <span className="text-[9px] uppercase tracking-[0.3em] font-black text-mat-slate/30">Engagement</span>
                  </CardHeader>
-                 <CardBody className="px-4 pb-6 overflow-hidden">
+                 <CardContent className="px-4 pb-6 overflow-hidden">
                     <h4 className="text-5xl font-serif font-black italic text-mat-wine">{Math.floor(metrics.sessionSeconds / 60)}<span className="text-2xl text-mat-wine/40">m</span></h4>
                     <p className="text-xs text-mat-slate/40 mt-4 font-medium uppercase tracking-widest">Time within Sanctuary</p>
-                 </CardBody>
+                 </CardContent>
               </Card>
 
               {/* Security Status */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-mat-obsidian text-mat-cream" shadow="none">
+              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-mat-obsidian text-mat-cream border-none">
                  <div className="absolute top-0 right-0 w-32 h-32 bg-mat-rose/10 blur-[50px] pointer-events-none" />
                  
-                 <CardHeader className="flex justify-between items-center px-4 pt-4 relative z-10">
+                 <CardHeader className="flex justify-between items-center px-4 pt-4 relative z-10 border-none bg-transparent">
                     <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40">
                        <ShieldCheck size={20} />
                     </div>
                     <span className="text-[9px] uppercase tracking-[0.3em] font-black text-white/30">Privacy</span>
                  </CardHeader>
                  
-                 <CardBody className="px-4 pb-6 relative z-10 space-y-6 overflow-hidden">
+                 <CardContent className="px-4 pb-6 relative z-10 space-y-6 overflow-hidden">
                     <div>
                        <h4 className="text-2xl font-bold italic">Identity Sealed</h4>
                        <p className="text-xs text-white/40 mt-2 leading-relaxed whitespace-break-spaces">Your true identity remains completely hidden from observers until a resonance is confirmed.</p>
                     </div>
-                    <Button variant="bordered" className="w-full text-white border-white/10 rounded-2xl h-14 flex items-center gap-3 uppercase tracking-widest font-black text-[9px] mt-2">
+                    <Button variant="outline" className="w-full text-white border-white/10 rounded-2xl h-14 flex items-center justify-center gap-3 uppercase tracking-widest font-black text-[9px] mt-2">
                        <Lock size={14} /> Review Visibility Rules
                     </Button>
-                 </CardBody>
+                 </CardContent>
               </Card>
 
            </div>

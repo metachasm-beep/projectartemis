@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { AuthGate } from '@/components/auth/AuthGate';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useAuth } from '@/hooks/useAuth';
-import { HeroUIProvider } from '@heroui/system';
 
 const App: React.FC = () => {
   const { loading } = useAuth();
@@ -14,13 +13,11 @@ const App: React.FC = () => {
   }, [loading]);
 
   return (
-    <HeroUIProvider>
-      <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
-        <AuthGate>
-          <DashboardLayout />
-        </AuthGate>
-      </div>
-    </HeroUIProvider>
+    <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
+      <AuthGate>
+        <DashboardLayout />
+      </AuthGate>
+    </div>
   );
 };
 
