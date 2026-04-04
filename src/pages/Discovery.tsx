@@ -6,13 +6,17 @@ import {
   TrendingUp, 
   Lock, 
   Shield, 
-  Crown
+  Crown,
+  Zap,
+  Activity,
+  ArrowUpRight,
+  Heart
 } from 'lucide-react';
 
 import { SeekerBrowse } from '@/components/SeekerBrowse';
 import { supabase } from '@/lib/supabase';
 import { Button } from "@/components/ui/button";
-import SoftAurora from "@/components/ui/react-bits/SoftAurora";
+import { Badge } from "@/components/ui/badge";
 
 export const Discovery: React.FC = () => {
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -27,7 +31,6 @@ export const Discovery: React.FC = () => {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) return;
 
-        // Fetch user role
         const { data: userData } = await supabase
           .from('profiles')
           .select('role, is_verified')
@@ -44,9 +47,6 @@ export const Discovery: React.FC = () => {
           );
           const data = await response.json();
           setProfiles(data || []);
-        } else {
-          // Petitioners don't load profiles
-          setProfiles([]);
         }
       } catch (err) {
         console.error("Discovery error", err);
@@ -57,37 +57,50 @@ export const Discovery: React.FC = () => {
     initDiscovery();
   }, []);
 
-  if (!isVerified && !loading) {
-    return (
-      <div className="h-screen flex flex-col items-center justify-center mat-shell px-12 text-center mat-noise-overlay relative">
-         <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
-          <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
+  if (loading) return (
+    <div className="h-[80vh] flex flex-col items-center justify-center space-y-12">
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+        className="p-1 rounded-full bg-gradient-to-tr from-matriarch-violet/20 to-mat-gold/20"
+      >
+        <div className="bg-white rounded-full p-10 border border-black/5 shadow-2xl">
+          <Crown className="w-16 h-16 text-mat-gold opacity-20" strokeWidth={0.5} />
         </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-matriarch-violet/10 blur-[150px] -z-10" />
-        
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-md w-full space-y-12"
-        >
-          <div className="mx-auto w-24 h-24 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-center shadow-2xl relative group">
-            <Lock className="w-10 h-10 text-mat-gold transition-transform group-hover:scale-110" />
-            <div className="absolute inset-0 bg-mat-gold/20 blur-2xl rounded-full -z-10 opacity-0 group-hover:opacity-100 transition-opacity" />
-          </div>
-          
-          <div className="space-y-6">
-            <h2 className="text-4xl lg:text-5xl mat-text-display-pro text-white leading-tight uppercase shadow-mat-gold/10 overflow-visible py-2">Access <span className="mat-text-gradient-gold">Restricted</span></h2>
-            <p className="text-xs lg:text-sm text-white/40 font-medium tracking-wide italic leading-relaxed">
-              The Sanctuary's Discovery is reserved for verified souls. Verify your Aadhaar to explore the curated connections.
-            </p>
-          </div>
+      </motion.div>
+      <div className="space-y-4 text-center">
+        <h3 className="text-[10px] font-black uppercase tracking-[1em] text-black/20 animate-pulse">Invoking Sanctuary...</h3>
+        <p className="text-[9px] font-black uppercase tracking-[0.5em] text-black/10 italic">Curating Designated Souls</p>
+      </div>
+    </div>
+  );
 
-          <div className="pt-4 flex flex-col gap-4">
+  if (!isVerified) {
+    return (
+      <div className="min-h-[80vh] flex flex-col items-center justify-center p-12 text-center">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-xl w-full p-2 bg-black/5 rounded-[4rem] shadow-2xl overflow-hidden"
+        >
+          <div className="mat-glass-deep p-16 space-y-12">
+             <div className="mx-auto w-24 h-24 rounded-[2.5rem] bg-black text-white flex items-center justify-center shadow-2xl">
+                <Lock className="w-10 h-10" strokeWidth={1.5} />
+             </div>
+             
+             <div className="space-y-6">
+                <Badge variant="outline" className="px-5 py-2 border-black/10 text-black/40 text-[9px] font-black uppercase tracking-[0.4em] rounded-full">Protocol Restriction</Badge>
+                <h2 className="text-5xl md:text-7xl mat-text-display-pro text-black uppercase leading-none italic">Access <br /><span className="opacity-10 text-4xl md:text-6xl">Restricted.</span></h2>
+                <p className="text-xs text-black/40 font-mono uppercase tracking-widest leading-relaxed max-w-sm mx-auto italic">
+                   The Sanctuary's Discovery Layer is reserved for verified initiates. Complete your identity seal to explore.
+                </p>
+             </div>
+
              <Button 
                 onClick={() => window.location.href = '/dashboard'} 
-                className="h-14 sm:h-16 bg-white text-black font-black uppercase tracking-wider sm:tracking-[0.2em] text-[10px] sm:text-[11px] rounded-2xl hover:scale-[0.98] transition-all shadow-2xl"
+                className="w-full h-20 bg-black text-white font-black uppercase tracking-[0.5em] text-[11px] rounded-[2rem] hover:bg-neutral-800 transition-all shadow-xl"
              >
-                Go to Dashboard to Verify
+                Initiate Verification
              </Button>
           </div>
         </motion.div>
@@ -95,126 +108,128 @@ export const Discovery: React.FC = () => {
     );
   }
 
-  if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center mat-shell px-12">
-      <motion.div 
-        animate={{ rotate: 360 }}
-        transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-        className="mb-12 p-1 rounded-full bg-gradient-to-tr from-matriarch-violetBright to-mat-gold shadow-2xl"
-      >
-        <div className="bg-[#0F0F10] rounded-full p-6 sm:p-8">
-          <Crown className="w-12 h-12 sm:w-16 sm:h-16 text-mat-gold" strokeWidth={0.5} />
-        </div>
-      </motion.div>
-      <div className="space-y-4 text-center">
-        <h3 className="mat-text-label-pro !text-mat-gold/40 animate-pulse">Invoking Sanctuary...</h3>
-        <p className="text-[10px] text-white/20 uppercase tracking-[1em] font-black italic">Curating Souls</p>
-      </div>
-    </div>
-  );
-
   if (role === 'man') {
     return (
-      <div className="min-h-screen mat-shell mat-noise-overlay relative bg-[#0A0A0B]">
-        <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
-          <SoftAurora speed={0.1} brightness={0.8} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
-        </div>
+      <div className="mat-container py-12 space-y-24">
+         <div className="text-center space-y-4">
+            <Badge variant="outline" className="px-5 py-2 border-black/10 text-black/40 text-[9px] font-black uppercase tracking-[0.4em] rounded-full">Temporal Status</Badge>
+            <h1 className="text-6xl md:text-8xl mat-text-display-pro text-black italic lowercase leading-none">Awaiting <br /><span className="text-black/20">The Gaze.</span></h1>
+         </div>
 
-      <main className="mat-container py-24 flex flex-col items-center justify-center text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="max-w-2xl w-full mat-panel-premium bg-white/[0.01] border-white/5 p-8 lg:p-24 rounded-[3rem] lg:rounded-[4rem] group relative overflow-hidden"
-          >
-            <div className="absolute inset-0 bg-mat-gold-glow opacity-5" />
-            
-            <div className="mx-auto w-24 h-24 rounded-[2.5rem] bg-mat-gold/10 flex items-center justify-center border border-mat-gold/20 shadow-2xl mb-12">
-              <Clock className="w-12 h-12 text-mat-gold" strokeWidth={1} />
+         <div className="bento-grid">
+            <div className="bento-span-8 bento-item mat-glass-deep p-12 group h-[400px]">
+               <div className="flex flex-col h-full justify-between">
+                  <div className="space-y-8">
+                     <div className="w-16 h-16 bg-black text-white rounded-2xl flex items-center justify-center shadow-xl">
+                        <Clock className="w-8 h-8" />
+                     </div>
+                     <h2 className="text-4xl font-black text-black italic uppercase tracking-tighter leading-tight">The Art of <br />Presence.</h2>
+                     <p className="text-black/60 font-mono text-xs uppercase leading-relaxed max-w-sm italic">You walk a path of patience. Your story is shared with those who hold the power of choice. Connection begins when she is ready.</p>
+                  </div>
+                  <div className="flex items-center gap-2 text-[9px] font-black text-black/20 uppercase tracking-[0.4em]">
+                     <Activity size={14} className="animate-pulse" />
+                     Broadcast Signal: ACTIVE
+                  </div>
+               </div>
+               <div className="absolute top-0 right-0 p-12 opacity-[0.03] scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                  <Crown size={280} strokeWidth={0.5} />
+               </div>
             </div>
 
-            <div className="space-y-6">
-              <h2 className="text-5xl lg:text-6xl mat-text-display-pro text-white leading-tight uppercase overflow-visible py-2">Awaiting Her <span className="mat-text-gradient-gold">Gaze</span></h2>
-              <p className="mat-text-label-pro opacity-40 italic">Your story is shared with those who choose.</p>
+            <div className="bento-span-4 bento-item bg-black text-white p-12 flex flex-col justify-between h-[400px]">
+               <div className="space-y-6">
+                  <div className="flex justify-between items-start">
+                     <h3 className="text-xl font-black italic uppercase italic tracking-tighter leading-none">Matriarchal <br /><span className="opacity-20 text-lg">Interest.</span></h3>
+                     <Eye className="text-mat-gold w-6 h-6" />
+                  </div>
+                  <p className="text-white/40 font-mono text-[9px] uppercase leading-relaxed italic underline decoration-white/10 underline-offset-8">Engagement with your designate identifier.</p>
+               </div>
+
+               <div className="space-y-8">
+                  <div className="flex items-baseline gap-2">
+                     <span className="text-6xl font-black tracking-tighter">42</span>
+                     <span className="text-[10px] font-black uppercase text-mat-gold tracking-widest italic">Views</span>
+                  </div>
+                  <div className="h-1 bg-white/10 rounded-full overflow-hidden">
+                     <motion.div 
+                        initial={{ x: "-100%" }} 
+                        animate={{ x: "0%" }} 
+                        className="h-full w-full bg-mat-gold/50" 
+                     />
+                  </div>
+               </div>
+
+               <button className="w-full h-16 bg-white text-black font-black uppercase tracking-[0.4em] text-[9px] rounded-xl hover:bg-neutral-200 transition-all">Refine Identity</button>
             </div>
 
-            <div className="grid grid-cols-3 gap-2 sm:gap-4 lg:gap-8 py-8 lg:py-12">
-              <div className="space-y-3 sm:space-y-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-mat-gold group-hover:text-black">
-                   <Eye size={16} className="sm:size-[18px]" />
-                </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">42</div>
-                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Kindred Souls</div>
-              </div>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-matriarch-violetBright group-hover:text-white">
-                   <TrendingUp size={16} className="sm:size-[18px]" />
-                </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">Top 8%</div>
-                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Your Presence</div>
-              </div>
-              <div className="space-y-3 sm:space-y-4">
-                <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center mx-auto transition-all group-hover:bg-green-500 group-hover:text-black">
-                   <Shield size={16} className="sm:size-[18px]" />
-                </div>
-                <div className="text-2xl sm:text-3xl lg:text-4xl mat-text-display-pro text-white">Active</div>
-                <div className="mat-text-label-pro !text-[6px] sm:!text-[7px] lg:!text-[8px] !not-italic opacity-40">Heart Harmony</div>
-              </div>
+            <div className="bento-span-4 bento-item mat-glass flex flex-col justify-between">
+               <div className="space-y-4">
+                  <TrendingUp className="text-matriarch-violet w-8 h-8" />
+                  <h4 className="text-xl font-black italic uppercase tracking-tighter italic">Ranking <br />Standing.</h4>
+               </div>
+               <div className="text-4xl font-black text-black tracking-tighter py-6 border-y border-black/5">Top 8%</div>
+               <p className="text-[9px] font-black uppercase tracking-widest text-black/20 italic">Presence Tier: ELITE</p>
             </div>
 
-            <div className="p-6 lg:p-10 rounded-[2rem] lg:rounded-[2.5rem] bg-white/[0.03] border border-white/5 flex flex-col lg:flex-row gap-6 lg:gap-8 items-center text-center lg:text-left mb-12">
-              <div className="w-16 h-16 rounded-[1.25rem] bg-matriarch-violetBright flex items-center justify-center shrink-0 shadow-mat-violet">
-                <Crown size={28} className="text-white" strokeWidth={1} />
-              </div>
-              <div>
-                <h4 className="mat-text-label-pro !text-white !not-italic mb-2">The Art of Waiting</h4>
-                <p className="text-[11px] lg:text-[12px] text-white/40 italic font-medium leading-relaxed">
-                  Seekers walk a path of patience. Connection begins when she is ready. Let your story speak for the heart you carry.
-                </p>
-              </div>
+            <div className="bento-span-4 bento-item mat-glass flex flex-col justify-between">
+               <div className="space-y-4">
+                  <Heart className="text-red-500/40 w-8 h-8" />
+                  <h4 className="text-xl font-black italic uppercase tracking-tighter italic">Covenant <br />Resonance.</h4>
+               </div>
+               <div className="text-4xl font-black text-black tracking-tighter py-6 border-y border-black/5">Active</div>
+               <p className="text-[9px] font-black uppercase tracking-widest text-black/20 italic">Heart Harmony Status</p>
             </div>
 
-            <Button className="w-full h-16 sm:h-18 bg-white text-black font-black uppercase tracking-wider sm:tracking-[0.3em] text-[10px] sm:text-[11px] rounded-2xl transition-all hover:scale-[1.02] active:scale-95 shadow-2xl">
-              Deepen Your Story
-            </Button>
-          </motion.div>
-        </main>
-
-        <div className="fixed bottom-0 w-full py-10 text-center pointer-events-none opacity-[0.03]">
-          <span className="text-[12px] font-black uppercase tracking-[2em] text-white">A JOURNEY OF HEART AND CHOICE // MATRIARCH</span>
-        </div>
+            <div className="bento-span-4 bento-item mat-glass border-dashed border-black/10 flex items-center justify-center">
+               <div className="text-center space-y-4 scale-90 group-hover:scale-100 transition-transform">
+                  <Shield className="w-8 h-8 text-black/10 mx-auto" strokeWidth={1} />
+                  <p className="text-[10px] font-black uppercase tracking-[0.3em] text-black/20 italic leading-relaxed">
+                     Archival Record <br />Purge scheduled <br />in 48h.
+                  </p>
+               </div>
+            </div>
+         </div>
       </div>
     );
   }
 
-  if (profiles.length === 0 && role === 'woman' && !loading) {
+  if (profiles.length === 0 && role === 'woman') {
     return (
-      <div className="h-screen flex flex-col items-center justify-center mat-shell px-12 text-center mat-noise-overlay">
-        <div className="fixed inset-0 -z-50 opacity-10 pointer-events-none">
-          <SoftAurora speed={0.05} brightness={0.5} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
-        </div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[40%] bg-matriarch-violet/10 blur-[150px] -z-10" />
-        <Crown className="w-24 h-24 text-mat-gold mb-12 shadow-mat-gold/20 animate-pulse" strokeWidth={0.5} />
-        <h2 className="text-5xl lg:text-6xl mat-text-display-pro text-white leading-tight uppercase mb-6">The Sanctuary is <span className="mat-text-gradient-gold">Quiet</span></h2>
-        <p className="text-lg lg:text-xl text-white/40 max-w-sm font-medium tracking-wide leading-relaxed italic">
-          The seekers have all been met. A moment of peace before the next stories unfold. Check back soon.
-        </p>
+      <div className="h-[80vh] flex flex-col items-center justify-center p-12 text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-xl w-full p-px bg-black/5 rounded-[4rem] overflow-hidden"
+        >
+          <div className="mat-glass-deep p-16 space-y-12">
+             <div className="mx-auto w-24 h-24 rounded-[3rem] bg-black/5 flex items-center justify-center border border-black/5">
+                <Crown className="w-12 h-12 text-mat-gold" strokeWidth={0.5} />
+             </div>
+             
+             <div className="space-y-6">
+                <Badge variant="outline" className="px-5 py-2 border-black/10 text-black/40 text-[9px] font-black uppercase tracking-[0.4em] rounded-full">Protocol Cycle</Badge>
+                <h2 className="text-5xl md:text-7xl mat-text-display-pro text-black uppercase leading-none italic">Quiet <br /><span className="opacity-10 text-4xl md:text-6xl">Sanctuary.</span></h2>
+                <p className="text-xs text-black/40 font-mono uppercase tracking-widest leading-relaxed max-w-sm mx-auto italic">
+                   The seekers have all been met. Connection begins again at the next temporal pulse. Check back shortly.
+                </p>
+             </div>
+
+             <div className="pt-8 flex justify-center gap-3">
+                {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-black/10 rounded-full animate-bounce" style={{animationDelay: `${i*0.2}s`}} />)}
+             </div>
+          </div>
+        </motion.div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mat-shell mat-noise-overlay relative bg-[#0A0A0B]">
-      <div className="fixed inset-0 -z-50 opacity-20 pointer-events-none">
-        <SoftAurora speed={0.1} brightness={0.8} color1="#6E3FF3" color2="#24152E" enableMouseInteraction={false} />
-      </div>
-
-      <main className="mat-container pt-12 lg:pt-16 pb-32">
-        <SeekerBrowse />
-      </main>
-
-      <div className="fixed bottom-0 w-full py-10 text-center pointer-events-none opacity-[0.03]">
-          <span className="text-[10px] lg:text-[12px] font-black uppercase tracking-[2.5em] text-white">MATRIARCH // THE CHOICE IS YOURS</span>
-      </div>
+    <div className="mat-container py-12 md:py-24">
+       <div className="mb-16 space-y-4">
+          <Badge variant="outline" className="px-5 py-2 border-matriarch-violet/10 text-matriarch-violet text-[9px] font-black uppercase tracking-[0.4em] rounded-full bg-matriarch-violet/5">Discovery Protocol</Badge>
+          <h1 className="text-6xl md:text-8xl mat-text-display-pro text-black italic lowercase leading-none">Find <br /><span className="text-black/20">The Seeker.</span></h1>
+       </div>
+       <SeekerBrowse />
     </div>
   );
 };

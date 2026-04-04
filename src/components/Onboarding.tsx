@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
-import { User, ArrowRight, Camera, ShieldCheck, Trophy } from 'lucide-react';
+import { Heart, ArrowRight, Camera, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { CitySelector } from './CitySelector';
 
 interface OnboardingProps {
   userId: string;
@@ -13,6 +12,8 @@ interface OnboardingProps {
 }
 
 type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'BIO_INTENT' | 'LEGAL';
+
+const STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'PHOTO', 'BIO_INTENT', 'LEGAL'];
 
 export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComplete }) => {
   const [step, setStep] = useState<OnboardingStep>('ROLE');
@@ -24,34 +25,34 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const ref = params.get('ref');
-    if (ref) {
-      console.log("MATRIARCH: Referred by:", ref);
-      setReferredBy(ref);
-    }
+    if (ref) setReferredBy(ref);
   }, []);
+
   const [formData, setFormData] = useState({
     full_name: metadata?.full_name || metadata?.name || '',
     role: '' as 'woman' | 'man' | '',
-    date_of_birth: '',
+    date_of_birth: metadata?.birthday || '',         // pre-fill if Google provides it
     bio: '',
-    city: '',
+    city: metadata?.locale?.split('_')?.[1] || '',  // best-effort from locale
     intent: 'LONG_TERM',
     photos: metadata?.avatar_url ? [metadata.avatar_url] : [] as string[],
   });
 
-  // Strength calculation logic (Gamify.txt)
   useEffect(() => {
     let s = 10;
     if (formData.role) s += 10;
     if (formData.full_name) s += 10;
     if (formData.city) s += 10;
     if (formData.photos.length > 0) s += 25;
-    if (formData.bio.length > 20) s += 15;
-    setStrength(Math.min(s, 90)); // Max 90 before Aadhaar
+    if (formData.bio.length > 20) s += 20;
+    if (formData.date_of_birth) s += 15;
+    setStrength(Math.min(s, 95));
   }, [formData]);
 
   const updateProfile = async () => {
     setLoading(true);
+    setError(null);
+
     const fullData = {
       user_id: userId,
       full_name: formData.full_name,
@@ -66,242 +67,395 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
       is_active: false,
       rank_score: formData.role === 'man' ? 500 : 0,
       rank_tier: formData.role === 'man' ? 'BRONZE' : 'OBSERVER',
-      tokens: 0, // Initial tokens
-      referral_code: userId.slice(0, 8).toUpperCase(), // Unique referral code
+      tokens: 0,
+      referral_code: userId.slice(0, 8).toUpperCase(),
       referred_by: referredBy,
       rank_boost_count: 0,
       updated_at: new Date().toISOString(),
-      created_at: new Date().toISOString(), // Vital for ranking
+      created_at: new Date().toISOString(),
     };
 
     try {
-      setError(null);
-      const { error: upsertError } = await supabase.from('profiles').upsert(fullData);
+      const { error: upsertError } = await supabase.from('profiles').upsert(fullData, {
+        onConflict: 'user_id'
+      });
       if (upsertError) throw upsertError;
 
-      // Referral Reward Logic
-      if (referredBy) {
-        console.log("MATRIARCH: Crediting Referrer...");
-        try {
-           const { data: referrer } = await supabase
-             .from('profiles')
-             .select('tokens')
-             .eq('user_id', referredBy)
-             .single();
-           
-           if (referrer) {
-             await supabase
-               .from('profiles')
-               .update({ tokens: (referrer.tokens || 0) + 500 })
-               .eq('user_id', referredBy);
-           }
-        } catch (refErr) {
-           console.warn("MATRIARCH: Could not credit referrer (columns might be missing):", refErr);
-        }
-      }
+      // ✅ Cache that this user has completed onboarding — prevents re-onboarding on fast reload
+      localStorage.setItem(`MAT_OB_DONE_${userId}`, 'true');
 
+      // Small delay so Supabase can settle before we re-fetch
+      await new Promise(resolve => setTimeout(resolve, 600));
       onComplete();
     } catch (err: any) {
-      console.error("MATRIARCH: Full profile upsert failed, attempting safe fallback...", err);
-      // Fallback: Only essential columns if extended ones like rank_score don't exist yet
-      const safeData = {
-        user_id: userId,
-        full_name: formData.full_name,
-        role: formData.role,
-        updated_at: new Date().toISOString(),
-      };
-      
-      const { error: fallbackError } = await supabase.from('profiles').upsert(safeData);
-      
-      if (fallbackError) {
-        console.error("MATRIARCH: Safe fallback also failed:", fallbackError);
-        setError(`Connection failed. The database might need a schema update. ${fallbackError.message}`);
-      } else {
-        console.warn("MATRIARCH: Profile saved using fallback.");
-        onComplete();
-      }
+      console.error("MATRIARCH: Upsert failed", err);
+      setError('Could not save your profile. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
   };
 
   const next = (nextStep: OnboardingStep) => setStep(nextStep);
+  const stepIndex = STEPS.indexOf(step);
+  const progressPct = ((stepIndex) / (STEPS.length - 1)) * 100;
+
+  const glowColor = formData.role === 'woman'
+    ? 'rgba(201,160,154,0.15)'
+    : 'rgba(191,160,106,0.12)';
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-[#0A0A0B] relative overflow-y-auto overflow-x-hidden">
-      {/* Dynamic Background Glow based on Role */}
+    <div className="min-h-screen flex flex-col items-center justify-center p-6 relative overflow-hidden"
+      style={{ background: 'linear-gradient(160deg, #FAF7F2 0%, #F5E6E4 50%, #EEE0DA 100%)' }}>
+
+      {/* Ambient background glow based on role */}
       <AnimatePresence>
-        {formData.role === 'woman' && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 0.15 }} exit={{ opacity: 0 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-matriarch-violet blur-[160px] rounded-full pointer-events-none" 
-          />
-        )}
-        {formData.role === 'man' && (
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 0.1 }} exit={{ opacity: 0 }}
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-mat-gold blur-[160px] rounded-full pointer-events-none" 
+        {formData.role && (
+          <motion.div
+            key={formData.role}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: `radial-gradient(ellipse at 50% 40%, ${glowColor}, transparent 70%)` }}
           />
         )}
       </AnimatePresence>
 
-      {/* Progress / Strength Meter for Men */}
-      {formData.role === 'man' && step !== 'ROLE' && (
-         <motion.div initial={{ y: -20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} className="fixed top-12 w-full max-w-md px-8 z-50">
-            <div className="flex justify-between items-end mb-2">
-               <span className="text-[10px] font-black text-mat-gold tracking-widest uppercase">Your Journey Progress</span>
-               <span className="text-xl font-mono text-white italic">{strength}%</span>
-            </div>
-            <div className="h-1 bg-white/5 rounded-full overflow-hidden border border-white/5">
-               <motion.div 
-                  className="h-full bg-gradient-to-r from-mat-gold to-mat-gold/40"
-                  animate={{ width: `${strength}%` }}
-               />
-            </div>
-         </motion.div>
-      )}
+      {/* Floating petals decoration */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        {[...Array(6)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute text-mat-rose/10"
+            initial={{ y: -40, x: `${15 + i * 15}%`, opacity: 0, rotate: 0 }}
+            animate={{ y: '110vh', opacity: [0, 0.4, 0], rotate: 360 }}
+            transition={{ duration: 12 + i * 2, repeat: Infinity, delay: i * 2.5, ease: 'linear' }}
+            style={{ fontSize: '1.5rem' }}
+          >
+            ❤
+          </motion.div>
+        ))}
+      </div>
 
-      <Card className="w-full max-w-lg mat-panel-premium border-none shadow-premium relative z-10 overflow-hidden rounded-[2.5rem]">
-        <div className={`absolute top-0 left-0 w-full h-1 ${
-           formData.role === 'woman' ? 'bg-matriarch-violet' : 'bg-mat-gold'
-        }`} />
-        
-        <CardContent className="p-12">
-          {error && (
-            <motion.div 
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mb-8 p-4 bg-red-500/10 border border-red-500/20 rounded-xl text-red-400 text-[10px] font-black uppercase tracking-widest text-center"
+      <div className="w-full max-w-xl relative z-10 space-y-8">
+        {/* Step progress */}
+        <AnimatePresence>
+          {step !== 'ROLE' && (
+            <motion.div
+              initial={{ y: -30, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="flex justify-between items-center px-2"
             >
-              {error}
+              <div className="flex flex-col gap-2 flex-1">
+                <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[9px] font-bold text-mat-rose/60 uppercase tracking-[0.4em]">
+                  Your Story — Step {stepIndex} of {STEPS.length - 1}
+                </span>
+                <div className="h-1 bg-mat-fog rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full rounded-full"
+                    style={{ background: 'linear-gradient(90deg, #C9A09A, #BFA06A)' }}
+                    animate={{ width: `${progressPct}%` }}
+                    transition={{ duration: 0.5 }}
+                  />
+                </div>
+              </div>
+              <div className="ml-6 text-right">
+                <span className="text-2xl font-bold text-mat-rose" style={{fontFamily:'"Playfair Display",serif', fontStyle:'italic'}}>
+                  {Math.round(progressPct)}%
+                </span>
+              </div>
             </motion.div>
           )}
-          <AnimatePresence mode="wait">
-            {step === 'ROLE' && (
-              <motion.div key="role" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} className="space-y-10">
-                <div className="text-center space-y-4">
-                  <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Begin Your Story</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Find your place in the sanctuary</p>
-                  <p className="text-[9px] text-mat-gold/60 font-black uppercase tracking-[0.2em] mt-2">
-                    Daily Presence: +10 Tokens • 7 Day Streak: +100 • 30 Day Streak: +1000
-                  </p>
-                </div>
+        </AnimatePresence>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <button onClick={() => setFormData({ ...formData, role: 'woman' })} className={`p-8 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${formData.role === 'woman' ? 'bg-matriarch-violet/20 border-matriarch-violet' : 'bg-white/5 border-white/5 hover:border-white/10'}`}>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${formData.role === 'woman' ? 'bg-matriarch-violet text-white' : 'bg-white/5 text-matriarch-violet'}`}><User size={28} /></div>
-                    <span className="font-black text-[10px] uppercase tracking-widest text-white">The Matriarch</span>
-                  </button>
-                  <button onClick={() => setFormData({ ...formData, role: 'man' })} className={`p-8 rounded-3xl border-2 transition-all flex flex-col items-center gap-4 ${formData.role === 'man' ? 'bg-mat-gold/10 border-mat-gold' : 'bg-white/5 border-white/5 hover:border-white/10'}`}>
-                    <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${formData.role === 'man' ? 'bg-mat-gold text-black' : 'bg-white/5 text-mat-gold'}`}><User size={28} /></div>
-                    <span className="font-black text-[10px] uppercase tracking-widest text-white">The Seeker</span>
-                  </button>
-                </div>
-
-                <Button disabled={!formData.role} onClick={() => next('BASICS')} className="w-full h-20 bg-white text-black hover:bg-neutral-200 font-black tracking-widest uppercase rounded-2xl group flex gap-3">
-                  Start the Journey <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-                </Button>
-              </motion.div>
+        {/* Main card */}
+        <div className="mat-glass-deep rounded-[2.5rem] overflow-hidden shadow-2xl"
+          style={{ boxShadow: '0 20px 80px rgba(123,45,66,0.12)' }}>
+          <div className="p-10 md:p-14">
+            {error && (
+              <div className="mb-8 p-5 bg-red-50 border border-red-200 rounded-2xl text-red-600 text-[11px] font-bold uppercase tracking-widest text-center">
+                {error}
+              </div>
             )}
 
-            {step === 'BASICS' && (
-              <motion.div key="basics" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
-                <div className="text-center space-y-4">
-                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase tracking-widest">Getting to know you</h2>
-                </div>
-                <div className="space-y-6">
-                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Full Name</label>
-                     <Input value={formData.full_name} onChange={(e) => setFormData({ ...formData, full_name: e.target.value })} placeholder="YOUR NAME" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
-                   </div>
-                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Your City</label>
-                     <Input value={formData.city} onChange={(e) => setFormData({ ...formData, city: e.target.value })} placeholder="WHERE YOU ABODE" className="h-16 bg-white/5 border-white/10 rounded-2xl text-white uppercase font-mono tracking-widest" />
-                   </div>
-                   <div className="space-y-2">
-                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest ml-1">Your Roots (DOB)</label>
-                     <Input type="date" value={formData.date_of_birth} onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })} className="h-16 bg-white/5 border-white/10 rounded-2xl text-white [color-scheme:dark]" />
-                   </div>
-                </div>
-                <Button disabled={!formData.full_name || !formData.city || !formData.date_of_birth} onClick={() => next('PHOTO')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Confirm Basics</Button>
-              </motion.div>
-            )}
-
-            {step === 'PHOTO' && (
-              <motion.div key="photo" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 text-center">
-                <div className="space-y-4">
-                  <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">A Glimpse of You</h2>
-                  <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">Share a photo that captures your essence</p>
-                </div>
-                <div className="aspect-[3/4] w-full max-w-[240px] mx-auto bg-white/5 border-2 border-dashed border-white/10 rounded-[2rem] flex flex-col items-center justify-center gap-4 relative overflow-hidden group cursor-pointer hover:border-mat-gold/30 transition-all">
-                   {formData.photos.length > 0 ? (
-                      <img src={formData.photos[0]} className="absolute inset-0 w-full h-full object-cover" alt="Profile" />
-                   ) : (
-                      <>
-                        <Camera className="text-white/20 w-12 h-12 group-hover:text-mat-gold transition-colors" />
-                        <span className="text-[10px] font-black text-white/20 uppercase tracking-widest group-hover:text-mat-gold">Upload Photo</span>
-                      </>
-                   )}
-                   <input type="file" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => {
-                      if (e.target.files) setFormData({ ...formData, photos: [URL.createObjectURL(e.target.files[0])] });
-                   }} />
-                </div>
-                <Button disabled={formData.photos.length === 0} onClick={() => next('BIO_INTENT')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Looking Good</Button>
-              </motion.div>
-            )}
-
-            {step === 'BIO_INTENT' && (
-               <motion.div key="bio" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8">
-                  <div className="text-center space-y-4">
-                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Your Story</h2>
-                    <p className="text-[10px] text-matriarch-textSoft uppercase tracking-[0.4em] font-bold">What makes your heart beat?</p>
+            <AnimatePresence mode="wait">
+              {/* ── ROLE ─────────────────────────────────────────────────── */}
+              {step === 'ROLE' && (
+                <motion.div key="role" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="space-y-10">
+                  <div className="text-center space-y-3">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-2"
+                      style={{ background: 'linear-gradient(135deg, #C9A09A, #7B2D42)' }}>
+                      <Heart className="w-8 h-8 text-white" strokeWidth={1.5} fill="rgba(255,255,255,0.3)" />
+                    </div>
+                    <h2 style={{fontFamily:'"Playfair Display",Georgia,serif'}}
+                      className="text-4xl md:text-5xl font-bold text-mat-wine leading-tight italic">
+                      Welcome to <br />Matriarch
+                    </h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/60 text-sm leading-relaxed">
+                      A sanctuary for meaningful connections. Tell us who you are.
+                    </p>
                   </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    {[
+                      { role: 'woman' as const, label: 'I am a Woman', sub: 'Seeking meaningful connection', emoji: '🌸' },
+                      { role: 'man' as const, label: 'I am a Man', sub: 'Aspiring to be chosen', emoji: '🌿' },
+                    ].map(({ role, label, sub, emoji }) => (
+                      <button
+                        key={role}
+                        onClick={() => setFormData({ ...formData, role })}
+                        className={`p-8 rounded-[2rem] border-2 transition-all flex flex-col items-center gap-4 text-center group ${
+                          formData.role === role
+                            ? 'border-mat-rose bg-mat-petal shadow-lg scale-[1.02]'
+                            : 'border-mat-fog bg-white/40 hover:border-mat-rose/40 hover:bg-mat-petal/50'
+                        }`}
+                      >
+                        <span className="text-4xl">{emoji}</span>
+                        <div>
+                          <span style={{fontFamily:'"Playfair Display",serif'}} className="block font-bold text-mat-wine text-lg italic">{label}</span>
+                          <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/50 uppercase tracking-widest mt-1">{sub}</p>
+                        </div>
+                        {formData.role === role && (
+                          <span className="w-6 h-6 rounded-full bg-mat-rose flex items-center justify-center">
+                            <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                          </span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+
+                  <button
+                    disabled={!formData.role}
+                    onClick={() => next('BASICS')}
+                    className="w-full h-16 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm flex items-center justify-center gap-3 transition-all disabled:opacity-30"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white',
+                      boxShadow: '0 8px 24px rgba(123,45,66,0.25)' }}
+                  >
+                    Begin Your Story <ArrowRight size={18} />
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── BASICS ───────────────────────────────────────────────── */}
+              {step === 'BASICS' && (
+                <motion.div key="basics" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-10">
+                  <div className="text-center space-y-2">
+                    <Sparkles className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">
+                      Tell Us About You
+                    </h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">Your identity, your city, your beginning</p>
+                  </div>
+
                   <div className="space-y-6">
-                    <textarea 
-                      value={formData.bio} 
-                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })} 
-                      placeholder="Share a bit about yourself..." 
-                      className="w-full h-40 p-6 bg-white/5 border border-white/10 rounded-[2rem] text-white uppercase font-mono tracking-widest focus:border-mat-gold outline-none resize-none" 
-                    />
-                    <div className="grid grid-cols-2 gap-4">
-                       {['LONG_TERM', 'EXPLORATION'].map(intent => (
-                          <button key={intent} onClick={() => setFormData({ ...formData, intent })} className={`p-4 rounded-2xl border transition-all text-[9px] font-black uppercase tracking-widest ${formData.intent === intent ? 'bg-white/10 border-white/40 text-white' : 'bg-white/5 border-transparent text-white/20'}`}>
-                             {intent.replace('_', ' ')}
-                          </button>
-                       ))}
+                    <div className="space-y-2">
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Your Name</label>
+                      <Input
+                        value={formData.full_name}
+                        onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
+                        placeholder="Enter your full name"
+                        className="h-14 bg-white/60 border-mat-fog focus:border-mat-rose rounded-2xl text-mat-wine px-5 focus:ring-mat-rose/20 focus:ring-4 transition-all"
+                        style={{fontFamily:'Helvetica,sans-serif'}}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Your City</label>
+                      <CitySelector
+                        value={formData.city}
+                        onChange={(city) => setFormData({ ...formData, city })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Date of Birth</label>
+                      <Input
+                        type="date"
+                        value={formData.date_of_birth}
+                        onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
+                        className="h-14 bg-white/60 border-mat-fog focus:border-mat-rose rounded-2xl text-mat-wine px-5 [color-scheme:light] focus:ring-mat-rose/20 focus:ring-4 transition-all"
+                      />
+                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/30 ml-1 italic">We use this only for age verification — never displayed publicly.</p>
                     </div>
                   </div>
-                  <Button disabled={!formData.bio} onClick={() => next('LEGAL')} className="w-full h-20 bg-white text-black font-black tracking-widest uppercase rounded-2xl">Continue</Button>
-               </motion.div>
-            )}
 
-            {step === 'LEGAL' && (
-              <motion.div key="legal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 text-center">
-                 <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-green-400/10 border border-green-400/20">
-                    <ShieldCheck className="text-green-400 w-10 h-10" />
-                 </div>
-                 <div className="space-y-4">
-                    <h2 className="text-3xl font-display font-black text-white italic tracking-tight uppercase leading-tight">A Promise of Kindness</h2>
-                    <p className="text-[11px] text-matriarch-textSoft leading-relaxed font-mono px-4">
-                       I PROMISE TO RESPECT THE SANCTUARY, ITS PEOPLE, AND THE JOURNEY WE SHARE.
+                  <button
+                    disabled={!formData.full_name || !formData.city || !formData.date_of_birth}
+                    onClick={() => next('PHOTO')}
+                    className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all disabled:opacity-30"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white', fontFamily: 'Helvetica,sans-serif' }}
+                  >
+                    Continue
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── PHOTO ────────────────────────────────────────────────── */}
+              {step === 'PHOTO' && (
+                <motion.div key="photo" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-10 text-center">
+                  <div className="space-y-2">
+                    <Camera className="w-8 h-8 text-mat-rose mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Portrait</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">A warm smile opens every door</p>
+                  </div>
+
+                  <div className="relative mx-auto w-full max-w-[240px]">
+                    <div className="aspect-[3/4] bg-white/40 border-2 border-dashed border-mat-rose/30 rounded-[3rem] flex flex-col items-center justify-center gap-4 relative overflow-hidden group cursor-pointer hover:border-mat-rose/60 hover:bg-mat-petal/30 transition-all">
+                      {formData.photos.length > 0 ? (
+                        <img src={formData.photos[0]} className="absolute inset-0 w-full h-full object-cover" alt="Profile" />
+                      ) : (
+                        <>
+                          <div className="w-16 h-16 bg-white/80 rounded-full shadow flex items-center justify-center text-mat-rose/40 group-hover:scale-110 transition-transform">
+                            <Camera className="w-7 h-7" strokeWidth={1} />
+                          </div>
+                          <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[11px] font-bold text-mat-rose/40 uppercase tracking-[0.3em]">Tap to Upload</span>
+                        </>
+                      )}
+                      <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => {
+                        if (e.target.files) setFormData({ ...formData, photos: [URL.createObjectURL(e.target.files[0])] });
+                      }} />
+                    </div>
+                    {formData.photos.length > 0 && (
+                      <div className="absolute -top-3 -right-3 w-10 h-10 bg-mat-rose rounded-full border-4 border-white flex items-center justify-center shadow-lg">
+                        <ShieldCheck className="w-4 h-4 text-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => next('BIO_INTENT')}
+                      style={{fontFamily:'Helvetica,sans-serif'}}
+                      className="flex-1 h-12 rounded-xl border border-mat-fog text-mat-slate/50 text-xs uppercase tracking-widest hover:text-mat-wine hover:border-mat-rose/30 transition-all"
+                    >
+                      Skip for now
+                    </button>
+                    <button
+                      disabled={formData.photos.length === 0}
+                      onClick={() => next('BIO_INTENT')}
+                      className="flex-2 flex-grow h-12 rounded-xl font-bold tracking-[0.2em] uppercase text-xs transition-all disabled:opacity-30"
+                      style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white', fontFamily: 'Helvetica,sans-serif' }}
+                    >
+                      Set Portrait
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* ── BIO + INTENT ──────────────────────────────────────────── */}
+              {step === 'BIO_INTENT' && (
+                <motion.div key="bio" initial={{ opacity: 0, scale: 1.02 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, x: -40 }} className="space-y-10">
+                  <div className="text-center space-y-2">
+                    <Star className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Story</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">What makes you, you?</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <textarea
+                      value={formData.bio}
+                      onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
+                      placeholder="Share a bit about yourself — your passions, what you're looking for..."
+                      className="w-full h-40 p-5 bg-white/60 border border-mat-fog focus:border-mat-rose rounded-3xl text-mat-wine text-sm leading-relaxed outline-none resize-none transition-all focus:ring-4 focus:ring-mat-rose/15"
+                      style={{fontFamily:'Helvetica,sans-serif'}}
+                    />
+                    <div>
+                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/60 uppercase tracking-[0.4em] mb-3 ml-1">I'm looking for…</p>
+                      <div className="grid grid-cols-2 gap-3">
+                        {(['LONG_TERM', 'EXPLORATION'] as const).map(intent => (
+                          <button
+                            key={intent}
+                            onClick={() => setFormData({ ...formData, intent })}
+                            className={`h-14 rounded-2xl border-2 transition-all text-[11px] font-bold uppercase tracking-[0.2em] ${
+                              formData.intent === intent
+                                ? 'border-mat-wine bg-mat-wine text-white'
+                                : 'border-mat-fog bg-white/40 text-mat-slate/50 hover:border-mat-rose/40'
+                            }`}
+                            style={{fontFamily:'Helvetica,sans-serif'}}
+                          >
+                            {intent === 'LONG_TERM' ? '💍 Long-term' : '🌱 Open to explore'}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={!formData.bio}
+                    onClick={() => next('LEGAL')}
+                    className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all disabled:opacity-30"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white', fontFamily: 'Helvetica,sans-serif' }}
+                  >
+                    Almost There
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── LEGAL ────────────────────────────────────────────────── */}
+              {step === 'LEGAL' && (
+                <motion.div key="legal" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 text-center">
+                  <div className="space-y-4">
+                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-full"
+                      style={{ background: 'linear-gradient(135deg, #C9A09A 0%, #7B2D42 100%)' }}>
+                      <Heart className="w-9 h-9 text-white" strokeWidth={1.5} fill="rgba(255,255,255,0.3)" />
+                    </div>
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-4xl font-bold text-mat-wine italic leading-tight">
+                      A Sacred Promise
+                    </h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/70 text-sm leading-relaxed max-w-sm mx-auto">
+                      By entering Matriarch, you pledge to treat every soul with sincerity, respect, and genuine intention.
                     </p>
-                 </div>
-                 <div className="space-y-4 pt-4">
-                    <Button onClick={updateProfile} disabled={loading} className={`w-full h-24 font-black tracking-widest uppercase rounded-2xl shadow-2xl transition-all scale-105 active:scale-100 ${
-                       formData.role === 'woman' ? 'bg-matriarch-violet text-white hover:bg-matriarch-violet/90' : 'bg-mat-gold text-black hover:bg-mat-gold/90 shadow-mat-gold/20'
-                    }`}>
-                       {loading ? "PREPARING..." : (
-                          <span className="flex items-center gap-3 text-lg">ENTER THE SANCTUARY <Trophy size={20} /></span>
-                       )}
-                    </Button>
-                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </CardContent>
-      </Card>
-      
-      <p className="fixed bottom-12 text-[8px] text-white/10 font-black tracking-[0.8em] uppercase">Matriarch: Nurturing Connection</p>
+                  </div>
+
+                  {/* Profile Strength Summary */}
+                  <div className="p-6 rounded-2xl border border-mat-fog/50 bg-white/40 space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/60 uppercase tracking-[0.3em]">Profile Strength</span>
+                      <span style={{fontFamily:'"Playfair Display",serif'}} className="text-2xl font-bold text-mat-wine italic">{strength}%</span>
+                    </div>
+                    <div className="h-2 bg-mat-fog rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all duration-700"
+                        style={{ width: `${strength}%`, background: 'linear-gradient(90deg, #C9A09A, #BFA06A)' }} />
+                    </div>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/40 italic text-center">You can always complete your profile later.</p>
+                  </div>
+
+                  <button
+                    onClick={updateProfile}
+                    disabled={loading}
+                    className="w-full h-16 font-bold tracking-[0.3em] uppercase rounded-2xl shadow-xl transition-all flex items-center justify-center gap-3 text-sm"
+                    style={{
+                      background: formData.role === 'woman'
+                        ? 'linear-gradient(135deg, #C9A09A 0%, #7B2D42 100%)'
+                        : 'linear-gradient(135deg, #BFA06A 0%, #8C6F3A 100%)',
+                      color: 'white',
+                      boxShadow: '0 12px 40px rgba(123,45,66,0.3)',
+                      fontFamily: 'Helvetica,sans-serif'
+                    }}
+                  >
+                    {loading ? (
+                      <div className="flex items-center gap-2">
+                        {[1, 2, 3].map(i => (
+                          <div key={i} className="w-2 h-2 bg-white rounded-full animate-bounce"
+                            style={{ animationDelay: `${i * 0.1}s` }} />
+                        ))}
+                      </div>
+                    ) : (
+                      <span className="flex items-center gap-3">
+                        Enter the Sanctuary <Heart size={20} fill="rgba(255,255,255,0.4)" />
+                      </span>
+                    )}
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-rose/20 font-bold tracking-[1.5em] uppercase">
+            Matriarch · Connection, by intention
+          </p>
+        </div>
+      </div>
     </div>
   );
 };

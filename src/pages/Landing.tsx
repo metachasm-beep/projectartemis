@@ -1,22 +1,23 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
-  Lock, 
-  ArrowRight, 
-  Shield, 
-  Star, 
-  Zap, 
-  X, 
-  Eye, 
-  UserCheck, 
-  MessageSquare, 
+  Heart,
+  Activity,
+  ArrowUpRight,
   ShieldCheck,
-  ZapOff,
   Crown,
-  Trophy
+  Zap,
+  X,
+  Eye,
+  MessageSquare,
+  Lock,
+  ArrowRight,
+  Shield,
+  Star,
+  UserCheck,
+  ZapOff
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import MatriarchLogo from "@/components/MatriarchLogo";
 import { supabase } from "@/lib/supabase";
@@ -58,11 +59,16 @@ const LandingPage: React.FC = () => {
   const [showSignIn, setShowSignIn] = useState(false);
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [rememberMe, setRememberMe] = useState(true);
 
   const loginWithGoogle = async () => {
     setIsLoading(true);
     setError("");
     try {
+      // Store preference so App.tsx can honor it after redirect
+      if (!rememberMe) sessionStorage.setItem('MAT_SESSION_ONLY', 'true');
+      else           sessionStorage.removeItem('MAT_SESSION_ONLY');
+
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
@@ -81,24 +87,23 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <div className="mat-shell bg-white text-black selection:bg-black selection:text-white font-body">
-      {/* Background with subtle Swiss grid */}
-      <div className="fixed inset-0 -z-10 bg-white overflow-hidden">
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(0,0,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
-        <div className="absolute top-0 left-0 w-full h-[60vh] bg-gradient-to-b from-black/[0.02] to-transparent" />
+    <div className="min-h-screen font-body" style={{background:'linear-gradient(160deg,#FAF7F2 0%,#F5E6E4 50%,#EEE0DA 100%)'}}>
+      {/* Romantic background — soft parchment gradient */}
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] rounded-full opacity-20" style={{background:'radial-gradient(circle, #C9A09A, transparent 70%)', transform:'translate(30%, -30%)'}} />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full opacity-15" style={{background:'radial-gradient(circle, #BFA06A, transparent 70%)', transform:'translate(-30%, 30%)'}} />
       </div>
 
-      <header className="fixed top-0 z-50 w-full border-b border-black/5 bg-white/80 backdrop-blur-xl">
+      <header className="fixed top-0 z-50 w-full backdrop-blur-xl" style={{borderBottom:'1px solid rgba(201,160,154,0.15)', background:'rgba(250,247,242,0.82)'}}>
         <nav className="mat-container flex h-16 items-center justify-between">
           <MatriarchLogo className="scale-75 origin-left" />
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="text-[10px] font-black uppercase tracking-widest text-black/40 hover:text-black hover:bg-transparent"
+          <button
             onClick={() => setShowSignIn(true)}
+            className="h-9 px-6 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all"
+            style={{background:'linear-gradient(135deg,#7B2D42,#96404F)', color:'white', fontFamily:'Helvetica,sans-serif', boxShadow:'0 4px 16px rgba(123,45,66,0.2)'}}
           >
-            Access Portal
-          </Button>
+            Sign In
+          </button>
         </nav>
       </header>
 
@@ -108,21 +113,21 @@ const LandingPage: React.FC = () => {
           <div className="mat-container grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start pt-12 lg:pt-24">
             <div className="fade-up space-y-8 lg:space-y-12 text-left">
               <div className="flex justify-start">
-                <Badge variant="outline" className="py-1 px-4 border-black/10 uppercase tracking-[0.4em] font-black text-[9px] bg-black/5 rounded-none">
-                  Selection Protocol — 1.1.0
-                </Badge>
+                <span style={{fontFamily:'Helvetica,sans-serif', background:'rgba(201,160,154,0.12)', border:'1px solid rgba(201,160,154,0.25)', borderRadius:'999px'}} className="py-1.5 px-5 text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose italic">
+                  Real Connections, by Intention
+                </span>
               </div>
               
-              <h1 className="text-6xl sm:text-7xl lg:text-9xl mat-text-display-pro text-black uppercase tracking-tighter leading-[0.85] py-2">
-                Her heart <br />
-                <span className="text-black/20">decides.</span>
-                <div className="h-4 lg:h-8" />
-                Everyone <br />
-                else <span className="underline decoration-4 lg:decoration-8 underline-offset-8 lg:underline-offset-16">follows.</span>
+              <h1 style={{fontFamily:'"Playfair Display",Georgia,serif'}} className="text-6xl sm:text-7xl lg:text-8xl font-bold italic leading-tight text-mat-wine py-2">
+                Where love <br />
+                <span className="text-mat-rose/40">finds its way</span>
+                <span className="block text-4xl sm:text-5xl lg:text-6xl mt-4 text-mat-gold/80">
+                  — beautifully.
+                </span>
               </h1>
               
-              <p className="text-xl lg:text-2xl text-black font-medium leading-tight max-w-xl">
-                Matriarch is a architectural connection engine where journeys are defined by intention. A space built for selection, not swiping.
+              <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-lg lg:text-xl text-mat-slate/70 font-medium leading-relaxed max-w-xl">
+                Matriarch is a curated sanctuary for meaningful connection — where her choice leads and every story matters.
               </p>
               
               <div className="flex flex-col sm:flex-row justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-0">
@@ -398,62 +403,148 @@ const LandingPage: React.FC = () => {
             </div>
         </section>
 
-        {/* 8.5 PRICING SECTION */}
-        <section className="mat-section border-b border-black/5">
-          <div className="mat-container pt-24 pb-40">
-            <div className="mb-24 space-y-8">
-              <h2 className="text-7xl lg:text-9xl mat-text-display-pro text-black uppercase leading-[0.85]">The <br /><span className="text-black/20">Value.</span></h2>
-              <p className="text-[11px] font-black uppercase tracking-[0.5em] text-black/40">Excellence is preserved through discipline.</p>
+        {/* Bento Feature Matrix */}
+        <section className="mat-section relative overflow-hidden" id="matrix">
+          <div className="mat-container space-y-24">
+            <div className="text-left space-y-6 max-w-2xl">
+               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">The Infrastructure</span>
+               <h2 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
+                 Selection <br />
+                 <span className="text-black/20">Architecture.</span>
+               </h2>
             </div>
             
-            <div className="grid md:grid-cols-2 gap-px bg-black/5 border border-black/5">
-              {/* Women's Card */}
-              <div className="bg-white p-12 lg:p-24 space-y-16">
-                 <div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-black/40 mb-8 block">The Protocol</span>
-                    <h3 className="text-6xl mat-text-display-pro text-black uppercase">Free.</h3>
-                 </div>
-                 <div className="space-y-4">
-                    <span className="text-xl font-medium italic text-black/60 block">By Selection Only.</span>
-                    <ul className="space-y-6 pt-12 border-t border-black/5">
-                       {[
-                         "Selective Architecture Access",
-                         "Verified Discovery Engine",
-                         "Inner Circle Infrastructure"
-                       ].map(item => (
-                         <li key={item} className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-black/60">
-                            <div className="w-2 h-2 bg-black" />
-                            {item}
-                         </li>
-                       ))}
-                    </ul>
-                 </div>
-                 <button className="w-full h-24 border-2 border-black text-black font-black uppercase tracking-[0.5em] text-[11px] hover:bg-black hover:text-white transition-all">Apply for Access</button>
-              </div>
+            <div className="bento-grid">
+               {/* 1. Vetting (Large) */}
+               <div className="bento-span-8 bento-item mat-glass-deep p-12 group h-[400px]">
+                  <div className="flex flex-col h-full justify-between">
+                     <div className="space-y-6">
+                        <div className="w-16 h-16 bg-black text-white flex items-center justify-center rounded-2xl">
+                           <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
+                        </div>
+                        <h3 className="text-4xl font-black text-black uppercase tracking-tighter leading-[1.1] italic">Identity <br />Verification.</h3>
+                        <p className="text-black/60 font-mono text-xs leading-relaxed max-w-sm uppercase">Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity. Zero exceptions.</p>
+                     </div>
+                     <div className="flex gap-3">
+                        <Badge variant="outline" className="px-4 py-2 text-[9px] font-black uppercase border-black/10">Verified Souls Only</Badge>
+                        <Badge variant="outline" className="px-4 py-2 text-[9px] font-black uppercase border-black/10">0% Ghosting</Badge>
+                     </div>
+                  </div>
+                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
+                     <ShieldCheck size={280} strokeWidth={0.5} />
+                  </div>
+               </div>
 
-              {/* Men's Card */}
-              <div className="bg-black text-white p-12 lg:p-24 space-y-16">
-                 <div>
-                    <span className="text-[11px] font-black uppercase tracking-[0.4em] text-white/40 mb-8 block">The Presence</span>
-                    <h3 className="text-6xl mat-text-display-pro text-white uppercase">₹2,499</h3>
-                 </div>
-                 <div className="space-y-4">
-                    <span className="text-xl font-medium italic text-white/40 block">Scale the Ladder.</span>
-                    <ul className="space-y-6 pt-12 border-t border-white/10">
-                       {[
-                         "Merit Ranking Visibility",
-                         "Archival Profile Verified",
-                         "Unlimited Discovery Presence"
-                       ].map(item => (
-                         <li key={item} className="flex items-center gap-6 text-[11px] font-black uppercase tracking-widest text-white/60">
-                            <div className="w-2 h-2 bg-white" />
-                            {item}
-                         </li>
-                       ))}
-                    </ul>
-                 </div>
-                 <button className="w-full h-24 bg-white text-black font-black uppercase tracking-[0.5em] text-[11px] hover:bg-neutral-200 transition-all">Initiate Standing</button>
-              </div>
+               {/* 2. Synch (Medium) */}
+               <div className="bento-span-4 bento-item mat-glass bg-matriarch-violet/5 hover:bg-matriarch-violet/10 group h-[400px]">
+                  <div className="flex flex-col h-full justify-between gap-8">
+                     <div className="space-y-6">
+                        <Zap className="w-10 h-10 text-matriarch-violet" strokeWidth={1.5} />
+                        <h3 className="text-2xl font-black text-black uppercase tracking-tighter italic">Instant <br />Synchronicity.</h3>
+                        <p className="text-black/60 font-mono text-[10px] leading-relaxed uppercase">Real-time matching based on intent, standing, and presence score. No algorithms, just alignment.</p>
+                     </div>
+                     <div className="mt-auto space-y-4">
+                        <div className="flex justify-between text-[8px] font-black uppercase text-matriarch-violet">
+                           <span>Matrix Alignment</span>
+                           <span>98.4%</span>
+                        </div>
+                        <div className="h-1 bg-black/5 rounded-full overflow-hidden">
+                           <motion.div 
+                              animate={{ x: ["-100%", "100%"] }} 
+                              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                              className="h-full w-20 bg-matriarch-violet" 
+                           />
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+               {/* 3. Sanctuary (Small) */}
+               <div className="bento-span-4 bento-item mat-glass group overflow-hidden">
+                  <div className="space-y-6">
+                     <Heart className="w-8 h-8 text-red-500" strokeWidth={1.5} />
+                     <h4 className="text-xl font-black text-black uppercase tracking-tighter italic">Safe <br />Haven.</h4>
+                     <p className="text-black/40 font-mono text-[9px] leading-relaxed uppercase">A focus on high-value dialogue and long-term meaningful connection.</p>
+                  </div>
+                  <div className="mt-8 pt-8 border-t border-black/5 flex items-center justify-between">
+                     <span className="text-[9px] font-black uppercase text-black/20 italic">Encrypted</span>
+                     <ArrowUpRight className="w-4 h-4 text-black/20 group-hover:text-black transition-colors" />
+                  </div>
+               </div>
+
+               {/* 4. Rank (Small - Dark) */}
+               <div className="bento-span-4 bento-item bg-black text-white group h-[300px]">
+                  <div className="flex flex-col h-full justify-between">
+                     <div className="space-y-6">
+                        <Activity className="w-8 h-8 text-white/40 group-hover:text-white transition-colors" strokeWidth={1} />
+                        <h4 className="text-xl font-black text-white uppercase tracking-tighter italic leading-none">Standing <br />Hierarchy.</h4>
+                        <p className="text-white/40 font-mono text-[9px] leading-relaxed uppercase">Earn your standing through verified presence and contribution.</p>
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <div className="w-8 h-px bg-white/20" />
+                        <span className="text-[8px] font-black tracking-widest uppercase">Verified System</span>
+                     </div>
+                  </div>
+               </div>
+
+               {/* 5. Discovery (Small) */}
+               <div className="bento-span-4 bento-item mat-glass">
+                  <div className="space-y-6">
+                     <Crown className="w-8 h-8 text-mat-gold" strokeWidth={1.5} />
+                     <h4 className="text-xl font-black text-black uppercase tracking-tighter italic">Discovery <br />Indexing.</h4>
+                     <p className="text-black/40 font-mono text-[9px] leading-relaxed uppercase">Sophisticated indexing that honors your preferences and temporal status.</p>
+                  </div>
+               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 8.5 ACCESS MATRIX (Refactored Pricing) */}
+        <section className="mat-section relative bg-neutral-50/30" id="access">
+          <div className="mat-container space-y-24">
+            <div className="text-center space-y-6">
+               <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">The Covenant</span>
+               <h2 className="text-6xl lg:text-9xl mat-text-display-pro text-black leading-[0.85] uppercase tracking-tighter">
+                 Tiered <br />
+                 <span className="text-black/20">Access.</span>
+               </h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/5 border border-black/5">
+              {[
+                { name: 'Observer', price: 'Free', role: 'Basic access for verified searchers.', items: ['Limited discovery', 'Standard profile', 'Base ranking'], cta: 'Begin Journey' },
+                { name: 'Initiate', price: '₹2,499', role: 'Advanced presence for seekers.', items: ['Extended discovery', 'Verified seal', 'Priority synchronicity', 'Token yield'], premium: true },
+                { name: 'Sovereign', price: '₹9,999', role: 'Absolute authority within sanctuary.', items: ['Infinite discovery', 'Direct intervention', 'Architect status', 'Elite standing'], cta: 'Ascend Status' },
+              ].map((tier, i) => (
+                <div key={i} className={`p-16 space-y-16 flex flex-col justify-between transition-all group ${tier.premium ? 'bg-black text-white' : 'bg-white text-black hover:bg-neutral-50'}`}>
+                   <div className="space-y-12">
+                      <div className="flex justify-between items-start">
+                         <h3 className="text-4xl font-black italic uppercase italic tracking-tighter leading-none">{tier.name}<br /><span className="opacity-10 text-2xl">Access.</span></h3>
+                         {tier.premium && <Crown className="text-mat-gold w-6 h-6" />}
+                      </div>
+                      
+                      <div className="space-y-4">
+                         <span className="text-5xl font-black tracking-tighter">{tier.price}</span>
+                         <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">{tier.role}</p>
+                      </div>
+
+                      <ul className="space-y-4 pt-12 border-t border-current opacity-10">
+                         {tier.items.map(item => (
+                           <li key={item} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest transition-all group-hover:translate-x-1">
+                              <ShieldCheck className="w-4 h-4 opacity-40" />
+                              {item}
+                           </li>
+                         ))}
+                      </ul>
+                   </div>
+
+                   <button className={`w-full h-20 text-[10px] font-black uppercase tracking-[0.5em] transition-all border-2 ${
+                     tier.premium ? 'bg-white text-black border-white hover:bg-neutral-200' : 'bg-black text-white border-black hover:bg-neutral-800'
+                   }`}>
+                      {tier.cta || 'Initiate Access'}
+                   </button>
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -532,61 +623,103 @@ const LandingPage: React.FC = () => {
         </div>
       </footer>
 
-      {/* Google Sign-In Modal */}
+      {/* Sign-In Modal — Romantic Glass */}
       <AnimatePresence>
         {showSignIn && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-3xl bg-black/80"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6"
+            style={{ background: 'rgba(250,240,235,0.5)', backdropFilter: 'blur(24px)' }}
             onClick={(e) => { if (e.target === e.currentTarget) setShowSignIn(false); }}
           >
             <motion.div
-              initial={{ scale: 0.9, opacity: 0, y: 40 }}
+              initial={{ scale: 0.95, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 40 }}
-              className="max-w-md w-full bg-white border border-black p-16 text-left relative overflow-hidden"
+              exit={{ scale: 0.95, opacity: 0, y: 30 }}
+              className="max-w-md w-full overflow-hidden"
+              style={{ borderRadius: '3rem', border: '1px solid rgba(201,160,154,0.25)', background: 'rgba(255,251,247,0.95)', boxShadow: '0 40px 100px rgba(123,45,66,0.18)' }}
             >
-              <button
-                onClick={() => setShowSignIn(false)}
-                className="absolute top-8 right-8 w-12 h-12 flex items-center justify-center transition-all bg-black text-white hover:bg-neutral-800"
-              >
-                <X className="w-6 h-6" />
-              </button>
+              <div className="p-12 space-y-8 relative">
+                <button
+                  onClick={() => setShowSignIn(false)}
+                  className="absolute top-8 right-8 w-10 h-10 flex items-center justify-center rounded-full transition-all"
+                  style={{ background: 'rgba(201,160,154,0.12)', color: '#7B2D42' }}
+                >
+                  <X className="w-5 h-5" />
+                </button>
 
-              <div className="mb-12 inline-flex items-center justify-center w-24 h-24 border-2 border-black">
-                <Crown className="w-12 h-12 text-black" strokeWidth={1} />
-              </div>
+                {/* Modal Header */}
+                <div className="text-center space-y-4 pt-4">
+                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-2"
+                    style={{ background: 'linear-gradient(135deg, #C9A09A, #7B2D42)' }}>
+                    <Heart className="w-8 h-8 text-white" strokeWidth={1.5} fill="rgba(255,255,255,0.3)" />
+                  </div>
+                  <h2 style={{fontFamily:'"Playfair Display",Georgia,serif', color:'#7B2D42'}} className="text-4xl font-bold italic leading-tight">
+                    Welcome back
+                  </h2>
+                  <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[12px] text-mat-slate/50 leading-relaxed">
+                    Sign in with Google to continue your journey
+                  </p>
+                </div>
 
-              <h2 className="text-5xl mat-text-display-pro mb-8 text-black uppercase leading-tight tracking-tighter">Access <br />Protocol</h2>
-              <p className="text-[13px] text-black/40 mb-12 font-medium leading-relaxed uppercase tracking-widest">
-                Sign in with Google to enter the selective architecture.
-              </p>
-
-              {error && (
-                <p className="text-red-600 text-[10px] font-black uppercase tracking-[0.3em] mb-8 border border-red-100 p-4 bg-red-50">{error}</p>
-              )}
-
-              <Button
-                onClick={loginWithGoogle}
-                disabled={isLoading}
-                className="w-full h-24 bg-black text-white hover:bg-neutral-800 flex items-center justify-center gap-6 rounded-none font-black text-[11px] uppercase tracking-[0.5em] transition-all"
-              >
-                {isLoading ? (
-                  <span>Initiating...</span>
-                ) : (
-                  <>
-                    <svg className="w-6 h-6 shrink-0" viewBox="0 0 24 24">
-                      <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                      <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                      <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
-                      <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                    </svg>
-                    <span>Google Auth</span>
-                  </>
+                {error && (
+                  <div className="p-4 rounded-2xl border" style={{ background: 'rgba(255,235,235,0.8)', borderColor: 'rgba(220,100,100,0.2)' }}>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-red-600 text-[11px] font-bold text-center">{error}</p>
+                  </div>
                 )}
-              </Button>
+
+                <button
+                  onClick={loginWithGoogle}
+                  disabled={isLoading}
+                  className="w-full h-14 flex items-center justify-center gap-4 rounded-2xl font-bold text-sm transition-all"
+                  style={{
+                    background: isLoading ? 'rgba(201,160,154,0.3)' : 'linear-gradient(135deg, #7B2D42, #96404F)',
+                    color: 'white',
+                    fontFamily: 'Helvetica,sans-serif',
+                    boxShadow: '0 8px 32px rgba(123,45,66,0.25)'
+                  }}
+                >
+                  {isLoading ? (
+                    <div className="flex gap-1.5">
+                      {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-white rounded-full animate-bounce" style={{animationDelay:`${i*0.12}s`}} />)}
+                    </div>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5 shrink-0" viewBox="0 0 24 24">
+                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+                        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                      </svg>
+                      <span>Continue with Google</span>
+                    </>
+                  )}
+                </button>
+
+                {/* Keep Me Signed In */}
+                <label className="flex items-center gap-3 cursor-pointer group px-1">
+                  <div
+                    onClick={() => setRememberMe(!rememberMe)}
+                    className="relative w-10 h-6 rounded-full transition-all flex-shrink-0"
+                    style={{ background: rememberMe ? 'linear-gradient(135deg,#C9A09A,#7B2D42)' : 'rgba(201,160,154,0.2)' }}
+                  >
+                    <motion.div
+                      animate={{ x: rememberMe ? 16 : 2 }}
+                      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                      className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
+                    />
+                  </div>
+                  <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[11px] text-mat-slate/60 font-medium">
+                    Keep me signed in on this device
+                  </span>
+                </label>
+
+                <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/30 text-center leading-relaxed">
+                  By signing in you agree to our Terms and Privacy Policy.
+                </p>
+              </div>
             </motion.div>
           </motion.div>
         )}

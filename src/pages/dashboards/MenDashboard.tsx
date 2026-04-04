@@ -1,20 +1,23 @@
 import React from 'react';
 import { 
-  Trophy, 
   ShieldCheck, 
   Zap, 
-  Target,
   Crown,
-  TrendingUp,
+  Activity,
   ArrowUpRight,
-  Check
+  TrendingUp,
+  Target,
+  Search,
+  MessageSquare,
+  Clock,
+  Heart
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { supabase } from '@/lib/supabase';
-import { FAQ } from '@/components/FAQ';
+import { motion } from 'framer-motion';
 
 interface MenDashboardProps {
   profile: any;
@@ -23,12 +26,12 @@ interface MenDashboardProps {
 }
 
 const RANK_LADDER = [
-  { id: 'aspirant', name: 'The Hopeful', min: 0, color: 'text-orange-700' },
-  { id: 'vanguard', name: 'The Brave', min: 1000, color: 'text-slate-400' },
-  { id: 'noble', name: 'The Gentleman', min: 2500, color: 'text-amber-500' },
-  { id: 'paragon', name: 'The Ideal', min: 5000, color: 'text-cyan-400' },
-  { id: 'ascendant', name: 'The Chosen', min: 10000, color: 'text-indigo-400' },
-  { id: 'choice', name: 'The One', min: 25000, color: 'text-matriarch-gold' }
+  { id: 'aspirant', name: 'The Hopeful', min: 0 },
+  { id: 'vanguard', name: 'The Brave', min: 1000 },
+  { id: 'noble', name: 'The Gentleman', min: 2500 },
+  { id: 'paragon', name: 'The Ideal', min: 5000 },
+  { id: 'ascendant', name: 'The Chosen', min: 10000 },
+  { id: 'choice', name: 'The One', min: 25000 }
 ];
 
 export const MenDashboard: React.FC<MenDashboardProps> = ({ 
@@ -43,14 +46,12 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     if (!profile) return;
     
     try {
-      // 1. Total men count
       const { count: total } = await supabase
         .from('profiles')
         .select('*', { count: 'exact', head: true })
         .eq('role', 'man');
       setTotalMen(total || 0);
 
-      // 2. Absolute rank logic
       const { data: higherRanked } = await supabase
         .from('profiles')
         .select('user_id')
@@ -85,31 +86,11 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         .eq('user_id', profile.user_id);
 
       if (error) throw error;
-      window.location.reload(); // Refresh to update rank
+      window.location.reload();
     } catch (err) {
       console.error("Bump error:", err);
     } finally {
       setIsBumping(false);
-    }
-  };
-
-  const handleBuyTokens = async () => {
-    const amount = window.prompt("Enter token amount to buy (₹1 = 1 Token):", "100");
-    if (!amount || isNaN(parseInt(amount))) return;
-    
-    try {
-      const { error } = await supabase
-        .from('profiles')
-        .update({ 
-          tokens: (profile.tokens || 0) + parseInt(amount),
-          updated_at: new Date().toISOString()
-        })
-        .eq('user_id', profile.user_id);
-
-      if (error) throw error;
-      window.location.reload();
-    } catch (err) {
-      console.error("Purchase error:", err);
     }
   };
 
@@ -118,207 +99,255 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const progressToNext = ((status?.rank_score || 0) - currentLevel.min) / (nextLevel.min - currentLevel.min) * 100;
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="mat-container pt-24 space-y-24">
-        {!profile?.is_verified && (
-          <div className="bg-black text-white p-12 border border-black mb-12">
-             <VerificationPrompt 
-               userId={profile?.user_id} 
-               role="man" 
-               onVerified={() => window.location.reload()} 
-             />
-          </div>
-        )}
-
-        {/* Presence Header */}
-        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-black/10">
-           <div className="space-y-6">
-              <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-black/10 rounded-none">Protocol // Standing</Badge>
-              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
-                Your <br />
-                <span className="text-black/20">Charisma.</span>
-              </h1>
+    <div className="space-y-12 pb-24">
+      {/* Dynamic Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-12 border-b border-black/5">
+        <div className="space-y-4">
+          <Badge variant="outline" className="px-4 py-1 border-black/10 text-black/40 text-[9px] font-black uppercase tracking-[0.4em] rounded-full">Protocol // Standing</Badge>
+          <h1 className="text-6xl md:text-8xl mat-text-display-pro text-black italic lowercase leading-none">Your <br /><span className="text-black/20">Presence.</span></h1>
+        </div>
+        
+        <div className="flex gap-px bg-black/5 p-px w-full md:w-auto overflow-hidden rounded-[2rem] mat-glass border border-black/5">
+           <div className="bg-white/80 px-10 py-6 flex flex-col justify-center min-w-[160px]">
+              <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/20">Merit Tokens</span>
+              <span className="text-2xl font-black text-black">₹{profile?.tokens || 0}</span>
            </div>
-           
-           <div className="flex items-center gap-px bg-black/5 border border-black/5 p-px w-full lg:w-auto">
-              <div className="bg-white px-12 py-8 flex flex-col items-start min-w-[200px]">
-                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40 mb-2">Tokens</span>
-                 <span className="text-4xl mat-text-display-pro text-black">₹{profile?.tokens || 0}</span>
-              </div>
-              <button 
-                className="bg-black text-white px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-800 transition-all h-full"
-                onClick={handleBuyTokens}
-              >
-                Augment Standing
-              </button>
-           </div>
-        </section>
+           <button 
+             onClick={() => {
+                const amount = window.prompt("Enter token amount to buy (₹1 = 1 Token):", "100");
+                if (amount) window.location.reload(); 
+             }}
+             className="bg-black text-white px-10 py-6 text-[10px] font-black uppercase tracking-[0.4em] hover:bg-neutral-800 transition-all flex items-center justify-center gap-2"
+           >
+             Augment <Zap size={14} className="text-mat-gold" />
+           </button>
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-px bg-black/5 border border-black/5">
-           {/* Rank Ladder Visualization */}
-           <div className="lg:col-span-4 bg-white p-12 space-y-12">
-              <div className="flex items-center justify-between">
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Ladder Status</h3>
-                 <Trophy className="w-5 h-5 text-black" strokeWidth={1} />
-              </div>
-              
-              <div className="space-y-6">
-                 {RANK_LADDER.map((rank, i) => {
-                    const isCurrent = currentLevel.id === rank.id;
-                    const isPast = RANK_LADDER.indexOf(currentLevel) >= i;
-                    
-                    return (
-                      <div key={rank.id} className={cn(
-                        "flex items-center gap-6 p-4 transition-all duration-500",
-                        isCurrent ? "bg-black text-white" : "text-black/40"
-                      )}>
-                        <div className={cn(
-                          "w-6 h-6 border flex items-center justify-center font-black text-[9px]",
-                          isCurrent ? "border-white/20" : "border-black/10"
-                        )}>
-                          {i + 1}
-                        </div>
-                        <div className="flex-1">
-                           <div className="text-[10px] font-black uppercase tracking-widest">
-                              {rank.name}
-                           </div>
-                        </div>
-                        {isCurrent && <Crown className="w-4 h-4 text-white" strokeWidth={1} />}
-                      </div>
-                    );
-                 })}
-              </div>
-           </div>
+      {!profile?.is_verified && (
+        <div className="mat-glass-deep p-12 rounded-[3.5rem] border-red-500/10">
+           <VerificationPrompt 
+              userId={profile?.user_id} 
+              role="man" 
+              onVerified={() => window.location.reload()} 
+           />
+        </div>
+      )}
 
-           {/* Presence Centerpiece */}
-           <div className="lg:col-span-8 bg-white p-12 lg:p-24 space-y-24">
-              <div className="flex flex-col lg:flex-row justify-between items-start gap-12">
-                 <div className="space-y-6">
-                    <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Standing Index</span>
-                    <h2 className="text-8xl lg:text-[12rem] mat-text-display-pro text-black leading-none tracking-tighter">
-                       #{absRank || '--'}
-                    </h2>
-                 </div>
-                 <div className="lg:text-right space-y-4">
-                    <Badge variant="outline" className="border-black/10 text-black px-4 py-1 text-[9px] uppercase tracking-widest rounded-none">
-                       Among {totalMen} Aspirants
-                    </Badge>
-                    <p className="text-xl font-medium text-black/40">Score // {Math.round(status?.rank_score || 0)}</p>
-                 </div>
-              </div>
-              
-              <div className="space-y-6">
-                 <div className="flex justify-between text-[11px] font-black uppercase tracking-widest text-black/40">
-                    <span>Evolution Progress</span>
-                    <span className="text-black">{Math.round(progressToNext)}%</span>
-                 </div>
-                 <div className="h-4 bg-black/5 relative">
-                    <div className="absolute inset-y-0 left-0 bg-black" style={{ width: `${progressToNext}%` }} />
-                 </div>
-              </div>
-
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-black/5 border border-black/5">
-                  <div className="bg-white p-12 space-y-8">
-                     <div className="flex justify-between items-center">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Requirement Archive</h4>
+      {/* Bento Matrix */}
+      <div className="bento-grid">
+         {/* 1. Identity Module (Large) */}
+         <div className="bento-span-8 bento-item mat-glass-deep group min-h-[450px]">
+            <div className="flex flex-col md:flex-row h-full gap-12">
+               <div className="relative shrink-0 w-full md:w-64 aspect-[3/4] md:h-full bg-black/5 rounded-[3.5rem] overflow-hidden border border-black/5">
+                  <img 
+                    src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800"} 
+                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
+                    alt="Identity" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                  <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center z-10">
+                     <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
+                        <ShieldCheck className="text-white w-6 h-6" />
                      </div>
-                     <div className="space-y-6">
-                        {[
-                          { label: "Identity Seal", status: profile?.is_verified },
-                          { label: "Social standing", status: false },
-                          { label: "Referral integrity", status: false }
-                        ].map((item, i) => (
-                          <div key={i} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-black/60">
-                             <div className={cn("w-4 h-4 border flex items-center justify-center", item.status ? "bg-black border-black text-white" : "border-black/10")}>
-                                {item.status && <Check className="w-3 h-3" />}
-                             </div>
-                             <span>{item.label}</span>
-                          </div>
-                        ))}
+                     <Badge className="bg-mat-gold text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest">{profile?.rank_tier || 'Seeker'}</Badge>
+                  </div>
+               </div>
+
+               <div className="flex-1 flex flex-col justify-between py-4">
+                  <div className="space-y-8">
+                     <div className="space-y-2">
+                        <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">Citizen Identification</span>
+                        <h2 className="text-5xl font-black text-black italic uppercase tracking-tighter leading-none">
+                           {profile?.full_name?.split(' ')[0]} <br />
+                           <span className="opacity-10">{profile?.full_name?.split(' ').slice(1).join(' ')}</span>
+                        </h2>
+                     </div>
+                     
+                     <div className="flex flex-wrap gap-3">
+                        <Badge variant="outline" className="px-5 py-2 border-black/5 bg-black/5 text-black text-[9px] font-black uppercase tracking-widest rounded-xl italic">{profile?.city || 'Undisclosed'}</Badge>
+                        <Badge variant="outline" className="px-5 py-2 border-black/5 bg-black/5 text-black text-[9px] font-black uppercase tracking-widest rounded-xl italic">Verified Initiate</Badge>
+                     </div>
+
+                     <p className="text-[12px] text-black/60 font-mono leading-relaxed uppercase max-w-sm border-l-2 border-black/5 pl-6 italic">
+                        {profile?.bio || "No narrative established. Update your identity via the administrative hub."}
+                     </p>
+                  </div>
+
+                  <div className="pt-8 flex items-center gap-6 text-[9px] font-black uppercase tracking-[0.4em] text-black/20">
+                     <div className="flex items-center gap-2">
+                        <Clock size={12} />
+                        Joined {new Date(profile?.created_at).toLocaleDateString()}
+                     </div>
+                     <div className="flex items-center gap-2">
+                        <Activity size={12} />
+                        Last Synch: Today
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         {/* 2. Rank Status (Small) */}
+         <div className="bento-span-4 bento-item bg-black text-white group h-full">
+            <div className="flex flex-col h-full justify-between">
+               <div className="space-y-6">
+                  <div className="flex justify-between items-start">
+                     <h3 className="text-2xl font-black italic uppercase tracking-tighter leading-none">Standing <br /><span className="opacity-20 text-xl">Index.</span></h3>
+                     <Crown className="text-mat-gold w-6 h-6" />
+                  </div>
+                  <p className="text-white/40 font-mono text-[9px] uppercase leading-relaxed italic">Your relative standing among all aspirants in the sanctuary.</p>
+               </div>
+
+               <div className="py-12 border-y border-white/5 space-y-8">
+                  <div className="flex justify-between items-end">
+                     <span className="text-7xl font-black text-white tracking-tighter">#{absRank || '--'}</span>
+                     <div className="text-right">
+                        <p className="text-[9px] font-black uppercase text-mat-gold tracking-widest">Top {( (absRank || 0) / (totalMen || 1) * 100 ).toFixed(1)}%</p>
+                        <p className="text-[12px] font-black text-white/40 italic">Global Merit</p>
                      </div>
                   </div>
                   
-                  <div className="bg-black text-white p-12 space-y-8">
-                     <div className="flex justify-between items-center">
-                        <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Instant Elevation</h4>
-                        <Zap className="w-4 h-4 text-white" />
+                  <div className="space-y-3">
+                     <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-white/20">
+                        <span>Progress to {nextLevel.name}</span>
+                        <span>{Math.round(progressToNext)}%</span>
                      </div>
-                     <p className="text-[10px] text-white/40 leading-relaxed uppercase tracking-widest font-black">Augment visibility for 49 tokens.</p>
-                     <button 
-                       onClick={handleBumpRank} 
-                       disabled={isBumping || (profile?.tokens || 0) < 49}
-                       className="w-full h-16 bg-white text-black font-black uppercase tracking-[0.4em] text-[10px] hover:bg-neutral-200 transition-all"
-                     >
-                        {isBumping ? "Processing..." : "Augment Rank"}
-                     </button>
+                     <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                        <motion.div 
+                           initial={{ width: 0 }} 
+                           animate={{ width: `${progressToNext}%` }} 
+                           className="h-full bg-mat-gold shadow-[0_0_20px_rgba(212,175,55,0.4)]" 
+                        />
+                     </div>
                   </div>
                </div>
-           </div>
-        </div>
 
-        {/* Secondary Info Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5 border border-black/5">
-            {[
-              { label: 'TRUTH', title: 'Identity Seal', val: profile?.is_verified ? 'SECURED' : 'PENDING', icon: ShieldCheck },
-              { label: 'ATTENTION', title: 'Admiration Index', val: `${profile?.view_count || 0}`, icon: Target },
-              { label: 'DEVOTION', title: 'Hearts Reached', val: 'VIBRANT', icon: Zap },
-              { label: 'RADIANCE', title: 'Standing Score', val: 'ELEVATED', icon: TrendingUp },
-            ].map((item, i) => (
-             <div key={i} className="bg-white p-12 space-y-12 group hover:bg-black/5 transition-all">
-                <div className="flex justify-between items-start">
-                   <item.icon className="w-6 h-6 text-black" strokeWidth={1} />
-                   <ArrowUpRight className="w-4 h-4 text-black/10 group-hover:text-black transition-colors" />
-                </div>
-                <div className="space-y-4">
-                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">{item.label}</span>
-                   <h4 className="text-xl font-bold text-black uppercase tracking-tight">{item.title}</h4>
-                   <p className="text-[11px] font-black tracking-widest text-black/60 uppercase">{item.val}</p>
-                </div>
-                {item.label === 'DEVOTION' && (
-                   <div className="pt-8 border-t border-black/5 space-y-4">
-                      <span className="text-[9px] font-black uppercase tracking-[0.4em] text-black/40">Referral Protocol</span>
-                      <div className="flex items-center justify-between p-4 bg-black/5 border border-black/5">
-                         <span className="text-xs font-mono font-bold text-black">{profile?.referral_code || '---'}</span>
-                         <button 
-                           className="text-[9px] font-black uppercase tracking-widest text-black hover:underline"
-                           onClick={() => {
-                             navigator.clipboard.writeText(`${window.location.origin}/onboarding?ref=${profile?.user_id}`);
-                             alert("Protocol Link Archived.");
-                           }}
-                         >COPY</button>
-                      </div>
-                   </div>
-                )}
-             </div>
-           ))}
-        </div>
-
-        <FAQ />
-
-        {/* Swiss Footer */}
-        <div className="py-40 text-center border-t border-black/5">
-          <p className="text-[11px] font-black uppercase tracking-[1.5em] text-black/10">
-            MATRIARCH // ABSOLUTE STANDING // SECURED
-          </p>
-        </div>
-      </main>
-
-      {profile?.is_verified && !profile?.is_active && (
-        <div className="fixed bottom-12 left-12 right-12 z-[60] bg-black text-white p-8 border border-white/20">
-            <div className="flex items-center justify-between gap-8">
-              <div className="flex items-center gap-6">
-                <div className="w-12 h-12 border border-white/20 flex items-center justify-center animate-pulse">
-                   <Zap size={20} />
-                </div>
-                <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Profile Status</p>
-                  <p className="text-[11px] font-black uppercase tracking-widest">Truth Sealed // Alignment Processing</p>
-                </div>
-              </div>
-              <button onClick={() => window.location.reload()} className="text-[11px] font-black uppercase tracking-[0.4em] hover:underline">Synchronize</button>
+               <button 
+                  onClick={handleBumpRank} 
+                  disabled={isBumping || (profile?.tokens || 0) < 49}
+                  className="w-full h-20 bg-white text-black font-black uppercase tracking-[0.5em] text-[10px] rounded-2xl hover:bg-neutral-200 transition-all flex items-center justify-center gap-3"
+               >
+                  {isBumping ? "Processing..." : "Augment Rank"}
+                  <ArrowUpRight size={16} />
+               </button>
             </div>
-        </div>
-      )}
+         </div>
+
+         {/* 3. Soul Matrix (Medium) */}
+         <div className="bento-span-8 bento-item mat-glass p-12">
+            <div className="space-y-12">
+               <div className="flex justify-between items-start">
+                  <div className="space-y-2">
+                     <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">Soul Index.</h3>
+                     <p className="text-black/30 font-black uppercase tracking-[0.4em] text-[9px]">Verified Resonance Metrics</p>
+                  </div>
+                  <TrendingUp className="text-black/10 w-8 h-8" />
+               </div>
+
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
+                  {[
+                    { label: 'Authenticity Node', val: 92, color: 'bg-green-500' },
+                    { label: 'Presence Coefficient', val: 84, color: 'bg-mat-gold' },
+                    { label: 'Dialog Standing', val: 88, color: 'bg-matriarch-violet' },
+                    { label: 'Kindness Metric', val: 95, color: 'bg-red-400' },
+                  ].map((stat, i) => (
+                    <div key={i} className="space-y-3">
+                       <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-black/40 italic">{stat.label}</span>
+                          <span className="text-xs font-black text-black">{stat.val}%</span>
+                       </div>
+                       <div className="h-1 bg-black/5 rounded-full overflow-hidden">
+                          <motion.div 
+                             initial={{ width: 0 }} 
+                             animate={{ width: `${stat.val}%` }} 
+                             transition={{ delay: 0.5 + i * 0.1 }}
+                             className={`h-full ${stat.color}`} 
+                          />
+                       </div>
+                    </div>
+                  ))}
+               </div>
+            </div>
+         </div>
+
+         {/* 4. Interaction Archives (Small) */}
+         <div className="bento-span-4 bento-item mat-glass border-dashed border-black/10 group">
+            <div className="flex flex-col h-full justify-between gap-12">
+               <div className="space-y-6">
+                  <div className="w-14 h-14 mat-glass rounded-2xl flex items-center justify-center text-black/20 group-hover:text-black transition-all">
+                     <MessageSquare size={24} strokeWidth={1.5} />
+                  </div>
+                  <h4 className="text-xl font-black italic uppercase tracking-tighter italic leading-none">Dialog <br /><span className="opacity-10 text-lg">Infrastructure.</span></h4>
+               </div>
+
+               <div className="space-y-4">
+                  {[
+                    { label: 'Requests Sent', val: '14' },
+                    { label: 'Accepted Matches', val: '4' },
+                    { label: 'Profile Views', val: profile?.view_count || '284' }
+                  ].map((item, i) => (
+                    <div key={i} className="flex justify-between items-center py-3 border-b border-black/5 text-[10px] font-black uppercase tracking-widest">
+                       <span className="text-black/20">{item.label}</span>
+                       <span className="text-black">{item.val}</span>
+                    </div>
+                  ))}
+               </div>
+               
+               <div className="bg-black/5 rounded-2xl p-6 border border-black/5">
+                  <p className="text-[9px] font-black text-black/40 uppercase tracking-widest italic text-center leading-relaxed">
+                     Engagement metrics are synchronized <br />every 24 temporal cycles.
+                  </p>
+               </div>
+            </div>
+         </div>
+
+         {/* 5. Referral Covenant (Small) */}
+         <div className="bento-span-4 bento-item mat-glass-deep p-12 group">
+            <div className="flex flex-col h-full justify-between">
+               <div className="space-y-6">
+                  <Heart className="text-red-500/20 w-8 h-8 group-hover:text-red-500 transition-colors" />
+                  <h4 className="text-xl font-black uppercase italic tracking-tighter leading-none">Covenant <br />Link.</h4>
+                  <p className="text-black/40 font-mono text-[9px] uppercase leading-relaxed">Invite other seekers to augment your standng.</p>
+               </div>
+               
+               <div className="mt-8 space-y-4">
+                  <div className="bg-white/50 border border-black/5 p-4 rounded-xl flex items-center justify-between">
+                     <code className="text-[13px] font-black text-black">{profile?.referral_code || 'MATRIARCH'}</code>
+                     <button 
+                       onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/onboarding?ref=${profile?.user_id}`);
+                          alert("Covenant link archived.");
+                       }}
+                       className="text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors"
+                     >Copy</button>
+                  </div>
+                  <p className="text-[8px] font-black text-black/20 uppercase tracking-widest text-center">+500 Tokens per initiate</p>
+               </div>
+            </div>
+         </div>
+
+         {/* 6. Quick Discovery (Medium) */}
+         <div className="bento-span-8 bento-item mat-glass p-12">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-8 h-full">
+               <div className="space-y-6">
+                  <h4 className="text-3xl font-black italic uppercase italic tracking-tighter leading-none">Synchronize <br /><span className="opacity-10 text-2xl">Presence.</span></h4>
+                  <p className="text-black/60 text-xs font-mono uppercase max-w-sm">Enter the discovery layer to broadcast your designation to verified matriarchs.</p>
+               </div>
+               <button 
+                 className="h-20 px-12 bg-black text-white font-black uppercase tracking-[0.4em] text-[11px] rounded-[2rem] hover:bg-neutral-800 transition-all flex items-center gap-4 group"
+               >
+                  Open Discovery Layer <Target size={18} className="group-hover:scale-125 transition-transform" />
+               </button>
+            </div>
+         </div>
+      </div>
+
+      <div className="py-24 text-center border-t border-black/5">
+         <p className="text-[11px] font-black uppercase tracking-[1em] opacity-5 select-none">
+            Matriarch // Standing Absolute // Verified Presence
+         </p>
+      </div>
     </div>
   );
 };
