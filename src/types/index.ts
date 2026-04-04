@@ -1,7 +1,7 @@
-import { MessagingMatch } from '@/lib/messaging';
+import type { MessagingMatch } from '@/lib/messaging';
 
 export type Role = 'man' | 'woman' | 'admin';
-export type Tab = 'discovery' | 'profile' | 'messages' | 'admin';
+export type Tab = 'discovery' | 'profile' | 'messages' | 'admin' | 'sovereign_browse';
 
 export interface MatriarchProfile {
   user_id: string;

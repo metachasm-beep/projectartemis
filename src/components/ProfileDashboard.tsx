@@ -102,7 +102,7 @@ const SignalMetric = ({ icon: Icon, label, value, sub }: { icon: any, label: str
   </div>
 );
 
-export const ProfileDashboard: React.FC = () => {
+export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ onBeginDiscovery }) => {
   const { profile, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [metrics, setMetrics] = useState({ impression: 0, visit: 0, save: 0 });
@@ -260,7 +260,12 @@ export const ProfileDashboard: React.FC = () => {
                                   </div>
                                </div>
                             </div>
-                            <Button variant="default" size="lg" className="w-full gap-4"><ShieldCheck size={18} /> Seal Identity Private</Button>
+                            <div className="flex flex-col gap-4">
+                               <Button variant="gold" size="lg" onClick={onBeginDiscovery} className="w-full gap-4 group/btn">
+                                  <Sparkles size={18} className="group-hover/btn:animate-pulse" /> Begin Sovereign Browsing
+                               </Button>
+                               <Button variant="default" size="lg" className="w-full gap-4"><ShieldCheck size={18} /> Seal Identity Private</Button>
+                            </div>
                          </div>
                       )}
 

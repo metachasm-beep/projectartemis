@@ -5,8 +5,9 @@ import { SanctuaryInbox } from '@/components/SanctuaryInbox';
 import { MagicChat } from '@/components/MagicChat';
 import { MatriarchToolbar } from '@/components/navigation/MatriarchToolbar';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
+import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { useAuth } from '@/hooks/useAuth';
-import { Tab, SanctuaryMatch } from '@/types';
+import type { Tab, SanctuaryMatch } from '@/types';
 import { Badge } from '@/components/ui/badge';
 
 export const DashboardLayout: React.FC = () => {
@@ -14,19 +15,38 @@ export const DashboardLayout: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('profile');
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 
+  // 🍷 Sovereign Ritual Toggle
+  const isSovereignMode = activeTab === 'sovereign_browse';
+
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="min-h-screen pt-32 pb-16">
+    <motion.div 
+      initial={{ opacity: 0 }} 
+      animate={{ opacity: 1 }} 
+      className={cn(
+        "min-h-screen transition-colors duration-1000",
+        isSovereignMode ? "bg-mat-cream/50 pt-0" : "bg-mat-cream pt-32 pb-16"
+      )}
+    >
       <MatriarchToolbar 
         activeTab={activeTab as any} 
         setActiveTab={setActiveTab as any} 
         onLogout={signOut} 
       />
       
-      <main className="container mx-auto px-4 md:px-0">
+      <main className={cn(
+        "mx-auto transition-all duration-1000",
+        isSovereignMode ? "w-full px-0" : "container px-4 md:px-0"
+      )}>
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
             <motion.div key="discovery" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <Discovery />
+            </motion.div>
+          )}
+
+          {activeTab === 'sovereign_browse' && (
+            <motion.div key="sovereign" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+               <SovereignBrowsing onStop={() => setActiveTab('profile')} />
             </motion.div>
           )}
           
@@ -57,7 +77,7 @@ export const DashboardLayout: React.FC = () => {
 
           {activeTab === 'profile' && (
             <motion.div key="profile" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <ProfileDashboard />
+              <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -65,3 +85,8 @@ export const DashboardLayout: React.FC = () => {
     </motion.div>
   );
 };
+
+// 🍷 Aesthetic Helper for Layout Transitions
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(' ');
+}
