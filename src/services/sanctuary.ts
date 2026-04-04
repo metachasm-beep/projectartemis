@@ -9,17 +9,26 @@ export const SanctuaryService = {
   /**
    * 🏹 Discovery Feed: Curated Resonance Rails.
    */
-  getRailFeed: async (womanId: string, type: 'imperial' | 'truth' | 'rising') => {
+  getRailFeed: async (womanId: string, type: 'imperial' | 'truth' | 'rising' | 'nearby' | 'shortlist', city?: string) => {
     let sql = "";
+    let args: any[] = [];
+
     if (type === 'imperial') {
        sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY rank_boost_count DESC LIMIT 10";
     } else if (type === 'truth') {
        sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY created_at DESC LIMIT 10";
-    } else {
+    } else if (type === 'rising') {
        sql = "SELECT * FROM profiles WHERE role = 'man' ORDER BY created_at DESC LIMIT 10";
+    } else if (type === 'nearby' && city) {
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY rank_boost_count DESC LIMIT 10";
+       args = [city];
+    } else if (type === 'shortlist') {
+       sql = "SELECT p.* FROM profiles p JOIN shortlists s ON p.user_id = s.man_user_id WHERE s.woman_user_id = ? ORDER BY s.created_at DESC";
+       args = [womanId];
     }
     
-    const r = await turso.execute({ sql, args: [] });
+    if (!sql) return [];
+    const r = await turso.execute({ sql, args });
     return r.rows;
   },
 
@@ -31,6 +40,14 @@ export const SanctuaryService = {
     await turso.execute({
       sql: "INSERT INTO shortlists (id, woman_user_id, man_user_id) VALUES (?, ?, ?)",
       args: [id, womanId, manId]
+    });
+    return true;
+  },
+
+  unshortlist: async (womanId: string, manId: string) => {
+    await turso.execute({
+      sql: "DELETE FROM shortlists WHERE woman_user_id = ? AND man_user_id = ?",
+      args: [womanId, manId]
     });
     return true;
   },
