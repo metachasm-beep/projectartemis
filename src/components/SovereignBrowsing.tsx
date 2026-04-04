@@ -96,21 +96,21 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
 
   return (
     <div className="relative min-h-[100vh] bg-mat-cream overflow-x-hidden">
-      {/* ─── Control Header ─── */}
-      <div className="fixed top-8 left-1/2 -translate-x-1/2 z-[110] flex items-center gap-6 px-10 py-5 bg-mat-wine/90 backdrop-blur-2xl rounded-full shadow-2xl border border-mat-rose/20">
-         <div className="flex items-center gap-3">
-            <Sparkles size={16} className="text-mat-gold animate-pulse" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-cream">Sovereign Mode // Discovery Portal</span>
+      {/* ─── Control Header (Notch Safe) ─── */}
+      <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-[110] flex items-center gap-4 md:gap-6 px-6 md:px-10 py-3 md:py-5 bg-mat-wine/90 backdrop-blur-2xl rounded-full shadow-2xl border border-mat-rose/20 w-[90%] md:w-auto justify-between md:justify-start">
+         <div className="flex items-center gap-2 md:gap-3">
+            <Sparkles size={14} className="text-mat-gold animate-pulse" />
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-mat-cream">Sovereign Portal</span>
          </div>
          <div className="w-px h-4 bg-mat-cream/10" />
-         <Button onClick={onStop} variant="ghost" className="h-8 px-4 text-mat-rose hover:text-mat-cream hover:bg-mat-rose/20 text-[9px] font-black uppercase tracking-widest gap-2">
-            <X size={14} /> Stop Browsing
+         <Button onClick={onStop} variant="ghost" className="h-8 px-3 md:px-4 text-mat-rose hover:text-mat-cream hover:bg-mat-rose/20 text-[8px] md:text-[9px] font-black uppercase tracking-widest gap-2">
+            <X size={12} /> <span className="hidden xs:inline">Stop Browsing</span><span className="xs:hidden">Stop</span>
          </Button>
       </div>
 
-      <main className="container mx-auto px-4 pt-48 pb-32">
+      <main className="container mx-auto px-6 pt-32 md:pt-48 pb-32">
          {/* ─── Minimalist Discovery Grid ─── */}
-         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-14">
+         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-14">
             {profiles.map((profile, idx) => {
               const photos = JSON.parse(profile.photos || '[]');
               const status = matchingStatus[profile.user_id] || 'idle';
@@ -125,7 +125,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                >
                  <Card 
                   onClick={() => handleMatch(profile.user_id)} 
-                  className="relative aspect-[3/4.5] rounded-[3.5rem] overflow-hidden border-none cursor-pointer shadow-mat-premium hover:shadow-mat-gold transition-all duration-700 bg-mat-wine/5"
+                  className="relative aspect-[3/4] md:aspect-[3/4.5] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-none cursor-pointer shadow-mat-premium hover:shadow-mat-gold transition-all duration-700 bg-mat-wine/5"
                  >
                    <CardContent className="p-0 h-full">
                      <div className="absolute inset-0">
@@ -138,9 +138,9 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                      </div>
 
                      {/* 💎 Minimalist Identity Marker */}
-                     <div className="absolute bottom-0 left-0 right-0 p-12 space-y-3 pointer-events-none transition-transform duration-500 group-hover:translate-y-[-10px]">
-                        <h3 className="text-5xl font-black mat-text-display-pro text-mat-cream/90 italic leading-none">{profile.full_name.split(' ')[0]}</h3>
-                        <p className="text-mat-cream/40 text-[11px] font-black uppercase tracking-[0.4em] italic">Age {profile.age || 'Soul'}</p>
+                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-2 md:space-y-3 pointer-events-none transition-transform duration-500 group-hover:translate-y-[-10px]">
+                        <h3 className="text-3xl md:text-5xl font-black mat-text-display-pro text-mat-cream/90 italic leading-none">{profile.full_name.split(' ')[0]}</h3>
+                        <p className="mat-text-label-pro text-mat-cream/60">Age {profile.age || 'Soul'}</p>
                      </div>
 
                      {/* 💎 Resonance Action Overlay */}

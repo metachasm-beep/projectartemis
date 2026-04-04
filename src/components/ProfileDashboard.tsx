@@ -162,10 +162,10 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                             <Badge variant="sovereign" className="px-6 py-2">Sovereign Presence</Badge>
                          )}
                       </div>
-                      <h1 className="text-8xl md:text-[12rem] font-bold text-mat-wine italic leading-[0.8]" style={{fontFamily: 'var(--font-display)'}}>
-                         {profile?.full_name?.split(' ')[0]} <br />
-                         <span className="text-mat-rose/10 -mt-8 block">{profile?.full_name?.split(' ').slice(1).join(' ') || 'Identifier'}</span>
-                      </h1>
+                       <h1 className="mat-text-display-pro leading-[0.8] mt-4">
+                          {profile?.full_name?.split(' ')[0]} <br />
+                          <span className="text-mat-rose/10 -mt-2 md:-mt-8 block">{profile?.full_name?.split(' ').slice(1).join(' ') || 'Identifier'}</span>
+                       </h1>
                    </div>
                    
                    {isMan && (
@@ -197,12 +197,12 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
 
                 <TabsContent value="station" className="mt-0">
                    <div className="bento-grid gap-12">
-                      <div className="bento-span-4 bento-item mat-glass-deep p-0 overflow-hidden h-[600px] shadow-mat-premium border-mat-rose/10 group">
-                         <img src={profile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000" />
-                         <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-mat-wine/80 to-transparent">
-                            <span className="text-[10px] font-black text-mat-cream/40 uppercase tracking-[0.4em]">Primary Portrait</span>
-                         </div>
-                      </div>
+                       <div className="bento-span-4 bento-item mat-glass-deep p-0 overflow-hidden h-[400px] md:h-[600px] shadow-mat-premium border-mat-rose/10 group">
+                          <img src={profile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000" />
+                          <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-mat-wine/80 to-transparent">
+                             <span className="mat-text-label-pro text-mat-cream opacity-40">Primary Portrait</span>
+                          </div>
+                       </div>
 
                       {isMan ? (
                          <div className="bento-span-5 bento-item mat-glass border-mat-rose/10 p-14 flex flex-col justify-between h-[600px]">
@@ -232,40 +232,41 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                       ) : (
                          <div className="bento-span-5 bento-item mat-glass border-mat-wine/5 bg-mat-wine/5 p-14 flex flex-col justify-between h-[600px] shadow-mat-premium relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-mat-wine/5 blur-[100px]" />
-                            <div className="space-y-12 relative z-10">
-                               <div className="space-y-4">
-                                  <div className="flex items-center gap-4 text-mat-wine">
-                                     <Crown size={32} strokeWidth={1.5} />
-                                     <h3 className="text-5xl font-bold italic leading-tight">Sovereign <br /><span className="opacity-30">Status.</span></h3>
-                                  </div>
-                               </div>
-                               
-                               <div className="grid grid-cols-2 gap-8">
-                                  <div className="p-5 bg-white/60 rounded-3xl border border-mat-wine/5 shadow-sm space-y-4">
-                                     <Clock className="text-mat-wine" size={20} />
-                                     <p className="text-4xl font-black text-mat-wine italic">{(sovereignMetrics.sessionSeconds / 60).toFixed(0)}m</p>
-                                     <p className="text-[9px] font-bold uppercase tracking-widest text-mat-wine/40">Time Spent</p>
-                                  </div>
-                                  <div className="p-5 bg-white/60 rounded-3xl border border-mat-wine/5 shadow-sm space-y-4">
-                                     <Heart className="text-mat-rose" size={20} fill="currentColor" />
-                                     <p className="text-4xl font-black text-mat-wine italic">{sovereignMetrics.matches}</p>
-                                     <p className="text-[9px] font-bold uppercase tracking-widest text-mat-wine/40">Resonances</p>
-                                  </div>
-                               </div>
+                             <div className="space-y-8 relative z-10">
+                                <div className="space-y-4">
+                                   <div className="flex items-center gap-4 text-mat-wine">
+                                      <Crown size={32} strokeWidth={1.5} />
+                                      <h3 className="text-4xl md:text-5xl font-bold italic leading-tight">Sovereign <br /><span className="opacity-30">Status.</span></h3>
+                                   </div>
+                                </div>
+                                
+                                <div className="grid grid-cols-2 lg:grid-cols-2 gap-4 md:gap-8">
+                                   <div className="p-5 bg-white/60 rounded-3xl border border-mat-wine/5 shadow-sm space-y-4">
+                                      <Clock className="text-mat-wine" size={20} />
+                                      <p className="text-3xl md:text-4xl font-black text-mat-wine italic">{(sovereignMetrics.sessionSeconds / 60).toFixed(0)}m</p>
+                                      <p className="mat-text-label-pro text-mat-wine/40">Time Spent</p>
+                                   </div>
+                                   <div className="p-5 bg-white/60 rounded-3xl border border-mat-wine/5 shadow-sm space-y-4">
+                                      <Heart className="text-mat-rose" size={20} fill="currentColor" />
+                                      <p className="text-3xl md:text-4xl font-black text-mat-wine italic">{sovereignMetrics.matches}</p>
+                                      <p className="mat-text-label-pro text-mat-wine/40">Resonances</p>
+                                   </div>
+                                </div>
 
-                               <div className="pt-8 border-t border-mat-wine/5 space-y-6">
-                                  <div className="flex justify-between items-center">
-                                     <span className="text-[11px] font-black uppercase tracking-widest text-mat-wine/60">Sovereign Tier</span>
-                                     <Badge variant="sovereign">{getSovereignTier(sovereignMetrics.matches, sovereignMetrics.sessionSeconds).label}</Badge>
-                                  </div>
-                               </div>
-                            </div>
-                            <div className="flex flex-col gap-4">
-                               <Button variant="gold" size="lg" onClick={onBeginDiscovery} className="w-full gap-4 group/btn">
-                                  <Sparkles size={18} className="group-hover/btn:animate-pulse" /> Begin Sovereign Browsing
-                               </Button>
-                               <Button variant="default" size="lg" className="w-full gap-4"><ShieldCheck size={18} /> Seal Identity Private</Button>
-                            </div>
+                                <div className="pt-8 border-t border-mat-wine/5 space-y-6">
+                                   <div className="flex justify-between items-center">
+                                      <span className="text-[11px] font-black uppercase tracking-widest text-mat-wine/60">Sovereign Tier</span>
+                                      <Badge variant="sovereign">{getSovereignTier(sovereignMetrics.matches, sovereignMetrics.sessionSeconds).label}</Badge>
+                                   </div>
+                                </div>
+                             </div>
+
+                             <div className="flex flex-col gap-4">
+                                <Button variant="gold" size="lg" onClick={onBeginDiscovery} className="w-full gap-4 group/btn">
+                                   <Sparkles size={18} className="group-hover/btn:animate-pulse" /> Begin Sovereign Browsing
+                                </Button>
+                                <Button variant="default" size="lg" className="w-full gap-4"><ShieldCheck size={18} /> Seal Identity Private</Button>
+                             </div>
                          </div>
                       )}
 

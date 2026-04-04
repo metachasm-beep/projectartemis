@@ -740,6 +740,24 @@ const LandingPage: React.FC = () => {
         )}
       </AnimatePresence>
 
+      {/* 🛠️ Dev Admin Bypass — visible via ?admin=true query param */}
+      {new URLSearchParams(window.location.search).get('admin') === 'true' && (
+        <div className="fixed bottom-4 left-4 z-[200] flex gap-2">
+           <button 
+             onClick={() => { window.location.href = window.location.origin + '?devbypass=woman'; }}
+             className="px-4 py-2 bg-mat-wine text-white text-[8px] font-black uppercase tracking-widest rounded-full shadow-lg opacity-60 hover:opacity-100 transition-opacity"
+           >
+             Bypass: Woman
+           </button>
+           <button 
+             onClick={() => { window.location.href = window.location.origin + '?devbypass=man'; }}
+             className="px-4 py-2 bg-mat-gold text-white text-[8px] font-black uppercase tracking-widest rounded-full shadow-lg opacity-60 hover:opacity-100 transition-opacity"
+           >
+             Bypass: Man
+           </button>
+        </div>
+      )}
+
       <style dangerouslySetInnerHTML={{ __html: `
         @keyframes marquee {
           0% { transform: translateX(0); }

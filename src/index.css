@@ -67,6 +67,7 @@
     padding-left: 1.5rem;
     padding-right: 1.5rem;
   }
+  @media (max-width: 640px) { .mat-container { padding-left: 1.25rem; padding-right: 1.25rem; } }
   @media (min-width: 640px) { .mat-container { max-width: 640px; } }
   @media (min-width: 768px) { .mat-container { max-width: 768px; } }
   @media (min-width: 1024px) { .mat-container { max-width: 1024px; } }
@@ -84,18 +85,24 @@
     font-family: var(--font-display);
     font-weight: 800;
     letter-spacing: -0.04em;
-    line-height: 0.9;
+    line-height: 0.95;
     font-style: italic;
     color: var(--color-mat-wine);
+    font-size: clamp(3rem, 15vw, 12rem); /* 💎 Fluid scaling for mobile-to-desktop */
+  }
+  
+  @media (max-width: 640px) {
+    .mat-text-display-pro { letter-spacing: -0.02em; }
   }
 
   .mat-text-label-pro {
-    font-size: 0.65rem;
+    font-size: clamp(8px, 1.5vw, 11px);
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 0.5em;
+    letter-spacing: 0.4em; /* 💎 High-tracking 'Aura' label */
     color: var(--color-mat-wine);
     font-family: var(--font-body);
+    opacity: 0.6;
   }
 
   /* ─── Premium Glassmorphism ──────────────────────────────────────────────── */
@@ -110,8 +117,19 @@
   /* Bento Layout */
   .bento-grid {
     display: grid;
-    gap: 2rem;
+    gap: 1.5rem;
     grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+  @media (max-width: 1024px) {
+    .bento-grid {
+       grid-template-columns: 1fr;
+       gap: 1.25rem;
+    }
+    .bento-span-1, .bento-span-2, .bento-span-3, .bento-span-4, .bento-span-5, 
+    .bento-span-6, .bento-span-7, .bento-span-8, .bento-span-9, .bento-span-10, 
+    .bento-span-11, .bento-span-12 {
+       grid-column: span 1 / span 1 !important;
+    }
   }
 
   .bento-item {

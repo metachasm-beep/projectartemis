@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Discovery } from '@/pages/Discovery';
 import { SanctuaryInbox } from '@/components/SanctuaryInbox';
@@ -7,11 +7,14 @@ import { MatriarchToolbar } from '@/components/navigation/MatriarchToolbar';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { useAuth } from '@/hooks/useAuth';
+import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
 import { Badge } from '@/components/ui/badge';
 
 export const DashboardLayout: React.FC = () => {
-  const { profile, signOut } = useAuth();
+  const bypassCtx = useContext(AuthBypassContext);
+  const realAuth = useAuth();
+  const { profile, signOut } = bypassCtx || realAuth;
   const [activeTab, setActiveTab] = useState<Tab>('profile');
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 
@@ -85,6 +88,8 @@ export const DashboardLayout: React.FC = () => {
     </motion.div>
   );
 };
+
+export default DashboardLayout;
 
 // 🍷 Aesthetic Helper for Layout Transitions
 function cn(...classes: (string | boolean | undefined)[]) {
