@@ -12,7 +12,11 @@ export const useAuth = () => {
   const [fetchingProfile, setFetchingProfile] = useState(false);
 
   const fetchProfile = useCallback(async (userId: string) => {
-    if (!userId) return;
+    if (!userId) {
+       setProfile(null);
+       return;
+    }
+    
     setFetchingProfile(true);
     try {
       const result = await turso.execute({
@@ -67,9 +71,13 @@ export const useAuth = () => {
           );
         }
         setProfile(data);
+      } else {
+        // Explicitly set to null if no record found, to trigger onboarding
+        setProfile(null);
       }
     } catch (err) {
       console.error("Auth Hook Exception:", err);
+      setProfile(null);
     } finally {
       setFetchingProfile(false);
       setLoading(false);
@@ -77,7 +85,12 @@ export const useAuth = () => {
   }, []);
 
   const refreshProfile = useCallback(async () => {
-    if (user?.id) await fetchProfile(user.id);
+    // Force a re-fetch of the session first to ensure we have the latest user context
+    const { data: { session: freshSession } } = await supabase.auth.getSession();
+    const targetUserId = freshSession?.user?.id || user?.id;
+    if (targetUserId) {
+       await fetchProfile(targetUserId);
+    }
   }, [user, fetchProfile]);
 
   const signOut = useCallback(async () => {
@@ -92,16 +105,23 @@ export const useAuth = () => {
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      if (currentSession?.user) await fetchProfile(currentSession.user.id);
-      else setLoading(false);
+      if (currentSession?.user) {
+         await fetchProfile(currentSession.user.id);
+      } else {
+         setLoading(false);
+      }
     };
     initializeAuth();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
-      if (event === 'SIGNED_IN' && currentSession?.user) await fetchProfile(currentSession.user.id);
-      else if (event === 'SIGNED_OUT') setProfile(null);
+      if (currentSession?.user) {
+         await fetchProfile(currentSession.user.id);
+      } else {
+         setProfile(null);
+         setLoading(false);
+      }
     });
 
     return () => subscription.unsubscribe();

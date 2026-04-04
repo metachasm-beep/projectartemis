@@ -70,7 +70,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           profile_strength, onboarding_status, updated_at
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ON CONFLICT(user_id) DO UPDATE SET
-          full_name = excluded.full_name, onboarding_status = excluded.onboarding_status, updated_at = excluded.updated_at
+          full_name = excluded.full_name, onboarding_status = excluded.onboarding_status, updated_at = excluded.updated_at,
+          role = excluded.role, city = excluded.city, date_of_birth = excluded.date_of_birth, photos = excluded.photos
       `;
 
       const args = [
@@ -83,6 +84,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       ];
 
       await turso.execute(sql, args);
+      // Wait for the state to settle briefly before signaling completion
+      await new Promise(r => setTimeout(r, 400));
       onComplete();
     } catch (err: any) {
       console.error("Sanctuary Error:", err);
@@ -132,7 +135,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                 {step === 'ROLE' && (
                   <motion.div key="role" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
                      <div className="text-center space-y-4">
-                        <div className="w-16 h-16 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center"><Heart size={32} /></div>
+                        <div className="w-16 h-16 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><Heart size={32} /></div>
                         <h2 className="text-5xl font-bold text-mat-wine italic leading-tight">Welcome to <br />Matriarch</h2>
                         <p className="text-mat-slate text-sm italic">Identify your essence to enter the sanctuary.</p>
                      </div>
@@ -187,6 +190,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                          <div className="flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-mat-wine">Aura Potential</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
                          <div className="h-2 bg-mat-fog rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: `${strength}%` }} className="h-full bg-mat-gold shadow-sm" /></div>
                       </div>
+                      {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{error}</p>}
                       <button onClick={updateProfile} disabled={loading} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform">{loading ? 'Opening Portal...' : 'Enter Sanctuary'}</button>
                    </motion.div>
                 )}

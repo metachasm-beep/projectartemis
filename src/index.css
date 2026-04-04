@@ -59,6 +59,26 @@
 }
 
 @layer components {
+  /* ─── Layout Utilities ──────────────────────────────────────────────────── */
+  .mat-container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  @media (min-width: 640px) { .mat-container { max-width: 640px; } }
+  @media (min-width: 768px) { .mat-container { max-width: 768px; } }
+  @media (min-width: 1024px) { .mat-container { max-width: 1024px; } }
+  @media (min-width: 1280px) { .mat-container { max-width: 1280px; } }
+  @media (min-width: 1536px) { .mat-container { max-width: 1440px; } }
+
+  .mat-section {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+  @media (min-width: 1024px) { .mat-section { padding-top: 8rem; padding-bottom: 8rem; } }
+
   /* ─── The Sovereign Typography ───────────────────────────────────────────── */
   .mat-text-display-pro {
     font-family: var(--font-display);
