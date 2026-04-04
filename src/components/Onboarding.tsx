@@ -45,7 +45,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     diet: 'VEG',
     smoking: false,
     drinking: false,
-    photos: [] as string[],
+    photos: metadata?.avatar_url ? [metadata.avatar_url] : metadata?.picture ? [metadata.picture] : [] as string[],
   });
 
   useEffect(() => {

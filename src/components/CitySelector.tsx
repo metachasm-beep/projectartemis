@@ -60,12 +60,12 @@ export const CitySelector: React.FC<CitySelectorProps> = ({ value, onChange, err
         }`}
       >
         <div className="flex items-center gap-3">
-          <MapPin size={18} className={value ? 'text-mat-gold' : 'text-white/20'} />
-          <span className={`text-[12px] font-mono tracking-widest uppercase ${value ? 'text-white' : 'text-white/20'}`}>
+          <MapPin size={18} className={value ? 'text-mat-rose' : 'text-mat-wine/20'} />
+          <span className={`text-[12px] font-bold tracking-widest uppercase ${value ? 'text-mat-wine' : 'text-mat-wine/20'}`}>
             {value || "Select Your City"}
           </span>
         </div>
-        <ChevronDown size={18} className={`text-white/20 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+        <ChevronDown size={18} className={`text-mat-wine/20 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
       </div>
 
       <AnimatePresence>
@@ -77,14 +77,14 @@ export const CitySelector: React.FC<CitySelectorProps> = ({ value, onChange, err
             className="absolute top-full left-0 right-0 mt-3 z-[100] mat-glass-deep p-4 rounded-3xl overflow-hidden"
           >
             <div className="relative mb-4">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-white/20" size={16} />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-mat-wine/30" size={16} />
               <input
                 autoFocus
                 type="text"
                 placeholder="Search cities..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full h-12 pl-12 pr-4 bg-white/5 border border-white/10 rounded-xl text-[11px] uppercase font-mono tracking-widest text-white outline-none focus:border-mat-gold/50 transition-all"
+                className="w-full h-12 pl-12 pr-4 bg-mat-cream border border-mat-rose/10 rounded-xl text-[11px] uppercase font-bold tracking-widest text-mat-wine outline-none focus:border-mat-rose/40 transition-all shadow-sm"
               />
             </div>
 
@@ -100,8 +100,8 @@ export const CitySelector: React.FC<CitySelectorProps> = ({ value, onChange, err
                     }}
                     className={`w-full text-left px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
                       value === city 
-                        ? 'bg-mat-gold text-black' 
-                        : 'text-white/60 hover:bg-white/10 hover:text-white'
+                        ? 'bg-mat-wine text-mat-cream shadow-md' 
+                        : 'text-mat-wine/60 hover:bg-mat-rose/5 hover:text-mat-wine'
                     }`}
                   >
                     {city}
