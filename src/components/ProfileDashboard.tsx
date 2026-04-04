@@ -29,6 +29,7 @@ import { Button } from '@/components/ui/button';
 import { EditProfile } from '@/components/EditProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { SanctuaryService } from '@/services/sanctuary';
+import { MenDossier } from '@/components/dashboards/MenDossier';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
@@ -142,14 +143,18 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
   const rankCount = profile.rank_boost_count || 0;
   
   return (
-    <div className="space-y-20 pb-20">
+    <div className={cn("space-y-20 pb-20", isMan ? "w-full" : "")}>
       <AnimatePresence mode="wait">
         {isEditing ? (
           <motion.div key="edit" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
             <EditProfile profile={profile} onUpdate={() => { refreshProfile(); setIsEditing(false); }} onCancel={() => setIsEditing(false)} />
           </motion.div>
+        ) : isMan ? (
+          <motion.div key="view-man" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">
+             <MenDossier profile={profile} metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }} setIsEditing={setIsEditing} handleVerify={handleVerify} />
+          </motion.div>
         ) : (
-          <motion.div key="view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-20">
+          <motion.div key="view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-20 p-4 md:p-0">
              {/* ─── Hero Header & Status Handshake ─── */}
              <div className="space-y-16">
                 <div className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12">
