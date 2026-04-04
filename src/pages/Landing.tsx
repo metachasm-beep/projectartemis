@@ -65,9 +65,16 @@ const LandingPage: React.FC = () => {
     setIsLoading(true);
     setError("");
     try {
-      // Store preference so App.tsx can honor it after redirect
-      if (!rememberMe) sessionStorage.setItem('MAT_SESSION_ONLY', 'true');
-      else           sessionStorage.removeItem('MAT_SESSION_ONLY');
+      // Persistence Logic: If not remembering, set a persistent marker in localStorage
+      // and a tab-local marker in sessionStorage. On app load, if the marker exists
+      // but the tab-local one is gone, we know the session has "expired".
+      if (!rememberMe) {
+        localStorage.setItem('MAT_SESSION_ONLY', 'true');
+        sessionStorage.setItem('MAT_TAB_SESSION', 'true');
+      } else {
+        localStorage.removeItem('MAT_SESSION_ONLY');
+        sessionStorage.removeItem('MAT_TAB_SESSION');
+      }
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",

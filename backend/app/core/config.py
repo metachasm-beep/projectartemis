@@ -24,6 +24,11 @@ class Settings(BaseSettings):
     # Aadhaar/Identity Settings
     AADHAAR_MANDATORY: bool = True
 
+    # Cloudinary configuration
+    CLOUDINARY_CLOUD_NAME: Optional[str] = None
+    CLOUDINARY_API_KEY: Optional[str] = None
+    CLOUDINARY_API_SECRET: Optional[str] = None
+
     model_config = SettingsConfigDict(
         case_sensitive=True,
         env_file=".env",

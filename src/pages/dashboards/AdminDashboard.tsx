@@ -10,8 +10,9 @@ import {
   RefreshCw,
   LogOut
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { turso, tursoHelpers } from '@/lib/turso';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 
 interface AdminStats {
   totalUsers: number;
@@ -42,26 +43,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const { data: profiles, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
+      const result = await turso.execute("SELECT * FROM profiles ORDER BY created_at DESC");
+      const profiles = result.rows.map(r => ({
+        ...(r as any),
+        photos: tursoHelpers.deserialize(r.photos as string) || [],
+        hobbies: tursoHelpers.deserialize(r.hobbies as string) || [],
+        is_verified: !!r.is_verified,
+        is_active: !!r.is_active
+      }));
 
-      if (error) throw error;
-
-      if (profiles) {
-        setUsers(profiles);
-        const statsData: AdminStats = {
-          totalUsers: profiles.length,
-          totalMen: profiles.filter(p => p.role === 'man').length,
-          totalWomen: profiles.filter(p => p.role === 'woman').length,
-          verifiedUsers: profiles.filter(p => p.is_verified).length,
-          totalTokens: profiles.reduce((acc, p) => acc + (p.tokens || 0), 0)
-        };
-        setStats(statsData);
-      }
+      setUsers(profiles);
+      const statsData: AdminStats = {
+        totalUsers: profiles.length,
+        totalMen: profiles.filter(p => p.role === 'man').length,
+        totalWomen: profiles.filter(p => p.role === 'woman').length,
+        verifiedUsers: profiles.filter(p => p.is_verified).length,
+        totalTokens: profiles.reduce((acc, p) => acc + (p.tokens || 0), 0)
+      };
+      setStats(statsData);
     } catch (err) {
-      console.error("MATRIARCH: Admin data fetch failed:", err);
+      console.error("MATRIARCH: Admin data fetch failed (Turso):", err);
     } finally {
       setLoading(false);
     }
@@ -73,32 +74,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
 
   const updateUserProfile = async (userId: string, updates: any) => {
     try {
-      const { error } = await supabase
-        .from('profiles')
-        .update(updates)
-        .eq('user_id', userId);
+      const sets = Object.keys(updates).map(key => `${key} = ?`).join(', ');
       
-      if (!error) {
-        setUsers(prev => prev.map(u => u.user_id === userId ? { ...u, ...updates } : u));
-        setActiveMenuUserId(null);
-      } else {
-         throw error;
-      }
+      await turso.execute(
+        `UPDATE profiles SET ${sets}, updated_at = ? WHERE user_id = ?`,
+        [...(Object.values(updates) as any[]), new Date().toISOString(), userId]
+      );
+      
+      setUsers(prev => prev.map(u => u.user_id === userId ? { ...u, ...updates } : u));
+      setActiveMenuUserId(null);
     } catch (err) {
-      console.error("MATRIARCH: Profile update failed:", err);
+      console.error("MATRIARCH: Profile update failed (Turso):", err);
     }
   };
 
   const handleDeleteUser = async (userId: string) => {
     if (!window.confirm("ARE YOU CERTAIN? This record will be purged.")) return;
     try {
-       const { error } = await supabase.from('profiles').delete().eq('user_id', userId);
-       if (!error) {
-         setUsers(users.filter(u => u.user_id !== userId));
-         setActiveMenuUserId(null);
-       }
+       await turso.execute("DELETE FROM profiles WHERE user_id = ?", [userId]);
+       setUsers(users.filter(u => u.user_id !== userId));
+       setActiveMenuUserId(null);
     } catch (err) {
-       console.error("Purge failed:", err);
+       console.error("Purge failed (Turso):", err);
     }
   };
 
@@ -121,28 +118,28 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   });
 
   return (
-    <div className="min-h-screen bg-white">
-      <main className="mat-container pt-24 space-y-24">
+    <div className="min-h-screen font-body" style={{background:'linear-gradient(160deg,#FAF7F2 0%,#F5E6E4 50%,#EEE0DA 100%)'}}>
+      <main className="mat-container pt-24 space-y-24 pb-40">
         {/* Command Header */}
-        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-black/10">
+        <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-mat-rose/20">
            <div className="space-y-6">
-              <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-black/10 rounded-none">Protocol // Oversight</Badge>
-              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
+              <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-bold text-[9px] border-mat-gold/20 text-mat-gold rounded-full">Nobility // Oversight</Badge>
+              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-mat-wine leading-[0.9] italic">
                 Matrix <br />
-                <span className="text-black/20">Control.</span>
+                <span className="text-mat-rose/20">Control.</span>
               </h1>
            </div>
            
-           <div className="flex items-center gap-px bg-black/5 border border-black/5 p-px w-full lg:w-auto">
+           <div className="flex items-center gap-px bg-mat-gold/10 border border-mat-gold/20 p-px w-full lg:w-auto rounded-3xl overflow-hidden shadow-mat-premium">
               <button 
-                className="bg-white text-black px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-50 transition-all h-full border border-black/5 flex items-center gap-4"
+                className="bg-mat-cream text-mat-wine px-12 py-8 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-white transition-all h-full flex items-center gap-4"
                 onClick={fetchData}
               >
                 <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
                 Synchronize
               </button>
               <button 
-                className="bg-black text-white px-12 py-8 text-[11px] font-black uppercase tracking-[0.5em] hover:bg-neutral-800 transition-all h-full flex items-center gap-4"
+                className="bg-mat-wine text-mat-cream px-12 py-8 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-mat-wine-soft transition-all h-full flex items-center gap-4 shadow-mat-premium"
                 onClick={handleLogout}
               >
                 <LogOut size={14} />
@@ -152,21 +149,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
         </section>
 
         {/* Stats Registry */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-black/5 border border-black/5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-mat-rose/10 border border-mat-rose/10 rounded-[2.5rem] overflow-hidden shadow-mat-rose/5">
            {[
              { label: 'Souls Arch-Total', val: stats.totalUsers, icon: Users },
              { label: 'Truth Verified', val: stats.verifiedUsers, icon: ShieldCheck },
              { label: 'Token Flow Volume', val: stats.totalTokens.toLocaleString(), icon: Coins },
              { label: 'Symmetry Ratio', val: `${stats.totalMen}:${stats.totalWomen}`, icon: Activity },
            ].map((item, i) => (
-             <div key={i} className="bg-white p-12 space-y-12 group hover:bg-black/5 transition-all">
+             <div key={i} className="bg-mat-cream p-12 space-y-12 group hover:bg-mat-rose/5 transition-all">
                 <div className="flex justify-between items-start">
-                   <item.icon className="w-6 h-6 text-black" strokeWidth={1} />
-                   <ArrowUpRight className="w-4 h-4 text-black/10 group-hover:text-black transition-colors" />
+                   <div className="p-3 bg-mat-rose/10 rounded-2xl">
+                     <item.icon className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                   </div>
+                   <ArrowUpRight className="w-4 h-4 text-mat-rose/20 group-hover:text-mat-gold transition-colors" />
                 </div>
                 <div className="space-y-4">
-                   <span className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">{item.label}</span>
-                   <h4 className="text-4xl font-bold text-black uppercase tracking-tight">{item.val}</h4>
+                   <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-slate/40 italic">{item.label}</span>
+                   <h4 className="text-4xl font-bold text-mat-wine uppercase tracking-tight">{item.val}</h4>
                 </div>
              </div>
            ))}
@@ -174,15 +173,15 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
 
         {/* Soul matrix visualization */}
         <div className="space-y-12">
-           <div className="flex flex-col lg:flex-row gap-12 justify-between items-start lg:items-end">
+           <div className="flex flex-col lg:flex-row gap-12 justify-between items-start lg:items-end px-4">
               <div className="space-y-6">
-                 <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Active Soul Matrix</h3>
-                 <div className="flex bg-black/5 border border-black/5 p-px h-12">
+                 <h3 className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose">Active Soul Matrix</h3>
+                 <div className="flex bg-mat-rose/10 border border-mat-rose/10 p-px h-12 rounded-full overflow-hidden">
                    {(['all', 'man', 'woman', 'verified'] as const).map(f => (
                      <button
                        key={f}
                        onClick={() => setFilter(f)}
-                       className={`px-8 h-full text-[9px] font-black uppercase tracking-widest transition-all ${filter === f ? 'bg-black text-white' : 'bg-white text-black/40 hover:text-black'}`}
+                       className={`px-8 h-full text-[9px] font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-mat-wine text-mat-cream' : 'bg-mat-cream text-mat-slate/40 hover:text-mat-wine hover:bg-mat-rose/5'}`}
                      >
                        {f}
                      </button>
@@ -190,136 +189,141 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
                  </div>
               </div>
               <div className="relative w-full lg:w-96">
-                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-black/20" size={16} />
+                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-mat-rose/40" size={16} />
                  <input 
                    placeholder="ARCHIVE SEARCH..." 
                    value={searchQuery}
                    onChange={(e) => setSearchQuery(e.target.value)}
-                   className="w-full h-16 pl-16 pr-6 bg-white border border-black/10 text-[11px] uppercase font-black tracking-widest focus:outline-none focus:border-black"
+                   className="w-full h-14 pl-16 pr-6 bg-mat-cream border border-mat-rose/20 text-[11px] uppercase font-bold tracking-widest focus:outline-none focus:border-mat-wine rounded-full shadow-sm text-mat-wine"
                  />
               </div>
            </div>
 
-           <div className="border border-black/5 overflow-x-auto">
-              <table className="w-full text-left">
-                <thead className="bg-black/5">
-                   <tr>
-                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Soul Identity</th>
-                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Standing</th>
-                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Verification</th>
-                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40">Wealth</th>
-                      <th className="px-12 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-black/40 text-right">Intervention</th>
-                   </tr>
-                </thead>
-                <tbody className="divide-y divide-black/5">
-                   {loading ? (
+           <div className="border border-mat-rose/10 rounded-[3rem] overflow-hidden shadow-mat-rose/5 bg-mat-cream/80 backdrop-blur-md">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-mat-rose/5 border-b border-mat-rose/10">
                      <tr>
-                        <td colSpan={5} className="py-24 text-center">
-                           <RefreshCw className="animate-spin text-black mx-auto mb-4" size={32} />
-                           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Archiving Matrix...</p>
-                        </td>
+                        <th className="px-12 py-8 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Soul Identity</th>
+                        <th className="px-12 py-8 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Standing</th>
+                        <th className="px-12 py-8 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Verification</th>
+                        <th className="px-12 py-8 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Wealth</th>
+                        <th className="px-12 py-8 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/60 text-right">Intervention</th>
                      </tr>
-                   ) : filteredUsers.length === 0 ? (
-                     <tr>
-                        <td colSpan={5} className="py-24 text-center">
-                           <p className="text-[10px] font-black uppercase tracking-[0.4em] text-black/20">Matrix Vacant.</p>
-                        </td>
-                     </tr>
-                   ) : filteredUsers.map((u) => (
-                     <tr key={u.user_id} className="hover:bg-black/[0.02] transition-colors">
-                        <td className="px-12 py-8">
-                           <div className="flex items-center gap-6">
-                              <div className="w-16 h-16 bg-black/5 border border-black/5 overflow-hidden">
-                                 {u.photos?.[0] ? (
-                                   <img src={u.photos[0]} alt="" className="w-full h-full object-cover grayscale" />
-                                 ) : (
-                                   <div className="w-full h-full flex items-center justify-center text-black/10">
-                                      <Users size={24} />
-                                   </div>
-                                 )}
-                              </div>
-                              <div>
-                                 <p className="text-sm font-black text-black uppercase tracking-tighter">{u.full_name || 'ANONYMOUS'}</p>
-                                 <p className="text-[9px] font-black text-black/20 uppercase tracking-widest">{u.user_id.slice(0, 12)}</p>
-                              </div>
-                           </div>
-                        </td>
-                        <td className="px-12 py-8">
-                           <span className="text-[10px] font-black uppercase tracking-[0.2em] text-black">
-                              {u.role || 'GHOST'}
-                           </span>
-                        </td>
-                        <td className="px-12 py-8">
-                           {u.is_verified ? (
-                             <Badge variant="outline" className="border-black/20 text-black px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-none">SEALED</Badge>
-                           ) : (
-                             <Badge variant="outline" className="border-dashed border-black/20 text-black/20 px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-none">VOID</Badge>
-                           )}
-                        </td>
-                        <td className="px-12 py-8">
-                           <span className="text-sm font-black text-black tracking-tight">₹{u.tokens || 0}</span>
-                        </td>
-                        <td className="px-12 py-8 text-right relative">
-                           <button 
-                             onClick={() => setActiveMenuUserId(activeMenuUserId === u.user_id ? null : u.user_id)}
-                             className="p-4 hover:bg-black hover:text-white transition-all text-black/40"
-                           >
-                             <MoreHorizontal size={20} />
-                           </button>
-
-                           {activeMenuUserId === u.user_id && (
-                             <div className="absolute right-12 top-full z-[100] w-64 bg-white border border-black shadow-[0_30px_60px_rgba(0,0,0,0.2)] p-2 space-y-px">
-                                <div className="px-4 py-2 border-b border-black/5 mb-2">
-                                   <p className="text-[9px] font-black text-black/20 uppercase tracking-[0.4em]">Protocols</p>
+                  </thead>
+                  <tbody className="divide-y divide-mat-rose/10">
+                     {loading ? (
+                       <tr>
+                          <td colSpan={5} className="py-24 text-center">
+                             <RefreshCw className="animate-spin text-mat-wine mx-auto mb-4" size={32} />
+                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-slate/40">Archiving Matrix...</p>
+                          </td>
+                       </tr>
+                     ) : filteredUsers.length === 0 ? (
+                       <tr>
+                          <td colSpan={5} className="py-24 text-center">
+                             <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-slate/40">Matrix Vacant.</p>
+                          </td>
+                       </tr>
+                     ) : filteredUsers.map((u) => (
+                       <tr key={u.user_id} className="hover:bg-mat-rose/[0.03] transition-colors">
+                          <td className="px-12 py-8">
+                             <div className="flex items-center gap-6">
+                                <div className="w-16 h-16 bg-mat-rose/5 border border-mat-rose/10 overflow-hidden rounded-2xl">
+                                   {u.photos?.[0] ? (
+                                     <img src={u.photos[0]} alt="" className="w-full h-full object-cover grayscale sepia-[0.2] hover:sepia-0 transition-all duration-700" />
+                                   ) : (
+                                     <div className="w-full h-full flex items-center justify-center text-mat-rose/20">
+                                        <Users size={24} />
+                                     </div>
+                                   )}
                                 </div>
-                                <button 
-                                  onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
-                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-                                >
-                                   {u.is_active === false ? 'Restore access' : 'Sever access'}
-                                </button>
-                                <button 
-                                  onClick={() => toggleVerification(u.user_id, u.is_verified)}
-                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-                                >
-                                   {u.is_verified ? 'Revoke truth' : 'Seal truth'}
-                                </button>
-                                <button 
-                                  onClick={() => {
-                                     const amt = window.prompt("Wealth Delta:", "1000");
-                                     if (amt) adjustTokens(u.user_id, u.tokens || 0, parseInt(amt));
-                                  }}
-                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-                                >
-                                   Modify wealth
-                                </button>
-                                <button 
-                                  onClick={() => updateUserProfile(u.user_id, { onboarding_status: 'PENDING' })}
-                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest hover:bg-black hover:text-white transition-all"
-                                >
-                                   Reset evolution
-                                </button>
-                                <div className="h-px bg-black/5 my-2" />
-                                <button 
-                                  onClick={() => handleDeleteUser(u.user_id)}
-                                  className="w-full text-left px-4 py-3 text-[10px] font-black uppercase tracking-widest bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all"
-                                >
-                                   Matrix purge
-                                </button>
+                                <div>
+                                   <p className="text-sm font-bold text-mat-wine uppercase tracking-tight italic">{u.full_name || 'ANONYMOUS'}</p>
+                                   <p className="text-[9px] font-medium text-mat-slate/40 uppercase tracking-widest">{u.user_id.slice(0, 12)}</p>
+                                </div>
                              </div>
-                           )}
-                        </td>
-                     </tr>
-                   ))}
-                </tbody>
-              </table>
+                          </td>
+                          <td className="px-12 py-8">
+                             <Badge variant="outline" className={cn(
+                               "px-4 py-1 text-[9px] font-bold uppercase tracking-widest rounded-full italic",
+                               u.role === 'man' ? "border-mat-wine/20 text-mat-wine bg-mat-wine/5" : "border-mat-rose/20 text-mat-rose bg-mat-rose/5"
+                             )}>
+                                {u.role || 'GHOST'}
+                             </Badge>
+                          </td>
+                          <td className="px-12 py-8">
+                             {u.is_verified ? (
+                               <Badge className="bg-mat-gold text-mat-wine px-4 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded-full shadow-sm">SEALED</Badge>
+                             ) : (
+                               <Badge variant="outline" className="border-dashed border-mat-rose/30 text-mat-slate/20 px-4 py-1.5 text-[9px] font-bold uppercase tracking-widest rounded-full">VOID</Badge>
+                             )}
+                          </td>
+                          <td className="px-12 py-8">
+                             <span className="text-sm font-bold text-mat-wine tracking-tight">₹{u.tokens || 0}</span>
+                          </td>
+                          <td className="px-12 py-8 text-right relative">
+                             <button 
+                               onClick={() => setActiveMenuUserId(activeMenuUserId === u.user_id ? null : u.user_id)}
+                               className="p-4 hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all text-mat-rose"
+                             >
+                               <MoreHorizontal size={20} />
+                             </button>
+
+                             {activeMenuUserId === u.user_id && (
+                               <div className="absolute right-12 top-full z-[100] w-64 bg-mat-cream border border-mat-rose/20 shadow-mat-premium p-2 space-y-px rounded-2xl">
+                                  <div className="px-4 py-2 border-b border-mat-rose/10 mb-2">
+                                     <p className="text-[9px] font-bold text-mat-slate/40 uppercase tracking-[0.4em]">Protocols</p>
+                                  </div>
+                                  <button 
+                                    onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
+                                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all"
+                                  >
+                                     {u.is_active === false ? 'Restore access' : 'Sever access'}
+                                  </button>
+                                  <button 
+                                    onClick={() => toggleVerification(u.user_id, u.is_verified)}
+                                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all"
+                                  >
+                                     {u.is_verified ? 'Revoke truth' : 'Seal truth'}
+                                  </button>
+                                  <button 
+                                    onClick={() => {
+                                       const amt = window.prompt("Wealth Delta:", "1000");
+                                       if (amt) adjustTokens(u.user_id, u.tokens || 0, parseInt(amt));
+                                    }}
+                                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all"
+                                  >
+                                     Modify wealth
+                                  </button>
+                                  <button 
+                                    onClick={() => updateUserProfile(u.user_id, { onboarding_status: 'PENDING' })}
+                                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all"
+                                  >
+                                     Reset evolution
+                                  </button>
+                                  <div className="h-px bg-mat-rose/10 my-2" />
+                                  <button 
+                                    onClick={() => handleDeleteUser(u.user_id)}
+                                    className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest bg-red-50 text-red-600 hover:bg-red-600 hover:text-white rounded-xl transition-all"
+                                  >
+                                     Matrix purge
+                                  </button>
+                               </div>
+                             )}
+                          </td>
+                       </tr>
+                     ))}
+                  </tbody>
+                </table>
+              </div>
            </div>
         </div>
 
-        {/* Swiss Footer */}
-        <div className="py-40 text-center border-t border-black/5">
-          <p className="text-[11px] font-black uppercase tracking-[1.5em] text-black/10">
-            MATRIARCH // SUPREME OVERSIGHT // SECURED
+        {/* Romantic Footer */}
+        <div className="py-40 text-center border-t border-mat-rose/10">
+          <p className="text-[11px] font-bold uppercase tracking-[1.5em] text-mat-wine/20">
+            MATRIARCH // NOBLE OVERSIGHT // SECURED
           </p>
         </div>
       </main>

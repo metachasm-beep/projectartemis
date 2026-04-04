@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Crown } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { supabase } from "@/lib/supabase";
+import { turso, tursoHelpers } from '@/lib/turso';
+import type { MatriarchProfile } from '../App';
 import { MenDashboard } from './dashboards/MenDashboard';
 import { WomenDashboard } from './dashboards/WomenDashboard';
 import { AdminDashboard } from './dashboards/AdminDashboard';
@@ -8,10 +11,9 @@ import { AdminDashboard } from './dashboards/AdminDashboard';
 export const Dashboard: React.FC = () => {
   const [status, setStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<MatriarchProfile | null>(null);
 
   useEffect(() => {
-    // Global Watchdog: Force end loading if it takes too long
     const watchdog = setTimeout(() => {
       if (loading) {
         console.warn("MATRIARCH_DASHBOARD: Synchronization timeout. Forcing UI entry.");
@@ -30,20 +32,32 @@ export const Dashboard: React.FC = () => {
           return;
         }
 
-        // Fetch Profile
-        const { data: profileData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .single();
+        const result = await turso.execute(
+          "SELECT * FROM profiles WHERE user_id = ?",
+          [user.id]
+        );
+        
+        const rawProfile = result.rows[0];
+        let profileData: MatriarchProfile | null = null;
+
+        if (rawProfile) {
+          profileData = {
+            ...(rawProfile as any),
+            photos: tursoHelpers.deserialize(rawProfile.photos as string) || [],
+            hobbies: tursoHelpers.deserialize(rawProfile.hobbies as string) || [],
+            is_verified: !!rawProfile.is_verified,
+            is_active: !!rawProfile.is_active
+          };
+        }
         
         let finalProfile = profileData;
         
-        // Admin Force Logic (Matching App.tsx)
         const ADMIN_EMAILS = ['metachasm@gmail.com', 'testeradmin@gmail.com'];
         if (user.email && ADMIN_EMAILS.includes(user.email)) {
           finalProfile = {
             ...profileData,
+            user_id: user.id,
+            full_name: user.user_metadata?.full_name || 'System Architect',
             role: 'admin',
             onboarding_status: 'COMPLETED'
           };
@@ -51,7 +65,6 @@ export const Dashboard: React.FC = () => {
 
         setProfile(finalProfile);
 
-        // Fetch Status from API with timeout
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -116,14 +129,20 @@ export const Dashboard: React.FC = () => {
   };
 
   if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-white">
-      <div className="mb-8 relative">
-        <div className="w-16 h-16 border-2 border-black/10 flex items-center justify-center">
-          <Crown className="w-8 h-8 text-black animate-pulse" strokeWidth={1} />
+    <div className="h-[80vh] flex flex-col items-center justify-center space-y-12">
+      <motion.div 
+        animate={{ scale: [1, 1.15, 1] }}
+        transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        className="p-1 rounded-full bg-gradient-to-tr from-mat-rose/30 to-mat-gold/30 shadow-mat-rose"
+      >
+        <div className="bg-mat-ivory rounded-full p-10 border border-mat-rose/20 shadow-xl">
+          <Heart className="w-16 h-16 text-mat-rose fill-mat-rose/10" strokeWidth={1} />
         </div>
-        <div className="absolute inset-0 border-t-2 border-black animate-spin" />
+      </motion.div>
+      <div className="space-y-4 text-center">
+        <h3 className="text-[10px] font-bold uppercase tracking-[1em] text-mat-wine/40 animate-pulse">Synchronizing Protocol...</h3>
+        <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-mat-slate/40 italic">Retrieving Sanctuary Status</p>
       </div>
-      <span className="text-[10px] font-black tracking-[0.6em] text-black/40 uppercase">Synchronizing Protocol...</span>
     </div>
   );
 

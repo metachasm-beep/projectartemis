@@ -5,15 +5,17 @@ import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart } from 'lucide-react';
+import { Heart, Sparkles, Zap, ArrowRight } from 'lucide-react';
 import { supabase } from './lib/supabase';
+import { turso, tursoHelpers } from './lib/turso';
 
 // Navigation Components
 import { MatriarchNav } from './components/navigation/MatriarchNav';
 import { MatriarchHeader } from './components/navigation/MatriarchHeader';
-
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { EditProfile } from './components/EditProfile';
+import { Tooltip } from './components/ui/tooltip';
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -22,6 +24,35 @@ function cn(...inputs: ClassValue[]) {
 type Tab = 'dashboard' | 'discovery' | 'profile' | 'notifications' | 'admin';
 
 const ADMIN_EMAILS = ['metachasm@gmail.com', 'testeradmin@gmail.com'];
+
+export interface MatriarchProfile {
+  user_id: string;
+  full_name: string;
+  role: 'man' | 'woman' | 'admin';
+  date_of_birth?: string;
+  bio?: string;
+  city?: string;
+  intent?: string;
+  occupation?: string;
+  education?: string;
+  height?: number;
+  religion?: string;
+  marital_status?: string;
+  mother_tongue?: string;
+  hobbies?: string[];
+  diet?: string;
+  smoking?: boolean;
+  drinking?: boolean;
+  photos?: string[];
+  profile_strength?: number;
+  onboarding_status?: 'STARTED' | 'COMPLETED';
+  is_verified?: boolean;
+  is_active?: boolean;
+  rank_score?: number;
+  tokens?: number;
+  created_at?: string;
+  updated_at?: string;
+}
 
 // ─── Fast-path helpers ────────────────────────────────────────────────────────
 const getOnboardingCache = (userId: string) =>
@@ -39,7 +70,8 @@ const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profileFetching, setProfileFetching] = useState(false); // true while DB fetch is in-flight
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<MatriarchProfile | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   // Developer Bypass Logic
   useEffect(() => {
@@ -53,13 +85,13 @@ const App: React.FC = () => {
     }
   }, []);
 
-  // Watchdog: Force end loading if stuck (reduced to 7s)
+  // Watchdog: Force end loading if stuck (increased to 10s for resilience)
   useEffect(() => {
     if (loading) {
       const timer = setTimeout(() => {
-        console.warn("MATRIARCH: Global Timeout. Forcing Entry.");
+        console.warn("MATRIARCH: Global Timeout reached (~10s). Forcing Sanctuary Entry.");
         setLoading(false);
-      }, 7000);
+      }, 10000);
       return () => clearTimeout(timer);
     }
   }, [loading]);
@@ -68,6 +100,23 @@ const App: React.FC = () => {
     let mounted = true;
 
     const initializeAuth = async () => {
+      // 🔐 Session Persistence Logic
+      const isSessionOnly = localStorage.getItem('MAT_SESSION_ONLY') === 'true';
+      const isTabActive = sessionStorage.getItem('MAT_TAB_SESSION') === 'true';
+      
+      // Only sign out if we were definitively in a tab session that is now lost
+      // and NOT during an active OAuth redirect.
+      const isOAuthRedirect = window.location.hash.includes('access_token') || 
+                             window.location.search.includes('code=');
+
+      if (isSessionOnly && !isTabActive && !isOAuthRedirect) {
+        console.log("MATRIARCH: Persistent Session Restricted. Purging stale credentials.");
+        localStorage.removeItem('MAT_SESSION_ONLY');
+        await supabase.auth.signOut();
+        if (mounted) setLoading(false);
+        return;
+      }
+
       console.log("MATRIARCH: Opening the Sanctuary doors...");
       
       // Check for Developer Bypass first
@@ -92,7 +141,7 @@ const App: React.FC = () => {
         
         if (mounted) {
           setSession(mockSession);
-          setProfile(mockProfile);
+          setProfile(mockProfile as MatriarchProfile);
           setLoading(false);
         }
         return;
@@ -118,14 +167,18 @@ const App: React.FC = () => {
               is_active: true
             };
             if (mounted) {
-              setProfile(adminProfile);
+              setProfile(adminProfile as MatriarchProfile);
               setActiveTab('admin');
               setLoading(false);
             }
-            supabase.from('profiles').upsert({
-              ...adminProfile,
-              updated_at: new Date().toISOString()
-            }).then(() => {});
+            
+            // Sync Admin Profile to Turso
+            turso.execute({
+              sql: `INSERT INTO profiles (user_id, role, full_name, onboarding_status, is_verified, is_active, updated_at) 
+                    VALUES (?, ?, ?, ?, 1, 1, ?)
+                    ON CONFLICT(user_id) DO UPDATE SET updated_at = excluded.updated_at`,
+              args: [userId, adminProfile.role, adminProfile.full_name, 'COMPLETED', new Date().toISOString()]
+            }).catch(e => console.error("Turso Admin Sync Error:", e));
             return;
           }
 
@@ -175,14 +228,18 @@ const App: React.FC = () => {
             is_active: true
           };
           if (mounted) {
-            setProfile(adminProfile);
+            setProfile(adminProfile as MatriarchProfile);
             setActiveTab('admin');
             setLoading(false);
           }
-          supabase.from('profiles').upsert({
-            ...adminProfile,
-            updated_at: new Date().toISOString()
-          }).then(() => {});
+          
+          // Sync Admin Profile to Turso
+          turso.execute(
+            `INSERT INTO profiles (user_id, role, full_name, onboarding_status, is_verified, is_active, updated_at) 
+             VALUES (?, ?, ?, ?, 1, 1, ?)
+             ON CONFLICT(user_id) DO UPDATE SET updated_at = excluded.updated_at`,
+            [currentSession.user.id, adminProfile.role, adminProfile.full_name, 'COMPLETED', new Date().toISOString()]
+          ).catch(e => console.error("Turso Admin Sync Error:", e));
           return;
         }
 
@@ -212,14 +269,25 @@ const App: React.FC = () => {
   const fetchProfile = async (userId: string, mounted: boolean = true) => {
     if (!userId) return;
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', userId)
-        .single();
+      const result = await turso.execute({
+        sql: "SELECT * FROM profiles WHERE user_id = ?",
+        args: [userId]
+      });
       
-      if (error && error.code !== 'PGRST116') {
-        console.error("Profile Fetch Error:", error);
+      const rawProfile = result.rows[0];
+      let data: MatriarchProfile | null = null;
+
+      if (rawProfile) {
+        // Map raw database row to profile object with deserialization
+        data = {
+          ...(rawProfile as any),
+          photos: tursoHelpers.deserialize(rawProfile.photos as string) || [],
+          hobbies: tursoHelpers.deserialize(rawProfile.hobbies as string) || [],
+          is_verified: !!rawProfile.is_verified,
+          is_active: !!rawProfile.is_active,
+          smoking: !!rawProfile.smoking,
+          drinking: !!rawProfile.drinking
+        };
       }
 
       if (data?.onboarding_status === 'COMPLETED') {
@@ -227,13 +295,13 @@ const App: React.FC = () => {
       }
       
       if (mounted) {
-        setProfile(data || null);
+        setProfile(data);
         if (data?.role === 'admin') setActiveTab('admin');
         setProfileFetching(false);
         setLoading(false);
       }
     } catch (err) {
-      console.error("Profile fetch catch:", err);
+      console.error("Matriarch Profile Fetch Catch (Turso):", err);
       if (mounted) {
         setProfile(null);
         setProfileFetching(false);
@@ -310,26 +378,79 @@ const App: React.FC = () => {
                   <AdminDashboard handleLogout={() => supabase.auth.signOut()} />
                 )}
                 {activeTab === 'profile' && (
-                  <div className="h-[80vh] flex flex-col items-center justify-center space-y-12 px-8">
-                    <div className="text-center space-y-4">
-                       <h2 className="text-5xl text-mat-wine leading-tight" style={{fontFamily: '"Playfair Display", Georgia, serif'}}>
-                         {profile?.full_name || 'Your Story'}
-                       </h2>
-                       <p className="text-mat-rose/60 text-sm font-medium italic">Authentically You</p>
-                    </div>
-                    
-                    <div className="w-full max-w-sm space-y-4">
-                       <button className="w-full h-16 rounded-2xl bg-mat-cream border border-mat-rose/20 flex items-center justify-between px-8 text-mat-wine/60 hover:text-mat-wine transition-all font-bold uppercase tracking-widest text-[9px] hover:border-mat-rose/40">
-                          <span>Edit Your Story</span>
-                          <Heart size={16} className="text-mat-rose/40" />
-                       </button>
-                       <button 
-                         onClick={() => supabase.auth.signOut()} 
-                         className="w-full h-16 rounded-2xl border border-mat-rose/20 bg-mat-wine text-white flex items-center justify-center gap-3 font-black text-[10px] uppercase tracking-[0.4em] transition-all hover:bg-mat-wine/90"
-                       >
-                         Sign Out
-                       </button>
-                    </div>
+                  <div className="min-h-[80vh] w-full max-w-4xl mx-auto px-4">
+                     <AnimatePresence mode="wait">
+                        {isEditing && profile ? (
+                          <motion.div 
+                            key="edit"
+                            initial={{ opacity: 0, x: 20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            exit={{ opacity: 0, x: -20 }}
+                          >
+                             <EditProfile 
+                                profile={profile} 
+                                onUpdate={(updated) => {
+                                   setProfile(updated);
+                                   setIsEditing(false);
+                                }}
+                                onCancel={() => setIsEditing(false)}
+                             />
+                          </motion.div>
+                        ) : (
+                          <motion.div 
+                            key="view"
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.98 }}
+                            className="flex flex-col items-center justify-center space-y-16 py-12"
+                          >
+                             {/* Profile Portrait */}
+                             <div className="relative group">
+                                <div className="w-48 h-48 rounded-[3rem] overflow-hidden border-2 border-mat-rose/20 shadow-mat-premium rotate-3 group-hover:rotate-0 transition-transform duration-700">
+                                   {profile?.photos?.[0] ? (
+                                     <img src={profile.photos[0]} alt="" className="w-full h-full object-cover grayscale sepia-[0.2] group-hover:sepia-0 transition-all duration-700" />
+                                   ) : (
+                                     <div className="w-full h-full bg-mat-cream flex items-center justify-center text-mat-rose/20">
+                                        <Heart size={48} strokeWidth={1} />
+                                     </div>
+                                   )}
+                                </div>
+                                <div className="absolute -bottom-4 -right-4 w-12 h-12 bg-mat-wine text-mat-cream rounded-2xl flex items-center justify-center shadow-mat-premium">
+                                   <Sparkles size={18} />
+                                </div>
+                             </div>
+
+                             <div className="text-center space-y-6">
+                                <h2 className="text-6xl text-mat-wine leading-none" style={{fontFamily: '"Playfair Display", serif'}}>
+                                  {profile?.full_name || 'Your Story'}
+                                </h2>
+                                <p className="text-mat-rose/60 text-[10px] font-bold uppercase tracking-[0.5em] italic">The Chosen Identity</p>
+                             </div>
+                             
+                             <div className="w-full max-w-sm space-y-4">
+                                <Tooltip content="Refine your narrative, photos, and characteristics.">
+                                   <button 
+                                     onClick={() => setIsEditing(true)}
+                                     className="w-full h-20 rounded-3xl bg-mat-cream border border-mat-rose/20 flex items-center justify-between px-10 text-mat-wine/60 hover:text-mat-wine transition-all font-bold uppercase tracking-[0.3em] text-[10px] hover:border-mat-rose/40 hover:shadow-mat-rose/5"
+                                   >
+                                      <span>Refine Story</span>
+                                      <Zap size={16} className="text-mat-rose/40" />
+                                   </button>
+                                </Tooltip>
+
+                                <Tooltip content="Purge local session and return to threshold.">
+                                   <button 
+                                     onClick={() => supabase.auth.signOut()} 
+                                     className="w-full h-20 rounded-3xl bg-mat-wine text-mat-cream flex items-center justify-center gap-4 font-black text-[11px] uppercase tracking-[0.4em] transition-all hover:bg-mat-wine-soft shadow-mat-premium"
+                                   >
+                                      Dissolve Session
+                                      <ArrowRight size={16} />
+                                   </button>
+                                </Tooltip>
+                             </div>
+                          </motion.div>
+                        )}
+                     </AnimatePresence>
                   </div>
                 )}
               </div>

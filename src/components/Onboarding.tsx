@@ -1,41 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/lib/supabase';
 import { Input } from '@/components/ui/input';
-import { Heart, ArrowRight, Camera, ShieldCheck, Sparkles, Star } from 'lucide-react';
+import { Heart, ArrowRight, Camera, ShieldCheck, Sparkles, Star, Plus, Trash2, User, Globe, Utensils } from 'lucide-react';
 import { CitySelector } from './CitySelector';
+import { CameraCapture } from './CameraCapture';
+import { compressImage } from '@/lib/image-utils';
+import { turso, tursoHelpers } from '@/lib/turso';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
-interface OnboardingProps {
+export interface OnboardingProps {
   userId: string;
-  metadata?: any;
+  metadata: any;
   onComplete: () => void;
 }
 
-type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'BIO_INTENT' | 'LEGAL';
+type OnboardingStep = 'ROLE' | 'BASICS' | 'ARCHETYPE' | 'ROOTS' | 'LIFESTYLE' | 'PHOTO' | 'BIO_INTENT' | 'LEGAL';
 
-const STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'PHOTO', 'BIO_INTENT', 'LEGAL'];
+const STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'ARCHETYPE', 'ROOTS', 'LIFESTYLE', 'PHOTO', 'BIO_INTENT', 'LEGAL'];
 
-export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComplete }) => {
+export const Onboarding: React.FC<OnboardingProps> = ({ 
+  userId, 
+  metadata,
+  onComplete 
+}) => {
   const [step, setStep] = useState<OnboardingStep>('ROLE');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [strength, setStrength] = useState(10);
-  const [referredBy, setReferredBy] = useState<string | null>(null);
-
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const ref = params.get('ref');
-    if (ref) setReferredBy(ref);
-  }, []);
 
   const [formData, setFormData] = useState({
     full_name: metadata?.full_name || metadata?.name || '',
     role: '' as 'woman' | 'man' | '',
-    date_of_birth: metadata?.birthday || '',         // pre-fill if Google provides it
+    date_of_birth: metadata?.birthday || '',
     bio: '',
-    city: metadata?.locale?.split('_')?.[1] || '',  // best-effort from locale
+    city: metadata?.locale?.split('_')?.[1] || '',
     intent: 'LONG_TERM',
-    photos: metadata?.avatar_url ? [metadata.avatar_url] : [] as string[],
+    occupation: '',
+    education: '',
+    height: '',
+    religion: '',
+    marital_status: 'NEVER_MARRIED',
+    mother_tongue: '',
+    hobbies: [] as string[],
+    diet: 'VEG',
+    smoking: false,
+    drinking: false,
+    photos: [] as string[],
   });
 
   useEffect(() => {
@@ -53,47 +63,97 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
     setLoading(true);
     setError(null);
 
-    const fullData = {
-      user_id: userId,
-      full_name: formData.full_name,
-      date_of_birth: formData.date_of_birth,
-      bio: formData.bio,
-      city: formData.city,
-      role: formData.role,
-      intent: formData.intent,
-      profile_strength: strength,
-      onboarding_status: 'COMPLETED',
-      is_verified: false,
-      is_active: false,
-      rank_score: formData.role === 'man' ? 500 : 0,
-      rank_tier: formData.role === 'man' ? 'BRONZE' : 'OBSERVER',
-      tokens: 0,
-      referral_code: userId.slice(0, 8).toUpperCase(),
-      referred_by: referredBy,
-      rank_boost_count: 0,
-      updated_at: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-    };
-
     try {
-      const { error: upsertError } = await supabase.from('profiles').upsert(fullData, {
-        onConflict: 'user_id'
-      });
-      if (upsertError) throw upsertError;
+      const sql = `
+        INSERT INTO profiles (
+          user_id, full_name, date_of_birth, bio, city, role, intent,
+          occupation, education, height, religion, marital_status,
+          mother_tongue, hobbies, diet, smoking, drinking, photos,
+          profile_strength, onboarding_status, updated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(user_id) DO UPDATE SET
+          full_name = excluded.full_name,
+          date_of_birth = excluded.date_of_birth,
+          bio = excluded.bio,
+          city = excluded.city,
+          intent = excluded.intent,
+          occupation = excluded.occupation,
+          education = excluded.education,
+          height = excluded.height,
+          religion = excluded.religion,
+          marital_status = excluded.marital_status,
+          mother_tongue = excluded.mother_tongue,
+          hobbies = excluded.hobbies,
+          diet = excluded.diet,
+          smoking = excluded.smoking,
+          drinking = excluded.drinking,
+          photos = excluded.photos,
+          profile_strength = excluded.profile_strength,
+          onboarding_status = excluded.onboarding_status,
+          updated_at = excluded.updated_at
+      `;
 
-      // ✅ Cache that this user has completed onboarding — prevents re-onboarding on fast reload
+      const args = [
+        userId,
+        formData.full_name,
+        formData.date_of_birth,
+        formData.bio,
+        formData.city,
+        formData.role,
+        formData.intent,
+        formData.occupation,
+        formData.education,
+        parseInt(formData.height) || null,
+        formData.religion,
+        formData.marital_status,
+        formData.mother_tongue,
+        tursoHelpers.serialize(formData.hobbies),
+        formData.diet,
+        formData.smoking ? 1 : 0,
+        formData.drinking ? 1 : 0,
+        tursoHelpers.serialize(formData.photos),
+        strength,
+        'COMPLETED',
+        new Date().toISOString()
+      ];
+
+      await turso.execute(sql, args);
+
       localStorage.setItem(`MAT_OB_DONE_${userId}`, 'true');
-
-      // Small delay so Supabase can settle before we re-fetch
       await new Promise(resolve => setTimeout(resolve, 600));
       onComplete();
     } catch (err: any) {
-      console.error("MATRIARCH: Upsert failed", err);
+      console.error("MATRIARCH_TURSO: Profile update failed", err);
       setError('Could not save your profile. Please check your connection and try again.');
     } finally {
       setLoading(false);
     }
   };
+
+  const handlePhotoUpload = async (file: File) => {
+    setLoading(true);
+    setError(null);
+    try {
+      // 1. Compress
+      const compressedBlob = await compressImage(file);
+      
+      // 2. Upload to Cloudinary
+      const secureUrl = await uploadToCloudinary(compressedBlob);
+      
+      // 3. Update State
+      setFormData(prev => ({
+        ...prev,
+        photos: [...prev.photos, secureUrl]
+      }));
+    } catch (err: any) {
+      console.error("Media upload failed:", err);
+      setError(err.message || "Failed to upload photo. Ensure you are connected.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const [showCamera, setShowCamera] = useState(false);
 
   const next = (nextStep: OnboardingStep) => setStep(nextStep);
   const stepIndex = STEPS.indexOf(step);
@@ -262,7 +322,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                       <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Your City</label>
                       <CitySelector
                         value={formData.city}
-                        onChange={(city) => setFormData({ ...formData, city })}
+                        onChange={(city: string) => setFormData({ ...formData, city })}
                       />
                     </div>
                     <div className="space-y-2">
@@ -279,11 +339,190 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
 
                   <button
                     disabled={!formData.full_name || !formData.city || !formData.date_of_birth}
-                    onClick={() => next('PHOTO')}
+                    onClick={() => next('ARCHETYPE')}
                     className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all disabled:opacity-30"
                     style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white', fontFamily: 'Helvetica,sans-serif' }}
                   >
                     Continue
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── ARCHETYPE ────────────────────────────────────────────── */}
+              {step === 'ARCHETYPE' && (
+                <motion.div key="archetype" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-10">
+                  <div className="text-center space-y-2">
+                    <User className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Professional Path</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">Your calling and standing</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Occupation</label>
+                      <Input
+                        value={formData.occupation}
+                        onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                        placeholder="e.g. Software Architect, Artist, Physician"
+                        className="h-14 bg-white/60 border-mat-fog rounded-2xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Education</label>
+                      <Input
+                        value={formData.education}
+                        onChange={(e) => setFormData({ ...formData, education: e.target.value })}
+                        placeholder="e.g. MBA from IIM, PhD in Physics"
+                        className="h-14 bg-white/60 border-mat-fog rounded-2xl"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Height (cm)</label>
+                      <Input
+                        type="number"
+                        value={formData.height}
+                        onChange={(e) => setFormData({ ...formData, height: e.target.value })}
+                        placeholder="e.g. 175"
+                        className="h-14 bg-white/60 border-mat-fog rounded-2xl"
+                      />
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={!formData.occupation || !formData.education || !formData.height}
+                    onClick={() => next('ROOTS')}
+                    className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                  >
+                    Next Step
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── ROOTS ────────────────────────────────────────────────── */}
+              {step === 'ROOTS' && (
+                <motion.div key="roots" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-10">
+                  <div className="text-center space-y-2">
+                    <Globe className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Heritage</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">Origins and values</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Religion</label>
+                        <Input
+                          value={formData.religion}
+                          onChange={(e) => setFormData({ ...formData, religion: e.target.value })}
+                          placeholder="Religion"
+                          className="h-14 bg-white/60 rounded-2xl"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Mother Tongue</label>
+                        <Input
+                          value={formData.mother_tongue}
+                          onChange={(e) => setFormData({ ...formData, mother_tongue: e.target.value })}
+                          placeholder="Language"
+                          className="h-14 bg-white/60 rounded-2xl"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Marital Status</label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {['NEVER_MARRIED', 'DIVORCED', 'WIDOWED'].map(status => (
+                          <button
+                            key={status}
+                            onClick={() => setFormData({...formData, marital_status: status})}
+                            className={`h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${
+                              formData.marital_status === status 
+                                ? 'border-mat-wine bg-mat-wine text-white' 
+                                : 'border-mat-fog bg-white/40 text-mat-wine/40'
+                            }`}
+                          >
+                            {status.replace('_', ' ')}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <button
+                    disabled={!formData.religion || !formData.mother_tongue}
+                    onClick={() => next('LIFESTYLE')}
+                    className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                  >
+                    Continue
+                  </button>
+                </motion.div>
+              )}
+
+              {/* ── LIFESTYLE ────────────────────────────────────────────── */}
+              {step === 'LIFESTYLE' && (
+                <motion.div key="lifestyle" initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -40 }} className="space-y-10">
+                  <div className="text-center space-y-2">
+                    <Utensils className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Life & Habits</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">Day-to-day rhythm</p>
+                  </div>
+
+                  <div className="space-y-8">
+                    <div className="space-y-3">
+                      <label className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Diet Preference</label>
+                      <div className="flex gap-3">
+                        {['VEG', 'NON_VEG', 'VEGAN'].map(d => (
+                          <button
+                            key={d}
+                            onClick={() => setFormData({...formData, diet: d})}
+                            className={`flex-1 h-12 rounded-xl text-[10px] font-bold uppercase border-2 transition-all ${
+                              formData.diet === d ? 'border-mat-wine bg-mat-wine text-white' : 'border-mat-fog bg-white/40 text-mat-wine/40'
+                            }`}
+                          >
+                            {d.replace('_', ' ')}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                      <button 
+                        onClick={() => setFormData({...formData, smoking: !formData.smoking})}
+                        className={`p-6 rounded-2xl border-2 flex items-center justify-between group transition-all ${formData.smoking ? 'border-red-200 bg-red-50' : 'border-mat-fog bg-white/40'}`}
+                      >
+                         <div className="text-left">
+                           <span className="block text-[10px] font-bold text-mat-wine uppercase tracking-widest">Smoking</span>
+                           <span className="text-[9px] text-mat-slate uppercase">{formData.smoking ? 'Yes' : 'No'}</span>
+                         </div>
+                         <div className={`w-10 h-6 rounded-full relative transition-colors ${formData.smoking ? 'bg-red-500' : 'bg-mat-fog'}`}>
+                           <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${formData.smoking ? 'left-5' : 'left-1'}`} />
+                         </div>
+                      </button>
+
+                      <button 
+                        onClick={() => setFormData({...formData, drinking: !formData.drinking})}
+                        className={`p-6 rounded-2xl border-2 flex items-center justify-between group transition-all ${formData.drinking ? 'border-mat-rose/20 bg-mat-petal/30' : 'border-mat-fog bg-white/40'}`}
+                      >
+                         <div className="text-left">
+                           <span className="block text-[10px] font-bold text-mat-wine uppercase tracking-widest">Alcohol</span>
+                           <span className="text-[9px] text-mat-slate uppercase">{formData.drinking ? 'Socially' : 'No'}</span>
+                         </div>
+                         <div className={`w-10 h-6 rounded-full relative transition-colors ${formData.drinking ? 'bg-mat-rose' : 'bg-mat-fog'}`}>
+                           <div className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-all ${formData.drinking ? 'left-5' : 'left-1'}`} />
+                         </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => next('PHOTO')}
+                    className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                  >
+                    Continue to Portraits
                   </button>
                 </motion.div>
               )}
@@ -293,52 +532,73 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                 <motion.div key="photo" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95 }} className="space-y-10 text-center">
                   <div className="space-y-2">
                     <Camera className="w-8 h-8 text-mat-rose mx-auto" strokeWidth={1.5} />
-                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Portrait</h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">A warm smile opens every door</p>
+                    <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Portraits</h2>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">Share your radiance (Up to 6)</p>
                   </div>
 
-                  <div className="relative mx-auto w-full max-w-[240px]">
-                    <div className="aspect-[3/4] bg-white/40 border-2 border-dashed border-mat-rose/30 rounded-[3rem] flex flex-col items-center justify-center gap-4 relative overflow-hidden group cursor-pointer hover:border-mat-rose/60 hover:bg-mat-petal/30 transition-all">
-                      {formData.photos.length > 0 ? (
-                        <img src={formData.photos[0]} className="absolute inset-0 w-full h-full object-cover" alt="Profile" />
-                      ) : (
-                        <>
-                          <div className="w-16 h-16 bg-white/80 rounded-full shadow flex items-center justify-center text-mat-rose/40 group-hover:scale-110 transition-transform">
-                            <Camera className="w-7 h-7" strokeWidth={1} />
-                          </div>
-                          <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[11px] font-bold text-mat-rose/40 uppercase tracking-[0.3em]">Tap to Upload</span>
-                        </>
-                      )}
-                      <input type="file" accept="image/*" className="absolute inset-0 opacity-0 cursor-pointer" onChange={(e) => {
-                        if (e.target.files) setFormData({ ...formData, photos: [URL.createObjectURL(e.target.files[0])] });
-                      }} />
-                    </div>
-                    {formData.photos.length > 0 && (
-                      <div className="absolute -top-3 -right-3 w-10 h-10 bg-mat-rose rounded-full border-4 border-white flex items-center justify-center shadow-lg">
-                        <ShieldCheck className="w-4 h-4 text-white" />
+                  <div className="grid grid-cols-3 gap-4">
+                    {formData.photos.map((url, idx) => (
+                      <div key={idx} className="relative aspect-square rounded-2xl overflow-hidden shadow-sm group">
+                        <img src={url} className="w-full h-full object-cover" />
+                        <button 
+                          onClick={() => setFormData(prev => ({...prev, photos: prev.photos.filter((_, i) => i !== idx)}))}
+                          className="absolute top-2 right-2 p-1.5 bg-black/50 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <Trash2 size={12} />
+                        </button>
+                      </div>
+                    ))}
+                    {formData.photos.length < 6 && (
+                      <div className="aspect-square bg-white/40 border-2 border-dashed border-mat-rose/30 rounded-2xl flex flex-col items-center justify-center gap-2 relative cursor-pointer hover:bg-mat-petal/20 transition-all">
+                        <Plus className="w-6 h-6 text-mat-rose/40" />
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="absolute inset-0 opacity-0 cursor-pointer" 
+                          onChange={(e) => {
+                            if (e.target.files?.[0]) handlePhotoUpload(e.target.files[0]);
+                          }} 
+                        />
                       </div>
                     )}
                   </div>
 
-                  <div className="flex gap-3">
+                  {/* Camera Action */}
+                  <button 
+                    onClick={() => setShowCamera(true)}
+                    className="flex items-center justify-center gap-3 w-full py-4 bg-mat-ivory border-2 border-mat-rose/10 rounded-2xl text-mat-wine text-[10px] font-bold uppercase tracking-widest hover:bg-white transition-all"
+                  >
+                    <Camera size={18} /> Open Camera
+                  </button>
+
+                  <div className="flex gap-3 pt-6">
                     <button
                       onClick={() => next('BIO_INTENT')}
-                      style={{fontFamily:'Helvetica,sans-serif'}}
-                      className="flex-1 h-12 rounded-xl border border-mat-fog text-mat-slate/50 text-xs uppercase tracking-widest hover:text-mat-wine hover:border-mat-rose/30 transition-all"
+                      className="flex-1 h-12 rounded-xl border border-mat-fog text-mat-slate/50 text-xs uppercase tracking-widest"
                     >
                       Skip for now
                     </button>
                     <button
-                      disabled={formData.photos.length === 0}
+                      disabled={formData.photos.length === 0 || loading}
                       onClick={() => next('BIO_INTENT')}
-                      className="flex-2 flex-grow h-12 rounded-xl font-bold tracking-[0.2em] uppercase text-xs transition-all disabled:opacity-30"
-                      style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white', fontFamily: 'Helvetica,sans-serif' }}
+                      className="flex-2 flex-grow h-12 rounded-xl font-bold tracking-[0.2em] uppercase text-xs shadow-mat-premium"
+                      style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
                     >
-                      Set Portrait
+                      {loading ? 'Optimizing...' : 'Continue'}
                     </button>
                   </div>
                 </motion.div>
               )}
+
+              {/* Camera Portal */}
+              <AnimatePresence>
+                {showCamera && (
+                  <CameraCapture 
+                    onCapture={(file) => handlePhotoUpload(file)}
+                    onClose={() => setShowCamera(false)}
+                  />
+                )}
+              </AnimatePresence>
 
               {/* ── BIO + INTENT ──────────────────────────────────────────── */}
               {step === 'BIO_INTENT' && (
