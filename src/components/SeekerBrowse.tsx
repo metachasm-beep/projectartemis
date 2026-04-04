@@ -49,7 +49,8 @@ export const SeekerBrowse: React.FC = () => {
         .select('*')
         .eq('role', 'man')
         .eq('is_active', true)
-        .order('rank_boost_count', { ascending: false })
+        .order('is_verified', { ascending: false })
+        .order('rank_boost_count', { ascending: true })
         .order('created_at', { ascending: true })
         .range(offset, offset + LIMIT - 1);
 

@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Dashboard } from './pages/Dashboard';
-import { AdminDashboard } from './pages/dashboards/AdminDashboard';
 import { Discovery } from './pages/Discovery';
 import Landing from './pages/Landing';
 import { Onboarding } from './components/Onboarding';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Sparkles, Zap, ArrowRight, Camera } from 'lucide-react';
+import { Heart, Sparkles, Zap, ArrowRight, Camera, Clock } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
 import { supabase } from './lib/supabase';
 import { turso, tursoHelpers } from './lib/turso';
 
 // Navigation Components
 import { MatriarchToolbar } from './components/navigation/MatriarchToolbar';
+import { Button } from './components/ui/button';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { EditProfile } from './components/EditProfile';
@@ -21,6 +21,15 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export type Tab = 'discovery' | 'profile' | 'messages';
+
+// ─── Didit Protocol ────────────────────────────────────────────────────────
+declare global {
+  interface Window {
+    didit?: any;
+  }
+}
+
+const DIDIT_CLIENT_ID = 'didit_client_id_placeholder'; 
 
 const ADMIN_EMAILS = ['metachasm@gmail.com', 'testeradmin@gmail.com'];
 
@@ -309,6 +318,36 @@ const App: React.FC = () => {
     }
   };
 
+  const handleVerify = async () => {
+    if (!profile) return;
+    
+    // 🛡️ Didit Integration
+    console.log("Initiating Didit Verification for:", profile.user_id);
+    
+    if (window.didit) {
+      window.didit.verify({
+        clientId: DIDIT_CLIENT_ID,
+        vendorData: profile.user_id,
+        onSuccess: async (data: any) => {
+          console.log("Didit Success:", data);
+          await turso.execute("UPDATE profiles SET is_verified = 1 WHERE user_id = ?", [profile.user_id]);
+          fetchProfile(profile.user_id);
+        },
+        onError: (err: any) => console.error("Didit Error:", err)
+      });
+    } else {
+      // Mock for Dev
+      alert("Didit Protocol Initializing. In production, this will launch the secure ID verification flow.");
+      setTimeout(async () => {
+        const confirm = window.confirm("DEVELOPER MOCK: Simulate successful Didit Verification?");
+        if (confirm) {
+          await turso.execute("UPDATE profiles SET is_verified = 1 WHERE user_id = ?", [profile.user_id]);
+          fetchProfile(profile.user_id);
+        }
+      }, 500);
+    }
+  };
+
   useEffect(() => {
     if (!loading) {
       window.postMessage('MATRIARCH_SANCTUARY_READY', '*');
@@ -377,7 +416,7 @@ const App: React.FC = () => {
                 />
 
                 <main className="flex-grow container mx-auto">
-                  {activeTab === 'discovery' && <Discovery />}
+                  {activeTab === 'discovery' && <Discovery setActiveTab={setActiveTab} />}
                   {activeTab === 'messages' && (
                     <div className="text-center py-40">
                        <h2 className="text-4xl text-mat-wine italic">High Intention Messaging System</h2>
@@ -435,11 +474,24 @@ const App: React.FC = () => {
                                   </Tooltip>
                                </div>
 
-                               <div className="text-center space-y-6">
-                                  <h2 className="text-6xl text-mat-wine leading-none" style={{fontFamily: '"Playfair Display", serif'}}>
-                                    {profile?.full_name || 'Your Story'}
-                                  </h2>
-                                  <p className="text-mat-rose/60 text-[10px] font-bold uppercase tracking-[0.5em] italic">The Chosen Identity</p>
+                               <div className="space-y-4">
+                                  <div className="flex items-center justify-between">
+                                     <h2 className="text-5xl font-bold text-mat-wine italic" style={{fontFamily: 'var(--font-display)'}}>{profile?.full_name || 'Your Story'}</h2>
+                                     <Badge variant={profile?.is_verified ? "gold" : "outline"} className="text-[10px] uppercase tracking-[0.2em] px-4 py-1.5 font-black">
+                                       {profile?.is_verified ? "Verified Soul" : "Initiate Standing"}
+                                     </Badge>
+                                  </div>
+                                  
+                                  {profile && !profile.is_verified && (
+                                     <div className="p-6 rounded-3xl bg-mat-rose/5 border border-mat-rose/10 flex items-center gap-5 transition-all hover:bg-mat-rose/10">
+                                        <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm shrink-0">
+                                           <Clock className="w-6 h-6 text-mat-rose/40" />
+                                        </div>
+                                        <p className="text-[10px] text-mat-slate/80 font-bold uppercase tracking-widest leading-relaxed italic">
+                                           Awaiting Matriarch Gaze. Unverified stories are ranked below verified souls to ensure sanctuary integrity.
+                                        </p>
+                                     </div>
+                                  )}
                                </div>
                                
                                <div className="w-full max-w-sm space-y-4">
@@ -453,6 +505,15 @@ const App: React.FC = () => {
                                      </button>
                                   </Tooltip>
 
+                                  <Tooltip content="Purge local session and return to threshold.">
+                                     <Button 
+                                        onClick={handleVerify}
+                                        className="w-full h-14 bg-mat-wine text-mat-cream font-bold uppercase tracking-[0.3em] text-[10px] rounded-xl hover:bg-mat-wine-soft shadow-mat-premium transition-all active:scale-[0.98]"
+                                     >
+                                        {profile?.is_verified ? "Verify Identity" : "Initiate Standing Sealed"}
+                                     </Button>
+                                  </Tooltip>
+                                  
                                   <Tooltip content="Purge local session and return to threshold.">
                                      <button 
                                        onClick={() => supabase.auth.signOut()} 

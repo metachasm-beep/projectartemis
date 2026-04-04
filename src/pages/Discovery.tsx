@@ -17,7 +17,7 @@ import { turso } from '@/lib/turso';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
-export const Discovery: React.FC = () => {
+export const Discovery: React.FC<{ setActiveTab: (tab: any) => void }> = ({ setActiveTab }) => {
   const [profiles, setProfiles] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState<'woman' | 'man' | null>(null);
@@ -74,47 +74,42 @@ export const Discovery: React.FC = () => {
     </div>
   );
 
-  if (!isVerified) {
-    return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center p-12 text-center">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-xl w-full p-px bg-mat-rose/10 rounded-[4rem] shadow-mat-rose/5 overflow-hidden"
-        >
-          <div className="mat-glass-deep p-16 space-y-12">
-             <div className="mx-auto w-24 h-24 rounded-[2.5rem] bg-mat-wine text-mat-cream flex items-center justify-center shadow-mat-premium">
-                <Lock className="w-10 h-10" strokeWidth={1.5} />
-             </div>
-             
-             <div className="space-y-6">
-                <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full">Nobility Restriction</Badge>
-                <h2 className="text-5xl md:text-7xl mat-text-display-pro text-mat-wine uppercase leading-none italic">Access <br /><span className="text-mat-rose/20 text-4xl md:text-6xl">Restricted.</span></h2>
-                <p className="text-xs text-mat-slate/60 font-medium uppercase tracking-widest leading-relaxed max-w-sm mx-auto italic">
-                   The Sanctuary's Discovery Layer is reserved for verified initiates. Complete your identity seal to explore.
-                </p>
-             </div>
+  const isUnverified = !isVerified;
 
+  return (
+    <div className="mat-container py-12 md:py-24 space-y-12">
+       {isUnverified && (
+          <motion.div 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-8 rounded-[2rem] bg-mat-rose/5 border border-mat-rose/10 flex flex-col md:flex-row items-center justify-between gap-6"
+          >
+             <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-mat-wine text-mat-cream rounded-2xl flex items-center justify-center shadow-mat-premium shrink-0">
+                   <Lock className="w-8 h-8" strokeWidth={1.5} />
+                </div>
+                <div className="space-y-1">
+                   <h4 className="text-xl font-bold text-mat-wine italic">Awaiting Gaze.</h4>
+                   <p className="text-[10px] text-mat-slate/60 font-bold uppercase tracking-widest leading-relaxed">
+                      Your story is yet to be sealed by the Matriarch. Unverified profiles are ranked below all verified initiates.
+                   </p>
+                </div>
+             </div>
              <Button 
-                onClick={() => window.location.href = '/dashboard'} 
-                className="w-full h-16 bg-mat-wine text-mat-cream font-bold uppercase tracking-[0.3em] text-[11px] rounded-[2rem] hover:bg-mat-wine-soft transition-all shadow-mat-premium"
+                onClick={() => setActiveTab('profile')} 
+                className="w-full md:w-auto h-14 px-10 bg-mat-wine text-mat-cream font-bold uppercase tracking-[0.3em] text-[10px] rounded-xl hover:bg-mat-wine-soft shadow-mat-premium"
              >
                 Initiate Verification
              </Button>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
+          </motion.div>
+       )}
 
-  if (role === 'man') {
-    return (
-      <div className="mat-container py-12 space-y-24">
-         <div className="text-center space-y-4">
-            <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 text-mat-gold text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-gold/5">Temporal Status</Badge>
-            <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">Awaiting <br /><span className="text-mat-rose/20">The Gaze.</span></h1>
-         </div>
+       <div className="mb-16 space-y-4">
+          <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-wine text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-rose/5 shadow-sm">Discovery layer</Badge>
+          <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">Find <br /><span className="text-mat-rose/20">The Seeker.</span></h1>
+       </div>
 
+       {role === 'man' ? (
          <div className="bento-grid">
             <div className="bento-span-8 bento-item mat-glass-deep p-12 group h-[400px]">
                <div className="flex flex-col h-full justify-between">
@@ -158,7 +153,7 @@ export const Discovery: React.FC = () => {
                   </div>
                </div>
 
-               <button className="w-full h-16 bg-mat-cream text-mat-wine font-bold uppercase tracking-[0.4em] text-[9px] rounded-xl hover:bg-white transition-all shadow-sm">Refine Identity</button>
+               <button className="w-full h-16 bg-mat-cream text-mat-wine font-bold uppercase tracking-[0.4em] text-[10px] rounded-xl hover:bg-white transition-all shadow-sm">Refine Identity</button>
             </div>
 
             <div className="bento-span-4 bento-item mat-glass flex flex-col justify-between border-mat-rose/10">
@@ -188,47 +183,21 @@ export const Discovery: React.FC = () => {
                </div>
             </div>
          </div>
-      </div>
-    );
-  }
-
-  if (profiles.length === 0 && role === 'woman') {
-    return (
-      <div className="h-[80vh] flex flex-col items-center justify-center p-12 text-center">
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="max-w-xl w-full p-px bg-mat-rose/10 rounded-[4rem] overflow-hidden"
-        >
-          <div className="mat-glass-deep p-16 space-y-12">
-             <div className="mx-auto w-24 h-24 rounded-[3rem] bg-mat-rose/5 flex items-center justify-center border border-mat-rose/20 shadow-sm">
-                <Heart className="w-12 h-12 text-mat-rose fill-mat-rose/10" strokeWidth={1} />
-             </div>
-             
-             <div className="space-y-6">
-                <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full">Temporal Cycle</Badge>
-                <h2 className="text-5xl md:text-7xl mat-text-display-pro text-mat-wine uppercase leading-none italic">Quiet <br /><span className="text-mat-rose/20 text-4xl md:text-6xl">Sanctuary.</span></h2>
-                <p className="text-xs text-mat-slate/60 font-medium uppercase tracking-widest leading-relaxed max-w-sm mx-auto italic">
-                   The seekers have all been met. Connection begins again at the next temporal pulse. Check back shortly.
-                </p>
-             </div>
-
-             <div className="pt-8 flex justify-center gap-3">
-                {[1,2,3].map(i => <div key={i} className="w-2.5 h-2.5 bg-mat-rose/20 rounded-full animate-bounce" style={{animationDelay: `${i*0.2}s`}} />)}
-             </div>
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="mat-container py-12 md:py-24">
-       <div className="mb-16 space-y-4">
-          <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-wine text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-rose/5 shadow-sm">Discovery layer</Badge>
-          <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">Find <br /><span className="text-mat-rose/20">The Seeker.</span></h1>
-       </div>
-       <SeekerBrowse />
+       ) : (
+         profiles.length === 0 ? (
+           <div className="h-[60vh] flex flex-col items-center justify-center p-12 text-center">
+              <div className="mat-glass-deep p-16 space-y-12 rounded-[4rem]">
+                 <div className="mx-auto w-24 h-24 rounded-[3rem] bg-mat-rose/5 flex items-center justify-center border border-mat-rose/20 shadow-sm">
+                    <Heart className="w-12 h-12 text-mat-rose fill-mat-rose/10" strokeWidth={1} />
+                 </div>
+                 <h2 className="text-5xl mat-text-display-pro text-mat-wine uppercase leading-none italic">Quiet <br /><span className="text-mat-rose/20">Sanctuary.</span></h2>
+                 <p className="text-xs text-mat-slate/60 font-medium uppercase tracking-widest italic mx-auto max-w-xs">Connecting seekers at the next temporal pulse.</p>
+              </div>
+           </div>
+         ) : (
+           <SeekerBrowse />
+         )
+       )}
     </div>
   );
 };

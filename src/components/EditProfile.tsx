@@ -339,17 +339,22 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
           {/* Role Status (Locked Warning) */}
           <section className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-wine/10 space-y-6">
              <div className="flex items-center gap-4">
-                <Tooltip content="Your role is fixed for sanctuary safety and verification integrity.">
+                <Tooltip content="Your role and verification status determine your standing in the sanctuary.">
                   <ShieldCheck size={20} className="text-mat-wine" />
                 </Tooltip>
                 <div className="space-y-1">
-                   <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Protocol Standing</span>
-                   <p className="text-sm font-bold text-mat-wine uppercase">Role: {profile.role}</p>
+                   <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Sanctuary Standing</span>
+                   <p className="text-sm font-bold text-mat-wine uppercase">Status: {profile.is_verified ? 'Verified Soul' : 'Awaiting Gaze'}</p>
                 </div>
              </div>
-             <p className="text-[10px] font-medium text-mat-wine/40 italic leading-relaxed uppercase tracking-widest">
-                * To ensure Aadhaar verification integrity and safety within the Matriarch ecosystem, roles are permanently indexed during onboarding. Contact architect for elite status overrides.
-             </p>
+             <div className="space-y-4">
+                <p className="text-[10px] font-medium text-mat-wine/40 italic leading-relaxed uppercase tracking-[0.2em]">
+                   * To ensure collective safety, unverified stories are ranked below verified initiates. Complete the Didit Protocol to elevate your resonance.
+                </p>
+                <p className="text-[10px] font-medium text-mat-wine/40 italic leading-relaxed uppercase tracking-widest">
+                   * Role and verification status are permanently indexed. Contact architect for elite status overrides.
+                </p>
+             </div>
           </section>
 
           {/* Action Footer */}
