@@ -311,11 +311,10 @@
     font-family: var(--font-display);
     font-weight: 900;
     font-style: italic;
-    letter-spacing: -0.05em;
-    line-height: 1.1; /* Increased from 0.9 to prevent descender clipping */
+    letter-spacing: -0.02em; /* Relaxed from -0.05em to prevent clipping */
+    line-height: 1.1;
     text-transform: uppercase;
-    /* Responsive font scaling */
-    font-size: clamp(2.5rem, 10vw + 1rem, 8rem);
+    font-size: clamp(2rem, 8vw, 8rem); /* Slightly smaller mobile start */
   }
 
   .mat-text-glow-gold {

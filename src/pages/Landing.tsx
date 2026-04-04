@@ -114,7 +114,7 @@ const LandingPage: React.FC = () => {
       <main className="pt-16">
         {/* 1. HERO SECTION */}
         <section className="mat-section relative overflow-hidden">
-          <div className="mat-container grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          <div className="mat-container grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
             <div className="fade-up space-y-6 lg:space-y-8 text-center lg:text-left">
               <div className="flex justify-center lg:justify-start">
                 <Badge variant="secondary" className="py-2 px-6 border-white/10 uppercase tracking-[0.3em] font-black text-[8px] lg:text-[9px] bg-white/5 backdrop-blur-md">
@@ -122,7 +122,7 @@ const LandingPage: React.FC = () => {
                 </Badge>
               </div>
               
-              <h1 className="mat-text-display-pro text-white lowercase tracking-tighter overflow-visible py-2 px-1">
+              <h1 className="text-4xl sm:text-5xl lg:text-7xl mat-text-display-pro text-white lowercase tracking-tighter overflow-visible py-2 px-1">
                 <DecryptedText text="Her" animateOn="view" speed={120} className="inline-block" sequential /> heart <span className="mat-text-gradient-gold">decides.</span><br />
                 <span className="italic block mt-2 lg:mt-4 border-l-4 border-mat-gold pl-4 lg:pl-6 overflow-visible">Everything</span> <span className="text-white/40">else follows.</span>
               </h1>
@@ -228,7 +228,7 @@ const LandingPage: React.FC = () => {
           <div className="mat-container">
             <div className="text-center mb-24 space-y-6">
               <Badge variant="violet" className="px-6 py-2 border-matriarch-violetBright/20 uppercase tracking-[0.3em] font-black text-[9px]">The Journey Forward</Badge>
-              <h2 className="text-6xl mat-text-display-pro text-white leading-tight lowercase">
+              <h2 className="text-4xl lg:text-6xl mat-text-display-pro text-white leading-tight lowercase overflow-visible-important py-2 px-1">
                 How Matriarch <span className="mat-text-gradient-gold ring-mat-gold/20">Works</span>
               </h2>
               <p className="text-xl text-white/40 max-w-2xl mx-auto italic font-medium">A sanctuary for intentional engagement, designed for hearts that value depth over noise.</p>
@@ -240,7 +240,7 @@ const LandingPage: React.FC = () => {
                 { title: "The Seeker", label: "Grow. Be Found.", desc: "No chasing. Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart.", icon: UserCheck, color: "text-matriarch-goldSoft", bg: "bg-matriarch-gold/10" },
                 { title: "Grace", label: "Her Terms. Always.", desc: "Connection begins only how and when she defines. Once a match is made, she chooses the way you both talk.", icon: MessageSquare, color: "text-matriarch-plum", bg: "bg-matriarch-plum/10" }
               ].map((step, i) => (
-                <div key={i} className="mat-card mat-glass-premium border-none p-8 lg:p-12 group hover:bg-white/[0.06] transition-all duration-500 rounded-[2.5rem] lg:rounded-[3rem]">
+                <div key={i} className="mat-card mat-glass-premium border-none p-6 lg:p-12 group hover:bg-white/[0.06] transition-all duration-500 rounded-[2.5rem] lg:rounded-[3rem]">
                   <div className={cn("mb-8 lg:mb-10 p-5 lg:p-6 rounded-2xl border border-white/5 w-fit group-hover:scale-110 transition-all duration-500 shadow-2xl", step.bg)}>
                     <step.icon className={cn("w-8 h-8 lg:w-10 lg:h-10", step.color)} strokeWidth={1.5} />
                   </div>
