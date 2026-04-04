@@ -4,13 +4,10 @@ import {
   Sparkles, 
   ShieldCheck, 
   Zap, 
-  ChevronRight,
   Heart,
-  Plus,
   Bookmark,
   MapPin,
-  X,
-  Users
+  X
 } from 'lucide-react';
 
 import { SeekerBrowse } from '@/components/SeekerBrowse';
@@ -125,6 +122,13 @@ const ResonanceRail = ({
     const feed = await SanctuaryService.getRailFeed(womanId, type as any, city);
     setProfiles(feed || []);
     setLoading(false);
+    
+    // 📣 Analytical Signal: Record impressions for the ledger
+    if (feed && feed.length > 0) {
+       feed.forEach((p: any) => {
+          SanctuaryService.trackSignal(p.user_id, 'impression', womanId);
+       });
+    }
   }, [womanId, type, city]);
 
   useEffect(() => { fetch(); }, [fetch]);
@@ -188,6 +192,13 @@ export const Discovery: React.FC = () => {
     }
   };
 
+  const handleSelectProfile = (p: any) => {
+     setSelectedProfile(p);
+     if (profile?.user_id) {
+        SanctuaryService.trackSignal(p.user_id, 'visit', profile.user_id);
+     }
+  };
+
   if (authLoading) return <div className="h-screen flex items-center justify-center"><Sparkles className="animate-spin text-mat-rose" /></div>;
 
   if (profile?.role === 'man') {
@@ -224,7 +235,7 @@ export const Discovery: React.FC = () => {
                    womanId={profile?.user_id || ''} 
                    shortlistedIds={shortlistedIds}
                    onToggleShortlist={toggleShortlist}
-                   onSelect={setSelectedProfile} 
+                   onSelect={handleSelectProfile} 
                 />
              )}
              <ResonanceRail 

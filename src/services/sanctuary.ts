@@ -1,9 +1,6 @@
 import { turso } from '@/lib/turso';
-import { MatriarchProfile, Role } from '@/types';
-import { MessagingService } from '@/lib/messaging';
+import type { MatriarchProfile, Role } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
-
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 
 export const SanctuaryService = {
   /**
@@ -41,6 +38,8 @@ export const SanctuaryService = {
       sql: "INSERT INTO shortlists (id, woman_user_id, man_user_id) VALUES (?, ?, ?)",
       args: [id, womanId, manId]
     });
+    // Trigger signal
+    await SanctuaryService.trackSignal(manId, 'save', womanId);
     return true;
   },
 
@@ -76,5 +75,40 @@ export const SanctuaryService = {
       args: [userId]
     });
     return r.rows;
+  },
+
+  /**
+   * 📉 Sanctuary Signals: The Feedback Loop.
+   */
+  trackSignal: async (manId: string, type: 'impression' | 'visit' | 'save', womanId?: string) => {
+    const id = `sig_${uuidv4()}`;
+    // We use a silent execute here to not block the UI
+    turso.execute({
+      sql: "INSERT INTO profile_analytics (id, man_user_id, woman_user_id, metric_type) VALUES (?, ?, ?, ?)",
+      args: [id, manId, womanId || null, type]
+    }).catch(e => console.warn("Signal Silent Failure:", e));
+  },
+
+  getSignalMetrics: async (userId: string) => {
+    const r = await turso.execute({
+      sql: `
+        SELECT 
+          metric_type, 
+          COUNT(*) as count,
+          COUNT(DISTINCT DATE(created_at)) as days_active
+        FROM profile_analytics 
+        WHERE man_user_id = ? 
+        AND created_at >= date('now', '-30 days')
+        GROUP BY metric_type
+      `,
+      args: [userId]
+    });
+    
+    // Group return data
+    const metrics: Record<string, number> = { impression: 0, visit: 0, save: 0 };
+    r.rows.forEach((row: any) => {
+       metrics[row.metric_type] = row.count;
+    });
+    return metrics;
   }
 };
