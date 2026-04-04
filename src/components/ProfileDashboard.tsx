@@ -162,9 +162,9 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                             <Badge variant="sovereign" className="px-6 py-2">Sovereign Presence</Badge>
                          )}
                       </div>
-                       <h1 className="mat-text-display-pro leading-[0.8] mt-4">
+                       <h1 className="mat-text-display-pro leading-[0.8] mt-4 text-[3rem] sm:text-[4rem] md:text-[clamp(3rem,15vw,12rem)] px-1">
                           {profile?.full_name?.split(' ')[0]} <br />
-                          <span className="text-mat-rose/10 -mt-2 md:-mt-8 block">{profile?.full_name?.split(' ').slice(1).join(' ') || 'Identifier'}</span>
+                          <span className="text-mat-rose/10 -mt-2 md:-mt-8 block hidden md:block">{profile?.full_name?.split(' ').slice(1).join(' ') || 'Identifier'}</span>
                        </h1>
                    </div>
                    
@@ -183,21 +183,22 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
 
              {/* ─── Identity Station Tabs ─── */}
              <Tabs defaultValue="station" className="w-full">
-                <div className="flex justify-between items-center mb-12">
-                   <TabsList>
-                      <TabsTrigger value="station" className="gap-3"><LayoutDashboard size={14} /> The Station</TabsTrigger>
-                      {isMan && <TabsTrigger value="oracle" className="gap-3"><BarChart3 size={14} /> The Oracle</TabsTrigger>}
-                      <TabsTrigger value="archive" className="gap-3"><Archive size={14} /> The Archive</TabsTrigger>
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 md:mb-12">
+                   <TabsList className="w-full sm:w-auto overflow-x-auto flex-nowrap">
+                      <TabsTrigger value="station" className="gap-2 text-[10px] sm:text-xs whitespace-nowrap"><LayoutDashboard size={14} /> Station</TabsTrigger>
+                      {isMan && <TabsTrigger value="oracle" className="gap-2 text-[10px] sm:text-xs whitespace-nowrap"><BarChart3 size={14} /> Oracle</TabsTrigger>}
+                      <TabsTrigger value="archive" className="gap-2 text-[10px] sm:text-xs whitespace-nowrap"><Archive size={14} /> Archive</TabsTrigger>
                    </TabsList>
                    
-                   <Button variant="outline" onClick={() => setIsEditing(true)} className="rounded-full px-8 h-12 gap-3 text-[10px] font-black uppercase tracking-widest">
-                      <Camera size={16} /> Update Narrative
+                   <Button variant="outline" onClick={() => setIsEditing(true)} className="rounded-full px-6 h-10 sm:h-12 gap-2 text-[9px] font-black uppercase tracking-widest hidden sm:flex">
+                      <Camera size={14} /> Update Narrative
                    </Button>
                 </div>
 
+
                 <TabsContent value="station" className="mt-0">
-                   <div className="bento-grid gap-12">
-                       <div className="bento-span-4 bento-item mat-glass-deep p-0 overflow-hidden h-[400px] md:h-[600px] shadow-mat-premium border-mat-rose/10 group">
+                   <div className="bento-grid gap-6 md:gap-12">
+                       <div className="bento-span-4 bento-item mat-glass-deep p-0 overflow-hidden h-[350px] sm:h-[400px] md:h-[600px] shadow-mat-premium border-mat-rose/10 group relative">
                           <img src={profile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000" />
                           <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-mat-wine/80 to-transparent">
                              <span className="mat-text-label-pro text-mat-cream opacity-40">Primary Portrait</span>
@@ -205,11 +206,11 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                        </div>
 
                       {isMan ? (
-                         <div className="bento-span-5 bento-item mat-glass border-mat-rose/10 p-14 flex flex-col justify-between h-[600px]">
+                         <div className="bento-span-5 bento-item mat-glass border-mat-rose/10 p-8 sm:p-14 flex flex-col justify-between h-auto min-h-[350px] md:h-[600px]">
                             <div className="space-y-10">
                                <div className="space-y-3">
                                   <Zap className="text-mat-gold" size={24} />
-                                  <h3 className="text-4xl font-bold italic text-mat-wine leading-tight">Identity <br /><span className="text-mat-gold/60">Ascension.</span></h3>
+                                  <h3 className="text-2xl sm:text-4xl font-bold italic text-mat-wine leading-tight">Identity <br /><span className="text-mat-gold/60">Ascension.</span></h3>
                                </div>
                                <div className="space-y-6">
                                   {[
@@ -217,7 +218,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                                     { label: 'Narrative Portrait', done: (profile.photos?.length || 0) > 0, val: '+50 Aura' },
                                     { label: 'Roots & Academy', done: !!profile.education && !!profile.city, val: '+30 Aura' }
                                   ].map((task, i) => (
-                                    <button key={i} onClick={() => setIsEditing(true)} className={cn("w-full flex justify-between items-center p-6 rounded-3xl border transition-all", task.done ? "bg-mat-wine/5 opacity-30" : "bg-white hover:border-mat-gold/30 shadow-sm")}>
+                                    <button key={i} onClick={() => setIsEditing(true)} className={cn("w-full flex justify-between items-center p-4 sm:p-6 rounded-2xl sm:rounded-3xl border transition-all", task.done ? "bg-mat-wine/5 opacity-30" : "bg-white hover:border-mat-gold/30 shadow-sm")}>
                                        <div className="flex items-center gap-6">
                                           <div className={cn("w-10 h-10 rounded-2xl flex items-center justify-center", task.done ? "bg-mat-rose/10 text-mat-rose" : "bg-mat-fog/30")}><CheckCircle2 size={20} /></div>
                                           <span className="text-[12px] font-black text-mat-wine uppercase tracking-[0.2em]">{task.label}</span>
@@ -230,7 +231,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                             {!profile.is_verified && <Button variant="gold" size="lg" onClick={handleVerify} className="w-full">Begin Seal Ritual</Button>}
                          </div>
                       ) : (
-                         <div className="bento-span-5 bento-item mat-glass border-mat-wine/5 bg-mat-wine/5 p-14 flex flex-col justify-between h-[600px] shadow-mat-premium relative overflow-hidden">
+                         <div className="bento-span-5 bento-item mat-glass border-mat-wine/5 bg-mat-wine/5 p-8 sm:p-14 flex flex-col justify-between h-auto min-h-[350px] md:h-[600px] shadow-mat-premium relative overflow-hidden">
                             <div className="absolute top-0 right-0 w-64 h-64 bg-mat-wine/5 blur-[100px]" />
                              <div className="space-y-8 relative z-10">
                                 <div className="space-y-4">
@@ -270,7 +271,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                          </div>
                       )}
 
-                      <div className="bento-span-3 bento-item bg-mat-obsidian text-mat-cream p-12 flex flex-col justify-between h-[600px] shadow-2xl relative overflow-hidden">
+                      <div className="bento-span-3 bento-item bg-mat-obsidian text-mat-cream p-8 sm:p-12 flex flex-col justify-between h-auto min-h-[350px] md:h-[600px] shadow-2xl relative overflow-hidden">
                          <div className="space-y-10 relative z-10">
                             <div className="flex justify-between items-start">
                                <div className="w-16 h-16 bg-white/5 rounded-3xl flex items-center justify-center border border-white/10"><Flame size={28} className={cn(profile.consecutive_days ? "text-mat-rose" : "text-white/10")} /></div>

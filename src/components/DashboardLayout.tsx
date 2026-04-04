@@ -27,7 +27,7 @@ export const DashboardLayout: React.FC = () => {
       animate={{ opacity: 1 }} 
       className={cn(
         "min-h-screen transition-colors duration-1000",
-        isSovereignMode ? "bg-mat-cream/50 pt-0" : "bg-mat-cream pt-32 pb-16"
+        isSovereignMode ? "bg-mat-cream/50 pt-0" : "bg-mat-cream pt-24 md:pt-32 pb-16"
       )}
     >
       <MatriarchToolbar 
@@ -38,7 +38,7 @@ export const DashboardLayout: React.FC = () => {
       
       <main className={cn(
         "mx-auto transition-all duration-1000",
-        isSovereignMode ? "w-full px-0" : "container px-4 md:px-0"
+        isSovereignMode ? "w-full px-0" : "container px-6 md:px-8 lg:px-0"
       )}>
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
