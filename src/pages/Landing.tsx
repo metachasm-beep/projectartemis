@@ -74,7 +74,11 @@ const LandingPage: React.FC = () => {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: "google",
         options: {
-          redirectTo: "https://www.matriarchindia.com",
+          redirectTo: window.location.origin,
+          queryParams: {
+            prompt: 'select_account',
+            access_type: 'offline'
+          }
         },
       });
       if (error) throw error;

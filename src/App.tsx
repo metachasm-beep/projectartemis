@@ -117,13 +117,18 @@ const App: React.FC = () => {
 
     initializeAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, currentSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       if (!mounted) return;
       
-      // If bypass is active, ignore auth state changes unless logout
-      if (localStorage.getItem('MATRIARCH_DEV_BYPASS') === 'ENABLED' && !currentSession) {
+      console.log(`MATRIARCH: Auth Event [${event}]`);
+
+      if (event === 'SIGNED_OUT') {
         localStorage.removeItem('MATRIARCH_DEV_BYPASS');
-        window.location.reload();
+        localStorage.clear(); // Complete purge
+        setSession(null);
+        setProfile(null);
+        setActiveTab('dashboard');
+        window.location.reload(); // Hard reset
         return;
       }
 
