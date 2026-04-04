@@ -53,7 +53,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
           </motion.div>
         ) : isMan ? (
           <motion.div key="view-man" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">
-             <MenDossier profile={profile} metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }} setIsEditing={setIsEditing} handleVerify={handleVerify} />
+             <MenDossier profile={profile} metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }} setIsEditing={setIsEditing} handleVerify={handleVerify} refreshProfile={refreshProfile} />
           </motion.div>
         ) : (
           <motion.div key="view-woman" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">

@@ -26,10 +26,15 @@ export interface MatriarchProfile {
   onboarding_status?: 'STARTED' | 'COMPLETED';
   is_verified?: boolean;
   rank_boost_count?: number;
+  rank_score?: number;
+  tokens?: number;
+  view_count?: number;
+  aura?: number;
   last_login_at?: string;
   consecutive_days?: number;
   longest_streak?: number;
-  created_at?: string;
+  created_at: string;
+  updated_at?: string;
 }
 
 export interface SanctuaryContextType {

@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Camera, CheckCircle2, Zap, Flame, Eye, MousePointerClick, Heart, Coins, ArrowUpRight, ShieldCheck, Gem } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
 import { Button } from '@/components/ui/button';
+import { SanctuaryService } from '@/services/sanctuary';
+import { turso } from '@/lib/turso';
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ');
@@ -13,40 +15,87 @@ interface MenDossierProps {
   metrics: { impression: number; visit: number; save: number };
   setIsEditing: (val: boolean) => void;
   handleVerify: () => void;
+  refreshProfile: () => Promise<void>;
 }
 
-export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsEditing, handleVerify }) => {
-  // Tokenomics Mock State
-  const [auraBalance, setAuraBalance] = useState(150); 
+export const MenDossier: React.FC<MenDossierProps> = ({ 
+  profile, 
+  metrics, 
+  setIsEditing, 
+  handleVerify,
+  refreshProfile 
+}) => {
   const [leapFeedback, setLeapFeedback] = useState<string | null>(null);
-  const rankCount = profile.rank_boost_count || 0;
-  
-  // Calculate a reverse rank (lower is better). Base rank minus any boosts.
-  const baseRank = 8404;
-  const sanctuaryRank = Math.max(1, baseRank - rankCount); 
-  const isTopPercentile = sanctuaryRank < 1000;
+  const [sanctuaryRank, setSanctuaryRank] = useState<number>(0);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  // ─── LIVE RANK CALCULATION ───
+  const fetchLiveRank = useCallback(async () => {
+    if (!profile?.user_id) return;
+    try {
+      const res = await turso.execute({
+        sql: `
+          SELECT COUNT(*) as higher_ranked FROM profiles 
+          WHERE role = 'man' AND (
+            is_verified > ? OR 
+            (is_verified = ? AND rank_boost_count > ?) OR 
+            (is_verified = ? AND rank_boost_count = ? AND created_at < ?)
+          )
+        `,
+        args: [
+          profile.is_verified ? 1 : 0,
+          profile.is_verified ? 1 : 0,
+          profile.rank_boost_count || 0,
+          profile.is_verified ? 1 : 0,
+          profile.rank_boost_count || 0,
+          profile.created_at
+        ]
+      });
+      setSanctuaryRank(Number(res.rows[0].higher_ranked) + 1);
+    } catch (err) {
+      console.warn("Rank synch interrupted:", err);
+    }
+  }, [profile]);
+
+  useEffect(() => {
+    fetchLiveRank();
+  }, [fetchLiveRank]);
+
+  const auraBalance = profile.tokens || 0;
+  const isTopPercentile = sanctuaryRank < 100 && sanctuaryRank > 0;
 
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   const lastName = profile.full_name?.split(' ').slice(1).join(' ') || '';
 
-  const executeTieredJump = (power: number, cost: number, jumpName: string) => {
+  const executeTieredJump = async (type: 'nudge' | 'surge' | 'elite', cost: number) => {
      if (auraBalance < cost) {
         alert("Insufficient AURA. Process aborted. Please acquire offerings from the Treasury.");
         return;
      }
-     
-     // Math formula from the algorithm: P * N
-     // Assuming N = 10,000 for local demo pool
-     const N = 10000; 
-     const spotsJumped = Math.floor(power * N);
-     
-     setAuraBalance(prev => prev - cost);
-     
-     // Visual Hook
-     setLeapFeedback(`${jumpName.toUpperCase()} INITIALIZED. You leaped ${spotsJumped.toLocaleString()} profiles. You are now visible to Sovereign Observers 3x more frequently.`);
-     
-     // Hide after 5s
-     setTimeout(() => setLeapFeedback(null), 5000);
+
+     setIsProcessing(true);
+     try {
+        // 1. Deduct tokens from DB
+        await turso.execute({
+          sql: "UPDATE profiles SET tokens = tokens - ? WHERE user_id = ?",
+          args: [cost, profile.user_id]
+        });
+
+        // 2. Perform the Jump (calculates density-based leap)
+        const leapAmount = await SanctuaryService.purchaseJump(profile.user_id, type, profile.city || 'Global');
+        
+        // 3. Synergize local state
+        await refreshProfile();
+        await fetchLiveRank();
+
+        setLeapFeedback(`${type.toUpperCase()} INITIALIZED. You leaped ${leapAmount.toLocaleString()} profiles. Your standing is now closer to the Sovereign Gaze.`);
+        setTimeout(() => setLeapFeedback(null), 6000);
+     } catch (err) {
+        console.error("Jump ritual failed:", err);
+        alert("The Sanctuary was unable to process your leap. Offerings preserved.");
+     } finally {
+        setIsProcessing(false);
+     }
   };
 
   const auraBundles = [
@@ -78,7 +127,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
           <div className="space-y-4">
              <div className="flex items-center gap-4">
                 <span className="px-4 py-1.5 border border-mat-gold/30 text-mat-gold text-[9px] uppercase tracking-[0.3em] font-black rounded-full backdrop-blur-md bg-mat-obsidian/30 flex items-center gap-2">
-                  <Flame size={12} /> Rank #{sanctuaryRank.toLocaleString()}
+                  <Flame size={12} /> Rank #{sanctuaryRank > 0 ? sanctuaryRank.toLocaleString() : '--'}
                 </span>
                 {profile.is_verified && (
                   <span className="px-4 py-1.5 bg-mat-wine text-mat-cream text-[9px] uppercase tracking-[0.3em] font-black rounded-full flex items-center gap-2 shadow-[0_0_15px_rgba(114,47,55,0.5)]">
@@ -112,11 +161,13 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
               <div>
                  <div className="flex items-center justify-between mb-6">
                     <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/50 italic">Sanctuary Rank</p>
-                    {isTopPercentile && <span className="text-[8px] bg-mat-gold/10 text-mat-gold px-2 py-1 rounded">Top 1%</span>}
+                    {isTopPercentile && <span className="text-[8px] bg-mat-gold/10 text-mat-gold px-2 py-1 rounded">Top Identity</span>}
                  </div>
                  <div className="flex items-baseline gap-2">
                     <span className="text-3xl text-mat-gold italic font-bold">#</span>
-                    <h2 className="text-[6rem] md:text-[7rem] font-black italic tracking-tighter leading-none text-mat-gold">{sanctuaryRank.toLocaleString()}</h2>
+                    <h2 className="text-[6rem] md:text-[7rem] font-black italic tracking-tighter leading-none text-mat-gold">
+                      {sanctuaryRank > 0 ? sanctuaryRank.toLocaleString() : '--'}
+                    </h2>
                  </div>
                  <p className="text-xs text-white/40 leading-relaxed mt-4">
                    Your absolute position in the sanctuary. Lower rank equals priority placement during Sovereign Browsing.
@@ -124,7 +175,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
               </div>
 
               {/* AURA Wallet & Tiered Jump Action */}
-              <div className="p-8 border border-mat-rose/20 bg-mat-wine/5 rounded-[2rem] space-y-6 shadow-[0_0_30px_rgba(114,47,55,0.05)] relative overflow-hidden">
+              <div className="p-8 border border-mat-rose/20 bg-mat-wine/5 rounded-[2rem] space-y-6 shadow-[0_0_30px_rgba(114,47,55,0.05)] relative overflow-hidden text-white">
                  {/* Visual Hook Overlay */}
                  {leapFeedback && (
                     <motion.div 
@@ -144,33 +195,50 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                        </div>
                        <div>
                           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/50">Aura Balance</p>
-                          <p className="text-2xl font-bold font-serif">{auraBalance}</p>
+                          <p className="text-2xl font-bold font-serif">{isProcessing ? '...' : auraBalance}</p>
                        </div>
                     </div>
                  </div>
                  
                  <div className="space-y-3">
-                    <Button onClick={() => executeTieredJump(0.05, 10, 'Nudge')} variant="outline" className="w-full h-14 border-white/10 hover:bg-white/5 text-white rounded-[1rem] flex justify-between items-center px-5">
+                    <Button 
+                      onClick={() => executeTieredJump('nudge', 10)} 
+                      disabled={isProcessing}
+                      variant="outline" 
+                      className="w-full h-14 border-white/10 hover:bg-white/5 text-white rounded-[1rem] flex items-center justify-between px-5 transition-all"
+                    >
                        <div className="flex flex-col items-start gap-0.5">
-                          <span className="font-bold text-sm">Nudge</span>
-                          <span className="text-[9px] text-white/40 uppercase tracking-widest">5% Density Leap</span>
+                          <span className="font-bold text-sm whitespace-nowrap">Nudge</span>
+                          <span className="text-[9px] text-white/40 uppercase tracking-widest whitespace-nowrap">5% Density Leap</span>
                        </div>
-                       <span className="text-[10px] font-black text-mat-gold">-10 AURA</span>
+                       <span className="text-[10px] font-black text-mat-gold whitespace-nowrap">-10 AURA</span>
                     </Button>
-                    <Button onClick={() => executeTieredJump(0.15, 50, 'Surge')} variant="outline" className="w-full h-14 border-mat-rose/30 hover:bg-mat-wine/20 text-mat-rose rounded-[1rem] flex justify-between items-center px-5 relative overflow-hidden group">
+                    <Button 
+                      onClick={() => executeTieredJump('surge', 50)} 
+                      disabled={isProcessing}
+                      variant="outline" 
+                      className="w-full h-14 border-mat-rose/30 hover:bg-mat-wine/20 text-mat-rose rounded-[1rem] flex items-center justify-between px-5 relative overflow-hidden group transition-all"
+                    >
                        <div className="flex flex-col items-start gap-0.5 relative z-10 text-white">
-                          <span className="font-bold text-sm">Surge</span>
-                          <span className="text-[9px] text-white/60 uppercase tracking-widest">15% Density Leap</span>
+                          <span className="font-bold text-sm whitespace-nowrap">Surge</span>
+                          <span className="text-[9px] text-white/60 uppercase tracking-widest whitespace-nowrap">15% Density Leap</span>
                        </div>
-                       <span className="text-[10px] font-black relative z-10">-50 AURA</span>
-                       <div className="absolute top-0 left-0 w-2 h-full bg-mat-rose"></div>
+                       <span className="text-[10px] font-black relative z-10 whitespace-nowrap">-50 AURA</span>
+                       <div className="absolute top-0 left-0 w-2 h-full bg-mat-rose transition-all"></div>
                     </Button>
-                    <Button onClick={() => executeTieredJump(0.50, 250, 'Elite Vault')} className="w-full h-14 bg-mat-gold hover:bg-mat-gold/80 text-mat-obsidian rounded-[1rem] flex justify-between items-center px-5 group">
+                    <Button 
+                      onClick={() => executeTieredJump('elite', 250)} 
+                      disabled={isProcessing}
+                      className="w-full h-16 bg-mat-gold hover:bg-mat-gold/80 text-mat-obsidian rounded-[1.2rem] flex items-center justify-between px-5 group transition-all"
+                    >
                        <div className="flex flex-col items-start gap-0.5">
-                          <span className="font-black text-sm flex items-center gap-2"><ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Elite Vault</span>
-                          <span className="text-[9px] opacity-70 uppercase tracking-widest">50% Density Leap • 48H Cooldown</span>
+                          <span className="font-black text-sm flex items-center gap-2 whitespace-nowrap">
+                            <ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> 
+                            Elite Vault
+                          </span>
+                          <span className="text-[8px] opacity-70 uppercase tracking-widest whitespace-nowrap">50% Density Leap</span>
                        </div>
-                       <span className="bg-black/20 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest">-250 AURA</span>
+                       <span className="bg-black/20 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest whitespace-nowrap">-250 AURA</span>
                     </Button>
                  </div>
               </div>
@@ -190,6 +258,16 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                     {auraBundles.map((bundle, i) => (
                       <button 
                         key={i} 
+                        onClick={() => {
+                          const conf = window.confirm(`Proceed with exchange for ${bundle.name}? Amount: ₹${bundle.price}`);
+                          if (conf) {
+                             // Mock transition for treasury logic
+                             turso.execute({
+                               sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
+                               args: [bundle.aura, profile.user_id]
+                             }).then(() => refreshProfile());
+                          }
+                        }}
                         className="group w-full flex flex-col justify-between p-6 rounded-[2rem] border border-white/10 bg-white/5 hover:bg-white/10 hover:border-mat-gold/30 transition-all duration-500 text-left relative overflow-hidden"
                       >
                          {bundle.saving && (
@@ -255,7 +333,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                     </div>
                     <div>
                        <h3 className="text-2xl md:text-3xl font-bold italic text-white leading-tight mb-3">Concierge Review & <br/><span className="text-mat-gold">Seal of Excellence</span></h3>
-                       <p className="text-sm text-white/60 leading-relaxed">
+                       <p className="text-sm text-white/60 leading-relaxed text-justify">
                          A rigorous manual audit of your entire dossier by the Matriarch Council. Profiles that earn the Seal of Excellence bypass the standard protocol, organically ranking higher than all non-sealed aspirants indefinitely.
                        </p>
                     </div>
@@ -269,9 +347,9 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                          </li>
                        ))}
                     </ul>
-                    <Button className="w-full h-16 bg-mat-gold hover:bg-mat-gold/80 text-mat-obsidian rounded-[1.5rem] flex justify-between items-center px-6 transition-all duration-300">
-                       <span className="font-bold uppercase tracking-widest text-[10px]">Commission Review</span>
-                       <span className="bg-black/10 px-4 py-2 rounded-full text-xs font-black">₹7,999</span>
+                    <Button className="w-full h-16 bg-mat-gold hover:bg-mat-gold/80 text-mat-obsidian rounded-[1.5rem] flex items-center justify-between px-6 transition-all duration-300">
+                       <span className="font-bold uppercase tracking-widest text-[10px] whitespace-nowrap">Commission Review</span>
+                       <span className="bg-black/10 px-4 py-2 rounded-full text-[10px] font-black whitespace-nowrap">₹7,999</span>
                     </Button>
                  </div>
               </div>
