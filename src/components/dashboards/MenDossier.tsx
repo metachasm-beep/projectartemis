@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Camera, CheckCircle2, Zap, Flame, Eye, MousePointerClick, Heart, Coins, ArrowUpRight, ShieldCheck, Gem } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ');
@@ -17,33 +16,44 @@ interface MenDossierProps {
 }
 
 export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsEditing, handleVerify }) => {
-  // Tokenomics Mock State (To be connected to Supabase RPC)
+  // Tokenomics Mock State
   const [auraBalance, setAuraBalance] = useState(150); 
+  const [leapFeedback, setLeapFeedback] = useState<string | null>(null);
   const rankCount = profile.rank_boost_count || 0;
   
   // Calculate a reverse rank (lower is better). Base rank minus any boosts.
   const baseRank = 8404;
-  const sanctuaryRank = Math.max(1, baseRank - (rankCount * 120)); // Arbitrary formula for display
+  const sanctuaryRank = Math.max(1, baseRank - rankCount); 
   const isTopPercentile = sanctuaryRank < 1000;
 
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   const lastName = profile.full_name?.split(' ').slice(1).join(' ') || '';
 
-  const handleBumpRank = () => {
-     if (auraBalance >= 49) {
-        setAuraBalance(prev => prev - 49);
-        // Call backend logic here
-        alert("Rank successfully boosted. Protocol prioritizing your visibility.");
-     } else {
-        alert("Insufficient AURA. Please visit the Treasury.");
+  const executeTieredJump = (power: number, cost: number, jumpName: string) => {
+     if (auraBalance < cost) {
+        alert("Insufficient AURA. Process aborted. Please acquire offerings from the Treasury.");
+        return;
      }
+     
+     // Math formula from the algorithm: P * N
+     // Assuming N = 10,000 for local demo pool
+     const N = 10000; 
+     const spotsJumped = Math.floor(power * N);
+     
+     setAuraBalance(prev => prev - cost);
+     
+     // Visual Hook
+     setLeapFeedback(`${jumpName.toUpperCase()} INITIALIZED. You leaped ${spotsJumped.toLocaleString()} profiles. You are now visible to Sovereign Observers 3x more frequently.`);
+     
+     // Hide after 5s
+     setTimeout(() => setLeapFeedback(null), 5000);
   };
 
   const auraBundles = [
-    { name: "The Initiate", aura: 50, price: 49, saving: false },
-    { name: "The Vanguard", aura: 250, price: 199, saving: "20% Discount" },
-    { name: "The Sovereign", aura: 1000, price: 699, saving: "30% Discount" },
-    { name: "The Monolith", aura: 5000, price: 2499, saving: "50% Discount" }
+    { name: "The Initiate", aura: 10, price: 390, saving: false },
+    { name: "The Vanguard", aura: 50, price: 1950, saving: "Secure 1x Surge" },
+    { name: "The Sovereign", aura: 100, price: 3900, saving: "12% Discount" },
+    { name: "The Monolith", aura: 250, price: 9750, saving: "Secure 1x Elite Vault" }
   ];
 
   return (
@@ -113,9 +123,21 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                  </p>
               </div>
 
-              {/* AURA Wallet & Bump Action */}
-              <div className="p-8 border border-mat-rose/20 bg-mat-wine/5 rounded-[2rem] space-y-8 shadow-[0_0_30px_rgba(114,47,55,0.05)]">
-                 <div className="flex justify-between items-center">
+              {/* AURA Wallet & Tiered Jump Action */}
+              <div className="p-8 border border-mat-rose/20 bg-mat-wine/5 rounded-[2rem] space-y-6 shadow-[0_0_30px_rgba(114,47,55,0.05)] relative overflow-hidden">
+                 {/* Visual Hook Overlay */}
+                 {leapFeedback && (
+                    <motion.div 
+                       initial={{ opacity: 0 }}
+                       animate={{ opacity: 1 }}
+                       className="absolute inset-0 z-50 bg-mat-obsidian/95 backdrop-blur-md flex items-center justify-center p-6 text-center border border-[#00FF41]/30 rounded-[2rem]"
+                    >
+                       <p className="text-[#00FF41] font-black text-xs uppercase tracking-widest leading-relaxed drop-shadow-[0_0_10px_rgba(0,255,65,0.8)]">
+                         {leapFeedback}
+                       </p>
+                    </motion.div>
+                 )}
+                 <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-3">
                        <div className="w-10 h-10 bg-mat-wine/20 rounded-full flex items-center justify-center text-mat-rose">
                           <Coins size={16} />
@@ -125,13 +147,32 @@ export const MenDossier: React.FC<MenDossierProps> = ({ profile, metrics, setIsE
                           <p className="text-2xl font-bold font-serif">{auraBalance}</p>
                        </div>
                     </div>
-                    <Button variant="outline" className="border-mat-rose/30 text-mat-rose hover:bg-mat-wine rounded-full h-8 text-[9px] uppercase tracking-widest px-4">+ Acquire</Button>
                  </div>
                  
-                 <Button onClick={handleBumpRank} className="w-full h-16 bg-mat-rose hover:bg-mat-rose-deep text-white rounded-[1.5rem] flex justify-between items-center px-6 transition-all duration-300">
-                    <span className="font-bold flex items-center gap-2"><ArrowUpRight size={18} /> Bump Rank</span>
-                    <span className="bg-black/20 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest shadow-inner">-49 AURA</span>
-                 </Button>
+                 <div className="space-y-3">
+                    <Button onClick={() => executeTieredJump(0.05, 10, 'Nudge')} variant="outline" className="w-full h-14 border-white/10 hover:bg-white/5 text-white rounded-[1rem] flex justify-between items-center px-5">
+                       <div className="flex flex-col items-start gap-0.5">
+                          <span className="font-bold text-sm">Nudge</span>
+                          <span className="text-[9px] text-white/40 uppercase tracking-widest">5% Density Leap</span>
+                       </div>
+                       <span className="text-[10px] font-black text-mat-gold">-10 AURA</span>
+                    </Button>
+                    <Button onClick={() => executeTieredJump(0.15, 50, 'Surge')} variant="outline" className="w-full h-14 border-mat-rose/30 hover:bg-mat-wine/20 text-mat-rose rounded-[1rem] flex justify-between items-center px-5 relative overflow-hidden group">
+                       <div className="flex flex-col items-start gap-0.5 relative z-10 text-white">
+                          <span className="font-bold text-sm">Surge</span>
+                          <span className="text-[9px] text-white/60 uppercase tracking-widest">15% Density Leap</span>
+                       </div>
+                       <span className="text-[10px] font-black relative z-10">-50 AURA</span>
+                       <div className="absolute top-0 left-0 w-2 h-full bg-mat-rose"></div>
+                    </Button>
+                    <Button onClick={() => executeTieredJump(0.50, 250, 'Elite Vault')} className="w-full h-14 bg-mat-gold hover:bg-mat-gold/80 text-mat-obsidian rounded-[1rem] flex justify-between items-center px-5 group">
+                       <div className="flex flex-col items-start gap-0.5">
+                          <span className="font-black text-sm flex items-center gap-2"><ArrowUpRight size={14} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" /> Elite Vault</span>
+                          <span className="text-[9px] opacity-70 uppercase tracking-widest">50% Density Leap • 48H Cooldown</span>
+                       </div>
+                       <span className="bg-black/20 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest">-250 AURA</span>
+                    </Button>
+                 </div>
               </div>
            </div>
 
