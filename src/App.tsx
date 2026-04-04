@@ -38,6 +38,7 @@ const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('dashboard');
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [profileFetching, setProfileFetching] = useState(false); // true while DB fetch is in-flight
   const [profile, setProfile] = useState<any>(null);
 
   // Developer Bypass Logic
@@ -121,7 +122,6 @@ const App: React.FC = () => {
               setActiveTab('admin');
               setLoading(false);
             }
-            // Also sync to DB in the background
             supabase.from('profiles').upsert({
               ...adminProfile,
               updated_at: new Date().toISOString()
@@ -129,12 +129,8 @@ const App: React.FC = () => {
             return;
           }
 
-          // Fast-path: if we cached that onboarding is done, skip the slow DB fetch
-          if (getOnboardingCache(userId)) {
-            await fetchProfile(userId, mounted);
-          } else {
-            await fetchProfile(userId, mounted);
-          }
+          setProfileFetching(true);
+          await fetchProfile(userId, mounted);
         } else {
           if (mounted) setLoading(false);
         }
@@ -190,12 +186,14 @@ const App: React.FC = () => {
           return;
         }
 
+        setProfileFetching(true);
         await fetchProfile(currentSession.user.id, mounted);
         return;
       }
 
       setSession(currentSession);
       if (currentSession) {
+        setProfileFetching(true);
         await fetchProfile(currentSession.user.id, mounted);
       } else {
         if (mounted) {
@@ -224,24 +222,21 @@ const App: React.FC = () => {
         console.error("Profile Fetch Error:", error);
       }
 
-      if (data) {
-        // Cache completed onboarding status for fast-path
-        if (data.onboarding_status === 'COMPLETED') {
-          setOnboardingCache(userId);
-        }
+      if (data?.onboarding_status === 'COMPLETED') {
+        setOnboardingCache(userId);
       }
       
       if (mounted) {
         setProfile(data || null);
-        if (data?.role === 'admin') {
-          setActiveTab('admin');
-        }
+        if (data?.role === 'admin') setActiveTab('admin');
+        setProfileFetching(false);
         setLoading(false);
       }
     } catch (err) {
       console.error("Profile fetch catch:", err);
       if (mounted) {
         setProfile(null);
+        setProfileFetching(false);
         setLoading(false);
       }
     }
@@ -262,35 +257,37 @@ const App: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex flex-col items-center justify-center bg-mat-cream" style={{background: 'linear-gradient(135deg, #FAF7F2 0%, #F5EEE8 100%)'}}>
+      <div className="h-screen w-screen flex flex-col items-center justify-center" style={{background: 'linear-gradient(135deg, #FAF7F2 0%, #F5EEE8 100%)'}}>
         <motion.div 
           animate={{ scale: [1, 1.15, 1] }} 
           transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="relative"
         >
-          <Heart className="w-12 h-12 text-mat-rose" strokeWidth={1.5} fill="rgba(201,160,154,0.3)" />
+          <Heart className="w-12 h-12" style={{color:'#7B2D42'}} strokeWidth={1.5} fill="rgba(201,160,154,0.3)" />
         </motion.div>
-        <p className="mt-8 text-[10px] text-mat-wine/30 font-black uppercase tracking-[0.8em] animate-pulse" style={{fontFamily: 'Helvetica, sans-serif'}}>
+        <p className="mt-8 text-[11px] font-bold uppercase tracking-[0.8em] animate-pulse" style={{color:'#7B2D42', fontFamily: 'Helvetica, sans-serif'}}>
           Opening the Sanctuary…
         </p>
       </div>
     );
   }
 
-  // ─── Routing Logic ────────────────────────────────────────────────────────────
-  // 1. No session → Landing
-  // 2. Session + no completed profile → Onboarding
-  // 3. Session + completed profile → App
-  const profileComplete = profile?.onboarding_status === 'COMPLETED';
+  // ─── Routing Logic ─────────────────────────────────────────────────────────
+  // profileComplete: DB says COMPLETED OR localStorage cache says so (guards against fetch failure)
+  const cacheHit = session?.user?.id ? getOnboardingCache(session.user.id) : false;
+  const profileComplete = profile?.onboarding_status === 'COMPLETED' || cacheHit;
   const isAdmin = profile?.role === 'admin' || ADMIN_EMAILS.includes(session?.user?.email || '');
-  const showOnboarding = session && !profileComplete && !isAdmin;
-  const showNav = session && profileComplete;
+
+  // While profile is still fetching from DB, show landing page (not onboarding)
+  // This prevents the "flash to onboarding" on page load for returning users
+  const showLanding  = !session || profileFetching;
+  const showOnboarding = session && !profileFetching && !profileComplete && !isAdmin;
+  const showNav = session && profileComplete && !profileFetching;
 
   return (
     <div className="relative min-h-screen text-gray-900 overflow-y-auto overflow-x-hidden font-body selection:bg-mat-rose selection:text-white" style={{background: 'linear-gradient(135deg, #FAF7F2 0%, #F5EEE8 100%)'}}>
       <main className="relative z-10 w-full min-h-screen">
         <AnimatePresence mode="wait">
-          {!session ? (
+          {showLanding ? (
             <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="min-h-screen w-full">
               <Landing />
             </motion.div>

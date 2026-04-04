@@ -123,19 +123,31 @@
     color: var(--color-mat-wine);
   }
 
+  /* .mat-text-label-pro — high-contrast eyebrow label */
+  /* Rose (#C9A09A) on cream (#FAF7F2) = ~2.5:1 FAIL → replaced with wine */
   .mat-text-label-pro {
     font-size: 0.625rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.4em;
-    color: var(--color-mat-rose);
+    color: var(--color-mat-wine);  /* #7B2D42 = ~8:1 contrast on cream ✓ */
     line-height: 1;
     font-family: var(--font-body);
-    font-style: italic;
+  }
+
+  /* Softer alternative for secondary labels — still passes AA */
+  .mat-text-label-muted {
+    font-size: 0.625rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4em;
+    color: var(--color-mat-slate); /* #6B5C5C = ~5.5:1 on cream ✓ */
+    line-height: 1;
+    font-family: var(--font-body);
   }
 
   .mat-text-gradient-gold {
-    color: var(--color-mat-gold);
+    color: #8C6F3A; /* deep gold — passes contrast on cream ✓ */
   }
 
   .mat-eyebrow {
@@ -144,7 +156,7 @@
     text-transform: uppercase;
     letter-spacing: 0.35em;
     font-weight: 700;
-    color: var(--color-mat-rose);
+    color: var(--color-mat-wine); /* wine is readable on cream ✓ */
   }
 
   /* ─── Panels ─────────────────────────────────────────────────────────────── */

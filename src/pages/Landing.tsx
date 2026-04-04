@@ -131,24 +131,32 @@ const LandingPage: React.FC = () => {
               </p>
               
               <div className="flex flex-col sm:flex-row justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-0">
-                <button className="h-20 px-12 bg-black text-white font-black uppercase tracking-[0.4em] text-[11px] transition-all hover:bg-neutral-800 flex items-center justify-center gap-4" onClick={() => setShowSignIn(true)}>
-                  Initiate Portal
-                  <ArrowRight className="w-5 h-5" />
+                <button
+                  onClick={() => setShowSignIn(true)}
+                  className="h-14 px-10 rounded-2xl font-bold uppercase tracking-[0.3em] text-[11px] text-white transition-all flex items-center justify-center gap-3"
+                  style={{background:'linear-gradient(135deg,#7B2D42,#96404F)', boxShadow:'0 6px 20px rgba(123,45,66,0.3)', fontFamily:'Helvetica,sans-serif'}}
+                >
+                  Begin Your Journey
+                  <Heart className="w-4 h-4" />
                 </button>
-                <button className="h-20 px-12 border-2 border-black text-black font-black uppercase tracking-[0.4em] text-[11px] transition-all hover:bg-black/5" onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}>
-                  Case Studies
+                <button
+                  onClick={() => document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="h-14 px-10 rounded-2xl font-bold uppercase tracking-[0.3em] text-[11px] transition-all border-2"
+                  style={{borderColor:'rgba(123,45,66,0.3)', color:'#7B2D42', fontFamily:'Helvetica,sans-serif'}}
+                >
+                  Learn More
                 </button>
               </div>
 
-              <div className="grid grid-cols-2 gap-x-12 gap-y-6 pt-12 border-t border-black/5 text-[10px]">
+              <div className="grid grid-cols-2 gap-x-8 gap-y-4 pt-8 border-t" style={{borderColor:'rgba(201,160,154,0.25)'}}>
                 {[
-                  "Women-first architecture",
-                  "Verified Discovery",
-                  "Asymmetric Selection",
-                  "Privacy Infrastructure"
+                  "Women-first design",
+                  "Verified matching",
+                  "Intentional connections",
+                  "Privacy by default"
                 ].map(item => (
-                  <div key={item} className="mat-text-label-pro flex items-center gap-3 !tracking-[0.4em] text-left !text-black/40">
-                    <div className="w-1.5 h-1.5 bg-black shrink-0" />
+                  <div key={item} className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.25em]" style={{color:'#7B2D42', fontFamily:'Helvetica,sans-serif'}}>
+                    <Heart className="w-3 h-3 text-mat-rose shrink-0" strokeWidth={2} />
                     {item}
                   </div>
                 ))}

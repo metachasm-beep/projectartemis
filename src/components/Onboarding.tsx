@@ -191,7 +191,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                       className="text-4xl md:text-5xl font-bold text-mat-wine leading-tight italic">
                       Welcome to <br />Matriarch
                     </h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/60 text-sm leading-relaxed">
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-sm leading-relaxed">
                       A sanctuary for meaningful connections. Tell us who you are.
                     </p>
                   </div>
@@ -213,7 +213,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                         <span className="text-4xl">{emoji}</span>
                         <div>
                           <span style={{fontFamily:'"Playfair Display",serif'}} className="block font-bold text-mat-wine text-lg italic">{label}</span>
-                          <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/50 uppercase tracking-widest mt-1">{sub}</p>
+                          <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate uppercase tracking-[0.3em]">{sub}</p>
                         </div>
                         {formData.role === role && (
                           <span className="w-6 h-6 rounded-full bg-mat-rose flex items-center justify-center">
@@ -244,12 +244,12 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                     <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">
                       Tell Us About You
                     </h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">Your identity, your city, your beginning</p>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">Your identity, your city, your beginning</p>
                   </div>
 
                   <div className="space-y-6">
                     <div className="space-y-2">
-                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Your Name</label>
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Your Name</label>
                       <Input
                         value={formData.full_name}
                         onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
@@ -259,21 +259,21 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                       />
                     </div>
                     <div className="space-y-2">
-                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Your City</label>
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Your City</label>
                       <CitySelector
                         value={formData.city}
                         onChange={(city) => setFormData({ ...formData, city })}
                       />
                     </div>
                     <div className="space-y-2">
-                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/70 uppercase tracking-[0.4em] ml-1">Date of Birth</label>
+                      <label style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] ml-1">Date of Birth</label>
                       <Input
                         type="date"
                         value={formData.date_of_birth}
                         onChange={(e) => setFormData({ ...formData, date_of_birth: e.target.value })}
                         className="h-14 bg-white/60 border-mat-fog focus:border-mat-rose rounded-2xl text-mat-wine px-5 [color-scheme:light] focus:ring-mat-rose/20 focus:ring-4 transition-all"
                       />
-                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/30 ml-1 italic">We use this only for age verification — never displayed publicly.</p>
+                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[11px] text-mat-slate ml-1 italic">We use this only for age verification — never displayed publicly.</p>
                     </div>
                   </div>
 
@@ -294,7 +294,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                   <div className="space-y-2">
                     <Camera className="w-8 h-8 text-mat-rose mx-auto" strokeWidth={1.5} />
                     <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Portrait</h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">A warm smile opens every door</p>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">A warm smile opens every door</p>
                   </div>
 
                   <div className="relative mx-auto w-full max-w-[240px]">
@@ -346,7 +346,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                   <div className="text-center space-y-2">
                     <Star className="w-8 h-8 text-mat-gold mx-auto" strokeWidth={1.5} />
                     <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-3xl md:text-4xl font-bold text-mat-wine italic">Your Story</h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/50 text-xs uppercase tracking-[0.3em]">What makes you, you?</p>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-xs uppercase tracking-[0.3em]">What makes you, you?</p>
                   </div>
 
                   <div className="space-y-6">
@@ -358,7 +358,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                       style={{fontFamily:'Helvetica,sans-serif'}}
                     />
                     <div>
-                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/60 uppercase tracking-[0.4em] mb-3 ml-1">I'm looking for…</p>
+                      <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.4em] mb-3 ml-1">I'm looking for…</p>
                       <div className="grid grid-cols-2 gap-3">
                         {(['LONG_TERM', 'EXPLORATION'] as const).map(intent => (
                           <button
@@ -400,7 +400,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                     <h2 style={{fontFamily:'"Playfair Display",serif'}} className="text-4xl font-bold text-mat-wine italic leading-tight">
                       A Sacred Promise
                     </h2>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate/70 text-sm leading-relaxed max-w-sm mx-auto">
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-mat-slate text-sm leading-relaxed max-w-sm mx-auto">
                       By entering Matriarch, you pledge to treat every soul with sincerity, respect, and genuine intention.
                     </p>
                   </div>
@@ -408,14 +408,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({ userId, metadata, onComp
                   {/* Profile Strength Summary */}
                   <div className="p-6 rounded-2xl border border-mat-fog/50 bg-white/40 space-y-4">
                     <div className="flex justify-between items-center">
-                      <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-rose/60 uppercase tracking-[0.3em]">Profile Strength</span>
+                      <span style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-bold text-mat-wine uppercase tracking-[0.3em]">Profile Strength</span>
                       <span style={{fontFamily:'"Playfair Display",serif'}} className="text-2xl font-bold text-mat-wine italic">{strength}%</span>
                     </div>
                     <div className="h-2 bg-mat-fog rounded-full overflow-hidden">
                       <div className="h-full rounded-full transition-all duration-700"
                         style={{ width: `${strength}%`, background: 'linear-gradient(90deg, #C9A09A, #BFA06A)' }} />
                     </div>
-                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/40 italic text-center">You can always complete your profile later.</p>
+                    <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[11px] text-mat-slate italic text-center">You can always complete your profile later.</p>
                   </div>
 
                   <button
