@@ -253,7 +253,7 @@
 
   .mat-button-primary {
     background: var(--color-mat-wine);
-    color: white;
+    color: var(--color-mat-cream);
     box-shadow: var(--shadow-mat-rose);
   }
   .mat-button-primary:hover {
@@ -264,7 +264,7 @@
 
   .mat-button-rose {
     background: var(--color-mat-rose);
-    color: white;
+    color: var(--color-mat-cream);
   }
   .mat-button-rose:hover {
     background: var(--color-mat-rose-deep);

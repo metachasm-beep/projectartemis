@@ -439,7 +439,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                             onClick={() => setFormData({...formData, marital_status: status})}
                             className={`h-12 rounded-xl text-[10px] font-bold uppercase tracking-widest border-2 transition-all ${
                               formData.marital_status === status 
-                                ? 'border-mat-wine bg-mat-wine text-white' 
+                                ? 'border-mat-wine bg-mat-wine text-mat-cream' 
                                 : 'border-mat-fog bg-white/40 text-mat-wine/40'
                             }`}
                           >
@@ -454,7 +454,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                     disabled={!formData.religion || !formData.mother_tongue}
                     onClick={() => next('LIFESTYLE')}
                     className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all shadow-md"
-                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'var(--color-mat-cream)' }}
                   >
                     Continue
                   </button>
@@ -479,7 +479,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                             key={d}
                             onClick={() => setFormData({...formData, diet: d})}
                             className={`flex-1 h-12 rounded-xl text-[10px] font-bold uppercase border-2 transition-all ${
-                              formData.diet === d ? 'border-mat-wine bg-mat-wine text-white' : 'border-mat-fog bg-white/40 text-mat-wine/40'
+                              formData.diet === d ? 'border-mat-wine bg-mat-wine text-mat-cream' : 'border-mat-fog bg-white/40 text-mat-wine/40'
                             }`}
                           >
                             {d.replace('_', ' ')}
@@ -520,7 +520,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                   <button
                     onClick={() => next('PHOTO')}
                     className="w-full h-14 rounded-2xl font-bold tracking-[0.3em] uppercase text-sm transition-all shadow-md"
-                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                    style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'var(--color-mat-cream)' }}
                   >
                     Continue to Portraits
                   </button>
@@ -582,7 +582,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                       disabled={formData.photos.length === 0 || loading}
                       onClick={() => next('BIO_INTENT')}
                       className="flex-2 flex-grow h-12 rounded-xl font-bold tracking-[0.2em] uppercase text-xs shadow-mat-premium"
-                      style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'white' }}
+                      style={{ background: 'linear-gradient(135deg, #7B2D42, #96404F)', color: 'var(--color-mat-cream)' }}
                     >
                       {loading ? 'Optimizing...' : 'Continue'}
                     </button>

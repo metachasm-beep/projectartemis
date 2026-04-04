@@ -13,6 +13,7 @@ import {
   Info
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { turso } from '@/lib/turso';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import DecryptedText from "@/components/ui/react-bits/DecryptedText";
@@ -270,7 +271,36 @@ export const SeekerBrowse: React.FC = () => {
                           <Heart className="mr-3" size={18} fill="currentColor" />
                           Express Interest
                        </Button>
-                       <Button variant="outline" className="flex-1 h-16 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px]">
+                       <Button 
+                          onClick={async () => {
+                             // Check if woman (initiation rule)
+                             const { data: { user } } = await supabase.auth.getUser();
+                             if (!user) return;
+                             
+                             const res = await turso.execute("SELECT role, is_verified FROM profiles WHERE user_id = ?", [user.id]);
+                             const me = res.rows[0];
+                             
+                             if (me?.role !== 'woman') {
+                                alert("A seeker walks a path of patience. Connection begins only when she initiates.");
+                                return;
+                             }
+                             if (!me?.is_verified || !selectedProfile.is_verified) {
+                                alert("Both souls must be verified by the Matriarch to resonant dialogues.");
+                                return;
+                             }
+
+                             // Send initial "Whisper"
+                             const msgId = crypto.randomUUID();
+                             await turso.execute(
+                               "INSERT INTO messages (id, sender_id, receiver_id, content) VALUES (?, ?, ?, ?)",
+                               [msgId, user.id, selectedProfile.user_id, "I have gazed upon your story and seek resonance."]
+                             );
+                             
+                             window.location.reload(); // Refresh to show in Messages (Simple fix)
+                          }}
+                          variant="outline" 
+                          className="flex-1 h-16 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black uppercase tracking-widest text-[10px]"
+                       >
                           <MessageCircle className="mr-3" size={18} />
                           Send a Whispers
                        </Button>
