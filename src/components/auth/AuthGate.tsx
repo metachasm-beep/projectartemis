@@ -5,13 +5,17 @@ import { useAuth } from '@/hooks/useAuth';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
+import { useSessionPulse } from '@/hooks/useSessionPulse';
 
 interface AuthGateProps {
   children: React.ReactNode;
 }
 
 export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
-  const { session, profile, loading, fetchingProfile, setProfile, refreshProfile } = useAuth();
+  const { session, profile, loading, fetchingProfile, setProfile } = useAuth();
+  
+  // 💓 Quantifying resonance through presence
+  useSessionPulse(session?.user?.id);
 
   /**
    * 🏛️ The Portal Entrance: A Synchronous Handshake.

@@ -5,23 +5,29 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "mat-button-primary",
-        destructive: "bg-matriarch-red text-white hover:bg-matriarch-red/90",
-        outline: "border border-matriarch-line bg-transparent hover:bg-white/5",
-        secondary: "mat-button-secondary font-medium",
-        ghost: "hover:bg-white/5",
-        link: "text-matriarch-violetBright underline-offset-4 hover:underline",
-        gold: "mat-button-gold",
+        default:
+          "bg-mat-wine text-mat-cream shadow hover:bg-mat-wine/90",
+        destructive:
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+        outline:
+          "border border-mat-rose/20 bg-transparent shadow-sm hover:bg-mat-rose/10 hover:text-mat-wine",
+        secondary:
+          "bg-mat-rose text-mat-cream shadow-sm hover:bg-mat-rose/80",
+        ghost: "hover:bg-mat-rose/10 hover:text-mat-wine",
+        link: "text-mat-wine underline-offset-4 hover:underline",
+        gold: "bg-mat-gold text-mat-wine shadow hover:bg-mat-gold/90 font-black tracking-widest",
+        sovereign: "bg-mat-wine/5 border border-mat-wine/10 text-mat-wine hover:bg-mat-wine/10 italic font-bold",
       },
       size: {
-        default: "h-12 px-6 py-3",
-        sm: "h-10 rounded-mat-sm px-4",
-        lg: "h-14 rounded-mat-lg px-10 text-body-md",
-        icon: "h-10 w-10",
+        default: "h-12 px-6 py-2 rounded-2xl",
+        sm: "h-8 rounded-xl px-3 text-xs",
+        lg: "h-14 rounded-[2rem] px-10 text-base",
+        xl: "h-18 rounded-[2.5rem] px-12 text-lg font-bold tracking-widest",
+        icon: "h-10 w-10 rounded-full",
       },
     },
     defaultVariants: {

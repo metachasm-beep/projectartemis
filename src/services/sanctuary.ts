@@ -1,5 +1,4 @@
 import { turso } from '@/lib/turso';
-import type { MatriarchProfile, Role } from '@/types';
 import { v4 as uuidv4 } from 'uuid';
 
 export const SanctuaryService = {
@@ -52,6 +51,60 @@ export const SanctuaryService = {
   },
 
   /**
+   * 📉 Sanctuary Signals: The Feedback Loop.
+   */
+  trackSignal: async (manId: string, type: 'impression' | 'visit' | 'save', womanId?: string) => {
+    const id = `sig_${uuidv4()}`;
+    turso.execute({
+      sql: "INSERT INTO profile_analytics (id, man_user_id, woman_user_id, metric_type) VALUES (?, ?, ?, ?)",
+      args: [id, manId, womanId || null, type]
+    }).catch(e => console.warn("Signal Silent Failure:", e));
+  },
+
+  getSignalMetrics: async (userId: string) => {
+    const r = await turso.execute({
+      sql: `
+        SELECT 
+          metric_type, 
+          COUNT(*) as count
+        FROM profile_analytics 
+        WHERE man_user_id = ? 
+        AND created_at >= date('now', '-30 days')
+        GROUP BY metric_type
+      `,
+      args: [userId]
+    });
+    
+    const metrics: Record<string, number> = { impression: 0, visit: 0, save: 0 };
+    r.rows.forEach((row: any) => {
+       metrics[row.metric_type] = row.count;
+    });
+    return metrics;
+  },
+
+  /**
+   * 👑 Sovereign Metrics: For Women's Dashboard only.
+   */
+  getSovereignMetrics: async (womanId: string) => {
+    const [matchRes, sessionRes] = await Promise.all([
+       turso.execute({ sql: "SELECT COUNT(*) as count FROM matches WHERE woman_user_id = ?", args: [womanId] }),
+       turso.execute({ sql: "SELECT total_session_seconds FROM profiles WHERE user_id = ?", args: [womanId] })
+    ]);
+    
+    return {
+       matches: Number(matchRes.rows[0]?.count || 0),
+       sessionSeconds: Number(sessionRes.rows[0]?.total_session_seconds || 0)
+    };
+  },
+
+  trackSessionTime: async (userId: string, deltaSeconds: number) => {
+     await turso.execute({
+        sql: "UPDATE profiles SET total_session_seconds = total_session_seconds + ? WHERE user_id = ?",
+        args: [deltaSeconds, userId]
+     });
+  },
+
+  /**
    * 📈 High-Integrity Rank Reward: The Ledger Protocol.
    */
   rewardRank: async (userId: string, delta: number, reason: string) => {
@@ -75,40 +128,5 @@ export const SanctuaryService = {
       args: [userId]
     });
     return r.rows;
-  },
-
-  /**
-   * 📉 Sanctuary Signals: The Feedback Loop.
-   */
-  trackSignal: async (manId: string, type: 'impression' | 'visit' | 'save', womanId?: string) => {
-    const id = `sig_${uuidv4()}`;
-    // We use a silent execute here to not block the UI
-    turso.execute({
-      sql: "INSERT INTO profile_analytics (id, man_user_id, woman_user_id, metric_type) VALUES (?, ?, ?, ?)",
-      args: [id, manId, womanId || null, type]
-    }).catch(e => console.warn("Signal Silent Failure:", e));
-  },
-
-  getSignalMetrics: async (userId: string) => {
-    const r = await turso.execute({
-      sql: `
-        SELECT 
-          metric_type, 
-          COUNT(*) as count,
-          COUNT(DISTINCT DATE(created_at)) as days_active
-        FROM profile_analytics 
-        WHERE man_user_id = ? 
-        AND created_at >= date('now', '-30 days')
-        GROUP BY metric_type
-      `,
-      args: [userId]
-    });
-    
-    // Group return data
-    const metrics: Record<string, number> = { impression: 0, visit: 0, save: 0 };
-    r.rows.forEach((row: any) => {
-       metrics[row.metric_type] = row.count;
-    });
-    return metrics;
   }
 };

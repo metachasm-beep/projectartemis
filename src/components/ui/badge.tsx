@@ -4,19 +4,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
-  "inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
+  "inline-flex col-span-1 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2",
   {
     variants: {
       variant: {
         default:
-          "mat-badge bg-white/10 text-white border-white/20",
+          "border-transparent bg-mat-wine text-mat-cream shadow hover:bg-mat-wine/80",
         secondary:
-          "mat-badge bg-matriarch-violet/10 text-matriarch-violetBright border-matriarch-violet/20",
+          "border-transparent bg-mat-rose text-mat-cream hover:bg-mat-rose/80",
         destructive:
-          "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-matriarch-text border-matriarch-line bg-transparent",
-        violet: "mat-badge-violet",
-        gold: "mat-badge-gold",
+          "border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80",
+        outline: "text-foreground border-mat-rose/20 text-mat-wine",
+        gold: "bg-mat-gold text-mat-wine border-mat-gold/30 shadow-mat-gold uppercase font-black tracking-widest text-[9px] italic py-1 px-4",
+        rose: "bg-mat-rose/10 text-mat-rose border-mat-rose/20 uppercase font-black tracking-widest text-[9px] italic py-1 px-4",
+        sovereign: "bg-mat-wine/5 text-mat-wine border-mat-wine/10 uppercase font-black tracking-widest text-[9px] italic py-1 px-4",
       },
     },
     defaultVariants: {
