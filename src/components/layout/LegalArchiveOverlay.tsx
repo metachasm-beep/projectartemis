@@ -64,19 +64,96 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
     )
   },
   'privacy-pact': {
-    title: 'The Privacy Accord',
+    title: 'PRIVACY POLICY',
     icon: Scroll,
     content: (
-      <div className="space-y-8">
-        <p className="text-xl italic font-serif opacity-80">Your identity, sealed in the vault.</p>
-        <p className="text-sm opacity-60 leading-relaxed">
-          Matriarch utilizes zero-knowledge metadata structures to ensure that your private data is never exposed to the public internet. 
-        </p>
-        <ul className="list-disc pl-5 space-y-4 text-sm opacity-60">
-          <li>End-to-end encryption for all private resonances.</li>
-          <li>Biometric gatekeeping for vault access.</li>
-          <li>No data harvesting for secondary markets.</li>
-        </ul>
+      <div className="space-y-12">
+        <div className="pb-8 border-b border-mat-rose/10">
+           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Last Updated: April 5, 2026</p>
+           <p className="text-sm opacity-60 leading-relaxed italic">
+             Metachasm (OPC) Private Limited ("we," "us," or "our") is committed to protecting the digital personal data of our users ("Data Principals"). This Privacy Policy explains how we process your data in compliance with the Digital Personal Data Protection Act (DPDP), 2023.
+           </p>
+        </div>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. DATA WE COLLECT</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>We collect only the data necessary to provide our asymmetric dating and ranking services:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Identity & Contact:</strong> Phone number (via Logto/Auth), name, age, and gender.</li>
+              <li><strong>Profile Data:</strong> Photos (stored via Cloudinary), bio, interests, and preferences.</li>
+              <li><strong>Communication:</strong> Text-only chat messages between matched users (stored via Turso).</li>
+              <li><strong>Technical Metadata:</strong> IP address, device type, and interaction logs.</li>
+              <li><strong>Ranking Data:</strong> Interaction metrics used to calculate the "Male Rank."</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. WHY WE COLLECT YOUR DATA (PURPOSE)</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>We process your data based on your explicit consent for the following:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Service Functionality:</strong> To allow women to browse and men to view their ranks.</li>
+              <li><strong>Safety & Verification:</strong> To prevent bot accounts and ensure a 18+ community.</li>
+              <li><strong>Personalization:</strong> To show profiles that match your specified preferences.</li>
+              <li><strong>Monetization:</strong> To serve relevant ads via Google AdSense.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. DATA SHARING & THIRD-PARTY TRANSFERS</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>We share data with the following Data Processors to operate the app:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Turso (DB):</strong> Stores profile data and chat history.</li>
+              <li><strong>Cloudinary:</strong> Processes and stores profile images.</li>
+              <li><strong>Logto/Auth0:</strong> Manages secure login and identity verification.</li>
+              <li><strong>Google AdSense:</strong> Processes limited metadata to serve ads.</li>
+              <li><strong>Payment Gateways:</strong> We do not store credit card details.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">4. DATA RETENTION & ERASURE</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Active Accounts:</strong> We retain data as long as your account is active.</p>
+            <p><strong>Inactivity:</strong> Accounts inactive for {'>'}3 years will be flagged for erasure per DPDP guidelines.</p>
+            <p><strong>Employee Erasure:</strong> If you delete your account, data is erased from primary databases within 30 days.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">5. YOUR RIGHTS AS A DATA PRINCIPAL</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm opacity-60 leading-relaxed">
+            <li><strong>Right to Access:</strong> Request a summary of data we hold.</li>
+            <li><strong>Right to Correction:</strong> Update inaccurate data via profile settings.</li>
+            <li><strong>Right to Erasure:</strong> Request data deletion at any time.</li>
+            <li><strong>Right to Nominate:</strong> Nominate an individual to exercise rights in event of incapacity.</li>
+          </ul>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">6. COOKIES & TRACKING</h4>
+          <p className="text-sm opacity-60 leading-relaxed">
+            As a PWA, we use "Local Storage" and cookies to keep you logged in and remember your preferences. You can manage these through your browser settings.
+          </p>
+        </section>
+
+        <footer className="pt-12 border-t border-mat-rose/10">
+           <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4">7. GRIEVANCE REDRESSAL</h4>
+           <div className="text-sm opacity-60 space-y-2">
+              <p>In accordance with the DPDP Act, contact our Grievance Officer:</p>
+              <div className="p-6 bg-mat-wine/5 rounded-2xl border border-mat-wine/10">
+                 <p><strong>Grievance Officer:</strong> Nachiketa Singh</p>
+                 <p><strong>Entity:</strong> Metachasm (OPC) Private Limited</p>
+                 <p className="font-black text-mat-wine">Email: contact@matriarchindia.com</p>
+              </div>
+              <p className="text-[10px] uppercase font-bold tracking-widest mt-4">Response Timeline: Acknowledgement (24h) // Resolution (15 days)</p>
+           </div>
+        </footer>
       </div>
     )
   },
