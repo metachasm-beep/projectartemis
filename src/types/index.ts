@@ -33,6 +33,11 @@ export interface MatriarchProfile {
   last_login_at?: string;
   consecutive_days?: number;
   longest_streak?: number;
+  data_processing_consent?: {
+    analytics_accepted: boolean;
+    ads_accepted: boolean;
+    ranking_accepted: boolean;
+  };
   created_at: string;
   updated_at?: string;
 }

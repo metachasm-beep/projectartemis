@@ -5,6 +5,7 @@ import type { MatriarchProfile } from '@/types';
 import { Button } from '@/components/ui/button';
 import { SanctuaryService } from '@/services/sanctuary';
 import { turso } from '@/lib/turso';
+import AdUnit from '@/components/common/AdUnit';
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ');
@@ -238,11 +239,19 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                           </span>
                           <span className="text-[8px] opacity-70 uppercase tracking-widest whitespace-nowrap">50% Density Leap</span>
                        </div>
-                       <span className="bg-black/20 px-3 py-1.5 rounded-full text-[10px] font-black tracking-widest whitespace-nowrap">-250 AURA</span>
+                       <span className="bg-black/20 px-4 py-2 rounded-full text-[10px] font-black whitespace-nowrap">-250 AURA</span>
                     </Button>
                  </div>
               </div>
-           </div>
+
+              {/* Integrated AdUnit for Men's Dashboard */}
+              <AdUnit 
+                slot="1234567891" 
+                format="fluid" 
+                className="bg-white/5 border-white/5 mt-8" 
+                ads_accepted={profile.data_processing_consent?.ads_accepted}
+              />
+            </div>
 
            {/* The Treasury (Token Purchase) */}
            <div className="col-span-1 lg:col-span-8 lg:col-start-6">

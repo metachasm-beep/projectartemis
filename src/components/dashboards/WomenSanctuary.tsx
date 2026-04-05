@@ -4,6 +4,7 @@ import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import InfiniteMenu from '@/components/ui/InfiniteMenu';
 import MenDiscovery from '@/components/discovery/MenDiscovery';
+import AdUnit from '@/components/common/AdUnit';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -23,7 +24,7 @@ const DUMMY_MEN = [
   { image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1287&auto=format&fit=crop', title: 'Dhruv, 29', description: 'Rank #1,204', link: '#' },
 ];
 
-export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing, onBeginDiscovery }) => {
+export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
   const [isBrowsingArray, setIsBrowsingArray] = useState(false);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
@@ -215,8 +216,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                  </CardContent>
               </Card>
 
-           </div>
-        </div>
+            </div>
+
+            {/* Subtle AdUnit for the Sanctuary Floor */}
+            <AdUnit 
+              slot="1234567892" 
+              className="mt-16 bg-white border-mat-rose/10 opacity-60" 
+              ads_accepted={profile.data_processing_consent?.ads_accepted}
+            />
+         </div>
 
       </div>
     </div>

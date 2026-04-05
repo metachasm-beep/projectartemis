@@ -22,6 +22,8 @@ import { Badge } from "@/components/ui/badge";
 import MatriarchLogo from "@/components/MatriarchLogo";
 import { supabase } from "@/lib/supabase";
 import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
+import AdUnit from "@/components/common/AdUnit";
+import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
@@ -55,8 +57,6 @@ const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opa
     </div>
   );
 };
-
-import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const LandingPage: React.FC = () => {
   const [showSignIn, setShowSignIn] = useState(false);
@@ -704,6 +704,15 @@ const LandingPage: React.FC = () => {
           </div>
         </section>
       </main>
+
+        <div className="mat-container mb-40 text-center">
+           <AdUnit 
+             slot="1234567890" 
+             className="max-w-5xl mx-auto bg-transparent border-mat-wine/10" 
+             style={{ minHeight: '120px' }}
+             ads_accepted={true}
+           />
+        </div>
 
       {/* Footer */}
       <footer className="bg-black text-white py-40">
