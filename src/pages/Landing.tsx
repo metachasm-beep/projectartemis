@@ -641,7 +641,7 @@ const LandingPage: React.FC = () => {
                  <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Legal</h5>
                  <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
                     <li onClick={() => setActiveOverlay('privacy-pact')} className="hover:text-white transition-all cursor-pointer">Privacy Pact</li>
-                    <li onClick={() => setActiveOverlay('terms-of-merit')} className="hover:text-white transition-all cursor-pointer">Terms of Merit</li>
+                    <li onClick={() => setActiveOverlay('terms-of-merit')} className="hover:text-white transition-all cursor-pointer">Terms of Service</li>
                     <li onClick={() => setActiveOverlay('refund-policy')} className="hover:text-white transition-all cursor-pointer">Refund Policy</li>
                  </ul>
               </div>

@@ -81,17 +81,96 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
     )
   },
   'terms-of-merit': {
-    title: 'Terms of Merit',
+    title: 'TERMS OF SERVICE',
     icon: Gavel,
     content: (
-      <div className="space-y-8">
-        <p className="text-xl italic font-serif opacity-80">Membership is a privilege, not a right.</p>
-        <p className="text-sm opacity-60 leading-relaxed">
-          Access to Matriarch is governed by the Merit Score (Aura). Aura is gained via verified achievements, community resonance, and adherence to the Sovereign Protocol.
-        </p>
-        <p className="text-sm opacity-60 leading-relaxed">
-          We reserve the right to terminate access for any node that exhibits non-resonant behavior or fails to uphold the standards of the Imperial Vault.
-        </p>
+      <div className="space-y-12">
+        <div className="pb-8 border-b border-mat-rose/10">
+           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Last Updated: April 5, 2026</p>
+           <p className="text-sm opacity-60 leading-relaxed italic">
+             Welcome to Matriarch ("the App," "the Platform"), a Progressive Web App owned and operated by Metachasm (OPC) Private Limited. By creating an account, you agree to be bound by these Terms of Service ("Terms").
+           </p>
+        </div>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. USER ELIGIBILITY</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm opacity-60 leading-relaxed">
+            <li><strong>Minimum Age:</strong> You must be at least 18 years of age to create an account. By using Matriarch, you represent that you have the right and capacity to enter into this agreement.</li>
+            <li><strong>Single Account:</strong> Users are permitted only one active profile.</li>
+            <li><strong>Criminal History:</strong> By joining, you represent that you have never been convicted of a felony or a crime involving violence, sexual misconduct, or harassment.</li>
+          </ul>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. PLATFORM ROLE & NATURE OF SERVICE</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Intermediary Status:</strong> Matriarch acts solely as an intermediary platform (under Section 79 of the IT Act, 2000) providing a digital space for users to interact.</p>
+            <p><strong>No Matchmaking Guarantee:</strong> We provide the tools for connection but do not guarantee "matches," dates, or successful relationships.</p>
+            <p><strong>Asymmetric Model Disclosure:</strong> Users acknowledge that Matriarch operates on a "Women-First" mechanical model. This design is a core feature of the platform's safety philosophy and is not intended as unlawful discrimination.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. GENDER-SPECIFIC MECHANICS & RANKING</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Women-First Mechanics:</strong> Platform architecture dictates that only female-identified profiles may browse the discovery feed and initiate first contact. Male-identified profiles are restricted to a "Status Dashboard."</p>
+            <p><strong>Ranking System Disclaimer:</strong> The "Rank" displayed to male users is a metric based on profile completion and engagement. A "Rank Bump" is not a guarantee of visibility; final visibility depends on the browsing behavior of female users.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">4. USER RESPONSIBILITIES</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm opacity-60 leading-relaxed">
+            <li><strong>Accuracy:</strong> You are responsible for providing truthful information. Impersonating others is prohibited.</li>
+            <li><strong>Safety:</strong> You are solely responsible for your interactions. We advise following "Safe Dating" practices for any off-platform meetings.</li>
+            <li><strong>Account Security:</strong> You are responsible for maintaining the confidentiality of your login credentials.</li>
+          </ul>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">5. PROHIBITED CONDUCT</h4>
+          <div className="text-sm opacity-60 leading-relaxed">
+            <p className="mb-4 font-bold">You agree NOT to:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li>Harass, bully, stalk, or intimidate any user.</li>
+              <li>Post NSFW content, including nudity or sexually explicit text/images.</li>
+              <li>Use the platform for any commercial purpose (escort services, unauthorized advertising).</li>
+              <li>Scrape, crawl, or "bot" the platform to extract user data or manipulate rankings.</li>
+              <li>Create fake profiles or "catfish" other users.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">6. CONTENT & MEDIA</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Ownership:</strong> You retain ownership of uploaded photos, but grant Matriarch a non-exclusive license to host and display this content on the Platform.</p>
+            <p><strong>Cloudinary/Storage:</strong> Media is processed via third-party services. You agree not to upload files containing malicious code.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">7. SUSPENSION & TERMINATION</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+             <p><strong>Termination by Matriarch:</strong> We reserve the right to suspend accounts immediately if these Terms are violated or if conduct is deemed harmful.</p>
+             <p><strong>Effect of Termination:</strong> Upon termination, all data (including Rank and Tokens) may be deleted. No refunds will be issued for unused tokens if terminated for policy violation.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">8. LIMITATION OF LIABILITY</h4>
+          <p className="text-sm opacity-60 leading-relaxed">
+            To the maximum extent permitted by Indian law, Matriarch/Metachasm (OPC) Pvt Ltd shall not be liable for any indirect, incidental, or consequential damages resulting from your use of the service.
+          </p>
+        </section>
+
+        <footer className="pt-12 border-t border-mat-rose/10">
+           <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4">CONTACT US</h4>
+           <div className="text-sm opacity-60 space-y-2">
+              <p>For grievances or reporting prohibited conduct, please contact our Grievance Officer at:</p>
+              <p className="font-black text-mat-wine">Email: contact@matriarchindia.com</p>
+           </div>
+        </footer>
       </div>
     )
   },
