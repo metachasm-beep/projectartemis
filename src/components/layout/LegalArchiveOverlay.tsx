@@ -9,23 +9,91 @@ interface ContentOverlayProps {
 
 const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: React.ReactNode }> = {
   protocol: {
-    title: 'The Sovereign Protocol',
+    title: 'COMMUNITY GUIDELINES',
     icon: Shield,
     content: (
-      <div className="space-y-8">
-        <p className="text-xl italic font-serif opacity-80">Behavioral standards for the highest strata of connection.</p>
+      <div className="space-y-12">
+        <div className="pb-8 border-b border-mat-rose/10">
+           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Effective Date: April 5, 2026</p>
+           <p className="text-sm opacity-60 leading-relaxed italic">
+             At Matriarch, we are building a respectful, women-led digital ecosystem. To ensure a safe experience for everyone, all users must adhere to these Guidelines. Failure to do so will result in immediate account restriction or permanent termination.
+           </p>
+        </div>
+
         <section className="space-y-4">
-          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. The Merit of Presence</h4>
-          <p className="text-sm opacity-60 leading-relaxed">Aspirants must maintain a verified profile reflecting their true achievements. Deception is grounds for immediate exclusion from the Imperial Vault.</p>
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. RESPECT & SAFETY (NO HARASSMENT)</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>We have a zero-tolerance policy for abuse. You are prohibited from:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Harassment & Bullying:</strong> Sending unintended, repetitive, or threatening messages.</li>
+              <li><strong>Hate Speech:</strong> Promoting violence or hatred based on race, religion, caste, or sexual orientation.</li>
+              <li><strong>Bodily Privacy:</strong> Sharing or doxing private information/images of any user.</li>
+              <li><strong>Gender-Based Insults:</strong> Degrading any gender is grounds for an immediate, non-negotiable ban.</li>
+            </ul>
+          </div>
         </section>
+
         <section className="space-y-4">
-          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. Sovereign Secrecy</h4>
-          <p className="text-sm opacity-60 leading-relaxed">All interactions within the sanctuary are protected by the Seal of Excellence. Disclosure of peer identities or private correspondence violates the core protocol.</p>
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. AUTHENTICITY (NO FAKE PROFILES)</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>Matriarch relies on real people making real connections:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Impersonation:</strong> Pretending to be someone else, including celebrities, is strictly prohibited.</li>
+              <li><strong>Catfishing:</strong> Using deepfake or stolen images to deceive users.</li>
+              <li><strong>Bot Activity:</strong> Automating scripts to "farm" ranks will lead to an immediate IP ban.</li>
+            </ul>
+          </div>
         </section>
+
         <section className="space-y-4">
-          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. Curated Decorum</h4>
-          <p className="text-sm opacity-60 leading-relaxed">Engagement is initiated only through resonance. Any attempt to bypass the Matriarch's selection engine via external nodes is strictly prohibited.</p>
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. INTEGRITY (NO SCAMS OR SOLICITATION)</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>Financial Scams:</strong> Soliciting UPI "donations" or investment schemes.</li>
+              <li><strong>Solicitation:</strong> Using the app for escort services or professional networking.</li>
+              <li><strong>Link Spamming:</strong> Redirecting users to "OnlyFans" style or commercial platforms.</li>
+            </ul>
+          </div>
         </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">4. CONTENT STANDARDS (EXPLICIT CONTENT)</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>To comply with Google AdSense and PWA status:</p>
+            <ul className="list-disc pl-5 space-y-2">
+              <li><strong>No Nudity:</strong> Profile photos must be appropriate for a public space.</li>
+              <li><strong>Sexual Content:</strong> Explicit media or "hookup-only" solicitation is not permitted.</li>
+              <li><strong>Illegal Content:</strong> Depiction of non-consensual acts will be reported to certification nodes (NCBI/CERT-In).</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">5. THE RANKING SYSTEM INTEGRITY</h4>
+          <p className="text-sm opacity-60 leading-relaxed">
+            Men must not attempt to manipulate their "Rank" through coordinated loophole exploitation. Publicly "gaming" the system for discovery advantage is a violation of community trust.
+          </p>
+        </section>
+
+        <section className="p-8 bg-mat-wine/5 rounded-[2rem] border border-mat-wine/10">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4 text-center">CONSEQUENCES OF VIOLATIONS</h4>
+          <div className="space-y-3 text-xs opacity-60 text-center uppercase tracking-widest font-bold">
+            <p>Strike 1: Warning & Shadow-ban (Hidden discovery feed)</p>
+            <p>Strike 2: Account Suspension (Loss of access to chats)</p>
+            <p className="text-mat-wine">Severe: Permanent Ban (IP & Device Blacklisted)</p>
+          </div>
+        </section>
+
+        <footer className="pt-12 border-t border-mat-rose/10">
+           <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4">REPORTING & GRIEVANCES</h4>
+           <div className="text-sm opacity-60 space-y-4">
+              <p>Under the IT Rules 2021, we provide a dedicated Grievance Redressal mechanism.</p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="px-6 py-2 bg-mat-wine text-white text-[10px] font-black uppercase tracking-widest rounded-full">Flag Any Profile</div>
+                <div className="px-6 py-2 border border-mat-wine/20 text-mat-wine text-[10px] font-black uppercase tracking-widest rounded-full">contact@matriarchindia.com</div>
+              </div>
+           </div>
+        </footer>
       </div>
     )
   },

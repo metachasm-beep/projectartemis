@@ -631,7 +631,7 @@ const LandingPage: React.FC = () => {
               <div className="space-y-8">
                  <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Archive</h5>
                  <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
-                    <li onClick={() => setActiveOverlay('protocol')} className="hover:text-white transition-all cursor-pointer">Protocol</li>
+                    <li onClick={() => setActiveOverlay('protocol')} className="hover:text-white transition-all cursor-pointer">Community Guidelines</li>
                     <li onClick={() => setActiveOverlay('philosophy')} className="hover:text-white transition-all cursor-pointer">Philosophy</li>
                     <li onClick={() => setActiveOverlay('case-studies')} className="hover:text-white transition-all cursor-pointer">Case Studies</li>
                  </ul>
