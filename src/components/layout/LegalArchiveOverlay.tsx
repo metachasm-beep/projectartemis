@@ -320,14 +320,66 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
     )
   },
   'refund-policy': {
-    title: 'Vault Fee Refund',
+    title: 'REFUND & CANCELLATION POLICY',
     icon: RefreshCcw,
     content: (
-      <div className="space-y-8">
-        <p className="text-xl italic font-serif opacity-80">Protocol on asset reallocation.</p>
-        <p className="text-sm opacity-60 leading-relaxed">
-          Aura tokens, once deployed, cannot be reversed as they represent computational intention. However, Imperial Membership fees are refundable within 24 hours if no resonances have been initiated.
-        </p>
+      <div className="space-y-12">
+        <div className="pb-8 border-b border-mat-rose/10">
+           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Last Updated: April 5, 2026</p>
+           <p className="text-sm opacity-60 leading-relaxed italic">
+             This policy outlines the terms and conditions for purchases made on the Matriarch PWA. By purchasing any digital product or subscription, you agree to the terms below.
+           </p>
+        </div>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. TYPES OF PURCHASES</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Consumables:</strong> These include "Rank Bumps," "Profile Boosts," and "Token Packs." These are one-time use items that provide a specific, immediate effect.</p>
+            <p><strong>Subscriptions:</strong> These include "Matriarch Plus" or "Apex Status" plans that provide recurring benefits over a set period (e.g., monthly).</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. REFUND ELIGIBILITY</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>General Rule:</strong> All purchases are final and non-refundable unless otherwise required by law.</p>
+            <p><strong>Technical Errors:</strong> If you were charged but did not receive the digital item due to a technical glitch, you are entitled to a full refund or manual credit.</p>
+            <p><strong>14-Day Cooling-Off Period:</strong> You may request a refund for a new subscription within 14 days of purchase, provided no premium features have been used.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. NON-REFUNDABLE ITEMS</h4>
+          <ul className="list-disc pl-5 space-y-2 text-sm opacity-60 leading-relaxed">
+            <li><strong>Consumed Boosts:</strong> Once a "Rank Bump" or "Boost" has been activated, it is considered consumed and non-refundable.</li>
+            <li><strong>Partial Subscription Periods:</strong> We do not offer pro-rated refunds for mid-month cancellations.</li>
+            <li><strong>Banned Accounts:</strong> If your account is terminated for violating Community Guidelines, you forfeit all unused balances; no refunds will be issued.</li>
+          </ul>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">4. CANCELLATION OF SUBSCRIPTIONS</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p><strong>Self-Service:</strong> You can cancel your subscription at any time through the "Account Settings."</p>
+            <p><strong>Timing:</strong> To avoid charges for the next cycle, you must cancel at least 24 hours before the renewal date.</p>
+            <p><strong>Effect:</strong> Cancellation stops future billing; it does not trigger a refund for the current period.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">5. HOW TO REQUEST A REFUND</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+             <p>Contact us at <span className="text-mat-wine font-black underline">contact@matriarchindia.com</span> with your Registered Phone Number and Transaction ID.</p>
+             <p className="p-4 bg-mat-wine/5 border border-mat-wine/10 rounded-2xl italic">"We will acknowledge your request within 48 hours. Approved refunds are processed back to the original payment method within 5-7 business days, as per RBI guidelines."</p>
+          </div>
+        </section>
+
+        <footer className="pt-12 border-t border-mat-rose/10">
+           <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4">6. CHARGEBACKS</h4>
+           <p className="text-sm opacity-60 leading-relaxed">
+             Initiating a chargeback without contacting support is considered a violation of our Terms. We reserve the right to permanently ban accounts that engage in unjustified chargebacks or "friendly fraud."
+           </p>
+        </footer>
       </div>
     )
   }
