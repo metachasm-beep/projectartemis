@@ -1,35 +1,42 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Request
 from typing import List
 from app.models.legal import LegalDocumentVersion, ConsentLog
-# from app.core.deps import get_db # Placeholder for DB dependency
+from app.db.supabase import supabase_client
 
 router = APIRouter()
 
 @router.get("/documents", response_model=List[LegalDocumentVersion])
 async def get_legal_documents():
-    # Placeholder: Fetch from DB in real implementation
-    return [
-        {
-            "document_type": "tos",
-            "version": "2026.04.01",
-            "content_url": "https://matriarch.app/legal/tos",
-            "is_active": True
-        },
-        {
-            "document_type": "privacy",
-            "version": "2026.04.01",
-            "content_url": "https://matriarch.app/legal/privacy",
-            "is_active": True
-        },
-        {
-            "document_type": "aadhaar_consent",
-            "version": "1.0.0",
-            "content_url": "https://matriarch.app/legal/aadhaar",
-            "is_active": True
-        }
-    ]
+    """
+    Returns the current active versions of all legal documents.
+    Used by the frontend to ensure the correct version is logged in Consent.
+    """
+    response = supabase_client.table("legal_document_versions") \
+        .select("*") \
+        .eq("is_active", True) \
+        .execute()
+    return response.data
 
 @router.post("/accept")
-async def accept_document(consent: ConsentLog):
-    # Placeholder: Save to DB in real implementation
+async def accept_document(consent: ConsentLog, request: Request):
+    """
+    Logs an explicit consent event with forensic metadata (IP/Device).
+    Mandatory for DPDP 2023 proof of consent.
+    """
+    # Extract IP and append metadata
+    ip = request.client.host if request.client else "unknown"
+    
+    consent_data = {
+        "user_id": str(consent.user_id),
+        "document_type": consent.document_type,
+        "version": consent.version,
+        "ip_address": ip,
+        "device_info": consent.device_info or "unknown"
+    }
+
+    response = supabase_client.table("consent_logs").insert(consent_data).execute()
+    
+    if not response.data:
+        raise HTTPException(status_code=500, detail="Failed to log consent status.")
+
     return {"status": "success", "message": f"Consent recorded for {consent.document_type} v{consent.version}"}

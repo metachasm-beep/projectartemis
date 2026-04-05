@@ -52,6 +52,10 @@ class Profile(SQLModel, table=True):
     # Profile completeness (0-100)
     completeness_score: int = Field(default=0)
 
+    # DPDP Granular Consents (JSONB)
+    # { "analytics_accepted": bool, "ads_accepted": bool, "ranking_accepted": bool }
+    data_processing_consent: Optional[dict] = Field(default_factory=dict)
+
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 

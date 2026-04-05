@@ -21,3 +21,7 @@ class ConsentLog(SQLModel, table=True):
     document_type: str
     version: str
     accepted_at: datetime = Field(default_factory=datetime.utcnow)
+    
+    # Forensic Metadata
+    ip_address: Optional[str] = Field(default=None)
+    device_info: Optional[str] = Field(default=None)
