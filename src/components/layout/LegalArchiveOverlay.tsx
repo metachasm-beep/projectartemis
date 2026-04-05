@@ -113,21 +113,86 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
     )
   },
   'case-studies': {
-    title: 'Case Archive',
+    title: 'GRIEVANCE REDRESSAL POLICY',
     icon: Award,
     content: (
-      <div className="space-y-8">
-        <p className="text-xl italic font-serif opacity-80">Historical resonances within the network.</p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="p-8 bg-mat-wine/5 rounded-[2rem]">
-            <h5 className="font-bold mb-4 italic">The Imperial Union (23-A)</h5>
-            <p className="text-xs opacity-50">A resonance between a FAANG founder and a leading architectural sovereign. Status: Sealed Excellence.</p>
-          </div>
-          <div className="p-8 bg-mat-gold/5 rounded-[2rem]">
-            <h5 className="font-bold mb-4 italic">The Vanguard Bridge (24-B)</h5>
-            <p className="text-xs opacity-50">Connection established in Mumbai. Aligned via deep philosophy and heritage protocols.</p>
-          </div>
+      <div className="space-y-12">
+        <div className="pb-8 border-b border-mat-rose/10">
+           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Effective Date: April 5, 2026</p>
+           <p className="text-sm opacity-60 leading-relaxed italic">
+             In accordance with the Information Technology Rules 2021 (including 2026 Amendments) and the Digital Personal Data Protection Act 2023, Matriarch has established a robust mechanism to address user grievances.
+           </p>
         </div>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">1. GRIEVANCE OFFICER DETAILS</h4>
+          <div className="p-8 bg-mat-wine/5 rounded-[2rem] border border-mat-wine/10 space-y-2 text-sm opacity-60">
+             <p><strong>Name:</strong> Paul Marandi</p>
+             <p><strong>Designation:</strong> Resident Grievance Officer (RGO)</p>
+             <p><strong>Company:</strong> Metachasm (OPC) Private Limited</p>
+             <p className="font-black text-mat-wine">Email: grievance@matriarchapp.com</p>
+             <p className="text-[10px] mt-4 uppercase tracking-widest">Note: Our Grievance Officer is a resident of India as mandated by law.</p>
+          </div>
+        </section>
+
+        <section className="space-y-6">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">2. COMPLIANCE TIMELINES (STATUTORY)</h4>
+          <div className="overflow-hidden border border-mat-rose/10 rounded-2xl">
+             <table className="w-full text-left text-[11px] uppercase tracking-widest font-bold">
+                <thead className="bg-mat-wine text-white">
+                   <tr>
+                      <th className="p-4 border-r border-white/10">Type of Grievance</th>
+                      <th className="p-4 border-r border-white/10 text-center">Ack</th>
+                      <th className="p-4 text-center">Resolution</th>
+                   </tr>
+                </thead>
+                <tbody className="text-mat-wine/60">
+                   <tr className="border-b border-mat-rose/10 bg-mat-wine/5">
+                      <td className="p-4 border-r border-mat-rose/10">Standard Complaints</td>
+                      <td className="p-4 border-r border-mat-rose/10 text-center">24H</td>
+                      <td className="p-4 text-center">7 Days</td>
+                   </tr>
+                   <tr className="border-b border-mat-rose/10">
+                      <td className="p-4 border-r border-mat-rose/10 text-mat-wine">Intimate Imagery</td>
+                      <td className="p-4 border-r border-mat-rose/10 text-center">Immediate</td>
+                      <td className="p-4 text-center text-mat-wine">2 Hours</td>
+                   </tr>
+                   <tr className="border-b border-mat-rose/10 bg-mat-wine/5">
+                      <td className="p-4 border-r border-mat-rose/10">Impersonation</td>
+                      <td className="p-4 border-r border-mat-rose/10 text-center">Immediate</td>
+                      <td className="p-4 text-center">24 Hours</td>
+                   </tr>
+                   <tr>
+                      <td className="p-4 border-r border-mat-rose/10">Prohibited Content</td>
+                      <td className="p-4 border-r border-mat-rose/10 text-center">24H</td>
+                      <td className="p-4 text-center">36 Hours</td>
+                   </tr>
+                </tbody>
+             </table>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">3. HOW TO FILE A GRIEVANCE</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+            <p>Please include your Registered Phone Number, Description of the violation, Evidence (screenshots/links), and the Redressal sought.</p>
+          </div>
+        </section>
+
+        <section className="space-y-4">
+          <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine">4. ESCALATION MATRIX</h4>
+          <div className="space-y-4 text-sm opacity-60 leading-relaxed">
+             <p><strong>Appellate Committee (GAC):</strong> Appeal to the Government-appointed GAC within 30 days of our decision.</p>
+             <p><strong>Data Protection Board (DPB):</strong> For personal data breaches under the DPDP Act 2023.</p>
+          </div>
+        </section>
+
+        <footer className="pt-12 border-t border-mat-rose/10">
+           <h4 className="text-lg font-black uppercase tracking-widest text-mat-wine mb-4">5. COMPLIANCE REPORTING</h4>
+           <p className="text-sm opacity-60 leading-relaxed">
+             Matriarch publishes a Monthly Compliance Report DETAILING reports received and proactive removals actioned by the Imperial nodes.
+           </p>
+        </footer>
       </div>
     )
   },
