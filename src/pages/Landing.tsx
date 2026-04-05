@@ -431,86 +431,114 @@ const LandingPage: React.FC = () => {
                </h2>
             </div>
             
-            <div className="bento-grid">
-               {/* 1. Vetting (Large) */}
-               <div className="bento-span-8 bento-item mat-glass-deep p-12 group h-[400px]">
-                  <div className="flex flex-col h-full justify-between">
-                     <div className="space-y-6">
-                        <div className="w-16 h-16 bg-black text-white flex items-center justify-center rounded-2xl">
-                           <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
-                        </div>
-                        <h3 className="text-4xl font-black text-black uppercase tracking-tighter leading-[1.1] italic">Identity <br />Verification.</h3>
-                        <p className="text-black/60 font-mono text-xs leading-relaxed max-w-sm uppercase">Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity. Zero exceptions.</p>
-                     </div>
-                     <div className="flex gap-3">
-                        <Badge variant="outline" className="px-4 py-2 text-[9px] font-black uppercase border-black/10">Verified Souls Only</Badge>
-                        <Badge variant="outline" className="px-4 py-2 text-[9px] font-black uppercase border-black/10">0% Ghosting</Badge>
-                     </div>
-                  </div>
-                  <div className="absolute top-0 right-0 p-12 opacity-[0.03] scale-150 rotate-12 group-hover:rotate-0 transition-transform duration-1000">
-                     <ShieldCheck size={280} strokeWidth={0.5} />
-                  </div>
-               </div>
-
-               {/* 2. Synch (Medium) */}
-               <div className="bento-span-4 bento-item mat-glass bg-matriarch-violet/5 hover:bg-matriarch-violet/10 group h-[400px]">
-                  <div className="flex flex-col h-full justify-between gap-8">
-                     <div className="space-y-6">
-                        <Zap className="w-10 h-10 text-matriarch-violet" strokeWidth={1.5} />
-                        <h3 className="text-2xl font-black text-black uppercase tracking-tighter italic">Instant <br />Synchronicity.</h3>
-                        <p className="text-black/60 font-mono text-[10px] leading-relaxed uppercase">Real-time matching based on intent, standing, and presence score. No algorithms, just alignment.</p>
-                     </div>
-                     <div className="mt-auto space-y-4">
-                        <div className="flex justify-between text-[8px] font-black uppercase text-matriarch-violet">
-                           <span>Matrix Alignment</span>
-                           <span>98.4%</span>
-                        </div>
-                        <div className="h-1 bg-black/5 rounded-full overflow-hidden">
-                           <motion.div 
-                              animate={{ x: ["-100%", "100%"] }} 
-                              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                              className="h-full w-20 bg-matriarch-violet" 
-                           />
-                        </div>
-                     </div>
-                  </div>
-               </div>
-
-               {/* 3. Sanctuary (Small) */}
-               <div className="bento-span-4 bento-item mat-glass group overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+               {/* 1. Vetting */}
+               <div className="mat-glass-deep bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-between">
                   <div className="space-y-6">
-                     <Heart className="w-8 h-8 text-red-500" strokeWidth={1.5} />
-                     <h4 className="text-xl font-black text-black uppercase tracking-tighter italic">Safe <br />Haven.</h4>
-                     <p className="text-black/40 font-mono text-[9px] leading-relaxed uppercase">A focus on high-value dialogue and long-term meaningful connection.</p>
-                  </div>
-                  <div className="mt-8 pt-8 border-t border-black/5 flex items-center justify-between">
-                     <span className="text-[9px] font-black uppercase text-black/20 italic">Encrypted</span>
-                     <ArrowUpRight className="w-4 h-4 text-black/20 group-hover:text-black transition-colors" />
-                  </div>
-               </div>
-
-               {/* 4. Rank (Small - Dark) */}
-               <div className="bento-span-4 bento-item bg-black text-white group h-[300px]">
-                  <div className="flex flex-col h-full justify-between">
-                     <div className="space-y-6">
-                        <Activity className="w-8 h-8 text-white/40 group-hover:text-white transition-colors" strokeWidth={1} />
-                        <h4 className="text-xl font-black text-white uppercase tracking-tighter italic leading-none">Standing <br />Hierarchy.</h4>
-                        <p className="text-white/40 font-mono text-[9px] leading-relaxed uppercase">Earn your standing through verified presence and contribution.</p>
+                     <div className="w-14 h-14 bg-mat-wine text-white flex items-center justify-center rounded-2xl shadow-lg">
+                        <ShieldCheck className="w-7 h-7" strokeWidth={1.5} />
                      </div>
-                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-px bg-white/20" />
-                        <span className="text-[8px] font-black tracking-widest uppercase">Verified System</span>
+                     <div className="space-y-4">
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Identity <br />Verification.</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity.</p>
                      </div>
                   </div>
+                  <div className="flex gap-2">
+                     <Badge variant="outline" className="px-3 py-1 text-[8px] font-black uppercase border-mat-wine/10 text-mat-wine/40">Verified Souls Only</Badge>
+                     <Badge variant="outline" className="px-3 py-1 text-[8px] font-black uppercase border-mat-wine/10 text-mat-wine/40">0% Ghosting</Badge>
+                  </div>
+                  <ShieldCheck size={180} strokeWidth={0.5} className="absolute -bottom-10 -right-10 opacity-[0.03] rotate-12 group-hover:rotate-0 transition-transform duration-1000 pointer-events-none" />
                </div>
 
-               {/* 5. Discovery (Small) */}
-               <div className="bento-span-4 bento-item mat-glass">
+               {/* 2. Synch */}
+               <div className="mat-glass-deep bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-between bg-mat-rose/5">
                   <div className="space-y-6">
-                     <Crown className="w-8 h-8 text-mat-gold" strokeWidth={1.5} />
-                     <h4 className="text-xl font-black text-black uppercase tracking-tighter italic">Discovery <br />Indexing.</h4>
-                     <p className="text-black/40 font-mono text-[9px] leading-relaxed uppercase">Sophisticated indexing that honors your preferences and temporal status.</p>
+                     <div className="w-14 h-14 bg-mat-gold text-white flex items-center justify-center rounded-2xl shadow-lg">
+                        <Zap className="w-7 h-7" strokeWidth={1.5} />
+                     </div>
+                     <div className="space-y-4">
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Instant <br />Synchronicity.</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Real-time matching based on intent, standing, and presence score. No algorithms, just alignment.</p>
+                     </div>
                   </div>
+                  <div className="space-y-3">
+                     <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-mat-gold">
+                        <span>Matrix Alignment</span>
+                        <span>98.4%</span>
+                     </div>
+                     <div className="h-1.5 bg-black/5 rounded-full overflow-hidden">
+                        <motion.div 
+                           animate={{ x: ["-100%", "100%"] }} 
+                           transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                           className="h-full w-24 bg-mat-gold" 
+                        />
+                     </div>
+                  </div>
+               </div>
+
+               {/* 3. Sanctuary */}
+               <div className="mat-glass-deep bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-between">
+                  <div className="space-y-6">
+                     <div className="w-14 h-14 bg-mat-rose text-white flex items-center justify-center rounded-2xl shadow-lg">
+                        <Heart className="w-7 h-7" strokeWidth={1.5} />
+                     </div>
+                     <div className="space-y-4">
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Safe <br />Haven.</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">A private sanctuary designed for high-value dialogue and long-term meaningful connection.</p>
+                     </div>
+                  </div>
+                  <div className="pt-6 border-t border-mat-wine/5 flex items-center justify-between">
+                     <span className="text-[9px] font-black uppercase text-mat-wine/30 italic tracking-widest">End-to-End Encrypted</span>
+                     <ArrowUpRight className="w-5 h-5 text-mat-wine/20 group-hover:text-mat-wine transition-colors" />
+                  </div>
+               </div>
+
+               {/* 4. Rank */}
+               <div className="bg-mat-wine bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-between shadow-2xl">
+                  <div className="space-y-6">
+                     <div className="w-14 h-14 bg-white/10 text-white flex items-center justify-center rounded-2xl backdrop-blur-md border border-white/10">
+                        <Activity className="w-7 h-7" strokeWidth={1} />
+                     </div>
+                     <div className="space-y-4">
+                        <h4 className="text-3xl font-black text-white uppercase tracking-tighter italic leading-none">Standing <br />Hierarchy.</h4>
+                        <p className="text-white/40 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Earn your standing through verified presence, absolute integrity, and community contribution.</p>
+                     </div>
+                  </div>
+                  <div className="flex items-center gap-4">
+                     <div className="grow h-px bg-white/10" />
+                     <span className="text-[9px] font-black tracking-[0.3em] uppercase text-white/60 whitespace-nowrap">Verified Protocol active</span>
+                  </div>
+               </div>
+
+               {/* 5. Discovery */}
+               <div className="mat-glass-deep bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-between">
+                  <div className="space-y-6">
+                     <div className="w-14 h-14 bg-mat-gold-soft text-mat-wine flex items-center justify-center rounded-2xl shadow-lg border border-mat-gold/20">
+                        <Crown className="w-7 h-7" strokeWidth={1.5} />
+                     </div>
+                     <div className="space-y-4">
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Discovery <br />Indexing.</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Sophisticated indexing that honors your preferences, selective attention, and temporal status.</p>
+                     </div>
+                  </div>
+                  <div className="flex items-center -space-x-3">
+                     {[1,2,3,4].map(i => (
+                        <div key={i} className="w-8 h-8 rounded-full border-2 border-white bg-mat-cream overflow-hidden">
+                           <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${i * 123}`} alt="verified" />
+                        </div>
+                     ))}
+                     <div className="pl-6 text-[9px] font-black uppercase tracking-widest text-mat-gold">Curating Experts</div>
+                  </div>
+               </div>
+
+               {/* 6. Sovereign Seal (Decorative Symmetric Completion) */}
+               <div className="mat-glass-deep bento-item p-8 lg:p-12 group min-h-[340px] flex flex-col justify-center items-center text-center bg-mat-cream-deep/50 border-dashed border-2 border-mat-rose/20">
+                  <div className="relative">
+                     <div className="absolute inset-0 bg-mat-rose/10 blur-3xl rounded-full" />
+                     <MatriarchLogo className="scale-125 mb-8 opacity-20 group-hover:opacity-100 transition-opacity duration-1000" />
+                  </div>
+                  <h4 className="text-[11px] font-black uppercase tracking-[0.6em] text-mat-wine/40">Established MMXXIV</h4>
+                  <p className="text-[10px] font-serif italic text-mat-slate/40 mt-4">“Where love finds its way — beautifully.”</p>
                </div>
             </div>
           </div>
