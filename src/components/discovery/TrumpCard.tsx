@@ -1,13 +1,24 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Brain, Flame, Users, Sword, Crosshair } from 'lucide-react';
+import { 
+  Zap, 
+  Brain, 
+  Flame, 
+  Users, 
+  Crosshair, 
+  MessageSquarePlus, 
+  ShieldAlert, 
+  UserX, 
+  EyeOff,
+  X
+} from 'lucide-react';
 import { mapToTrumpStats } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
 import { VerificationBadge } from '@/components/verification/VerificationBadge';
-import { Lock } from 'lucide-react';
 
 interface TrumpCardProps {
   profile: {
+    user_id?: string;
     name: string;
     age: number;
     city: string;
@@ -17,13 +28,11 @@ interface TrumpCardProps {
     is_verified?: boolean;
   };
   onClose?: () => void;
-  onAction?: () => void;
+  onAction?: (type: string) => void;
 }
 
 export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction }) => {
   const stats = mapToTrumpStats(profile);
-  const isHighRank = profile.status?.toLowerCase().includes('imperial') || profile.status?.toLowerCase().includes('vanguard');
-  const needsVerification = isHighRank && !profile.is_verified;
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
 
   const statItems = [
@@ -39,121 +48,96 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[400px] aspect-[2/3] bg-mat-obsidian border-[6px] border-mat-gold rounded-[2rem] shadow-[0_0_60px_rgba(191,160,106,0.3)] overflow-hidden flex flex-col"
+      className="relative w-full max-w-[420px] aspect-[2/3.2] bg-mat-obsidian border-[6px] border-mat-gold rounded-[2.5rem] shadow-[0_0_80px_rgba(191,160,106,0.4)] overflow-hidden flex flex-col"
     >
-      {/* 1. THE CARD FRAME & HOLOGRAPHIC OVERLAY */}
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-40 mix-blend-overlay" />}
       
-      {/* 2. HEADER: SOBRIQUET */}
-      <div className="absolute top-0 left-0 w-full h-16 bg-mat-gold flex items-center justify-center px-4 z-20">
-        <h2 className="mat-text-impact text-mat-obsidian text-2xl tracking-tighter text-center">
+      {/* CARD HEADER */}
+      <div className="absolute top-0 left-0 w-full h-14 bg-mat-gold flex items-center justify-between px-6 z-20">
+        <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Matriarch Protocol</span>
+        <h2 className="mat-text-impact text-mat-obsidian text-xl tracking-tighter uppercase">
           {stats.sobriquet}
         </h2>
+        {onClose ? (
+           <button onClick={onClose} className="p-1 hover:scale-110 transition-transform"><X size={18} className="text-mat-obsidian" /></button>
+        ) : <div className="w-4" />}
       </div>
 
-      {/* 3. HERO IMAGE */}
-      <div className="relative flex-1 mt-14 mb-32 overflow-hidden border-b-[3px] border-mat-gold">
+      {/* HERO IMAGE */}
+      <div className="relative h-[55%] mt-14 overflow-hidden border-b-[3px] border-mat-gold">
         <img 
           src={profile.img} 
           className="w-full h-full object-cover mat-gritty-filter scale-110" 
           alt={profile.name}
         />
-        <div className="absolute bottom-0 left-0 w-full p-4 bg-gradient-to-t from-mat-obsidian via-transparent to-transparent z-10">
-           <p className="mat-text-impact text-mat-gold text-4xl italic drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-             {profile.name.toUpperCase()}
+        <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent z-10">
+           <div className="flex items-center gap-3">
+              <p className="mat-text-impact text-mat-gold text-4xl italic drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
+                {profile.name.toUpperCase()}
+              </p>
+              <VerificationBadge verified={profile.is_verified} />
+           </div>
+           <p className="text-[10px] uppercase tracking-[0.4em] font-black text-mat-cream/60 mt-1">
+             Age {profile.age} • {profile.city.toUpperCase()}
            </p>
         </div>
       </div>
 
-      {/* 4. STATS & FLAVOR BOX */}
-      <div className="absolute bottom-0 left-0 w-full bg-mat-obsidian/95 backdrop-blur-md p-6 pt-4 border-t-[3px] border-mat-gold z-20 h-40">
-        <div className="grid grid-cols-5 gap-2 mb-4">
+      {/* STATS & QUICK ACTIONS */}
+      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-md p-6 flex flex-col justify-between">
+        <div className="grid grid-cols-5 gap-3">
           {statItems.map((s, i) => (
             <div key={i} className="flex flex-col items-center">
-              <s.icon size={14} className={`${s.color} mb-1`} />
+              <s.icon size={12} className={`${s.color} mb-1.5`} />
               <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                 <motion.div 
                    initial={{ width: 0 }}
                    animate={{ width: `${s.value}%` }}
-                   transition={{ duration: 1, delay: 0.2 }}
                    className={`h-full ${s.color.replace('text-', 'bg-')}`} 
                 />
               </div>
-              <span className="text-[7px] font-black uppercase text-white/50 mt-1">{s.label}</span>
-              <span className="text-[9px] font-black text-white">{s.value}</span>
+              <span className="text-[7px] font-black uppercase text-white/30 mt-1.5">{s.label}</span>
             </div>
           ))}
         </div>
 
-        <div className="grid grid-cols-2 gap-4 text-left">
-          <div className="space-y-1">
-            <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <h3 className="text-2xl font-black italic uppercase tracking-wider text-mat-cream font-['Roboto Condensed']">
-                    {profile.name}
-                  </h3>
-                  <VerificationBadge verified={profile.is_verified} />
-                </div>
-                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-mat-gold/80 mt-1">
-                  {profile.age} • {profile.city.toUpperCase()}
-                </p>
-            </div>
-          </div>
-          <div className="space-y-1">
-             <div className="flex items-center gap-1">
-                <Sword size={10} className="text-mat-gold/60" />
-                <span className="text-[7px] font-black text-white/40 uppercase tracking-widest">Signature Move</span>
-             </div>
-             <p className="text-[10px] font-black text-mat-rose uppercase leading-none truncate">{stats.signatureMove}</p>
-          </div>
-        </div>
+        {/* ENGAGEMENT MATRIX */}
+        <div className="grid grid-cols-4 gap-3 mt-4">
+           {/* PING - PRIMARY ACTION */}
+           <Button 
+             onPress={() => onAction?.('ping')}
+             className="col-span-4 h-14 bg-mat-gold text-mat-obsidian rounded-xl font-black uppercase tracking-[0.2em] text-[11px] shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+           >
+              <MessageSquarePlus size={18} /> Ping Resonance
+           </Button>
 
-        <div className="mt-3 flex items-center justify-between">
-           <span className="text-[8px] font-black text-mat-gold bg-mat-gold/10 px-2 py-1 rounded-sm border border-mat-gold/30 italic">
-             {stats.weightClass}
-           </span>
-           <div className="flex gap-2">
-             {/* Action Button */}
-          <div className="mt-8 relative z-40">
-            {needsVerification ? (
-              <div className="space-y-3">
-                 <div className="flex items-center gap-2 justify-center py-2 px-2 rounded-lg bg-red-500/10 border border-red-500/20">
-                    <Lock size={10} className="text-red-500" />
-                    <span className="text-[8px] uppercase tracking-widest font-bold text-red-400">Restricted Access: Verification Required</span>
-                 </div>
-                 <Button 
-                   className="w-full h-14 bg-white/5 text-white/20 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] border border-white/10 cursor-not-allowed"
-                   isDisabled
-                 >
-                   Sync Identity to Unlock
-                 </Button>
-              </div>
-            ) : (
-              <Button 
-                onPress={onAction}
-                className="w-full h-14 bg-mat-gold text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-all hover:shadow-[0_0_50px_rgba(212,175,55,0.6)]"
-              >
-                Initiate Connection Protocol
-              </Button>
-            )}
-          </div>
-              {onClose && (
-                <Button 
-                  isIconOnly
-                  size="sm" 
-                  onPress={onClose}
-                  className="h-7 w-7 bg-white/5 text-white/50 border border-white/10 rounded-none"
-                >
-                  X
-                </Button>
-              )}
-           </div>
+           {/* SECONDARY UTILITIES */}
+           <Button 
+             onPress={() => onAction?.('report')}
+             isIconOnly 
+             className="h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-xl"
+           >
+              <ShieldAlert size={16} />
+           </Button>
+           <Button 
+             onPress={() => onAction?.('block')}
+             isIconOnly 
+             className="h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-xl"
+           >
+              <UserX size={16} />
+           </Button>
+           <Button 
+             onPress={() => onAction?.('never_show')}
+             className="col-span-2 h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-xl font-black uppercase tracking-widest text-[8px] flex items-center justify-center gap-2"
+           >
+              <EyeOff size={12} /> Filter
+           </Button>
         </div>
       </div>
 
-      {/* Decorative Symbols */}
-      <div className="absolute top-2 right-2 text-mat-obsidian/30 z-30 pointer-events-none">
-         <Crosshair size={48} />
+      {/* DECORATIVE CROSSHAIR */}
+      <div className="absolute top-16 right-4 text-mat-gold/10 z-0 pointer-events-none">
+         <Crosshair size={120} strokeWidth={0.5} />
       </div>
     </motion.div>
   );

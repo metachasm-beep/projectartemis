@@ -253,5 +253,35 @@ export const SanctuaryService = {
     }).catch(e => console.warn("Audit Log Silent Failure (Schema may not exist):", e));
     
     return true;
+  },
+
+  /**
+   * 🛡️ Sovereign Protection: Report, Block, and Filter.
+   */
+  reportUser: async (actorId: string, targetId: string, reason: string) => {
+    const id = `report_${uuidv4()}`;
+    await turso.execute({
+      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type, reason) VALUES (?, ?, ?, 'report', ?)",
+      args: [id, actorId, targetId, reason]
+    });
+    return true;
+  },
+
+  blockUser: async (actorId: string, targetId: string) => {
+    const id = `block_${uuidv4()}`;
+    await turso.execute({
+      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type) VALUES (?, ?, ?, 'block')",
+      args: [id, actorId, targetId]
+    });
+    return true;
+  },
+
+  setNeverShow: async (actorId: string, targetId: string) => {
+    const id = `filter_${uuidv4()}`;
+    await turso.execute({
+      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type) VALUES (?, ?, ?, 'never_show')",
+      args: [id, actorId, targetId]
+    });
+    return true;
   }
 };

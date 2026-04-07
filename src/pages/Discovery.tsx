@@ -1,215 +1,73 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Sparkles, 
-  ShieldCheck, 
-  Zap, 
-  Heart,
-  Bookmark,
   MapPin,
   X,
-  Layers,
-  Search,
-  Trophy,
-  ArrowLeft,
-  Lock
+  Lock,
+  MessageSquarePlus,
+  ShieldAlert,
+  UserX,
+  EyeOff
 } from 'lucide-react';
 
-import { SeekerBrowse } from '@/components/SeekerBrowse';
 import CircularGallery from '@/components/animations/CircularGallery';
-import MenDiscovery from '@/components/discovery/MenDiscovery';
-import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { SkeletonRail } from "@/components/ui/SkeletonCard";
 import { useAuth } from '@/hooks/useAuth';
 import { SanctuaryService } from '@/services/sanctuary';
 import { cn } from '@/lib/utils';
 import { MessagingService } from '@/lib/messaging';
 import { Separator } from '@/components/ui/separator';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-
-// 💎 Premium RailCard
-const RailCard = ({ 
-  profile, 
-  onSelect, 
-  isShortlisted,
-  onToggleShortlist
-}: { 
-  profile: any, 
-  onSelect: (p: any) => void,
-  isShortlisted: boolean,
-  onToggleShortlist: (id: string) => void
-}) => {
-  const photos = JSON.parse(profile.photos || '[]');
-  const mainPhoto = photos[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`;
-
-  return (
-    <motion.div 
-      whileHover={{ y: -12, scale: 1.02 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-      className={cn(
-        "min-w-[340px] w-[340px] aspect-[4/5.5] rounded-[3.5rem] overflow-hidden relative cursor-pointer group shadow-mat-premium border-2 transition-all duration-500",
-        profile.rank_boost_count >= 50 ? "border-mat-gold/30 shadow-mat-gold" : "border-mat-rose/10"
-      )}
-    >
-       <div onClick={() => onSelect(profile)} className="absolute inset-0">
-          <img 
-             src={mainPhoto} 
-             className="w-full h-full object-cover grayscale brightness-90 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-1000" 
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/90 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity" />
-       </div>
-       
-       <div className="absolute top-8 left-8 flex flex-col gap-3 pointer-events-none">
-          {profile.is_verified && (
-             <Badge variant="gold" className="w-fit scale-90 origin-left">
-                <ShieldCheck size={14} className="mr-1" /> SEALED
-             </Badge>
-          )}
-       </div>
-
-       <div className="absolute top-8 right-8 z-20 group-hover:opacity-100 opacity-0 transition-opacity duration-500 flex flex-col gap-4">
-          <Tooltip>
-             <TooltipTrigger asChild>
-                <button 
-                   onClick={(e) => { e.stopPropagation(); onToggleShortlist(profile.user_id); }}
-                   className={cn(
-                     "p-5 rounded-full backdrop-blur-3xl border border-white/10 transition-all active:scale-95 shadow-22xl",
-                     isShortlisted ? "bg-mat-gold text-mat-wine" : "bg-black/60 text-mat-cream hover:bg-mat-wine"
-                   )}
-                >
-                   <Bookmark size={20} fill={isShortlisted ? "currentColor" : "none"} />
-                </button>
-             </TooltipTrigger>
-             <TooltipContent side="left" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                {isShortlisted ? "Shortlisted" : "Save to Archive"}
-             </TooltipContent>
-          </Tooltip>
-       </div>
-
-       <div className="absolute bottom-10 left-10 right-10 space-y-4 pointer-events-none">
-          <h4 className="text-5xl font-bold text-mat-cream italic leading-none truncate group-hover:translate-x-2 transition-transform duration-500">
-             {profile.full_name.split(' ')[0]}
-          </h4>
-          <div className="flex items-center justify-between">
-             <div className="flex items-center gap-3">
-                <MapPin size={14} className="text-mat-rose" />
-                <p className="text-[11px] font-black uppercase tracking-[0.4em] text-white/50">{profile.city || 'Sanctuary'}</p>
-             </div>
-             <Zap size={18} className={cn(profile.rank_boost_count >= 20 ? "text-mat-gold animate-pulse" : "text-white/20")} />
-          </div>
-       </div>
-    </motion.div>
-  );
-};
-
-const ResonanceRail = ({ 
-  title, 
-  type, 
-  onSelect,
-  womanId,
-  city,
-  shortlistedIds,
-  onToggleShortlist
-}: { 
-  title: string, 
-  type: string, 
-  onSelect: (p: any) => void,
-  womanId: string,
-  city?: string,
-  shortlistedIds: Set<string>,
-  onToggleShortlist: (id: string) => void
-}) => {
-  const [profiles, setProfiles] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  const fetch = useCallback(async () => {
-    setLoading(true);
-    const feed = await SanctuaryService.getRailFeed(womanId, type as any, city);
-    setProfiles(feed || []);
-    setLoading(false);
-    
-    if (feed && feed.length > 0) {
-       feed.forEach((p: any) => {
-          SanctuaryService.trackSignal(p.user_id, 'impression', womanId);
-       });
-    }
-  }, [womanId, type, city]);
-
-  useEffect(() => { fetch(); }, [fetch]);
-
-  useEffect(() => {
-     if (type === 'shortlist') fetch();
-  }, [shortlistedIds, type, fetch]);
-
-  if (loading) return <div className="space-y-10"><h3 className="mat-text-label-pro opacity-20 px-4">{title}</h3><SkeletonRail /></div>;
-  if (profiles.length === 0) return null;
-
-  return (
-    <div className="space-y-12">
-       <div className="flex justify-between items-end px-6 max-w-7xl mx-auto">
-          <div className="space-y-2">
-             <h3 className="mat-text-label-pro text-mat-wine/60">{title}</h3>
-             <div className="h-0.5 w-12 bg-mat-gold/30 rounded-full" />
-          </div>
-          <span className="text-[9px] font-black uppercase tracking-widest text-mat-rose italic cursor-pointer hover:text-mat-wine transition-colors">Observe All</span>
-       </div>
-       <div className="flex gap-10 overflow-x-auto pb-16 px-6 custom-scrollbar mask-horizontal">
-          {profiles.map((p, i) => (
-            <RailCard 
-              key={p.user_id + i} 
-              profile={p} 
-              onSelect={onSelect} 
-              isShortlisted={shortlistedIds.has(p.user_id)}
-              onToggleShortlist={onToggleShortlist}
-            />
-          ))}
-       </div>
-    </div>
-  );
-};
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 export const Discovery: React.FC = () => {
   const { profile, loading: authLoading } = useAuth();
   const [selectedProfile, setSelectedProfile] = useState<any | null>(null);
-  const [shortlistedIds, setShortlistedIds] = useState<Set<string>>(new Set());
-  const [mode, setMode] = useState<'rails' | 'array' | 'directory' | 'leaderboard'>('rails');
   const [engagementTarget, setEngagementTarget] = useState<any | null>(null);
 
   const GALLERY_ITEMS = DUMMY_ASPIRANTS.map(m => ({ image: m.img, text: m.name }));
 
-  const refreshShortlist = useCallback(async () => {
-    if (profile?.user_id && profile.role === 'woman') {
-       const feed = await SanctuaryService.getRailFeed(profile.user_id, 'shortlist');
-       setShortlistedIds(new Set((feed || []).map(p => (p as any).user_id)));
-    }
-  }, [profile?.user_id, profile?.role]);
-
-  useEffect(() => {
-    refreshShortlist();
-    window.addEventListener('MATRIARCH_SHORTLIST_UPDATED', refreshShortlist);
-    return () => window.removeEventListener('MATRIARCH_SHORTLIST_UPDATED', refreshShortlist);
-  }, [refreshShortlist]);
-
-  const toggleShortlist = async (id: string) => {
+  const handleAction = async (action: 'ping' | 'report' | 'block' | 'never_show', target: any) => {
     if (!profile?.user_id) return;
-    if (shortlistedIds.has(id)) {
-       await SanctuaryService.unshortlist(profile.user_id, id);
-       setShortlistedIds(prev => { const n = new Set(prev); n.delete(id); return n; });
-    } else {
-       await SanctuaryService.saveToShortlist(profile.user_id, id);
-       setShortlistedIds(prev => new Set([...prev, id]));
-    }
-  };
 
-  const handleSelectProfile = (p: any) => {
-     setSelectedProfile(p);
-     if (profile?.user_id) {
-        SanctuaryService.trackSignal(p.user_id, 'visit', profile.user_id);
-     }
+    // Identity Gating for Active Engagement
+    if (!profile.is_verified && action === 'ping') {
+       alert("SEAL YOUR TRUTH: Identity synchronization is required to initiate resonance. Browsing is currently observation-only.");
+       return;
+    }
+
+    try {
+      switch (action) {
+        case 'ping':
+          await MessagingService.createMatch(profile.user_id, target.user_id);
+          alert(`Resonance Established with ${target.name || target.full_name}. Opening Portal...`);
+          break;
+        case 'report':
+          const reason = prompt("State the nature of the violation:");
+          if (reason) {
+            await SanctuaryService.reportUser(profile.user_id, target.user_id, reason);
+            alert("Report sealed. The Architect will review this signal.");
+          }
+          break;
+        case 'block':
+          if (confirm(`Block resonance with ${target.name || target.full_name} permanently?`)) {
+            await SanctuaryService.blockUser(profile.user_id, target.user_id);
+            alert("Sovereign boundary established.");
+          }
+          break;
+        case 'never_show':
+          await SanctuaryService.setNeverShow(profile.user_id, target.user_id);
+          alert("Aspirant filtered from future discovery cycles.");
+          break;
+      }
+      setSelectedProfile(null);
+      setEngagementTarget(null);
+    } catch (e: any) {
+      alert(e.message || "Action failed.");
+    }
   };
 
   if (authLoading) return <div className="h-screen flex items-center justify-center bg-mat-cream"><Sparkles className="animate-spin text-mat-rose" /></div>;
@@ -231,32 +89,34 @@ export const Discovery: React.FC = () => {
     );
   }
 
-  if (mode === 'array') {
-    return (
-      <div className="fixed inset-0 bg-black z-50 overflow-hidden flex flex-col">
+  return (
+    <TooltipProvider>
+      <div className="fixed inset-0 bg-black z-0 overflow-hidden flex flex-col">
+          {/* Sovereign Header */}
           <div className="absolute top-0 left-0 w-full p-8 z-50 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
-            <Button 
-               onClick={() => setMode('rails')} 
-               variant="ghost" 
-               className="pointer-events-auto bg-white/10 text-white backdrop-blur-md rounded-full px-6 flex items-center gap-2"
-            >
-               <ArrowLeft size={16} />
-               Switch Observation Mode
-            </Button>
-            <div className="text-right">
-               <h2 className="text-mat-gold font-bold italic tracking-widest text-lg uppercase underline decoration-mat-gold/20 underline-offset-8">The Array</h2>
-               <p className="text-[10px] text-white/50 uppercase tracking-[0.3em] mt-1">Sovereign Browsing Active</p>
+            <div className="flex items-center gap-4 pointer-events-auto">
+                <div className="w-12 h-12 bg-mat-gold rounded-full flex items-center justify-center shadow-mat-gold">
+                    <Sparkles size={20} className="text-black" />
+                </div>
+                <div>
+                   <h2 className="text-mat-cream font-black italic tracking-tighter text-2xl uppercase">The Array</h2>
+                   <p className="text-[9px] text-mat-gold font-black uppercase tracking-[0.4em]">Sovereign Discovery Active</p>
+                </div>
+            </div>
+            <div className="text-right hidden md:block">
+               <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] italic">"The gaze defines the sanctuary."</p>
             </div>
           </div>
           
+          {/* 3D Infinity Stream */}
           <div className="absolute inset-0 z-0">
             <CircularGallery 
               items={GALLERY_ITEMS}
-              bend={1}
+              bend={0}
               borderRadius={0.23}
               font='900 40px "Roboto Condensed"'
-              scrollSpeed={2}
-              scrollEase={0.05}
+              scrollSpeed={1.5}
+              scrollEase={0.08}
               onSelect={(idx) => {
                  const aspirant = DUMMY_ASPIRANTS[idx];
                  setEngagementTarget({
@@ -269,16 +129,17 @@ export const Discovery: React.FC = () => {
             />
           </div>
 
+          {/* Interactive Modal Layer */}
           <AnimatePresence>
             {engagementTarget && (
               <motion.div 
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-6"
+                  className="absolute inset-0 z-[200] flex items-center justify-center bg-black/80 backdrop-blur-3xl p-6"
                   onClick={() => setEngagementTarget(null)}
               >
-                  <div onClick={(e) => e.stopPropagation()}>
+                  <div onClick={(e) => e.stopPropagation()} className="relative transform-gpu scale-95 lg:scale-100">
                     <TrumpCard 
                         profile={{
                           name: engagementTarget.name,
@@ -287,196 +148,82 @@ export const Discovery: React.FC = () => {
                           img: engagementTarget.img,
                           status: engagementTarget.status,
                           bio: engagementTarget.bio,
-                          is_verified: engagementTarget.is_verified
+                          is_verified: engagementTarget.is_verified,
+                          user_id: engagementTarget.user_id
                         }}
                         onClose={() => setEngagementTarget(null)}
-                        onAction={() => {
-                          setSelectedProfile(engagementTarget);
-                          setEngagementTarget(null);
-                        }}
+                        onAction={(action) => handleAction(action as any, engagementTarget)}
                       />
                   </div>
               </motion.div>
             )}
-          </AnimatePresence>
-      </div>
-    );
-  }
 
-  if (mode === 'directory') {
-    return <MenDiscovery onClose={() => setMode('rails')} />;
-  }
-
-  if (mode === 'leaderboard') {
-    return <Leaderboard onClose={() => setMode('rails')} />;
-  }
-
-  return (
-    <TooltipProvider>
-      <div className="space-y-40 py-12 md:py-24 max-w-[100vw] overflow-hidden">
-         {/* ─── Mode Switcher ─── */}
-         <div className="max-w-7xl mx-auto px-6 sticky top-24 z-40">
-            <div className="inline-flex p-2 bg-mat-wine/10 backdrop-blur-xl rounded-full border border-mat-rose/10 shadow-mat-premium">
-               {[
-                 { id: 'rails', label: 'Curated Rails', icon: Layers },
-                 { id: 'array', label: 'The Array', icon: Sparkles },
-                 { id: 'directory', label: 'Search Archive', icon: Search },
-                 { id: 'leaderboard', label: 'Top Ranked', icon: Trophy }
-               ].map((m) => (
-                  <button
-                    key={m.id}
-                    onClick={() => setMode(m.id as any)}
-                    className={cn(
-                      "flex items-center gap-3 px-6 py-3 rounded-full text-[9px] font-black uppercase tracking-widest transition-all",
-                      mode === m.id ? "bg-mat-wine text-mat-cream shadow-lg scale-105" : "text-mat-wine/40 hover:text-mat-wine hover:bg-white/5"
-                    )}
-                  >
-                    <m.icon size={14} />
-                    <span className="hidden sm:inline">{m.label}</span>
-                  </button>
-               ))}
-            </div>
-         </div>
-
-         {/* ─── Resonance Rails (Curated) ─── */}
-         <div className="space-y-32">
-            <div className="space-y-10 px-6 max-w-7xl mx-auto">
-               <div className="flex items-center gap-6">
-                  <Badge variant="outline" className="px-6 py-2 border-mat-rose/20 text-mat-wine text-[10px] uppercase tracking-[0.4em] rounded-full font-black">Sanctuary Curation</Badge>
-                  <Separator className="flex-1 bg-mat-rose/10" />
-               </div>
-               <h1 className="text-8xl md:text-[11rem] mat-text-display-pro text-mat-wine italic leading-none">Curated <br /><span className="text-mat-rose/20">Resonances.</span></h1>
-            </div>
-            
-            <div className="space-y-32">
-               {shortlistedIds.size > 0 && (
-                  <ResonanceRail 
-                     title="My Sanctuary (Intentional)" 
-                     type="shortlist" 
-                     womanId={profile?.user_id || ''} 
-                     shortlistedIds={shortlistedIds}
-                     onToggleShortlist={toggleShortlist}
-                     onSelect={handleSelectProfile} 
-                  />
-               )}
-               <ResonanceRail 
-                  title="Imperial Aura (Top Ranked)" 
-                  type="imperial" 
-                  womanId={profile?.user_id || ''} 
-                  shortlistedIds={shortlistedIds}
-                  onToggleShortlist={toggleShortlist}
-                  onSelect={setSelectedProfile} 
-               />
-               <ResonanceRail 
-                  title="Adjacent Seekers (Nearby)" 
-                  type="nearby" 
-                  city={profile?.city} 
-                  womanId={profile?.user_id || ''} 
-                  shortlistedIds={shortlistedIds}
-                  onToggleShortlist={toggleShortlist}
-                  onSelect={setSelectedProfile} 
-               />
-               <ResonanceRail 
-                  title="Seal of Truth (Verified)" 
-                  type="truth" 
-                  womanId={profile?.user_id || ''} 
-                  shortlistedIds={shortlistedIds}
-                  onToggleShortlist={toggleShortlist}
-                  onSelect={setSelectedProfile} 
-               />
-               <ResonanceRail 
-                  title="Rising Seekers" 
-                  type="rising" 
-                  womanId={profile?.user_id || ''} 
-                  shortlistedIds={shortlistedIds}
-                  onToggleShortlist={toggleShortlist}
-                  onSelect={setSelectedProfile} 
-               />
-            </div>
-         </div>
-
-         {/* ─── Infinite Resonance ─── */}
-         <div className="space-y-24 px-6 max-w-7xl mx-auto">
-            <div className="flex flex-col gap-6">
-               <div className="flex items-center gap-10">
-                  <h2 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine">Infinite <span className="text-mat-rose/30 leading-none">Sanctuary.</span></h2>
-                  <Separator className="flex-1 bg-mat-rose/10" />
-               </div>
-               <p className="mat-text-label-pro opacity-40 italic ml-2">Total Archive Observation</p>
-            </div>
-            <SeekerBrowse />
-         </div>
-
-         {/* Detail Modal Overlay (Shared Logic) */}
-         <AnimatePresence>
             {selectedProfile && (
-               <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+               <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProfile(null)} className="absolute inset-0 bg-mat-wine/98 backdrop-blur-3xl" />
-                  <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} className="relative w-full max-w-7xl h-[90vh] bg-mat-cream rounded-[4rem] overflow-hidden flex flex-col md:flex-row shadow-mat-premium border border-mat-rose/10">
-                     <button onClick={() => setSelectedProfile(null)} className="absolute top-12 right-12 z-[110] p-6 rounded-full bg-mat-wine text-mat-cream shadow-2xl hover:scale-110 active:scale-90 transition-all font-black"><X size={28} /></button>
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.95 }} 
+                    animate={{ opacity: 1, scale: 1 }} 
+                    exit={{ opacity: 0, scale: 0.95 }} 
+                    className="relative w-full max-w-5xl h-fit max-h-[90vh] bg-mat-cream rounded-[4rem] overflow-hidden flex flex-col md:flex-row shadow-mat-premium border border-mat-rose/10"
+                  >
+                     <button onClick={() => setSelectedProfile(null)} className="absolute top-8 right-8 z-[110] p-4 rounded-full bg-mat-wine text-mat-cream shadow-2xl hover:scale-110 active:scale-90 transition-all font-black"><X size={24} /></button>
                      
-                     <div className="w-full md:w-[50%] h-[40vh] md:h-full relative overflow-hidden bg-mat-wine/5">
+                     <div className="w-full md:w-[45%] h-[30vh] md:h-auto relative overflow-hidden bg-mat-wine/5">
                         <img src={JSON.parse(selectedProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-105" />
-                        <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-mat-cream via-mat-cream/80 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-mat-cream via-transparent to-transparent" />
                      </div>
 
-                     <div className="flex-1 p-14 md:p-32 overflow-y-auto custom-scrollbar space-y-24">
-                        <div className="space-y-12">
-                           <div className="flex items-center gap-6">
+                     <div className="flex-1 p-10 md:p-16 overflow-y-auto custom-scrollbar flex flex-col justify-center gap-10">
+                        <div className="space-y-6">
+                           <div className="flex items-center gap-4">
                               {selectedProfile.is_verified && <Badge variant="gold">Sealed Truth</Badge>}
-                              <Badge variant="outline">Station Archive</Badge>
+                              <Badge variant="outline" className="opacity-50">Discovery Archive</Badge>
                            </div>
-                           <h2 className="text-8xl md:text-[11rem] mat-text-display-pro text-mat-wine italic leading-[0.8]">{selectedProfile.full_name}</h2>
-                           <div className="flex items-center gap-8 text-mat-slate/40 text-[13px] font-black uppercase tracking-[0.6em] italic">
-                              <span className="flex items-center gap-3">Age {selectedProfile.age}</span>
-                              <Separator orientation="vertical" className="h-6 bg-mat-rose/20" />
-                              <span className="flex items-center gap-3"><MapPin size={18} className="text-mat-rose/40" /> {selectedProfile.city || 'India'}</span>
-                           </div>
-                        </div>
-
-                        <div className="space-y-16">
-                           <div className="p-14 md:p-20 rounded-[4rem] bg-mat-wine/5 border border-mat-rose/5 relative shadow-sm">
-                              <p className="text-4xl md:text-6xl text-mat-wine/90 leading-tight italic font-medium">"{selectedProfile.bio || "The narrative remains unwoven, but their presence radiates clear intention."}"</p>
+                           <h2 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">{selectedProfile.full_name}</h2>
+                           <div className="flex items-center gap-6 text-mat-slate/40 text-[11px] font-black uppercase tracking-[0.4em] italic">
+                              <span>Age {selectedProfile.age}</span>
+                              <Separator orientation="vertical" className="h-4 bg-mat-rose/20" />
+                              <span className="flex items-center gap-2"><MapPin size={14} /> {selectedProfile.city}</span>
                            </div>
                         </div>
 
-                        <div className="pt-20 flex flex-col sm:flex-row gap-10">
-                           <Button onClick={async () => {
-                               if (!profile?.user_id) return;
+                        <div className="space-y-4">
+                           <p className="text-2xl text-mat-wine/90 leading-tight italic font-medium">"{selectedProfile.bio || "The presence is established, awaiting resonance."}"</p>
+                        </div>
 
-                               // ⚖️ Identity Gating for Resonance
-                               if (!profile.is_verified) {
-                                  alert("SEAL YOUR TRUTH: Identity synchronization is required to initiate resonance with aspirants. Browsing is currently observation-only.");
-                                  return;
-                               }
-
-                               try {
-                                  await MessagingService.createMatch(profile.user_id, selectedProfile.user_id);
-                                  alert("Resonance Established. Opening Portal...");
-                                  setSelectedProfile(null);
-                               } catch (e) { alert("Resonance already exists."); }
-                            }} 
-                            size="xl" 
-                            className={cn(
-                               "flex-1 shadow-mat-rose transition-all",
-                               !profile?.is_verified && "opacity-50 grayscale hover:scale-100"
-                            )}
+                        <div className="grid grid-cols-2 gap-4 pt-4">
+                           {/* Primary Action: Ping */}
+                           <Button 
+                             onClick={() => handleAction('ping', selectedProfile)}
+                             className={cn(
+                               "col-span-2 h-16 rounded-2xl bg-mat-wine text-mat-cream font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl hover:scale-[1.02] active:scale-95 transition-all",
+                               !profile?.is_verified && "opacity-50 grayscale"
+                             )}
                            >
                               {profile?.is_verified ? (
-                                <><Heart className="mr-6" size={28} fill="currentColor" /> Initiate Resonance</>
+                                <><MessageSquarePlus size={20} /> Ping Resonance</>
                               ) : (
-                                <><Lock className="mr-6" size={28} /> Verification Required</>
+                                <><Lock size={20} /> Verification Required</>
                               )}
                            </Button>
-                           <Button onClick={() => toggleShortlist(selectedProfile.user_id)} variant="outline" size="xl" className="flex-1">
-                               {shortlistedIds.has(selectedProfile.user_id) ? "Shortlisted" : "Intentional Save"}
+
+                           {/* Secondary Actions */}
+                           <Button onClick={() => handleAction('block', selectedProfile)} variant="outline" className="h-14 rounded-2xl border-mat-rose/20 text-mat-wine/60 font-bold uppercase tracking-widest text-[9px] hover:bg-mat-wine/5 flex items-center justify-center gap-2">
+                              <UserX size={14} /> Block
+                           </Button>
+                           <Button onClick={() => handleAction('report', selectedProfile)} variant="outline" className="h-14 rounded-2xl border-mat-rose/20 text-mat-wine/60 font-bold uppercase tracking-widest text-[9px] hover:bg-mat-wine/5 flex items-center justify-center gap-2">
+                              <ShieldAlert size={14} /> Report
+                           </Button>
+                           <Button onClick={() => handleAction('never_show', selectedProfile)} variant="ghost" className="col-span-2 h-12 text-mat-wine/30 font-black uppercase tracking-[0.3em] text-[8px] hover:text-mat-wine hover:bg-transparent flex items-center justify-center gap-2">
+                              <EyeOff size={10} /> Never Show Again
                            </Button>
                         </div>
                      </div>
                   </motion.div>
                </div>
             )}
-         </AnimatePresence>
+          </AnimatePresence>
       </div>
     </TooltipProvider>
   );

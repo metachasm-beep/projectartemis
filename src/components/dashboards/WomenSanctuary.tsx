@@ -4,6 +4,7 @@ import { AnimatePresence } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
+import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import AdUnit from '@/components/common/AdUnit';
 import { VerificationModal } from '@/components/verification/VerificationModal';
 import { SanctuaryService } from '@/services/sanctuary';
@@ -193,6 +194,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
              className="mt-16 bg-white border-mat-rose/10 opacity-60" 
              ads_accepted={profile.data_processing_consent?.ads_accepted}
            />
+        </div>
+
+        <div className="mt-40 border-t border-mat-gold/10 pt-20">
+           <Leaderboard isInline={true} />
         </div>
 
         {/* ─── SCENE 3: THE COVEN (INLINE) ─── */}
