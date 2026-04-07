@@ -7,9 +7,10 @@ export interface TrumpStats {
   sobriquet: string;
   weightClass: string;
   signatureMove: string;
+  trustFactor: number;
 }
 
-export const mapToTrumpStats = (profile: { name: string; bio: string; status: string }): TrumpStats => {
+export const mapToTrumpStats = (profile: { name: string; bio: string; status: string; is_verified?: boolean }): TrumpStats => {
   const bio = profile.bio.toLowerCase();
   const name = profile.name.toUpperCase().split(' ')[0];
   
@@ -53,12 +54,17 @@ export const mapToTrumpStats = (profile: { name: string; bio: string; status: st
   else if (bio.includes('chess')) signatureMove = 'Grandmaster Opening';
   else if (bio.includes('baker')) signatureMove = 'Sourdough Catalyst';
   else if (bio.includes('lawyer')) signatureMove = 'Sovereign Verdict';
+
+  // 8. Trust Factor
+  const trustFactor = profile.is_verified ? 99 : 42;
+
   return {
     charisma,
     stamina,
     intellect,
     vibe,
     social,
+    trustFactor,
     sobriquet: sobriquet.toUpperCase(),
     weightClass: weightClass.toUpperCase(),
     signatureMove: signatureMove.toUpperCase()

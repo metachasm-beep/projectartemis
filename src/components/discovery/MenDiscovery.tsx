@@ -67,7 +67,7 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
         <CircularGallery 
           items={galleryItems}
           bend={0}
-          borderRadius={0.09}
+          borderRadius={0.23}
           scrollSpeed={2.9}
           scrollEase={0.11}
         />

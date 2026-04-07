@@ -8,6 +8,7 @@ export interface AspirantProfile {
   bio: string;
   img: string;
   height?: number; // Used for masonry layout calculation
+  is_verified?: boolean;
 }
 
 export const DUMMY_ASPIRANTS: AspirantProfile[] = [
@@ -64,7 +65,8 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'International corporate lawyer. World traveler. Seeking a sovereign partner.',
     img: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1287&auto=format&fit=crop',
-    height: 1700
+    height: 1700,
+    is_verified: true
   },
   {
     id: 'm6',

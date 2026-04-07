@@ -1,8 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Zap, Brain, Flame, Users, Home, Sword, Crosshair } from 'lucide-react';
+import { Zap, Brain, Flame, Users, Sword, Crosshair } from 'lucide-react';
 import { mapToTrumpStats } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
+import { VerificationBadge } from '@/components/verification/VerificationBadge';
+import { Lock } from 'lucide-react';
 
 interface TrumpCardProps {
   profile: {
@@ -12,13 +14,16 @@ interface TrumpCardProps {
     img: string;
     status: string;
     bio: string;
+    is_verified?: boolean;
   };
   onClose?: () => void;
   onAction?: () => void;
 }
 
 export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction }) => {
-  const stats = mapToTrumpStats({ name: profile.name, bio: profile.bio, status: profile.status });
+  const stats = mapToTrumpStats(profile);
+  const isHighRank = profile.status?.toLowerCase().includes('imperial') || profile.status?.toLowerCase().includes('vanguard');
+  const needsVerification = isHighRank && !profile.is_verified;
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
 
   const statItems = [
@@ -82,11 +87,17 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
         <div className="grid grid-cols-2 gap-4 text-left">
           <div className="space-y-1">
-             <div className="flex items-center gap-1">
-                <Home size={10} className="text-mat-gold/60" />
-                <span className="text-[7px] font-black text-white/40 uppercase tracking-widest">Hometown</span>
-             </div>
-             <p className="text-[10px] font-black text-mat-cream uppercase leading-none">{profile.city}</p>
+            <div className="flex flex-col">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-2xl font-black italic uppercase tracking-wider text-mat-cream font-['Roboto Condensed']">
+                    {profile.name}
+                  </h3>
+                  <VerificationBadge verified={profile.is_verified} />
+                </div>
+                <p className="text-[10px] uppercase tracking-[0.3em] font-bold text-mat-gold/80 mt-1">
+                  {profile.age} • {profile.city.toUpperCase()}
+                </p>
+            </div>
           </div>
           <div className="space-y-1">
              <div className="flex items-center gap-1">
@@ -102,15 +113,30 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
              {stats.weightClass}
            </span>
            <div className="flex gap-2">
-             {onAction && (
-               <Button 
-                 size="sm" 
-                 onPress={onAction}
-                 className="h-7 bg-mat-gold text-mat-obsidian text-[8px] font-black px-4 rounded-none border border-mat-obsidian"
-               >
-                 LET'S WRESTLE
-               </Button>
-             )}
+             {/* Action Button */}
+          <div className="mt-8 relative z-40">
+            {needsVerification ? (
+              <div className="space-y-3">
+                 <div className="flex items-center gap-2 justify-center py-2 px-2 rounded-lg bg-red-500/10 border border-red-500/20">
+                    <Lock size={10} className="text-red-500" />
+                    <span className="text-[8px] uppercase tracking-widest font-bold text-red-400">Restricted Access: Verification Required</span>
+                 </div>
+                 <Button 
+                   className="w-full h-14 bg-white/5 text-white/20 rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] border border-white/10 cursor-not-allowed"
+                   isDisabled
+                 >
+                   Sync Identity to Unlock
+                 </Button>
+              </div>
+            ) : (
+              <Button 
+                onPress={onAction}
+                className="w-full h-14 bg-mat-gold text-black rounded-2xl font-black uppercase tracking-[0.2em] text-[11px] shadow-[0_0_30px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-all hover:shadow-[0_0_50px_rgba(212,175,55,0.6)]"
+              >
+                Initiate Connection Protocol
+              </Button>
+            )}
+          </div>
               {onClose && (
                 <Button 
                   isIconOnly

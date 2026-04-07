@@ -44,7 +44,11 @@ export const DashboardLayout: React.FC = () => {
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
             <motion.div key="discovery" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <Discovery />
+              {profile?.role === 'woman' ? (
+                <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
+              ) : (
+                <Discovery />
+              )}
             </motion.div>
           )}
 

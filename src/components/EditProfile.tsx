@@ -17,8 +17,8 @@ import {
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Tooltip } from '@/components/ui/tooltip';
-import type { MatriarchProfile } from '../App';
+import { Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+import type { MatriarchProfile } from '@/types';
 import { turso, tursoHelpers } from '@/lib/turso';
 import { compressImage } from '@/lib/image-utils';
 import { uploadToCloudinary } from '@/lib/cloudinary';
@@ -44,10 +44,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-
   const extractPublicId = (url: string) => {
     try {
-      // https://res.cloudinary.com/cloud_name/image/upload/v12345/public_id.jpg
       const parts = url.split('/');
       const filename = parts[parts.length - 1];
       const publicId = filename.split('.')[0];
@@ -58,6 +56,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
   };
 
   const handlePhotoUpload = async (file: File) => {
+    if (profile.is_verified) {
+      setError("IDENTITY LOCKED: Biometric verification seals your visual narrative. To update photos, a new verification cycle must be initiated.");
+      return;
+    }
+
     if ((formData.photos?.length || 0) >= PHOTO_LIMIT) {
       setError(`Maximum limit of ${PHOTO_LIMIT} photos reached.`);
       return;
@@ -80,6 +83,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
   };
 
   const handleDeletePhoto = async (index: number) => {
+    if (profile.is_verified) {
+      setError("IDENTITY LOCKED: Verified photos cannot be removed without re-authorizing your biometric identity.");
+      return;
+    }
+
     const photoUrl = formData.photos?.[index];
     if (!photoUrl) return;
 
@@ -89,7 +97,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     try {
       const publicId = extractPublicId(photoUrl);
       if (publicId) {
-        // Call backend to delete from Cloudinary
         const apiUrl = import.meta.env.VITE_API_URL || '';
         await fetch(`${apiUrl}/api/v1/media/delete`, {
           method: 'POST',
@@ -112,7 +119,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     setLoading(true);
     setError(null);
     try {
-      // 1. Prepare data for Turso
       const updates = {
         full_name: formData.full_name,
         bio: formData.bio,
@@ -153,7 +159,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
 
   return (
     <div className="w-full max-w-2xl mx-auto p-4 md:p-8 space-y-12 pb-32">
-       {/* Header */}
        <div className="flex justify-between items-end border-b border-mat-rose/10 pb-8">
           <div className="space-y-4">
              <div className="flex items-center gap-3">
@@ -169,76 +174,104 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
           </button>
        </div>
 
-       {/* Form Sections */}
        <div className="grid grid-cols-1 gap-12">
-          
-          {/* Photos Manager */}
           <section className="space-y-8">
              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
-                   <Tooltip content="Upload up to 6 high-quality photos to tell your story.">
-                      <Camera className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                   <Tooltip>
+                      <TooltipTrigger>
+                         <Camera className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                      </TooltipTrigger>
+                      <TooltipContent>Upload up to 6 high-quality photos to tell your story.</TooltipContent>
                    </Tooltip>
                    <h3 className="text-[11px] font-bold uppercase tracking-widest text-mat-wine">Visual Narrative</h3>
                 </div>
-                <span className="text-[9px] font-bold text-mat-rose/40 uppercase tracking-widest">
-                   {(formData.photos?.length || 0)} / {PHOTO_LIMIT} Photos
-                </span>
+                {profile.is_verified ? (
+                   <div className="flex items-center gap-2 px-3 py-1 bg-mat-gold/10 border border-mat-gold/20 rounded-full">
+                      <ShieldCheck size={10} className="text-mat-gold" />
+                      <span className="text-[8px] font-black text-mat-gold uppercase tracking-widest">Identity Sealed</span>
+                   </div>
+                ) : (
+                   <span className="text-[9px] font-bold text-mat-rose/40 uppercase tracking-widest">
+                      {(formData.photos?.length || 0)} / {PHOTO_LIMIT} Photos
+                   </span>
+                )}
              </div>
 
              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {formData.photos?.map((url, i) => (
-                  <motion.div 
-                    key={url}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm"
-                  >
-                     <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:sepia-[0.3]" />
-                     <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <button 
-                          onClick={() => handleDeletePhoto(i)}
-                          className="w-12 h-12 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose hover:text-white transition-all shadow-xl"
-                        >
-                           <Trash2 size={20} />
-                        </button>
-                     </div>
-                  </motion.div>
+                   <motion.div 
+                     key={url}
+                     initial={{ opacity: 0, scale: 0.9 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm"
+                   >
+                      <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:sepia-[0.3]" />
+                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                         <button 
+                           onClick={() => handleDeletePhoto(i)}
+                           className="w-12 h-12 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose hover:text-white transition-all shadow-xl"
+                         >
+                            <Trash2 size={20} />
+                         </button>
+                      </div>
+                   </motion.div>
                 ))}
 
-                {(formData.photos?.length || 0) < PHOTO_LIMIT && (
+                 {profile.is_verified && (
+                    <div className="col-span-full p-6 rounded-3xl bg-mat-gold/5 border border-mat-gold/10 flex flex-col items-center text-center space-y-3">
+                       <ShieldCheck size={32} className="text-mat-gold opacity-40" />
+                       <div className="space-y-1">
+                          <p className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em]">Biometric Shield Active</p>
+                          <p className="text-[9px] font-medium text-mat-gold/60 uppercase leading-relaxed max-w-[280px]">
+                             Your visual identity is locked to maintain the integrity of your verified status. 
+                             Contact protocol security to initiate a re-scan.
+                          </p>
+                       </div>
+                    </div>
+                 )}
+
+                 {(formData.photos?.length || 0) < PHOTO_LIMIT && !profile.is_verified && (
                   <div className="grid grid-cols-1 gap-4">
-                    <Tooltip content="Add a new photo from your device.">
-                       <label className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-rose/20 bg-mat-rose/[0.02] hover:bg-mat-rose/5 transition-all cursor-pointer group">
-                          <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
-                          <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                             <Plus className="text-mat-rose w-6 h-6" />
-                          </div>
-                          <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Upload</span>
-                       </label>
+                    <Tooltip>
+                       <TooltipTrigger asChild>
+                          <label className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-rose/20 bg-mat-rose/[0.02] hover:bg-mat-rose/5 transition-all cursor-pointer group">
+                             <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
+                             <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                <Plus className="text-mat-rose w-6 h-6" />
+                             </div>
+                             <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Upload</span>
+                          </label>
+                       </TooltipTrigger>
+                       <TooltipContent>Add a new photo from your device.</TooltipContent>
                     </Tooltip>
                     
-                    <Tooltip content="Capture a new photo with your camera.">
-                       <button 
-                         onClick={() => setShowCamera(true)}
-                         className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-gold/20 bg-mat-gold/[0.02] hover:bg-mat-gold/5 transition-all group"
-                       >
-                          <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                             <Camera className="text-mat-gold w-6 h-6" />
-                          </div>
-                          <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Capture</span>
-                       </button>
+                    <Tooltip>
+                       <TooltipTrigger asChild>
+                          <button 
+                            onClick={() => setShowCamera(true)}
+                            className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-gold/20 bg-mat-gold/[0.02] hover:bg-mat-gold/5 transition-all group"
+                          >
+                             <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
+                                <Camera className="text-mat-gold w-6 h-6" />
+                             </div>
+                             <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Capture</span>
+                          </button>
+                       </TooltipTrigger>
+                       <TooltipContent>Capture a new photo with your camera.</TooltipContent>
                     </Tooltip>
                   </div>
                 )}
              </div>
           </section>
 
-          {/* Basic Information */}
           <section className="space-y-8">
              <div className="flex items-center gap-4">
-                <Tooltip content="Share the core details of your life.">
-                   <User className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                <Tooltip>
+                   <TooltipTrigger>
+                      <User className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                   </TooltipTrigger>
+                   <TooltipContent>Share the core details of your life.</TooltipContent>
                 </Tooltip>
                 <h3 className="text-[11px] font-bold uppercase tracking-widest text-mat-wine">Foundational Roots</h3>
              </div>
@@ -247,8 +280,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 <div className="space-y-3">
                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
                       Full Name
-                      <Tooltip content="How you will be addressed within the sanctuary.">
-                         <Info size={12} className="opacity-40" />
+                      <Tooltip>
+                         <TooltipTrigger>
+                            <Info size={12} className="opacity-40" />
+                         </TooltipTrigger>
+                         <TooltipContent>How you will be addressed within the sanctuary.</TooltipContent>
                       </Tooltip>
                    </label>
                    <Input 
@@ -262,8 +298,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 <div className="space-y-3">
                    <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
                       Your Bio
-                      <Tooltip content="A poetic summary of who you are and what you seek.">
-                         <Info size={12} className="opacity-40" />
+                      <Tooltip>
+                         <TooltipTrigger>
+                            <Info size={12} className="opacity-40" />
+                         </TooltipTrigger>
+                         <TooltipContent>A poetic summary of who you are and what you seek.</TooltipContent>
                       </Tooltip>
                    </label>
                    <textarea 
@@ -306,7 +345,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              </div>
           </section>
 
-          {/* Secondary Details */}
           <section className="space-y-8">
              <div className="flex items-center gap-4">
                 <BookOpen className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
@@ -336,11 +374,13 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              </div>
           </section>
 
-          {/* Role Status (Locked Warning) */}
           <section className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-wine/10 space-y-6">
              <div className="flex items-center gap-4">
-                <Tooltip content="Your role and verification status determine your standing in the sanctuary.">
-                  <ShieldCheck size={20} className="text-mat-wine" />
+                <Tooltip>
+                   <TooltipTrigger>
+                      <ShieldCheck size={20} className="text-mat-wine" />
+                   </TooltipTrigger>
+                   <TooltipContent>Your role and verification status determine your standing in the sanctuary.</TooltipContent>
                 </Tooltip>
                 <div className="space-y-1">
                    <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Sanctuary Standing</span>
@@ -357,7 +397,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              </div>
           </section>
 
-          {/* Action Footer */}
           <div className="pt-8 flex flex-col sm:flex-row gap-4">
              <Button 
                 disabled={loading || success}
@@ -398,10 +437,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 <p className="text-[10px] font-bold text-red-600 uppercase tracking-widest text-center">{error}</p>
              </motion.div>
           )}
-
        </div>
 
-       {/* Camera Overlay */}
        <AnimatePresence>
           {showCamera && (
              <CameraCapture 

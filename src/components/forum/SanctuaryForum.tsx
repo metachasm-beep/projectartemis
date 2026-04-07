@@ -1,22 +1,87 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@heroui/react';
-import { Sparkles, PenTool, Hash, RefreshCw, X } from 'lucide-react';
+import { Sparkles, PenTool, Hash, RefreshCw, X, ShieldAlert, Lock, Fingerprint } from 'lucide-react';
 import { ForumService } from '@/lib/forumService';
 import { ForumPost } from './ForumPost';
 import type { PostProps } from './ForumPost';
 import { MarkdownEditor } from './MarkdownEditor';
+import type { MatriarchProfile } from '@/types';
 
 const CATEGORIES = ["Safety", "Health", "Career", "Dating Advice", "General"];
 
-export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+/**
+ * 🔒 Protocol Denied Overlay: High-fidelity interference for unverified access.
+ */
+const ProtocolDeniedOverlay: React.FC<{ onClose: () => void; isUnverified: boolean }> = ({ onClose, isUnverified }) => (
+   <motion.div 
+     initial={{ opacity: 0 }}
+     animate={{ opacity: 1 }}
+     className="fixed inset-0 z-[200] bg-mat-obsidian/95 backdrop-blur-3xl flex flex-col items-center justify-center p-8 text-center"
+   >
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="max-w-md w-full space-y-8"
+      >
+         <div className="relative inline-block">
+            <div className="absolute -inset-4 bg-mat-rose/20 rounded-full blur-2xl animate-pulse" />
+            <div className="relative w-24 h-24 bg-white/5 border border-mat-rose/30 rounded-full flex items-center justify-center mx-auto shadow-2xl">
+               <ShieldAlert size={40} className="text-mat-rose animate-bounce" />
+            </div>
+         </div>
+
+         <div className="space-y-4">
+            <h2 className="text-4xl font-black italic uppercase tracking-tighter text-mat-cream font-['Impact']">Protocol Denied</h2>
+            <div className="h-px w-24 bg-mat-gold/30 mx-auto" />
+            <p className="text-sm text-mat-cream/60 leading-relaxed uppercase tracking-widest font-medium">
+               {isUnverified 
+                 ? "ENTRY DENIED: This sovereign conduit is reserved for Verified Matriarchs. Biometric Synchronization is required to access the Coven."
+                 : "ACCESS RESTRICTED: Your current identification tier is insufficient to resonate within this exclusive sanctuary."}
+            </p>
+         </div>
+
+         <div className="flex flex-col gap-4 pt-8">
+            {isUnverified && (
+               <Button 
+                  className="h-16 bg-mat-gold text-black font-black uppercase tracking-[0.2em] text-[10px] rounded-2xl shadow-[0_0_30px_rgba(212,175,55,0.3)] hover:scale-105 transition-all flex items-center justify-center gap-3"
+                  onPress={() => { window.dispatchEvent(new CustomEvent('OPEN_VERIFICATION')); onClose(); }}
+               >
+                  <Fingerprint size={18} />
+                  Establish Identity Sync
+               </Button>
+            )}
+            <Button 
+               variant="ghost"
+               className="h-14 border border-white/10 text-white/40 hover:text-white hover:bg-white/5 uppercase tracking-widest text-[9px] font-bold rounded-2xl transition-all"
+               onPress={onClose}
+            >
+               Retreat to Sanctuary
+            </Button>
+         </div>
+
+         <div className="pt-12">
+            <div className="flex items-center justify-center gap-2 text-mat-gold/20">
+               <Lock size={10} />
+               <span className="text-[8px] font-black uppercase tracking-[0.4em]">Encrypted Handshake Protocol v1.0.4</span>
+            </div>
+         </div>
+      </motion.div>
+   </motion.div>
+);
+
+export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () => void; isInline?: boolean }> = ({ profile, onClose, isInline }) => {
   const [topics, setTopics] = useState<PostProps[]>([]);
   const [loading, setLoading] = useState(true);
   const [isComposing, setIsComposing] = useState(false);
   const [composerTitle, setComposerTitle] = useState("");
   const [composerCategory, setComposerCategory] = useState("Safety");
 
+  const isVerifiedMatriarch = profile.is_verified && profile.role === 'woman';
+
   const loadTopics = async () => {
+     if (!isVerifiedMatriarch) return;
      setLoading(true);
      try {
         const data = await ForumService.getTopics();
@@ -30,10 +95,11 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
 
   useEffect(() => {
      loadTopics();
-     // Fast Poll for demo purposes (Task 3: Real-time via polling)
-     const pollId = setInterval(loadTopics, 15000);
-     return () => clearInterval(pollId);
-  }, []);
+     if (isVerifiedMatriarch) {
+        const pollId = setInterval(loadTopics, 15000);
+        return () => clearInterval(pollId);
+     }
+  }, [isVerifiedMatriarch]);
 
   const handleComposeSubmit = async (content: string) => {
      try {
@@ -46,10 +112,19 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
      }
   };
 
+  // 🛡️ Access Gating Logic
+  if (!isVerifiedMatriarch) {
+     return (
+       <div className={isInline ? "relative w-full min-h-[500px]" : ""}>
+         <ProtocolDeniedOverlay onClose={onClose} isUnverified={!profile.is_verified} />
+       </div>
+     );
+  }
+
   return (
-    <div className="fixed inset-0 z-[150] bg-mat-obsidian overflow-y-auto flex flex-col">
+    <div className={isInline ? "relative w-full bg-[#050505] flex flex-col pt-12" : "fixed inset-0 z-[150] bg-mat-obsidian overflow-y-auto flex flex-col"}>
        {/* HEADER */}
-       <div className="sticky top-0 z-50 bg-[#111]/80 backdrop-blur-2xl border-b border-mat-gold/20 px-6 py-4 flex items-center justify-between shadow-2xl">
+       <div className={`${isInline ? "relative" : "sticky top-0 z-50"} bg-[#111]/80 backdrop-blur-2xl border-b border-mat-gold/20 px-6 py-4 flex items-center justify-between shadow-2xl`}>
           <div className="flex flex-col">
              <div className="flex items-center gap-2 text-mat-gold">
                 <Sparkles size={16} className="animate-pulse" />
@@ -65,14 +140,16 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
                 <PenTool size={14} className="mr-1"/>
                 <span className="hidden xs:inline">Draft</span> Protocol
              </Button>
-             <Button isIconOnly variant="ghost" onPress={onClose} className="text-white/40 hover:text-white rounded-full">
-                <X size={20} />
-             </Button>
+             {!isInline && (
+                <Button isIconOnly variant="ghost" onPress={onClose} className="text-white/40 hover:text-white rounded-full">
+                   <X size={20} />
+                </Button>
+             )}
           </div>
        </div>
 
        {/* FEED */}
-       <div className="flex-1 container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl">
+       <div className={`${isInline ? "" : "flex-1"} container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-7xl`}>
           {loading && topics.length === 0 ? (
              <div className="flex items-center justify-center py-32 text-mat-gold/50 animate-spin">
                 <RefreshCw size={32} />

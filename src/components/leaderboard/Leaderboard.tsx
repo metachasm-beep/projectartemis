@@ -5,12 +5,12 @@ import {
   Medal, 
   ArrowLeft, 
   Sparkles, 
-  ShieldCheck, 
   TrendingUp,
   MapPin
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SanctuaryService } from '@/services/sanctuary';
+import { VerificationBadge } from '../verification/VerificationBadge';
 
 interface LeaderboardProps {
   onClose: () => void;
@@ -119,11 +119,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank }) => 
                                className="w-12 h-12 md:w-16 md:h-16 rounded-2xl object-cover border border-white/10 grayscale-[0.5] group-hover:grayscale-0 transition-all"
                                alt=""
                              />
-                             {aspirant.is_verified && (
-                               <div className="absolute -bottom-1 -right-1 bg-mat-gold rounded-full p-1 border-2 border-mat-obsidian">
-                                  <ShieldCheck size={10} className="text-mat-obsidian" />
-                               </div>
-                             )}
+                             <div className="absolute -bottom-1 -right-1 scale-75 origin-bottom-right">
+                                <VerificationBadge verified={aspirant.is_verified} />
+                             </div>
                           </div>
                           <div>
                              <h4 className="text-lg md:text-xl font-bold italic text-white leading-none">
