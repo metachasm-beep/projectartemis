@@ -13,7 +13,8 @@ import {
   X,
   Lock,
   MapPin,
-  Trophy
+  Trophy,
+  Crown
 } from 'lucide-react';
 import { mapToTrumpStats } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
@@ -44,154 +45,206 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
 
   const statItems = [
-    { label: 'Charisma', value: stats.charisma, icon: Flame, color: 'text-orange-500' },
-    { label: 'Stamina', value: stats.stamina, icon: Zap, color: 'text-yellow-400' },
-    { label: 'Intellect', value: stats.intellect, icon: Brain, color: 'text-blue-400' },
-    { label: 'Vibe', value: stats.vibe, icon: Crosshair, color: 'text-mat-rose' },
-    { label: 'Social', value: stats.social, icon: Users, color: 'text-green-400' },
+    { label: 'CHARISMA', value: stats.charisma, color: 'from-orange-600 to-orange-400' },
+    { label: 'STAMINA', value: stats.stamina, color: 'from-yellow-600 to-yellow-400' },
+    { label: 'INTELLECT', value: stats.intellect, color: 'from-blue-600 to-blue-400' },
+    { label: 'RESONANCE', value: stats.vibe, color: 'from-rose-600 to-rose-400' },
+    { label: 'INFLUENCE', value: stats.social, color: 'from-emerald-600 to-emerald-400' },
   ];
+
+  // Calculate total power level
+  const powerLevel = Math.round((stats.charisma + stats.stamina + stats.intellect + stats.vibe + stats.social) / 5);
 
   return (
     <motion.div 
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[420px] aspect-[2/3.4] bg-mat-obsidian border-[6px] border-mat-gold rounded-[2.5rem] shadow-[0_0_80px_rgba(191,160,106,0.4)] overflow-hidden flex flex-col"
+      className="relative w-full max-w-[420px] aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_100px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group"
     >
-      {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-40 mix-blend-overlay" />}
+      {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
-      {/* CARD HEADER */}
-      <div className="absolute top-0 left-0 w-full h-14 bg-mat-gold flex items-center justify-between px-6 z-20">
-        <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Matriarch Protocol</span>
-        <h2 className="mat-text-impact text-mat-obsidian text-xl tracking-tighter uppercase">
-          {stats.sobriquet}
-        </h2>
-        {onClose ? (
-           <button onClick={onClose} className="p-1 hover:scale-110 transition-transform"><X size={18} className="text-mat-obsidian" /></button>
-        ) : <div className="w-4" />}
+      {/* 🏆 WRESTLING CARD HEADER */}
+      <div className="absolute top-0 left-0 w-full h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl">
+        <div className="flex flex-col">
+           <span className="text-[8px] font-black uppercase tracking-[0.3em] text-mat-obsidian/60 italic leading-none">Matriarch League</span>
+           <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Series 01 // Aspirant</span>
+        </div>
+        <div className="flex items-center gap-4">
+           <div className="flex flex-col items-end">
+              <span className="text-[8px] font-black uppercase text-mat-obsidian/60">Power Lvl</span>
+              <span className="mat-text-impact text-mat-obsidian text-2xl leading-none">{powerLevel}</span>
+           </div>
+           {onClose && (
+              <button onClick={onClose} className="w-8 h-8 rounded-full bg-mat-obsidian/10 flex items-center justify-center hover:bg-mat-obsidian/20 transition-colors">
+                <X size={18} className="text-mat-obsidian" />
+              </button>
+           )}
+        </div>
       </div>
 
-      {/* HERO IMAGE */}
-      <div className="relative h-[48%] mt-14 overflow-hidden border-b-[3px] border-mat-gold">
+      {/* 🖼️ HERO PORTRAIT */}
+      <div className="relative h-[42%] mt-16 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700">
         <img 
           src={profile.img} 
-          className="w-full h-full object-cover mat-gritty-filter scale-110" 
+          className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
           alt={profile.name}
         />
-        <div className="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent z-10">
+        
+        {/* Status Badge */}
+        <div className="absolute top-6 left-6 z-20">
+           <div className="px-4 py-1.5 bg-mat-gold text-mat-obsidian rounded-full flex items-center gap-2 shadow-2xl border-2 border-mat-obsidian/10">
+              <Crown size={12} fill="currentColor" />
+              <span className="text-[9px] font-black uppercase tracking-widest">{profile.status}</span>
+           </div>
+        </div>
+
+        <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/60 to-transparent z-10">
            <div className="flex items-center gap-3">
-              <p className="mat-text-impact text-mat-gold text-4xl italic drop-shadow-[0_4px_4px_rgba(0,0,0,0.5)]">
-                {profile.name.toUpperCase()}
+              <p className="mat-text-impact text-mat-gold text-5xl italic drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tighter">
+                {profile.name.split(' ')[0].toUpperCase()}
               </p>
               <VerificationBadge verified={profile.is_verified} />
            </div>
-           <p className="text-[10px] uppercase tracking-[0.4em] font-black text-white/50 mt-1">
+           <p className="text-[11px] uppercase tracking-[0.5em] font-black text-white/70 mt-1 drop-shadow-md">
              Age {profile.age} • {profile.city.toUpperCase()}
            </p>
         </div>
       </div>
 
-      {/* STATS & MINI DOSSIER */}
-      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-md p-6 flex flex-col justify-between">
+      {/* 📜 CONSOLIDATED INTEL (ALL STATS ON ONE CARD) */}
+      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative">
         
-        {/* Core Stats Bar */}
-        <div className="grid grid-cols-5 gap-3">
+        {/* Bio Inlay */}
+        <div className="mb-6">
+           <p className="text-mat-cream/80 text-[11px] leading-relaxed font-light line-clamp-2 italic">
+              "{profile.bio}"
+           </p>
+        </div>
+
+        {/* 📊 WRESTLING STYLE STAT SLIDERS (LABEL + BAR) */}
+        <div className="space-y-4">
           {statItems.map((s, i) => (
-            <div key={i} className="flex flex-col items-center">
-              <s.icon size={10} className={`${s.color} mb-1.5`} />
-              <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
-                <motion.div 
-                   initial={{ width: 0 }}
-                   animate={{ width: `${s.value}%` }}
-                   className={`h-full ${s.color.replace('text-', 'bg-')}`} 
-                />
-              </div>
+            <div key={i} className="space-y-1.5">
+               <div className="flex items-center justify-between px-1">
+                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">{s.label}</span>
+                  <span className="text-[10px] font-black text-mat-gold italic">{s.value}</span>
+               </div>
+               <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+                  <motion.div 
+                     initial={{ width: 0 }}
+                     animate={{ width: `${s.value}%` }}
+                     transition={{ delay: i * 0.1, duration: 0.8 }}
+                     className={cn("h-full bg-gradient-to-r shadow-[0_0_10px_rgba(255,255,255,0.1)]", s.color)} 
+                  />
+               </div>
             </div>
           ))}
         </div>
 
-        {/* Mini Dossier Summary */}
-        <div className="mt-4 space-y-2 border-y border-white/5 py-4">
-           <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-white/30">
-                 <Trophy size={10} />
-                 <span className="text-[8px] uppercase font-black tracking-widest">Tier</span>
+        {/* 📋 DOSSIER FOOTER */}
+        <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/10 pt-6 pb-2">
+           <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
+                 <Trophy size={14} />
               </div>
-              <span className="text-mat-gold text-[9px] font-bold italic uppercase">{profile.tier}</span>
+              <div className="flex flex-col">
+                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Capital Tier</span>
+                 <span className="text-[9px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
+              </div>
            </div>
-           <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-white/30">
-                 <MapPin size={10} />
-                 <span className="text-[8px] uppercase font-black tracking-widest">Stature</span>
+           <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
+                 <MapPin size={14} />
               </div>
-              <span className="text-mat-cream/60 text-[9px] font-medium">{profile.height_str}</span>
+              <div className="flex flex-col">
+                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Stature</span>
+                 <span className="text-[9px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
+              </div>
            </div>
-           <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2 text-white/30">
-                 <Lock size={10} />
-                 <span className="text-[8px] uppercase font-black tracking-widest">Vocation</span>
+           <div className="flex items-center gap-3 col-span-2">
+              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
+                 <Lock size={14} />
               </div>
-              <span className="text-mat-cream/40 text-[9px] font-medium italic">{profile.vocation}</span>
+              <div className="flex flex-col">
+                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Core Vocation</span>
+                 <span className="text-[9px] font-bold text-mat-cream/50 italic truncate">{profile.vocation}</span>
+              </div>
            </div>
         </div>
 
-        {/* REFINED ENGAGEMENT MATRIX (Neat Icon-Sized Buttons) */}
-        <div className="flex items-center justify-center gap-5 mt-4">
+        {/* ⚡ ARTISTIC ENGAGEMENT MATRIX (CENTERED ICON BUTTONS) */}
+        <div className="flex items-center justify-center gap-6 pt-6">
+           
+           {/* Report Button */}
            <Tooltip>
               <TooltipTrigger>
                  <Button 
                    onPress={() => onAction?.('report')}
                    isIconOnly 
-                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-full p-0"
+                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-mat-wine hover:border-mat-wine transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
                  >
-                    <ShieldAlert size={16} />
+                    <div className="flex items-center justify-center w-full h-full">
+                       <ShieldAlert size={20} />
+                    </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">Report Signal</TooltipContent>
+              <TooltipContent side="top">Seal Presence</TooltipContent>
            </Tooltip>
 
+           {/* Block Button */}
            <Tooltip>
               <TooltipTrigger>
                  <Button 
                    onPress={() => onAction?.('block')}
                    isIconOnly 
-                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-full p-0"
+                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-mat-wine hover:border-mat-wine transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
                  >
-                    <UserX size={16} />
+                    <div className="flex items-center justify-center w-full h-full">
+                       <UserX size={20} />
+                    </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">Purge Resonance</TooltipContent>
+              <TooltipContent side="top">Purge Signal</TooltipContent>
            </Tooltip>
 
+           {/* PRIMARY Ping Button */}
            <Button 
              onPress={() => onAction?.('ping')}
              isIconOnly
              className={cn(
-               "w-12 h-12 min-w-0 rounded-full shadow-2xl transition-all flex items-center justify-center p-0",
-               profile.is_verified ? "bg-mat-gold text-mat-obsidian" : "bg-white/10 text-white/20"
+               "w-16 h-16 min-w-0 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-4 border-mat-gold-dark transition-all flex items-center justify-center p-0 scale-110",
+               profile.is_verified 
+                 ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-obsidian" 
+                 : "bg-white/10 text-white/20 border-white/5"
              )}
            >
-              {profile.is_verified ? <MessageSquarePlus size={24} /> : <Lock size={20} />}
+              <div className="flex items-center justify-center w-full h-full">
+                 {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
+              </div>
            </Button>
 
+           {/* Never Button */}
            <Tooltip>
               <TooltipTrigger>
                  <Button 
                    onPress={() => onAction?.('never_show')}
                    isIconOnly
-                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full p-0"
+                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
                  >
-                    <EyeOff size={14} />
+                    <div className="flex items-center justify-center w-full h-full">
+                       <EyeOff size={18} />
+                    </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="bottom">Filter Protocol</TooltipContent>
+              <TooltipContent side="top">Filter Protocol</TooltipContent>
            </Tooltip>
         </div>
       </div>
 
-      {/* DECORATIVE CROSSHAIR */}
-      <div className="absolute top-16 right-4 text-mat-gold/10 z-0 pointer-events-none">
-         <Crosshair size={100} strokeWidth={0.5} />
+      {/* DECORATIVE CROSSHAIR (Subtle background accent) */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
+         <Crosshair size={200} strokeWidth={0.3} />
       </div>
     </motion.div>
   );
