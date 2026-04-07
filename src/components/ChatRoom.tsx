@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { turso } from '@/lib/turso';
 import { supabase } from '@/lib/supabase';
-import { Send, ChevronLeft, ShieldCheck, Heart, Info, Clock } from 'lucide-react';
+import { Send, ChevronLeft, Heart, Info, Clock } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import SafetyActions from './common/SafetyActions';
 
 interface Message {
   id: string;
@@ -152,14 +153,25 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ otherUserId, onBack }) => {
             </div>
          </div>
          <div className="flex items-center gap-4">
-            <div className="hidden md:flex flex-col items-end opacity-20">
-               <span className="text-[8px] font-black uppercase tracking-widest text-mat-wine">Signal Integrity</span>
-               <div className="flex gap-1 mt-1">
-                  {[1,2,3,4].map(i => <div key={i} className="w-1 h-3 bg-mat-wine rounded-full" />)}
-               </div>
-            </div>
-            <ShieldCheck className="text-mat-rose/20 w-6 h-6" />
-         </div>
+             <div className="hidden md:flex flex-col items-end opacity-20">
+                <span className="text-[8px] font-black uppercase tracking-widest text-mat-wine">Signal Integrity</span>
+                <div className="flex gap-1 mt-1">
+                   {[1,2,3,4].map(i => <div key={i} className="w-1 h-3 bg-mat-wine rounded-full" />)}
+                </div>
+             </div>
+             
+             {/* Active Safety Protocol */}
+             <SafetyActions 
+               variant="icon"
+               userId={otherUserId}
+               userName={otherUser?.full_name}
+               onActionComplete={(action: 'report' | 'block') => {
+                 if (action === 'block' && onBack) {
+                    onBack(); // Immediate Retreat
+                 }
+               }}
+             />
+          </div>
       </div>
 
       {/* Messages Scroll Area */}

@@ -27,17 +27,21 @@ import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
-    "/assets/slideshow/desi-1.png",
-    "/assets/slideshow/desi-2.png",
-    "/assets/slideshow/desi-3.png",
-    "/assets/slideshow/desi-4.png"
+    "/assets/slideshow/desi_dating_1_cafe_1775523638878.png",
+    "/assets/slideshow/desi_dating_2_rooftop_1775523660443.png",
+    "/assets/slideshow/desi_dating_3_neon_1775523754700.png",
+    "/assets/slideshow/desi_dating_4_lounge_1775523860665.png",
+    "/assets/slideshow/desi_dating_5_gallery_1775523883488.png",
+    "/assets/slideshow/desi_dating_6_park_1775523903138.png",
+    "/assets/slideshow/desi_dating_7_drive_1775523924633.png",
+    "/assets/slideshow/desi_dating_8_event_1775523945442.png"
   ];
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % images.length);
-    }, 6000);
+    }, 4500); // More energetic tempo
     return () => clearInterval(timer);
   }, []);
 

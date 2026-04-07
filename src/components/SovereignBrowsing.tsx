@@ -12,6 +12,7 @@ import { MessagingService } from '@/lib/messaging';
 import { SkeletonCard } from './ui/SkeletonCard';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from './ui/card';
+import SafetyActions from './common/SafetyActions';
 
 /**
  * 🍷 SOVEREIGN BROWSING: The Minimalist Discovery Ritual
@@ -171,6 +172,20 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                            <Sparkles size={12} className="text-mat-wine" />
                         </div>
                      )}
+
+                     {/* Sovereign Guard Trigger */}
+                     <div className="absolute top-10 right-10 z-20">
+                        <SafetyActions 
+                          variant="icon"
+                          userId={profile.user_id}
+                          userName={profile.full_name}
+                          onActionComplete={(action: 'report' | 'block') => {
+                            if (action === 'block') {
+                               setProfiles(prev => prev.filter(p => p.user_id !== profile.user_id));
+                            }
+                          }}
+                        />
+                     </div>
                    </CardContent>
                  </Card>
                </motion.div>
