@@ -145,15 +145,16 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                  initial={{ opacity: 0, y: 40 }}
                  animate={{ opacity: 1, y: 0 }}
                  transition={{ delay: (idx % 4) * 0.05 }}
-                 className="group"
+                 className="group cursor-pointer select-none"
+                 onClick={() => setEngagementProfile(profile)}
+                 whileTap={{ scale: 0.98 }}
                >
                  <Card 
-                  onClick={() => setEngagementProfile(profile)} 
                   className={`
-                    relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden cursor-pointer bg-[#111] transition-all duration-700
+                    relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden bg-[#111] transition-all duration-700
                     border-[6px] border-[#222] shadow-[0_10px_30px_rgba(0,0,0,0.5)] 
                     hover:border-mat-gold/80 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]
-                    before:absolute before:inset-0 before:bg-gradient-to-tr before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-[200%] hover:before:animate-[shimmer_2s_infinite] before:z-40
+                    before:absolute before:pointer-events-none before:inset-0 before:bg-gradient-to-tr before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-[200%] hover:before:animate-[shimmer_2s_infinite] before:z-40
                   `}
                  >
                    <CardContent className="p-0 h-full">

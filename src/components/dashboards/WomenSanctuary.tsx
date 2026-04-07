@@ -5,6 +5,8 @@ import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import CircularGallery from '@/components/animations/CircularGallery';
 import MenDiscovery from '@/components/discovery/MenDiscovery';
 import AdUnit from '@/components/common/AdUnit';
+import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
+import { MessageSquarePlus } from 'lucide-react';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -26,9 +28,10 @@ const DUMMY_MEN = [
 
 const GALLERY_ITEMS = DUMMY_MEN.map(m => ({ image: m.image, text: m.title }));
 
-export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
+export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing, onBeginDiscovery }) => {
   const [isBrowsingArray, setIsBrowsingArray] = useState(true);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
+  const [isBrowsingForum, setIsBrowsingForum] = useState(false);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   if (isBrowsingArray) {
@@ -73,6 +76,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
 
   if (isBrowsingDirectory) {
     return <MenDiscovery onClose={() => setIsBrowsingDirectory(false)} />;
+  }
+
+  if (isBrowsingForum) {
+    return <SanctuaryForum onClose={() => setIsBrowsingForum(false)} />;
   }
 
   return (
@@ -133,7 +140,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
               </div>
 
               {/* The Massive Portal Actions */}
-              <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                  <Button 
                    onPress={() => setIsBrowsingArray(true)} 
                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-mat-rose/20 bg-mat-wine border-none p-0"
@@ -154,7 +161,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                  </Button>
 
                  <Button 
-                   onPress={() => setIsBrowsingDirectory(true)} 
+                   onPress={() => {
+                     if (onBeginDiscovery) onBeginDiscovery();
+                   }} 
                    variant="outline"
                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden border-mat-wine/20 bg-white hover:bg-mat-wine/5 transition-all duration-500 p-0"
                  >
@@ -169,6 +178,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                           </div>
                        </div>
                        <ChevronRight size={24} className="text-mat-wine/20 group-hover:text-mat-wine group-hover:translate-x-1" />
+                    </div>
+                 </Button>
+
+                 <Button 
+                   onPress={() => setIsBrowsingForum(true)} 
+                   className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl bg-[#111] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
+                 >
+                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-cream">
+                       <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
+                             <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
+                          </div>
+                          <div className="text-left">
+                             <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold">The Coven</h3>
+                             <p className="text-[8px] font-black uppercase tracking-widest text-white/50 text-left">Exclusive Forums</p>
+                          </div>
+                       </div>
+                       <ChevronRight size={24} className="text-mat-gold/30 group-hover:text-mat-gold group-hover:translate-x-1" />
                     </div>
                  </Button>
               </div>

@@ -19,6 +19,8 @@
 !/src/
 !/public/
 !/backend/
+!/api/
+!/scripts/
 
 # 4. Ignore build artifacts & dependencies within whitelisted folders
 **/node_modules

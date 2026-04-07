@@ -18,7 +18,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   
   const navItems = [
     { id: 'discovery', label: 'My Home', icon: Home },
-    { id: 'profile', label: 'My Profile', icon: User },
+    { id: 'profile', label: profile?.role === 'woman' ? 'Browse' : 'My Profile', icon: User },
     { id: 'messages', label: 'Messages', icon: MessageCircle },
     { id: 'store', label: 'Buy Aura', icon: Wallet },
   ] as const;
