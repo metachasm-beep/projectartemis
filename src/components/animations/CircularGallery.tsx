@@ -370,7 +370,7 @@ class Media {
     
     if (isMobile) {
       this.plane.scale.x = this.viewport.width * 0.85;
-      this.plane.scale.y = this.viewport.height * 0.70;
+      this.plane.scale.y = this.viewport.height * 0.65;
       this.padding = 0.8;
       this.scale = 1; // Unused in this path, but required for typings
     } else {
@@ -653,5 +653,5 @@ export default function CircularGallery({
       app.destroy();
     };
   }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
-  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
+  return <div className="absolute inset-0 overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
 }

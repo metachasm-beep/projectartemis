@@ -47,7 +47,6 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
 
         <div className="flex items-center gap-4 w-full md:w-auto pointer-events-auto">
           <Input 
-            size="sm"
             placeholder="Search by name or city..." 
             className="max-w-xs"
             startContent={<Search size={16} className="text-white/40" />}
@@ -64,7 +63,7 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
       </header>
 
       {/* The 3D Infinite Stream (WebGL Gallery) */}
-      <main className="absolute inset-0 pt-[120px] pb-10 z-0">
+      <main className="absolute inset-0 z-0">
         <CircularGallery 
           items={galleryItems}
           bend={0}
