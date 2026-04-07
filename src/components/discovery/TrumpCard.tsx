@@ -1,20 +1,16 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { 
-  Zap, 
-  Brain, 
-  Flame, 
-  Users, 
-  Crosshair, 
-  MessageSquarePlus, 
-  ShieldAlert, 
-  UserX, 
-  EyeOff,
   X,
   Lock,
   MapPin,
   Trophy,
-  Crown
+  Crown,
+  MessageSquarePlus,
+  ShieldAlert,
+  UserX,
+  EyeOff,
+  Crosshair
 } from 'lucide-react';
 import { mapToTrumpStats } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
@@ -24,6 +20,7 @@ import { cn } from '@/lib/utils';
 
 interface TrumpCardProps {
   profile: {
+    id: string;
     user_id?: string;
     name: string;
     age: number;
@@ -48,8 +45,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
     { label: 'CHARISMA', value: stats.charisma, color: 'from-orange-600 to-orange-400' },
     { label: 'STAMINA', value: stats.stamina, color: 'from-yellow-600 to-yellow-400' },
     { label: 'INTELLECT', value: stats.intellect, color: 'from-blue-600 to-blue-400' },
-    { label: 'RESONANCE', value: stats.vibe, color: 'from-rose-600 to-rose-400' },
-    { label: 'INFLUENCE', value: stats.social, color: 'from-emerald-600 to-emerald-400' },
+    { label: 'VIBE', value: stats.vibe, color: 'from-rose-600 to-rose-400' },
+    { label: 'SOCIAL', value: stats.social, color: 'from-emerald-600 to-emerald-400' },
   ];
 
   // Calculate total power level
@@ -112,7 +109,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
       </div>
 
-      {/* 📜 CONSOLIDATED INTEL (ALL STATS ON ONE CARD) */}
+      {/* 📜 CONSOLIDATED INTEL */}
       <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative">
         
         {/* Bio Inlay */}
@@ -122,15 +119,15 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            </p>
         </div>
 
-        {/* 📊 WRESTLING STYLE STAT SLIDERS (LABEL + BAR) */}
-        <div className="space-y-4">
+        {/* 📊 STAT GRID (3 IN A ROW) */}
+        <div className="grid grid-cols-3 gap-x-4 gap-y-6">
           {statItems.map((s, i) => (
             <div key={i} className="space-y-1.5">
-               <div className="flex items-center justify-between px-1">
-                  <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/40">{s.label}</span>
-                  <span className="text-[10px] font-black text-mat-gold italic">{s.value}</span>
+               <div className="flex items-center justify-between px-0.5">
+                  <span className="text-[7.5px] font-black uppercase tracking-wider text-white/40">{s.label}</span>
+                  <span className="text-[9px] font-black text-mat-gold italic">{s.value}</span>
                </div>
-               <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden border border-white/5">
+               <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
                   <motion.div 
                      initial={{ width: 0 }}
                      animate={{ width: `${s.value}%` }}
@@ -173,7 +170,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            </div>
         </div>
 
-        {/* ⚡ ARTISTIC ENGAGEMENT MATRIX (CENTERED ICON BUTTONS) */}
+        {/* ⚡ ARTISTIC ENGAGEMENT MATRIX */}
         <div className="flex items-center justify-center gap-6 pt-6">
            
            {/* Report Button */}
@@ -189,7 +186,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                     </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="top">Seal Presence</TooltipContent>
+              <TooltipContent side="top">Report</TooltipContent>
            </Tooltip>
 
            {/* Block Button */}
@@ -205,24 +202,29 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                     </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="top">Purge Signal</TooltipContent>
+              <TooltipContent side="top">Block</TooltipContent>
            </Tooltip>
 
            {/* PRIMARY Ping Button */}
-           <Button 
-             onPress={() => onAction?.('ping')}
-             isIconOnly
-             className={cn(
-               "w-16 h-16 min-w-0 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-4 border-mat-gold-dark transition-all flex items-center justify-center p-0 scale-110",
-               profile.is_verified 
-                 ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-obsidian" 
-                 : "bg-white/10 text-white/20 border-white/5"
-             )}
-           >
-              <div className="flex items-center justify-center w-full h-full">
-                 {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
-              </div>
-           </Button>
+           <Tooltip>
+              <TooltipTrigger>
+                <Button 
+                  onPress={() => onAction?.('ping')}
+                  isIconOnly
+                  className={cn(
+                    "w-16 h-16 min-w-0 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-4 border-mat-gold-dark transition-all flex items-center justify-center p-0 scale-110",
+                    profile.is_verified 
+                      ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-obsidian" 
+                      : "bg-white/10 text-white/20 border-white/5"
+                  )}
+                >
+                    <div className="flex items-center justify-center w-full h-full">
+                      {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
+                    </div>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent side="top">Message</TooltipContent>
+           </Tooltip>
 
            {/* Never Button */}
            <Tooltip>
@@ -237,12 +239,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                     </div>
                  </Button>
               </TooltipTrigger>
-              <TooltipContent side="top">Filter Protocol</TooltipContent>
+              <TooltipContent side="top">Hide From View</TooltipContent>
            </Tooltip>
         </div>
       </div>
 
-      {/* DECORATIVE CROSSHAIR (Subtle background accent) */}
+      {/* DECORATIVE CROSSHAIR */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
          <Crosshair size={200} strokeWidth={0.3} />
       </div>

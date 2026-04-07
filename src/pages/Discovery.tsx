@@ -2,20 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/animations/CircularGallery';
 import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
-import { Button } from '@heroui/react';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
-import { 
-  MessageSquarePlus, 
-  ShieldAlert, 
-  UserX, 
-  EyeOff, 
-  Lock,
-  TrendingUp,
-  MapPin,
-  Trophy
-} from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
@@ -46,7 +33,8 @@ export const Discovery: React.FC = () => {
       <div className="absolute inset-0 z-0">
         <CircularGallery 
           items={GALLERY_ITEMS} 
-          bend={3} 
+          bend={0} 
+          scrollSpeed={0.2}
           textColor="#D4AF37" 
           onSelect={handleSelect}
         />
