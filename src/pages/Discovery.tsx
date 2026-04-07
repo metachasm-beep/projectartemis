@@ -21,7 +21,7 @@ import { SanctuaryService } from '@/services/sanctuary';
 import { cn } from '@/lib/utils';
 import { MessagingService } from '@/lib/messaging';
 import { Separator } from '@/components/ui/separator';
-import { TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const Discovery: React.FC = () => {
   const { profile, loading: authLoading } = useAuth();
@@ -160,14 +160,20 @@ export const Discovery: React.FC = () => {
 
             {selectedProfile && (
                <div className="fixed inset-0 z-[300] flex items-center justify-center p-4">
-                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProfile(null)} className="absolute inset-0 bg-mat-wine/98 backdrop-blur-3xl" />
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProfile(null)} className="absolute inset-0 bg-mat-wine/98 backdrop-blur-2xl" />
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.95 }} 
                     animate={{ opacity: 1, scale: 1 }} 
                     exit={{ opacity: 0, scale: 0.95 }} 
                     className="relative w-full max-w-5xl h-fit max-h-[90vh] bg-mat-cream rounded-[4rem] overflow-hidden flex flex-col md:flex-row shadow-mat-premium border border-mat-rose/10"
                   >
-                     <button onClick={() => setSelectedProfile(null)} className="absolute top-8 right-8 z-[110] p-4 rounded-full bg-mat-wine text-mat-cream shadow-2xl hover:scale-110 active:scale-90 transition-all font-black"><X size={24} /></button>
+                     {/* Close Button - Neat & Symmetrical */}
+                     <button 
+                       onClick={() => setSelectedProfile(null)} 
+                       className="absolute top-6 right-6 z-[120] p-3 rounded-full bg-white/40 backdrop-blur-sm text-mat-wine hover:bg-mat-wine hover:text-mat-cream hover:scale-105 active:scale-95 transition-all shadow-sm border border-mat-wine/5"
+                     >
+                        <X size={18} strokeWidth={3} />
+                     </button>
                      
                      <div className="w-full md:w-[45%] h-[30vh] md:h-auto relative overflow-hidden bg-mat-wine/5">
                         <img src={JSON.parse(selectedProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-105" />
@@ -192,32 +198,49 @@ export const Discovery: React.FC = () => {
                            <p className="text-2xl text-mat-wine/90 leading-tight italic font-medium">"{selectedProfile.bio || "The presence is established, awaiting resonance."}"</p>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4 pt-4">
-                           {/* Primary Action: Ping */}
-                           <Button 
-                             onClick={() => handleAction('ping', selectedProfile)}
-                             className={cn(
-                               "col-span-2 h-16 rounded-2xl bg-mat-wine text-mat-cream font-black uppercase tracking-widest text-xs flex items-center justify-center gap-3 shadow-xl hover:scale-[1.02] active:scale-95 transition-all",
-                               !profile?.is_verified && "opacity-50 grayscale"
-                             )}
-                           >
-                              {profile?.is_verified ? (
-                                <><MessageSquarePlus size={20} /> Ping Resonance</>
-                              ) : (
-                                <><Lock size={20} /> Verification Required</>
-                              )}
-                           </Button>
+                        {/* ENGAGEMENT MATRIX: Symmetrical Icon-Only Buttons */}
+                        <div className="flex items-center justify-between gap-6 pt-6 w-full max-w-sm">
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <Button 
+                                   onClick={() => handleAction('ping', selectedProfile)}
+                                   className={cn(
+                                     "w-20 h-20 rounded-[2rem] bg-mat-wine text-mat-cream shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center justify-center",
+                                     !profile?.is_verified && "opacity-50 grayscale"
+                                   )}
+                                 >
+                                    {profile?.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={32} />}
+                                 </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-mat-wine text-mat-cream text-[10px] uppercase font-black tracking-widest px-4 py-2 rounded-full mb-3">Ping Resonance</TooltipContent>
+                           </Tooltip>
 
-                           {/* Secondary Actions */}
-                           <Button onClick={() => handleAction('block', selectedProfile)} variant="outline" className="h-14 rounded-2xl border-mat-rose/20 text-mat-wine/60 font-bold uppercase tracking-widest text-[9px] hover:bg-mat-wine/5 flex items-center justify-center gap-2">
-                              <UserX size={14} /> Block
-                           </Button>
-                           <Button onClick={() => handleAction('report', selectedProfile)} variant="outline" className="h-14 rounded-2xl border-mat-rose/20 text-mat-wine/60 font-bold uppercase tracking-widest text-[9px] hover:bg-mat-wine/5 flex items-center justify-center gap-2">
-                              <ShieldAlert size={14} /> Report
-                           </Button>
-                           <Button onClick={() => handleAction('never_show', selectedProfile)} variant="ghost" className="col-span-2 h-12 text-mat-wine/30 font-black uppercase tracking-[0.3em] text-[8px] hover:text-mat-wine hover:bg-transparent flex items-center justify-center gap-2">
-                              <EyeOff size={10} /> Never Show Again
-                           </Button>
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <Button onClick={() => handleAction('block', selectedProfile)} variant="outline" className="w-16 h-16 rounded-2xl border-mat-rose/20 text-mat-wine/40 hover:text-white hover:bg-mat-wine transition-all flex items-center justify-center p-0">
+                                    <UserX size={24} />
+                                 </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-mat-wine text-mat-cream text-[10px] uppercase font-black tracking-widest px-4 py-2 rounded-full mb-3">Sovereign Block</TooltipContent>
+                           </Tooltip>
+
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <Button onClick={() => handleAction('report', selectedProfile)} variant="outline" className="w-16 h-16 rounded-2xl border-mat-rose/20 text-mat-wine/40 hover:text-white hover:bg-mat-wine transition-all flex items-center justify-center p-0">
+                                    <ShieldAlert size={24} />
+                                 </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-mat-wine text-mat-cream text-[10px] uppercase font-black tracking-widest px-4 py-2 rounded-full mb-3">Signal Report</TooltipContent>
+                           </Tooltip>
+
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <Button onClick={() => handleAction('never_show', selectedProfile)} variant="ghost" className="w-16 h-16 text-mat-wine/20 hover:text-mat-wine hover:bg-transparent transition-all flex items-center justify-center p-0">
+                                    <EyeOff size={24} />
+                                 </Button>
+                              </TooltipTrigger>
+                              <TooltipContent className="bg-mat-wine text-mat-cream text-[10px] uppercase font-black tracking-widest px-4 py-2 rounded-full mb-3">Filter Horizon</TooltipContent>
+                           </Tooltip>
                         </div>
                      </div>
                   </motion.div>
