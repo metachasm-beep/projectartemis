@@ -365,17 +365,22 @@ class Media {
       }
     }
     
-    // Mobile optimization logic
+    // Mobile optimization logic: relative to viewport size
     const isMobile = this.screen.width < 768;
-    this.scale = isMobile ? this.screen.width / 600 : this.screen.height / 1500;
     
-    const heightFactor = isMobile ? 1800 : 900;
-    const widthFactor = isMobile ? 1400 : 700;
-
-    this.plane.scale.y = (this.viewport.height * (heightFactor * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (widthFactor * this.scale)) / this.screen.width;
+    if (isMobile) {
+      this.plane.scale.x = this.viewport.width * 0.85;
+      this.plane.scale.y = this.viewport.height * 0.70;
+      this.padding = 0.8;
+      this.scale = 1; // Unused in this path, but required for typings
+    } else {
+      this.scale = this.screen.height / 1500;
+      this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
+      this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+      this.padding = 2;
+    }
+    
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = isMobile ? 1.5 : 2;
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;

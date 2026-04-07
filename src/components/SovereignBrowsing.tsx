@@ -27,6 +27,7 @@ interface Profile {
   photos: string;
   is_verified: boolean;
   rank_boost_count: number;
+  bio?: string;
 }
 
 export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) => {
@@ -46,7 +47,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
       // 💎 The Root Ascent: Sorting from Lowest Rank to Highest
       const { data, error } = await supabase
         .from('profiles')
-        .select('user_id, full_name, age, photos, is_verified, rank_boost_count')
+        .select('user_id, full_name, age, photos, is_verified, rank_boost_count, bio')
         .eq('role', 'man')
         .eq('onboarding_status', 'COMPLETED')
         .order('rank_boost_count', { ascending: true }) // Lowest to Highest
@@ -116,6 +117,27 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
               const photos = JSON.parse(profile.photos || '[]');
               const status = matchingStatus[profile.user_id] || 'idle';
               
+              let stats = null;
+              try {
+                if (profile.bio) {
+                  const bioObj = typeof profile.bio === 'string' ? JSON.parse(profile.bio) : profile.bio;
+                  stats = bioObj.trump_stats;
+                }
+              } catch(e) {}
+              
+              if (!stats) {
+                stats = {
+                  charisma: Math.floor(Math.random() * 40) + 60, 
+                  stamina: Math.floor(Math.random() * 40) + 60, 
+                  intellect: Math.floor(Math.random() * 40) + 60, 
+                  vibe: Math.floor(Math.random() * 40) + 60, 
+                  social: Math.floor(Math.random() * 40) + 60,
+                  hometown: 'Unknown Origin', 
+                  weight_class: 'Cruiserweight', 
+                  signature_move: 'The Silent Observer'
+                };
+              }
+              
               return (
                <motion.div
                  key={profile.user_id + idx}
@@ -126,23 +148,63 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                >
                  <Card 
                   onClick={() => handleMatch(profile.user_id)} 
-                  className="relative aspect-[3/4] md:aspect-[3/4.5] rounded-[2.5rem] md:rounded-[3.5rem] overflow-hidden border-none cursor-pointer shadow-mat-premium hover:shadow-mat-gold transition-all duration-700 bg-mat-wine/5"
+                  className={`
+                    relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden cursor-pointer bg-[#111] transition-all duration-700
+                    border-[6px] border-[#222] shadow-[0_10px_30px_rgba(0,0,0,0.5)] 
+                    hover:border-mat-gold/80 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]
+                    before:absolute before:inset-0 before:bg-gradient-to-tr before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-[200%] hover:before:animate-[shimmer_2s_infinite] before:z-40
+                  `}
                  >
                    <CardContent className="p-0 h-full">
-                     <div className="absolute inset-0">
+                     {/* TRUMP CARD HEADER */}
+                     <div className="absolute top-0 left-0 w-full z-30 pt-4 pb-12 px-4 bg-gradient-to-b from-black/90 to-transparent flex justify-between items-start">
+                        <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-mat-cream drop-shadow-[0_4px_4px_rgba(0,0,0,1)] leading-none font-['Impact'] italic" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.5)' }}>
+                          {profile.full_name.split(' ')[0]}
+                        </h3>
+                        {profile.is_verified && (
+                          <div className="p-1.5 bg-mat-gold rounded shadow-mat-gold/50 flex-shrink-0 animate-pulse">
+                             <Sparkles size={14} className="text-[#111]" />
+                          </div>
+                        )}
+                     </div>
+
+                     <div className="absolute inset-0 pb-32">
                        <img 
                          src={photos[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} 
                          alt=""
-                         className="w-full h-full object-cover grayscale brightness-110 group-hover:grayscale-0 group-hover:brightness-100 group-hover:scale-105 transition-all duration-1000"
+                         className="w-full h-full object-cover saturate-[1.3] contrast-[1.2] brightness-90 group-hover:brightness-110 group-hover:scale-105 transition-all duration-1000"
                        />
-                       <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/95 via-transparent to-transparent opacity-60 group-hover:opacity-90 transition-opacity duration-700" />
                      </div>
 
-                     {/* 💎 Minimalist Identity Marker */}
-                     <div className="absolute bottom-0 left-0 right-0 p-6 md:p-12 space-y-2 md:space-y-3 pointer-events-none transition-transform duration-500 group-hover:translate-y-[-10px]">
-                        <h3 className="text-3xl md:text-5xl font-black mat-text-display-pro text-mat-cream/90 italic leading-none">{profile.full_name.split(' ')[0]}</h3>
-                        <p className="mat-text-label-pro text-mat-cream/60">Age {profile.age || 'Soul'}</p>
+                     {/* TRUMP STATS BOX */}
+                     <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/85 backdrop-blur-md border-t-2 border-mat-gold/20 flex flex-col p-4 pt-5">
+                        {/* FLAVOR TEXT */}
+                        <div className="grid grid-cols-2 gap-2 mb-4 text-[9px] uppercase tracking-widest text-mat-cream/60">
+                           <div className="col-span-2 flex items-center gap-2"><span className="text-mat-gold font-bold">Origin:</span> {stats.hometown}</div>
+                           <div className="col-span-2 flex items-center gap-2"><span className="text-mat-gold font-bold">Class:</span> <span className="italic">{stats.weight_class}</span></div>
+                           <div className="col-span-2 flex items-center gap-2 leading-tight border-l-2 border-mat-gold/50 pl-2 mt-1"><span className="text-mat-rose font-bold">Move:</span> {stats.signature_move}</div>
+                        </div>
+
+                        {/* QUANTITATIVE STATS */}
+                        <div className="space-y-2.5">
+                          {[
+                            { key: 'charisma', icon: '✨', val: stats.charisma, color: 'bg-mat-gold' },
+                            { key: 'stamina', icon: '🔋', val: stats.stamina, color: 'bg-mat-rose' },
+                            { key: 'intellect', icon: '🧠', val: stats.intellect, color: 'bg-blue-500' },
+                            { key: 'vibe', icon: '🔥', val: stats.vibe, color: 'bg-purple-500' },
+                            { key: 'social', icon: '🍻', val: stats.social, color: 'bg-green-500' },
+                          ].map(s => (
+                             <div key={s.key} className="flex items-center gap-2">
+                                <span className="w-5 text-center text-[10px]">{s.icon}</span>
+                                <div className="flex-1 h-3 bg-white/10 rounded-sm overflow-hidden flex relative shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] border border-white/5">
+                                   <motion.div initial={{ width: 0 }} whileInView={{ width: `${s.val}%` }} viewport={{ once: true }} transition={{ duration: 1, ease: 'easeOut' }} className={`h-full ${s.color} bg-opacity-90`} />
+                                </div>
+                                <span className="w-6 text-right text-[10px] font-black font-['Impact'] italic tracking-wider text-mat-cream">{s.val}</span>
+                             </div>
+                          ))}
+                        </div>
                      </div>
+
 
                      {/* 💎 Resonance Action Overlay */}
                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -167,14 +229,10 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                         </AnimatePresence>
                      </div>
 
-                     {profile.is_verified && (
-                        <div className="absolute top-10 left-10 p-2 bg-mat-gold rounded-full shadow-mat-gold">
-                           <Sparkles size={12} className="text-mat-wine" />
-                        </div>
-                     )}
 
                      {/* Sovereign Guard Trigger */}
-                     <div className="absolute top-10 right-10 z-20">
+                     <div className="absolute top-4 right-4 z-50 bg-black/40 rounded-full backdrop-blur-md">
+
                         <SafetyActions 
                           variant="icon"
                           userId={profile.user_id}

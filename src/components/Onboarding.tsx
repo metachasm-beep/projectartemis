@@ -16,8 +16,10 @@ export interface OnboardingProps {
 }
 
 // 🏛️ Progressive UI: Reducing friction to the minimum viable ritual.
-type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'LEGAL';
-const STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'PHOTO', 'LEGAL'];
+type OnboardingStep = 'ROLE' | 'BASICS' | 'PHOTO' | 'STATS' | 'LEGAL';
+const BASE_STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'PHOTO', 'LEGAL'];
+const MAN_STEPS: OnboardingStep[] = ['ROLE', 'BASICS', 'PHOTO', 'STATS', 'LEGAL'];
+
 
 export const Onboarding: React.FC<OnboardingProps> = ({ 
   userId, 
@@ -48,7 +50,20 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     smoking: false,
     drinking: false,
     photos: metadata?.avatar_url ? [metadata.avatar_url] : metadata?.picture ? [metadata.picture] : [] as string[],
+    trump_stats: {
+      charisma: 50,
+      stamina: 50,
+      intellect: 50,
+      vibe: 50,
+      social: 50,
+      hometown: '',
+      weight_class: '',
+      signature_move: ''
+    }
   });
+
+  const currentSteps = formData.role === 'man' ? MAN_STEPS : BASE_STEPS;
+
 
   useEffect(() => {
     let s = 10;
@@ -77,8 +92,13 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           role = excluded.role, city = excluded.city, date_of_birth = excluded.date_of_birth, photos = excluded.photos
       `;
 
+      const finalBio = formData.role === 'man' 
+        ? JSON.stringify({ text: formData.bio, trump_stats: formData.trump_stats }) 
+        : formData.bio;
+
       const args = [
-        userId, formData.full_name, formData.date_of_birth || '1990-01-01', formData.bio, formData.city,
+        userId, formData.full_name, formData.date_of_birth || '1990-01-01', finalBio, formData.city,
+
         formData.role, formData.intent, formData.occupation, formData.education, 
         parseInt(formData.height) || null, formData.religion, formData.marital_status,
         formData.mother_tongue, tursoHelpers.serialize(formData.hobbies), formData.diet,
@@ -143,8 +163,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   };
 
   const next = () => {
-    const idx = STEPS.indexOf(step);
-    if (idx < STEPS.length - 1) setStep(STEPS[idx + 1]);
+    const idx = currentSteps.indexOf(step);
+    if (idx < currentSteps.length - 1) setStep(currentSteps[idx + 1]);
   };
 
   return (
@@ -157,10 +177,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="flex flex-col gap-3 px-4">
              <div className="flex justify-between items-end">
                 <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-wine/40">Resonance Ritual</span>
-                <span className="text-sm font-bold text-mat-wine italic">Step {STEPS.indexOf(step) + 1} of {STEPS.length}</span>
+                <span className="text-sm font-bold text-mat-wine italic">Step {currentSteps.indexOf(step) + 1} of {currentSteps.length}</span>
              </div>
              <div className="h-1 bg-mat-fog rounded-full overflow-hidden">
-                <motion.div animate={{ width: `${(STEPS.indexOf(step) + 1) / STEPS.length * 100}%` }} className="h-full bg-mat-wine" />
+                <motion.div animate={{ width: `${(currentSteps.indexOf(step) + 1) / currentSteps.length * 100}%` }} className="h-full bg-mat-wine" />
              </div>
           </div>
 
@@ -214,6 +234,60 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                          )}
                       </div>
                       <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">{loading ? 'Synthesizing...' : 'Continue'}</button>
+                   </motion.div>
+                )}
+
+                {step === 'STATS' && (
+                   <motion.div key="stats" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-8">
+                      <div className="text-center space-y-2">
+                        <h2 className="text-4xl font-bold text-mat-wine italic">Your Stats</h2>
+                        <p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/50">Define your attributes for the array</p>
+                      </div>
+                      
+                      <div className="space-y-6">
+                        {[
+                          { key: 'charisma', left: 'Wallflower', right: 'Star Power', icon: '✨' },
+                          { key: 'stamina', left: 'Couch Potato', right: 'Work Rate', icon: '🔋' },
+                          { key: 'intellect', left: 'Smooth Brain', right: 'Tech Skill', icon: '🧠' },
+                          { key: 'vibe', left: 'Vanilla', right: 'Main Eventer', icon: '🔥' },
+                          { key: 'social', left: 'Lone Wolf', right: 'Party Animal', icon: '🍻' },
+                        ].map((stat) => (
+                          <div key={stat.key} className="space-y-2 bg-white/40 p-4 rounded-2xl border border-mat-rose/10">
+                            <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest text-mat-wine/80">
+                               <span>{stat.left}</span>
+                               <span className="flex items-center gap-1 text-mat-wine text-base">{stat.icon} {String(stat.key).toUpperCase()}</span>
+                               <span>{stat.right}</span>
+                            </div>
+                            <input 
+                              type="range" 
+                              min="1" max="100" 
+                              value={(formData.trump_stats as any)[stat.key]} 
+                              onChange={(e) => setFormData({
+                                ...formData, 
+                                trump_stats: { ...formData.trump_stats, [stat.key]: parseInt(e.target.value) }
+                              })}
+                              className="w-full accent-mat-wine h-2" 
+                            />
+                          </div>
+                        ))}
+                        
+                        <div className="bg-white/40 p-4 rounded-2xl border border-mat-rose/10 space-y-4">
+                           <div className="space-y-1">
+                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Hometown origin</label>
+                             <Input placeholder="Parts Unknown" value={formData.trump_stats.hometown} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, hometown: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                           </div>
+                           <div className="space-y-1">
+                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Weight Class (Vibe)</label>
+                             <Input placeholder="Heavyweight Overthinker" value={formData.trump_stats.weight_class} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, weight_class: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                           </div>
+                           <div className="space-y-1">
+                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Signature Move (Prompt)</label>
+                             <Input placeholder="Makes a mean sourdough" value={formData.trump_stats.signature_move} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, signature_move: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                           </div>
+                        </div>
+                      </div>
+
+                      <button disabled={!formData.trump_stats.hometown || !formData.trump_stats.signature_move} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20">Set Attributes</button>
                    </motion.div>
                 )}
 
