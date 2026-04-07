@@ -326,6 +326,21 @@ export const Discovery: React.FC = () => {
                         <div className="pt-20 flex flex-col sm:flex-row gap-10">
                            <Button onClick={async () => {
                               if (!profile?.user_id) return;
+
+                              // ⚖️ Free Resonance Check for Unverified Women
+                              if (!profile.is_verified) {
+                                 try {
+                                    const matchCount = await MessagingService.getMatchCountForWoman(profile.user_id);
+                                    if (matchCount >= 1) {
+                                       alert("Verification Required. You have used your free resonance. Seal your truth to continue finding matches.");
+                                       return;
+                                    }
+                                 } catch (err) {
+                                    console.error("Failed to verify resonance limit", err);
+                                    return;
+                                 }
+                              }
+
                               try {
                                  await MessagingService.createMatch(profile.user_id, selectedProfile.user_id);
                                  alert("Resonance Established. Opening Portal...");

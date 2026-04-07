@@ -26,7 +26,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
   const forumRef = React.useRef<HTMLDivElement>(null);
   const [isBrowsingArray, setIsBrowsingArray] = useState(false);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
-  const [isBrowsingForum, setIsBrowsingForum] = useState(false);
   const [isBrowsingLeaderboard, setIsBrowsingLeaderboard] = useState(false);
   const [engagementTarget, setEngagementTarget] = useState<typeof DUMMY_ASPIRANTS[0] | null>(null);
   const [showVerification, setShowVerification] = useState(false);
@@ -131,10 +130,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
 
   if (isBrowsingDirectory) {
     return <MenDiscovery onClose={() => setIsBrowsingDirectory(false)} />;
-  }
-
-  if (isBrowsingForum) {
-    return <SanctuaryForum profile={profile} onClose={() => setIsBrowsingForum(false)} />;
   }
 
   if (isBrowsingLeaderboard) {

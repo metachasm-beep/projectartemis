@@ -1,7 +1,7 @@
 import type { MessagingMatch } from '@/lib/messaging';
 
 export type Role = 'man' | 'woman' | 'admin';
-export type Tab = 'discovery' | 'profile' | 'messages' | 'admin' | 'sovereign_browse' | 'store';
+export type Tab = 'discovery' | 'profile' | 'messages' | 'admin' | 'sovereign_browse' | 'store' | 'admin_panel';
 
 export interface MatriarchProfile {
   user_id: string;

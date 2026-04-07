@@ -7,6 +7,7 @@ import { MatriarchToolbar } from '@/components/navigation/MatriarchToolbar';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { PaymentScreen } from '@/components/payments/PaymentScreen';
+import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
@@ -16,7 +17,9 @@ export const DashboardLayout: React.FC = () => {
   const bypassCtx = useContext(AuthBypassContext);
   const realAuth = useAuth();
   const { profile, signOut } = bypassCtx || realAuth;
-  const [activeTab, setActiveTab] = useState<Tab>('profile');
+  // Define correct initial tab based on role so admins land on control panel
+  const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' : 'profile';
+  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 
   // 🍷 Sovereign Ritual Toggle
@@ -44,11 +47,7 @@ export const DashboardLayout: React.FC = () => {
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
             <motion.div key="discovery" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              {profile?.role === 'woman' ? (
-                <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
-              ) : (
-                <Discovery />
-              )}
+              <Discovery />
             </motion.div>
           )}
 
@@ -93,6 +92,12 @@ export const DashboardLayout: React.FC = () => {
             <motion.div key="store" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
               <PaymentScreen />
             </motion.div>
+          )}
+
+          {activeTab === 'admin_panel' && profile?.role === 'admin' && (
+             <motion.div key="admin_panel" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
+                <AdminDashboard />
+             </motion.div>
           )}
         </AnimatePresence>
       </main>

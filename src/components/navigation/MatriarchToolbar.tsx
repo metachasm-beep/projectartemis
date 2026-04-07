@@ -1,11 +1,11 @@
 import React from 'react';
-import { Home, User, MessageCircle, LogOut, Wallet } from 'lucide-react';
+import { Home, User, MessageCircle, LogOut, Wallet, Shield } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 
 interface MatriarchToolbarProps {
-  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store';
-  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store') => void;
+  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel';
+  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel') => void;
   onLogout: () => void;
 }
 
@@ -17,13 +17,14 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   const { profile, isAdmin } = useAuth() as any; // Cast as any because we just added isAdmin and TS might complain before full reload
   
   const navItems = [
-    { id: 'discovery', label: 'My Home', icon: Home },
-    { id: 'profile', label: profile?.role === 'woman' ? 'Browse' : 'My Profile', icon: User },
-    { id: 'messages', label: 'Messages', icon: MessageCircle },
-    { id: 'store', label: 'Buy Aura', icon: Wallet },
-  ] as const;
+    ...(profile?.role === 'admin' ? [{ id: 'admin_panel' as const, label: 'Control Panel', icon: Shield }] : []),
+    { id: 'profile' as const, label: profile?.role === 'woman' ? 'My Home' : 'My Profile', icon: profile?.role === 'woman' ? Home : User },
+    { id: 'discovery' as const, label: profile?.role === 'woman' ? 'Browse' : 'My Home', icon: profile?.role === 'woman' ? User : Home },
+    { id: 'messages' as const, label: 'Messages', icon: MessageCircle },
+    { id: 'store' as const, label: 'Buy Aura', icon: Wallet },
+  ];
 
-  const handleAdminToggle = (role: 'man' | 'woman') => {
+  const handleAdminToggle = (role: 'man' | 'woman' | 'admin') => {
     sessionStorage.setItem('adminViewRole', role);
     window.location.reload();
   };
@@ -52,7 +53,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
               <Tooltip key={item.id}>
                 <TooltipTrigger asChild>
                   <button
-                    onClick={() => setActiveTab(item.id)}
+                    onClick={() => setActiveTab(item.id as Extract<typeof activeTab, string>)}
                     className={`flex items-center gap-2 md:gap-3 px-4 md:px-6 py-2 md:py-3 rounded-[1.5rem] transition-all duration-300 group ${
                       activeTab === item.id 
                       ? 'bg-mat-cream text-mat-wine shadow-mat-rose' 
@@ -86,6 +87,12 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
                  className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-rose text-mat-cream shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
                >
                  View Woman
+               </button>
+               <button 
+                 onClick={() => handleAdminToggle('admin')}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+               >
+                 View Admin
                </button>
              </div>
           )}

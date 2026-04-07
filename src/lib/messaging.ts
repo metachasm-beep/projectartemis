@@ -57,6 +57,17 @@ export const MessagingService = {
   },
 
   /**
+   * 💜 Free Resonance Check: Fetches the total matches initiated by a woman.
+   */
+  async getMatchCountForWoman(womanId: string): Promise<number> {
+    const result = await turso.execute({
+      sql: "SELECT COUNT(*) as count FROM matches WHERE woman_user_id = ?",
+      args: [womanId]
+    });
+    return Number(result.rows[0].count) || 0;
+  },
+
+  /**
    * 🛡️ Resonance Control: Only the woman can switch communication modes.
    */
   async setCommMode(matchId: string, womanId: string, newMode: CommMode): Promise<void> {
