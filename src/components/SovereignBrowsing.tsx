@@ -37,6 +37,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [matchingStatus, setMatchingStatus] = useState<Record<string, 'idle' | 'matching' | 'success'>>({});
+  const [engagementProfile, setEngagementProfile] = useState<Profile | null>(null);
   
   const loader = useRef(null);
   const LIMIT = 12;
@@ -147,7 +148,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                  className="group"
                >
                  <Card 
-                  onClick={() => handleMatch(profile.user_id)} 
+                  onClick={() => setEngagementProfile(profile)} 
                   className={`
                     relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden cursor-pointer bg-[#111] transition-all duration-700
                     border-[6px] border-[#222] shadow-[0_10px_30px_rgba(0,0,0,0.5)] 
@@ -230,20 +231,6 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                      </div>
 
 
-                     {/* Sovereign Guard Trigger */}
-                     <div className="absolute top-4 right-4 z-50 bg-black/40 rounded-full backdrop-blur-md">
-
-                        <SafetyActions 
-                          variant="icon"
-                          userId={profile.user_id}
-                          userName={profile.full_name}
-                          onActionComplete={(action: 'report' | 'block') => {
-                            if (action === 'block') {
-                               setProfiles(prev => prev.filter(p => p.user_id !== profile.user_id));
-                            }
-                          }}
-                        />
-                     </div>
                    </CardContent>
                  </Card>
                </motion.div>
@@ -266,6 +253,70 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
             )}
          </div>
       </main>
+
+      {/* ─── TACTICAL ENGAGEMENT MODAL ─── */}
+      <AnimatePresence>
+        {engagementProfile && (
+          <motion.div 
+             initial={{ opacity: 0 }}
+             animate={{ opacity: 1 }}
+             exit={{ opacity: 0 }}
+             className="fixed inset-0 z-[200] flex items-end md:items-center justify-center bg-black/80 backdrop-blur-md p-4"
+             onClick={() => setEngagementProfile(null)}
+          >
+             <motion.div 
+               initial={{ y: "100%" }}
+               animate={{ y: 0 }}
+               exit={{ y: "100%" }}
+               onClick={(e) => e.stopPropagation()}
+               className="w-full max-w-sm bg-[#111] border border-mat-gold/30 rounded-t-3xl md:rounded-3xl p-6 space-y-6 shadow-[0_0_50px_rgba(212,175,55,0.15)] pb-10 md:pb-6"
+             >
+                <div className="text-center space-y-2">
+                   <h3 className="text-2xl font-black italic uppercase tracking-widest text-mat-cream font-['Impact']">Engage Asset</h3>
+                   <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Target Protocol: {engagementProfile.full_name}</p>
+                </div>
+                
+                <div className="flex flex-col gap-3">
+                   <Button 
+                      onClick={() => {
+                         handleMatch(engagementProfile.user_id);
+                         setEngagementProfile(null);
+                      }}
+                      className="w-full h-14 bg-mat-gold text-black rounded-xl font-black uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-mat-gold/50 transition-all border-none"
+                   >
+                      Initiate Contact
+                   </Button>
+                   
+                   <Button 
+                      onClick={() => {
+                         setProfiles(prev => prev.filter(p => p.user_id !== engagementProfile.user_id));
+                         setEngagementProfile(null);
+                      }}
+                      variant="ghost"
+                      className="w-full h-14 bg-white/5 text-white/60 rounded-xl font-bold uppercase tracking-[0.1em] text-[10px] hover:bg-white/10 hover:text-white border border-white/5"
+                   >
+                      Dismiss / Skip
+                   </Button>
+
+                   <div className="w-full h-px bg-white/5 my-2" />
+
+                   <SafetyActions 
+                      variant="full"
+                      className="w-full flex justify-center !text-[9px]"
+                      userId={engagementProfile.user_id}
+                      userName={engagementProfile.full_name}
+                      onActionComplete={(action) => {
+                         if (action === 'block') {
+                            setProfiles(prev => prev.filter(p => p.user_id !== engagementProfile.user_id));
+                         }
+                         setEngagementProfile(null);
+                      }}
+                   />
+                </div>
+             </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

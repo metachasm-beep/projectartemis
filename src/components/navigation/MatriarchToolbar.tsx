@@ -1,11 +1,11 @@
 import React from 'react';
-import { Home, User, MessageCircle, LogOut } from 'lucide-react';
+import { Home, User, MessageCircle, LogOut, Wallet } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useAuth } from '@/hooks/useAuth';
 
 interface MatriarchToolbarProps {
-  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse';
-  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse') => void;
+  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store';
+  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store') => void;
   onLogout: () => void;
 }
 
@@ -20,6 +20,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
     { id: 'discovery', label: 'My Home', icon: Home },
     { id: 'profile', label: 'My Profile', icon: User },
     { id: 'messages', label: 'Messages', icon: MessageCircle },
+    { id: 'store', label: 'Buy Aura', icon: Wallet },
   ] as const;
 
   // 🍷 Don't show toolbar in Sovereign Browse mode to maximize visual essence

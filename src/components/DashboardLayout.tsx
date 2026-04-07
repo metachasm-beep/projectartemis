@@ -6,6 +6,7 @@ import { MagicChat } from '@/components/MagicChat';
 import { MatriarchToolbar } from '@/components/navigation/MatriarchToolbar';
 import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { SovereignBrowsing } from '@/components/SovereignBrowsing';
+import { PaymentScreen } from '@/components/payments/PaymentScreen';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
@@ -81,6 +82,12 @@ export const DashboardLayout: React.FC = () => {
           {activeTab === 'profile' && (
             <motion.div key="profile" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
+            </motion.div>
+          )}
+
+          {activeTab === 'store' && (
+            <motion.div key="store" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
+              <PaymentScreen />
             </motion.div>
           )}
         </AnimatePresence>
