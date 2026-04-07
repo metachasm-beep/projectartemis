@@ -11,15 +11,15 @@ export const SanctuaryService = {
 
     // Convert discovery algorithms to dynamic percentile rank logic
     if (type === 'imperial') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY (rowid - (COALESCE(rank_boost_count, 0) * 10)) ASC LIMIT 10";
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY (rowid - (COALESCE(rank_score, 0) * 10)) ASC LIMIT 10";
     } else if (type === 'truth') {
        sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY created_at DESC LIMIT 10";
     } else if (type === 'rising') {
        sql = "SELECT * FROM profiles WHERE role = 'man' ORDER BY created_at DESC LIMIT 10";
     } else if (type === 'nearby' && city) {
        // "rowid" naturally increments as users join. (low rowid = joined early = better base rank)
-       // rank_boost_count acts as the "token_bonus" which subtracts from rowid to artificially lower their absolute rank.
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY (rowid - COALESCE(rank_boost_count, 0)) ASC LIMIT 10";
+       // rank_score acts as the "token_bonus" which subtracts from rowid to artificially lower their absolute rank.
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY (rowid - COALESCE(rank_score, 0)) ASC LIMIT 10";
        args = [city];
     } else if (type === 'shortlist') {
        sql = "SELECT p.* FROM profiles p JOIN shortlists s ON p.user_id = s.man_user_id WHERE s.woman_user_id = ? ORDER BY s.created_at DESC";
@@ -118,10 +118,13 @@ export const SanctuaryService = {
         args: [logId, userId, delta, reason]
       },
       {
-        sql: "UPDATE profiles SET rank_boost_count = rank_boost_count + ? WHERE user_id = ?",
+        sql: "UPDATE profiles SET rank_score = rank_score + ? WHERE user_id = ?",
         args: [delta, userId]
       }
     ], "write");
+    
+    // 👑 Trigger Global Re-ranking to maintain exclusive integrity
+    await SanctuaryService.recalculateGlobalRanks();
     return true;
   },
 
@@ -163,5 +166,59 @@ export const SanctuaryService = {
      // A massive artificial jump bridging them past the entire density bracket entirely.
      await SanctuaryService.rewardRank(userId, 999999, "Seal of Excellence Acquired");
      return true;
+  },
+
+  /**
+   * 🏆 Global Leaderboard: Fetch the rooted ascent of men.
+   */
+  getLeaderboard: async (limit: number = 100) => {
+    const r = await turso.execute({
+      sql: `
+        SELECT user_id, full_name, age, city, photos, is_verified, absolute_rank
+        FROM profiles 
+        WHERE role = 'man'
+        ORDER BY absolute_rank ASC 
+        LIMIT ?
+      `,
+      args: [limit]
+    });
+    return r.rows;
+  },
+
+  /**
+   * 🌊 Global Rank Reflow: Ensures absolute exclusivity (Only 1 profile per rank).
+   * Priority: Verified (1/0) > Boosts (Desc) > Loyalty (Created Asc) > UID (Tie-breaker).
+   */
+  recalculateGlobalRanks: async () => {
+    try {
+      // 1. Calculate new ranks using Window Function
+      const r = await turso.execute({
+        sql: `
+          SELECT user_id, 
+          ROW_NUMBER() OVER (
+            ORDER BY 
+              is_verified DESC, 
+              rank_score DESC, 
+              created_at ASC, 
+              user_id ASC
+          ) as new_rank
+          FROM profiles
+          WHERE role = 'man'
+        `
+      });
+
+      // 2. Perform atomic batch update for all men
+      // (For small to medium datasets, this is extremely fast in SQLite/Turso)
+      const updates = r.rows.map((row: any) => ({
+        sql: "UPDATE profiles SET absolute_rank = ? WHERE user_id = ?",
+        args: [row.new_rank, row.user_id]
+      }));
+
+      if (updates.length > 0) {
+        await turso.batch(updates, "write");
+      }
+    } catch (err) {
+      console.error("RANK_REFLOW_CRITICAL_FAILURE:", err);
+    }
   }
 };

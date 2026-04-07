@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=Lato:wght@300;400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=Lato:wght@300;400;700;900&family=Roboto+Condensed:wght@700;900&display=swap');
 @import "tailwindcss";
 
 @theme {
@@ -36,6 +36,11 @@
   @keyframes mat-shimmer {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
+  }
+
+  @keyframes mat-card-glint {
+    0% { background-position: -200% 0%; }
+    100% { background-position: 200% 0%; }
   }
 }
 
@@ -165,5 +170,30 @@
   .mask-horizontal {
      mask-image: linear-gradient(to right, black 85%, transparent 100%);
      -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
+  }
+
+  /* ─── Wrestling Card Utilities ─── */
+  .mat-card-holographic {
+    background: linear-gradient(135deg, 
+      rgba(191, 160, 106, 0.4) 0%, 
+      rgba(255, 255, 255, 0.2) 25%, 
+      rgba(191, 160, 106, 0.4) 50%, 
+      rgba(255, 255, 255, 0.1) 75%, 
+      rgba(191, 160, 106, 0.4) 100%
+    );
+    background-size: 200% 100%;
+    animation: mat-card-glint 4s linear infinite;
+  }
+
+  .mat-gritty-filter {
+    filter: contrast(1.1) saturate(0.9) sepia(0.15) brightness(0.95);
+  }
+
+  .mat-text-impact {
+    font-family: 'Roboto Condensed', 'Impact', sans-serif;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    line-height: 0.9;
   }
 }

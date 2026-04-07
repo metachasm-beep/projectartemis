@@ -5,6 +5,7 @@ import type { MatriarchProfile } from '@/types';
 import { Button } from '@/components/ui/button';
 import { SanctuaryService } from '@/services/sanctuary';
 import { turso } from '@/lib/turso';
+import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import AdUnit from '@/components/common/AdUnit';
 
 function cn(...classes: (string | boolean | undefined)[]) {
@@ -17,6 +18,7 @@ interface MenDossierProps {
   setIsEditing: (val: boolean) => void;
   handleVerify: () => void;
   refreshProfile: () => Promise<void>;
+  onShowLeaderboard?: () => void;
 }
 
 export const MenDossier: React.FC<MenDossierProps> = ({ 
@@ -24,39 +26,29 @@ export const MenDossier: React.FC<MenDossierProps> = ({
   metrics, 
   setIsEditing, 
   handleVerify,
-  refreshProfile 
+  refreshProfile,
+  onShowLeaderboard
 }) => {
   const [leapFeedback, setLeapFeedback] = useState<string | null>(null);
   const [sanctuaryRank, setSanctuaryRank] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isBrowsingLeaderboard, setIsBrowsingLeaderboard] = useState(false);
 
-  // ─── LIVE RANK CALCULATION ───
+  // ─── LIVE RANK RETRIEVAL ───
   const fetchLiveRank = useCallback(async () => {
     if (!profile?.user_id) return;
     try {
       const res = await turso.execute({
-        sql: `
-          SELECT COUNT(*) as higher_ranked FROM profiles 
-          WHERE role = 'man' AND (
-            is_verified > ? OR 
-            (is_verified = ? AND rank_boost_count > ?) OR 
-            (is_verified = ? AND rank_boost_count = ? AND created_at < ?)
-          )
-        `,
-        args: [
-          profile.is_verified ? 1 : 0,
-          profile.is_verified ? 1 : 0,
-          profile.rank_boost_count || 0,
-          profile.is_verified ? 1 : 0,
-          profile.rank_boost_count || 0,
-          profile.created_at
-        ]
+        sql: "SELECT absolute_rank FROM profiles WHERE user_id = ?",
+        args: [profile.user_id]
       });
-      setSanctuaryRank(Number(res.rows[0].higher_ranked) + 1);
+      if (res.rows[0]) {
+        setSanctuaryRank(Number(res.rows[0].absolute_rank));
+      }
     } catch (err) {
-      console.warn("Rank synch interrupted:", err);
+      console.warn("Rank sync interrupted:", err);
     }
-  }, [profile]);
+  }, [profile.user_id]);
 
   useEffect(() => {
     fetchLiveRank();
@@ -108,6 +100,9 @@ export const MenDossier: React.FC<MenDossierProps> = ({
 
   return (
     <div className="w-full bg-mat-obsidian text-mat-cream min-h-screen pb-32">
+      {isBrowsingLeaderboard && (
+        <Leaderboard onClose={() => setIsBrowsingLeaderboard(false)} myRank={sanctuaryRank} />
+      )}
       
       {/* ─── SCENE 1: THE MONOLITHIC HERO ─── */}
       <div className="relative w-full h-[75vh] md:h-[90vh] overflow-hidden">
@@ -127,9 +122,15 @@ export const MenDossier: React.FC<MenDossierProps> = ({
         >
           <div className="space-y-4">
              <div className="flex items-center gap-4">
-                <span className="px-4 py-1.5 border border-mat-gold/30 text-mat-gold text-[9px] uppercase tracking-[0.3em] font-black rounded-full backdrop-blur-md bg-mat-obsidian/30 flex items-center gap-2">
-                  <Flame size={12} /> Rank #{sanctuaryRank > 0 ? sanctuaryRank.toLocaleString() : '--'}
-                </span>
+                 <span className="px-4 py-1.5 border border-mat-gold/30 text-mat-gold text-[9px] uppercase tracking-[0.3em] font-black rounded-full backdrop-blur-md bg-mat-obsidian/30 flex items-center gap-2">
+                   <Flame size={12} /> Rank #{sanctuaryRank > 0 ? sanctuaryRank.toLocaleString() : '--'}
+                 </span>
+                 <button 
+                   onClick={() => setIsBrowsingLeaderboard(true)}
+                   className="px-4 py-1.5 border border-white/10 text-white/60 hover:text-mat-gold hover:border-mat-gold/30 text-[9px] uppercase tracking-[0.3em] font-black rounded-full backdrop-blur-md bg-white/5 transition-all"
+                 >
+                   View Leaderboard
+                 </button>
                 {profile.is_verified && (
                   <span className="px-4 py-1.5 bg-mat-wine text-mat-cream text-[9px] uppercase tracking-[0.3em] font-black rounded-full flex items-center gap-2 shadow-[0_0_15px_rgba(114,47,55,0.5)]">
                     <CheckCircle2 size={12} /> Sealed

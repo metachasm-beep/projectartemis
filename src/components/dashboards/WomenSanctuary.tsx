@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft, X } from 'lucide-react';
+import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft, Trophy, MessageSquarePlus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import CircularGallery from '@/components/animations/CircularGallery';
 import MenDiscovery from '@/components/discovery/MenDiscovery';
-import AdUnit from '@/components/common/AdUnit';
+import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
-import { MessageSquarePlus } from 'lucide-react';
+import AdUnit from '@/components/common/AdUnit';
+import { TrumpCard } from '@/components/discovery/TrumpCard';
+import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -16,30 +18,19 @@ interface WomenSanctuaryProps {
   onBeginDiscovery?: () => void;
 }
 
-const DUMMY_MEN = [
-  { image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1287&auto=format&fit=crop', title: 'Vikram, 28', description: 'Rank #1 • Imperial Vault', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1287&auto=format&fit=crop', title: 'Arjun, 31', description: 'Rank #12 • Vanguard', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1287&auto=format&fit=crop', title: 'Kabir, 29', description: 'Rank #45 • Sealed', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?q=80&w=1287&auto=format&fit=crop', title: 'Rohan, 27', description: 'Rank #102 • Rising', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1287&auto=format&fit=crop', title: 'Dev, 30', description: 'Rank #230', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1528892952291-009c663ce843?q=80&w=1287&auto=format&fit=crop', title: 'Neel, 26', description: 'Rank #450', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=1287&auto=format&fit=crop', title: 'Aryan, 32', description: 'Rank #890', link: '#' },
-  { image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1287&auto=format&fit=crop', title: 'Dhruv, 29', description: 'Rank #1,204', link: '#' },
-];
-
-const GALLERY_ITEMS = DUMMY_MEN.map(m => ({ image: m.image, text: m.title }));
+const GALLERY_ITEMS = DUMMY_ASPIRANTS.map(m => ({ image: m.img, text: m.name }));
 
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing, onBeginDiscovery }) => {
   const [isBrowsingArray, setIsBrowsingArray] = useState(true);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
   const [isBrowsingForum, setIsBrowsingForum] = useState(false);
-  const [engagementTarget, setEngagementTarget] = useState<typeof DUMMY_MEN[0] | null>(null);
+  const [isBrowsingLeaderboard, setIsBrowsingLeaderboard] = useState(false);
+  const [engagementTarget, setEngagementTarget] = useState<typeof DUMMY_ASPIRANTS[0] | null>(null);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   if (isBrowsingArray) {
     return (
       <div className="fixed inset-0 bg-black z-50 overflow-hidden flex flex-col">
-         {/* Navigation Overlay */}
          <div className="absolute top-0 left-0 w-full p-8 z-50 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
             <Button 
                onPress={() => setIsBrowsingArray(false)} 
@@ -55,20 +46,19 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
             </div>
          </div>
          
-         {/* 3D Circular Gallery */}
          <div className="absolute inset-0 z-0">
             <CircularGallery 
               items={GALLERY_ITEMS}
-              bend={0}
-              borderRadius={0.15}
+              bend={1}
+              borderRadius={0}
+              font='900 40px "Roboto Condensed"'
               scrollSpeed={2}
               scrollEase={0.05}
               onSelect={(idx) => {
-                 setEngagementTarget(DUMMY_MEN[idx]);
+                 setEngagementTarget(DUMMY_ASPIRANTS[idx]);
               }}
             />
             
-            {/* Modal Engagement Overlay */}
             <AnimatePresence>
                {engagementTarget && (
                   <motion.div 
@@ -78,42 +68,21 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                      className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-6"
                      onClick={() => setEngagementTarget(null)}
                   >
-                     <motion.div 
-                        initial={{ scale: 0.9, y: 20, opacity: 0 }}
-                        animate={{ scale: 1, y: 0, opacity: 1 }}
-                        exit={{ scale: 0.9, y: 20, opacity: 0 }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="w-full max-w-[340px] bg-[#0a0a0a] border border-mat-gold/30 rounded-[2rem] p-6 pb-8 shadow-[0_0_50px_rgba(212,175,55,0.15)] relative overflow-hidden"
-                     >
-                        <div className="absolute top-4 right-4 z-20 cursor-pointer pointer-events-auto" onClick={() => setEngagementTarget(null)}>
-                           <X className="text-white/40 hover:text-white transition-colors" size={20} />
-                        </div>
-                        <div className="absolute -top-20 -right-20 w-40 h-40 bg-mat-gold/20 blur-3xl rounded-full pointer-events-none" />
-                        
-                        <div className="flex gap-4 items-center mb-8 relative">
-                           <img src={engagementTarget.image} className="w-16 h-16 rounded-2xl object-cover border-[1.5px] border-mat-gold/50 shadow-lg" alt="" />
-                           <div>
-                              <h3 className="text-xl font-black italic uppercase tracking-widest text-mat-cream font-['Impact']">{engagementTarget.title.split(',')[0]}</h3>
-                              <p className="text-[9px] uppercase tracking-[0.2em] text-mat-gold mt-1 leading-tight">{engagementTarget.description}</p>
-                           </div>
-                        </div>
-
-                        <div className="space-y-3 relative z-10">
-                           <Button 
-                              onPress={() => setEngagementTarget(null)}
-                              className="w-full h-12 bg-mat-gold text-black rounded-xl font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-all border-none"
-                           >
-                              <Sparkles size={14} className="mr-2" /> Initiate Contact
-                           </Button>
-                           <Button 
-                              onPress={() => setEngagementTarget(null)}
-                              variant="outline"
-                              className="w-full h-12 bg-white/5 text-white/80 rounded-xl font-bold uppercase tracking-[0.1em] text-[10px] hover:bg-white/10 hover:text-white border-white/10"
-                           >
-                              Dismiss Target
-                           </Button>
-                        </div>
-                     </motion.div>
+                     <TrumpCard 
+                        profile={{
+                          name: engagementTarget.name,
+                          age: engagementTarget.age,
+                          city: engagementTarget.city,
+                          img: engagementTarget.img,
+                          status: engagementTarget.status,
+                          bio: engagementTarget.bio
+                        }}
+                        onClose={() => setEngagementTarget(null)}
+                        onAction={() => {
+                          alert(`Protocol Synced: Contact initiated with ${engagementTarget.name.toUpperCase()}.`);
+                          setEngagementTarget(null);
+                        }}
+                      />
                   </motion.div>
                )}
             </AnimatePresence>
@@ -150,6 +119,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
 
   if (isBrowsingForum) {
     return <SanctuaryForum onClose={() => setIsBrowsingForum(false)} />;
+  }
+
+  if (isBrowsingLeaderboard) {
+    return <Leaderboard onClose={() => setIsBrowsingLeaderboard(false)} />;
   }
 
   return (
@@ -268,6 +241,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                        <ChevronRight size={24} className="text-mat-gold/30 group-hover:text-mat-gold group-hover:translate-x-1" />
                     </div>
                  </Button>
+
+                 <Button 
+                    onPress={() => setIsBrowsingLeaderboard(true)} 
+                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl bg-gradient-to-br from-mat-gold/20 via-white/5 to-white/5 border border-mat-gold/30 hover:border-mat-gold/60 transition-all p-0"
+                  >
+                     <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-wine">
+                        <div className="flex items-center gap-4">
+                           <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
+                              <Trophy size={20} className="text-mat-gold" />
+                           </div>
+                           <div className="text-left">
+                              <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold">Leaderboard</h3>
+                              <p className="text-[8px] font-black uppercase tracking-widest text-mat-wine/30 text-left">Rooted Ascent</p>
+                           </div>
+                        </div>
+                        <ChevronRight size={24} className="text-mat-gold/30 group-hover:text-mat-gold group-hover:translate-x-1" />
+                     </div>
+                  </Button>
               </div>
            </div>
 

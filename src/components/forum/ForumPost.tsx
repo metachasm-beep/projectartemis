@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Sparkles, X } from 'lucide-react';
 import { Button } from '@heroui/react';
 import { ForumService } from '@/lib/forumService';
 import { formatDistanceToNow } from 'date-fns';
@@ -17,24 +18,39 @@ export interface PostProps {
   created_at: string;
   real_likes: number;
   real_replies: number;
+  total_aura_earned: number;
 }
 
 export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => void }> = ({ post, onReply }) => {
   const [likes, setLikes] = useState(post.real_likes);
   const [isLiked, setIsLiked] = useState(false); // In a fully stateful app, we'd sync this globally
   const [isSaved, setIsSaved] = useState(false);
+  const [earnedAura, setEarnedAura] = useState(post.total_aura_earned || 0);
+  const [showTipOptions, setShowTipOptions] = useState(false);
+
+  const handleTip = async (amount: number) => {
+    setShowTipOptions(false);
+    try {
+      await ForumService.tipTopic(post.id, post.author_id, amount);
+      setEarnedAura((prev: number) => prev + amount);
+      // PWA standard best-practice alert: In a fully styled app, replace with a toast framework.
+      alert(`✨ Catalyst Successful! You transferred ${amount} Aura to ${post.author_name}.`);
+    } catch (e: any) {
+      alert(`❌ Strategy Failed: ${e.message || "Insufficient Aura Balance or Network Error."}`);
+    }
+  };
 
   const handleLike = async () => {
     // Optimistic UI
     setIsLiked(!isLiked);
-    setLikes(prev => isLiked ? prev - 1 : prev + 1);
+    setLikes((prev: number) => isLiked ? prev - 1 : prev + 1);
     try {
       const liked = await ForumService.toggleLike(post.id);
       setIsLiked(liked);
     } catch {
       // Revert on failure
       setIsLiked(isLiked);
-      setLikes(prev => isLiked ? prev + 1 : prev - 1);
+      setLikes((prev: number) => isLiked ? prev + 1 : prev - 1);
     }
   };
 
@@ -79,6 +95,33 @@ export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => voi
              <button onClick={() => onReply(post.id)} className="flex items-center gap-1.5 text-[10px] font-black tracking-widest text-white/40 hover:text-white transition-colors">
                 <MessageCircle size={14} /> {post.real_replies}
              </button>
+             
+             <div className="relative">
+                <button 
+                  onClick={() => setShowTipOptions(!showTipOptions)}
+                  className="flex items-center gap-1.5 text-[10px] font-black tracking-widest text-mat-gold/80 hover:text-mat-gold hover:scale-105 transition-all"
+                >
+                   <Sparkles size={14} /> {earnedAura}
+                </button>
+
+                <AnimatePresence>
+                   {showTipOptions && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                        className="absolute bottom-full mb-3 left-0 z-50 bg-[#0a0a0a] border border-mat-gold/20 p-2 rounded-2xl shadow-2xl flex gap-2 min-w-[200px]"
+                      >
+                         <Button size="sm" className="bg-mat-gold/10 text-mat-gold font-bold hover:bg-mat-gold/20 h-8 px-3 text-[10px]" onPress={() => handleTip(10)}>+10</Button>
+                         <Button size="sm" className="bg-mat-gold/10 text-mat-gold font-bold hover:bg-mat-gold/20 h-8 px-3 text-[10px]" onPress={() => handleTip(50)}>+50</Button>
+                         <Button size="sm" className="bg-mat-gold/10 text-mat-gold font-bold hover:bg-mat-gold/20 h-8 px-3 text-[10px]" onPress={() => handleTip(100)}>+100</Button>
+                         <button onClick={() => setShowTipOptions(false)} className="ml-1 text-white/20 hover:text-white">
+                            <X size={12} />
+                         </button>
+                      </motion.div>
+                   )}
+                </AnimatePresence>
+             </div>
           </div>
           <div className="flex gap-2">
              <button onClick={() => setIsSaved(!isSaved)} className={`p-1.5 rounded-full transition-colors ${isSaved ? 'text-mat-gold bg-mat-gold/10' : 'text-white/40 hover:bg-white/5'}`}>

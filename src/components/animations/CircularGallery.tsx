@@ -32,7 +32,7 @@ function getFontSize(font: string): number {
 function createTextTexture(
   gl: GL,
   text: string,
-  font: string = 'bold 30px Figtree',
+  font: string = '900 30px "Roboto Condensed"',
   color: string = 'white'
 ): { texture: Texture; width: number; height: number } {
   const canvas = document.createElement('canvas');
@@ -80,7 +80,7 @@ class Title {
   font: string;
   mesh!: Mesh;
 
-  constructor({ gl, plane, renderer, text, textColor = '#ffffff', font = 'bold 30px Figtree' }: TitleProps) {
+  constructor({ gl, plane, renderer, text, textColor = '#ffffff', font = '900 30px "Roboto Condensed"' }: TitleProps) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
@@ -369,14 +369,14 @@ class Media {
     const isMobile = this.screen.width < 768;
     
     if (isMobile) {
-      this.plane.scale.x = this.viewport.width * 0.85;
-      this.plane.scale.y = this.viewport.height * 0.65;
+      this.plane.scale.x = this.viewport.width * 0.7; // Thinner
+      this.plane.scale.y = this.viewport.height * 0.75; // Taller
       this.padding = 0.8;
-      this.scale = 1; // Unused in this path, but required for typings
+      this.scale = 1;
     } else {
-      this.scale = this.screen.height / 1500;
+      this.scale = this.screen.height / 1200; // Adjusted scale
       this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
-      this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+      this.plane.scale.x = this.plane.scale.y / 1.5; // Strictly 2:3 Card Ratio
       this.padding = 2;
     }
     
@@ -437,7 +437,7 @@ class App {
       bend = 1,
       textColor = '#ffffff',
       borderRadius = 0,
-      font = 'bold 30px Figtree',
+      font = '900 40px "Roboto Condensed"',
       scrollSpeed = 2,
       scrollEase = 0.05,
       onSelect
@@ -650,7 +650,7 @@ export default function CircularGallery({
   bend = 3,
   textColor = '#ffffff',
   borderRadius = 0.05,
-  font = 'bold 30px Figtree',
+  font = '900 40px "Roboto Condensed"',
   scrollSpeed = 2,
   scrollEase = 0.05,
   onSelect

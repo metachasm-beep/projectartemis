@@ -6,7 +6,7 @@
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 
-export const uploadToCloudinary = async (file: File | Blob): Promise<string> => {
+export const uploadToCloudinary = async (file: File | Blob, folder: string = 'profiles'): Promise<string> => {
   if (!CLOUD_NAME || !UPLOAD_PRESET) {
     throw new Error("MATRIARCH_CLOUDINARY: Missing configuration in environment.");
   }
@@ -14,7 +14,7 @@ export const uploadToCloudinary = async (file: File | Blob): Promise<string> => 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', UPLOAD_PRESET);
-  formData.append('folder', 'profiles');
+  formData.append('folder', folder);
 
   try {
     const response = await fetch(

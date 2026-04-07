@@ -2,21 +2,39 @@ import React, { useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Button } from '@heroui/react';
-import { Bold, Italic, List, Send, Eye, Edit2 } from 'lucide-react';
+import { Bold, Italic, List, Send, Eye, Edit2, Image, Loader2 } from 'lucide-react';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 
 interface MarkdownEditorProps {
   onSubmit: (content: string) => Promise<void>;
   placeholder?: string;
-  isSubmitting?: boolean;
 }
 
 export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ 
   onSubmit, 
-  placeholder = "Share your thoughts...",
-  isSubmitting = false
+  placeholder = "Share your thoughts..."
 }) => {
   const [content, setContent] = useState('');
   const [isPreview, setIsPreview] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setIsUploading(true);
+    try {
+      const url = await uploadToCloudinary(file, 'forum');
+      setContent(prev => `${prev}\n\n![Visual Evidence](${url})\n`);
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      alert("Verification Protocol Failed: Image could not be reached.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
 
   const insertFormatting = (prefix: string, suffix: string = '') => {
     // A simplified desktop-like insertion. On mobile, appending works safely.
@@ -34,10 +52,28 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
              <Button isIconOnly variant="ghost" size="sm" onPress={() => insertFormatting('*', '*')} className="text-white/60 hover:text-white">
                 <Italic size={16} />
              </Button>
-             <Button isIconOnly variant="ghost" size="sm" onPress={() => insertFormatting('\n- ')} className="text-white/60 hover:text-white">
-                <List size={16} />
-             </Button>
-          </div>
+              <Button isIconOnly variant="ghost" size="sm" onPress={() => insertFormatting('\n- ')} className="text-white/60 hover:text-white">
+                 <List size={16} />
+              </Button>
+              <div className="w-px h-4 bg-white/10 mx-1" />
+              <Button 
+                isIconOnly 
+                variant="ghost" 
+                size="sm" 
+                onPress={() => fileInputRef.current?.click()} 
+                isDisabled={isUploading}
+                className="text-mat-gold/60 hover:text-mat-gold relative"
+              >
+                 {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Image size={16} />}
+              </Button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handleImageUpload} 
+                className="hidden" 
+                accept="image/*"
+              />
+           </div>
           <div className="flex gap-2">
              <Button 
                 size="sm" 
@@ -67,10 +103,10 @@ export const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
        )}
 
        {/* FOOTER */}
-       <div className="flex justify-end pt-2">
-          <Button 
-             isDisabled={content.trim().length === 0}
-             onPress={() => {
+        <div className="flex justify-end pt-2">
+           <Button 
+              isDisabled={content.trim().length === 0 || isUploading}
+              onPress={() => {
                 onSubmit(content).then(() => setContent(''));
              }}
              className="bg-mat-rose text-white font-black uppercase tracking-widest text-[10px] h-10 px-6 rounded-xl hover:shadow-[0_0_15px_rgba(230,57,70,0.5)] transition-all"

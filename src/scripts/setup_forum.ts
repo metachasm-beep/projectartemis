@@ -40,6 +40,7 @@ async function main() {
       author_avatar TEXT,
       likes_count INTEGER DEFAULT 0,
       replies_count INTEGER DEFAULT 0,
+      total_aura_earned INTEGER DEFAULT 0,
       is_flagged BOOLEAN DEFAULT FALSE,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
@@ -66,6 +67,16 @@ async function main() {
       author_id TEXT NOT NULL,
       author_name TEXT,
       author_avatar TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    `,
+    `
+    CREATE TABLE IF NOT EXISTS forum_tips (
+      id TEXT PRIMARY KEY,
+      topic_id TEXT NOT NULL,
+      sender_id TEXT NOT NULL,
+      receiver_id TEXT NOT NULL,
+      amount INTEGER NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
     `

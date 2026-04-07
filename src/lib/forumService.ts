@@ -32,7 +32,8 @@ export const ForumService = {
     let query = `
       SELECT t.*, 
              (SELECT COUNT(*) FROM forum_topics_likes WHERE topic_id = t.id) as real_likes,
-             (SELECT COUNT(*) FROM forum_replies WHERE topic_id = t.id) as real_replies
+             (SELECT COUNT(*) FROM forum_replies WHERE topic_id = t.id) as real_replies,
+             t.total_aura_earned
       FROM forum_topics t
       WHERE t.is_flagged = FALSE
     `;
@@ -126,6 +127,47 @@ export const ForumService = {
        await turso.execute({ sql: `INSERT INTO forum_topics_likes (topic_id, user_id) VALUES (?, ?)`, args: [topicId, profile.user_id] });
        return true; // liked
     }
+  },
+
+  async tipTopic(topicId: string, receiverId: string, amount: number) {
+    const senderProfile = await verifyFemaleAuthorization();
+    const tipId = uuidv4();
+
+    // Enforce atomic transfer. We batch updates so it all passes or none passes.
+    // If the first UPDATE fails (e.g. sender doesn't have balance), Turso handles it conceptually if framed right,
+    // but without native distributed transaction rollback across Supabase/Turso, we rely on the LibSQL condition.
+    // LibSQL batch will only affect rows that match the WHERE clause. 
+    
+    // Safety check first: (Requires one round-trip, but prevents negative balances)
+    const { rows: balRows } = await turso.execute({
+       sql: `SELECT aura_balance FROM users WHERE id = ?`,
+       args: [senderProfile.user_id]
+    });
+    
+    if (balRows.length === 0 || Number(balRows[0].aura_balance) < amount) {
+       throw new Error("Insufficient Aura Balance.");
+    }
+
+    await turso.batch([
+      {
+        sql: `UPDATE users SET aura_balance = aura_balance - ? WHERE id = ?`,
+        args: [amount, senderProfile.user_id]
+      },
+      {
+        sql: `UPDATE users SET aura_balance = aura_balance + ? WHERE id = ?`,
+        args: [amount, receiverId]
+      },
+      {
+        sql: `UPDATE forum_topics SET total_aura_earned = total_aura_earned + ? WHERE id = ?`,
+        args: [amount, topicId]
+      },
+      {
+        sql: `INSERT INTO forum_tips (id, topic_id, sender_id, receiver_id, amount) VALUES (?, ?, ?, ?, ?)`,
+        args: [tipId, topicId, senderProfile.user_id, receiverId, amount]
+      }
+    ], 'write');
+
+    return true;
   },
 
   async getCircles() {
