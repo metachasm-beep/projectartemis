@@ -64,7 +64,7 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
       </header>
 
       {/* The 3D Infinite Stream (WebGL Gallery) */}
-      <main className="flex-1 w-full h-full relative">
+      <main className="absolute inset-0 pt-[120px] pb-10 z-0">
         <CircularGallery 
           items={galleryItems}
           bend={0}

@@ -51,7 +51,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
          </div>
          
          {/* 3D Circular Gallery */}
-         <div className="flex-1 w-full h-full relative pt-[100px] pb-10">
+         <div className="absolute inset-0 pt-[100px] pb-10 z-0">
             <CircularGallery 
               items={GALLERY_ITEMS}
               bend={0}
