@@ -364,11 +364,18 @@ class Media {
         this.plane.program.uniforms.uViewportSizes.value = [this.viewport.width, this.viewport.height];
       }
     }
-    this.scale = this.screen.height / 1500;
-    this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
-    this.plane.scale.x = (this.viewport.width * (700 * this.scale)) / this.screen.width;
+    
+    // Mobile optimization logic
+    const isMobile = this.screen.width < 768;
+    this.scale = isMobile ? this.screen.width / 600 : this.screen.height / 1500;
+    
+    const heightFactor = isMobile ? 1800 : 900;
+    const widthFactor = isMobile ? 1400 : 700;
+
+    this.plane.scale.y = (this.viewport.height * (heightFactor * this.scale)) / this.screen.height;
+    this.plane.scale.x = (this.viewport.width * (widthFactor * this.scale)) / this.screen.width;
     this.plane.program.uniforms.uPlaneSizes.value = [this.plane.scale.x, this.plane.scale.y];
-    this.padding = 2;
+    this.padding = isMobile ? 1.5 : 2;
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
@@ -451,6 +458,10 @@ class App {
     });
     this.gl = this.renderer.gl;
     this.gl.clearColor(0, 0, 0, 0);
+    this.gl.canvas.style.width = '100%';
+    this.gl.canvas.style.height = '100%';
+    this.gl.canvas.style.display = 'block';
+    this.gl.canvas.style.outline = 'none';
     this.container.appendChild(this.renderer.gl.canvas as HTMLCanvasElement);
   }
 
@@ -637,5 +648,5 @@ export default function CircularGallery({
       app.destroy();
     };
   }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
-  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing" ref={containerRef} />;
+  return <div className="w-full h-full overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
 }

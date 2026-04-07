@@ -24,6 +24,8 @@ const DUMMY_MEN = [
   { image: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1287&auto=format&fit=crop', title: 'Dhruv, 29', description: 'Rank #1,204', link: '#' },
 ];
 
+const GALLERY_ITEMS = DUMMY_MEN.map(m => ({ image: m.image, text: m.title }));
+
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
   const [isBrowsingArray, setIsBrowsingArray] = useState(false);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
@@ -49,9 +51,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
          </div>
          
          {/* 3D Circular Gallery */}
-         <div className="flex-1 w-full h-full relative">
+         <div className="flex-1 w-full h-full relative pt-[100px] pb-10">
             <CircularGallery 
-              items={DUMMY_MEN.map(m => ({ image: m.image, text: m.title }))}
+              items={GALLERY_ITEMS}
               bend={0}
               borderRadius={0.15}
               scrollSpeed={2}
