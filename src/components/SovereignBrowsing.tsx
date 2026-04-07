@@ -61,6 +61,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
       }
     } catch (err) {
       console.error("Sovereign fetch error:", err);
+      setHasMore(false); // Stop observer loop on error
     } finally {
       setLoading(false);
     }

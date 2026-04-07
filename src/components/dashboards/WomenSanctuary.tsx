@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft } from 'lucide-react';
+import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
 import CircularGallery from '@/components/animations/CircularGallery';
@@ -32,6 +33,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
   const [isBrowsingArray, setIsBrowsingArray] = useState(true);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
   const [isBrowsingForum, setIsBrowsingForum] = useState(false);
+  const [engagementTarget, setEngagementTarget] = useState<typeof DUMMY_MEN[0] | null>(null);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   if (isBrowsingArray) {
@@ -61,10 +63,61 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
               borderRadius={0.15}
               scrollSpeed={2}
               scrollEase={0.05}
-              onSelect={() => {
-                 if (onBeginDiscovery) onBeginDiscovery();
+              onSelect={(idx) => {
+                 setEngagementTarget(DUMMY_MEN[idx]);
               }}
             />
+            
+            {/* Modal Engagement Overlay */}
+            <AnimatePresence>
+               {engagementTarget && (
+                  <motion.div 
+                     initial={{ opacity: 0 }}
+                     animate={{ opacity: 1 }}
+                     exit={{ opacity: 0 }}
+                     className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-6"
+                     onClick={() => setEngagementTarget(null)}
+                  >
+                     <motion.div 
+                        initial={{ scale: 0.9, y: 20, opacity: 0 }}
+                        animate={{ scale: 1, y: 0, opacity: 1 }}
+                        exit={{ scale: 0.9, y: 20, opacity: 0 }}
+                        onClick={(e) => e.stopPropagation()}
+                        className="w-full max-w-[340px] bg-[#0a0a0a] border border-mat-gold/30 rounded-[2rem] p-6 pb-8 shadow-[0_0_50px_rgba(212,175,55,0.15)] relative overflow-hidden"
+                     >
+                        <div className="absolute top-4 right-4 z-20 cursor-pointer pointer-events-auto" onClick={() => setEngagementTarget(null)}>
+                           <X className="text-white/40 hover:text-white transition-colors" size={20} />
+                        </div>
+                        <div className="absolute -top-20 -right-20 w-40 h-40 bg-mat-gold/20 blur-3xl rounded-full pointer-events-none" />
+                        
+                        <div className="flex gap-4 items-center mb-8 relative">
+                           <img src={engagementTarget.image} className="w-16 h-16 rounded-2xl object-cover border-[1.5px] border-mat-gold/50 shadow-lg" alt="" />
+                           <div>
+                              <h3 className="text-xl font-black italic uppercase tracking-widest text-mat-cream font-['Impact']">{engagementTarget.title.split(',')[0]}</h3>
+                              <p className="text-[9px] uppercase tracking-[0.2em] text-mat-gold mt-1 leading-tight">{engagementTarget.description}</p>
+                           </div>
+                        </div>
+
+                        <div className="space-y-3 relative z-10">
+                           <Button 
+                              onPress={() => setEngagementTarget(null)}
+                              className="w-full h-12 bg-mat-gold text-black rounded-xl font-black uppercase tracking-[0.2em] text-[10px] shadow-[0_0_20px_rgba(212,175,55,0.4)] hover:scale-[1.02] transition-all border-none"
+                           >
+                              <Sparkles size={14} className="mr-2" /> Initiate Contact
+                           </Button>
+                           <Button 
+                              onPress={() => setEngagementTarget(null)}
+                              variant="outline"
+                              className="w-full h-12 bg-white/5 text-white/80 rounded-xl font-bold uppercase tracking-[0.1em] text-[10px] hover:bg-white/10 hover:text-white border-white/10"
+                           >
+                              Dismiss Target
+                           </Button>
+                        </div>
+                     </motion.div>
+                  </motion.div>
+               )}
+            </AnimatePresence>
+
             {/* Interaction Hint */}
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[110] pointer-events-none">
                <div className="flex flex-col items-center gap-3">
