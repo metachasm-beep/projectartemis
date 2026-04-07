@@ -8,10 +8,19 @@ import {
   Bookmark,
   MapPin,
   X,
-  Info
+  Layers,
+  Search,
+  Trophy,
+  ArrowLeft,
+  Lock
 } from 'lucide-react';
 
 import { SeekerBrowse } from '@/components/SeekerBrowse';
+import CircularGallery from '@/components/animations/CircularGallery';
+import MenDiscovery from '@/components/discovery/MenDiscovery';
+import { Leaderboard } from '@/components/leaderboard/Leaderboard';
+import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
+import { TrumpCard } from '@/components/discovery/TrumpCard';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { SkeletonRail } from "@/components/ui/SkeletonCard";
@@ -167,6 +176,10 @@ export const Discovery: React.FC = () => {
   const { profile, loading: authLoading } = useAuth();
   const [selectedProfile, setSelectedProfile] = useState<any | null>(null);
   const [shortlistedIds, setShortlistedIds] = useState<Set<string>>(new Set());
+  const [mode, setMode] = useState<'rails' | 'array' | 'directory' | 'leaderboard'>('rails');
+  const [engagementTarget, setEngagementTarget] = useState<any | null>(null);
+
+  const GALLERY_ITEMS = DUMMY_ASPIRANTS.map(m => ({ image: m.img, text: m.name }));
 
   const refreshShortlist = useCallback(async () => {
     if (profile?.user_id && profile.role === 'woman') {
@@ -218,9 +231,113 @@ export const Discovery: React.FC = () => {
     );
   }
 
+  if (mode === 'array') {
+    return (
+      <div className="fixed inset-0 bg-black z-50 overflow-hidden flex flex-col">
+          <div className="absolute top-0 left-0 w-full p-8 z-50 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
+            <Button 
+               onClick={() => setMode('rails')} 
+               variant="ghost" 
+               className="pointer-events-auto bg-white/10 text-white backdrop-blur-md rounded-full px-6 flex items-center gap-2"
+            >
+               <ArrowLeft size={16} />
+               Switch Observation Mode
+            </Button>
+            <div className="text-right">
+               <h2 className="text-mat-gold font-bold italic tracking-widest text-lg uppercase underline decoration-mat-gold/20 underline-offset-8">The Array</h2>
+               <p className="text-[10px] text-white/50 uppercase tracking-[0.3em] mt-1">Sovereign Browsing Active</p>
+            </div>
+          </div>
+          
+          <div className="absolute inset-0 z-0">
+            <CircularGallery 
+              items={GALLERY_ITEMS}
+              bend={1}
+              borderRadius={0.23}
+              font='900 40px "Roboto Condensed"'
+              scrollSpeed={2}
+              scrollEase={0.05}
+              onSelect={(idx) => {
+                 const aspirant = DUMMY_ASPIRANTS[idx];
+                 setEngagementTarget({
+                    ...aspirant,
+                    user_id: `dummy-${idx}`,
+                    photos: JSON.stringify([aspirant.img]),
+                    full_name: aspirant.name
+                 });
+              }}
+            />
+          </div>
+
+          <AnimatePresence>
+            {engagementTarget && (
+              <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-6"
+                  onClick={() => setEngagementTarget(null)}
+              >
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <TrumpCard 
+                        profile={{
+                          name: engagementTarget.name,
+                          age: engagementTarget.age,
+                          city: engagementTarget.city,
+                          img: engagementTarget.img,
+                          status: engagementTarget.status,
+                          bio: engagementTarget.bio,
+                          is_verified: engagementTarget.is_verified
+                        }}
+                        onClose={() => setEngagementTarget(null)}
+                        onAction={() => {
+                          setSelectedProfile(engagementTarget);
+                          setEngagementTarget(null);
+                        }}
+                      />
+                  </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+      </div>
+    );
+  }
+
+  if (mode === 'directory') {
+    return <MenDiscovery onClose={() => setMode('rails')} />;
+  }
+
+  if (mode === 'leaderboard') {
+    return <Leaderboard onClose={() => setMode('rails')} />;
+  }
+
   return (
     <TooltipProvider>
       <div className="space-y-40 py-12 md:py-24 max-w-[100vw] overflow-hidden">
+         {/* ─── Mode Switcher ─── */}
+         <div className="max-w-7xl mx-auto px-6 sticky top-24 z-40">
+            <div className="inline-flex p-2 bg-mat-wine/10 backdrop-blur-xl rounded-full border border-mat-rose/10 shadow-mat-premium">
+               {[
+                 { id: 'rails', label: 'Curated Rails', icon: Layers },
+                 { id: 'array', label: 'The Array', icon: Sparkles },
+                 { id: 'directory', label: 'Search Archive', icon: Search },
+                 { id: 'leaderboard', label: 'Top Ranked', icon: Trophy }
+               ].map((m) => (
+                  <button
+                    key={m.id}
+                    onClick={() => setMode(m.id as any)}
+                    className={cn(
+                      "flex items-center gap-3 px-6 py-3 rounded-full text-[9px] font-black uppercase tracking-widest transition-all",
+                      mode === m.id ? "bg-mat-wine text-mat-cream shadow-lg scale-105" : "text-mat-wine/40 hover:text-mat-wine hover:bg-white/5"
+                    )}
+                  >
+                    <m.icon size={14} />
+                    <span className="hidden sm:inline">{m.label}</span>
+                  </button>
+               ))}
+            </div>
+         </div>
+
          {/* ─── Resonance Rails (Curated) ─── */}
          <div className="space-y-32">
             <div className="space-y-10 px-6 max-w-7xl mx-auto">
@@ -325,32 +442,34 @@ export const Discovery: React.FC = () => {
 
                         <div className="pt-20 flex flex-col sm:flex-row gap-10">
                            <Button onClick={async () => {
-                              if (!profile?.user_id) return;
+                               if (!profile?.user_id) return;
 
-                              // ⚖️ Free Resonance Check for Unverified Women
-                              if (!profile.is_verified) {
-                                 try {
-                                    const matchCount = await MessagingService.getMatchCountForWoman(profile.user_id);
-                                    if (matchCount >= 1) {
-                                       alert("Verification Required. You have used your free resonance. Seal your truth to continue finding matches.");
-                                       return;
-                                    }
-                                 } catch (err) {
-                                    console.error("Failed to verify resonance limit", err);
-                                    return;
-                                 }
-                              }
+                               // ⚖️ Identity Gating for Resonance
+                               if (!profile.is_verified) {
+                                  alert("SEAL YOUR TRUTH: Identity synchronization is required to initiate resonance with aspirants. Browsing is currently observation-only.");
+                                  return;
+                               }
 
-                              try {
-                                 await MessagingService.createMatch(profile.user_id, selectedProfile.user_id);
-                                 alert("Resonance Established. Opening Portal...");
-                                 setSelectedProfile(null);
-                              } catch (e) { alert("Resonance already exists."); }
-                           }} size="xl" className="flex-1 shadow-mat-rose">
-                              <Heart className="mr-6" size={28} fill="currentColor" /> Initiate Resonance
+                               try {
+                                  await MessagingService.createMatch(profile.user_id, selectedProfile.user_id);
+                                  alert("Resonance Established. Opening Portal...");
+                                  setSelectedProfile(null);
+                               } catch (e) { alert("Resonance already exists."); }
+                            }} 
+                            size="xl" 
+                            className={cn(
+                               "flex-1 shadow-mat-rose transition-all",
+                               !profile?.is_verified && "opacity-50 grayscale hover:scale-100"
+                            )}
+                           >
+                              {profile?.is_verified ? (
+                                <><Heart className="mr-6" size={28} fill="currentColor" /> Initiate Resonance</>
+                              ) : (
+                                <><Lock className="mr-6" size={28} /> Verification Required</>
+                              )}
                            </Button>
                            <Button onClick={() => toggleShortlist(selectedProfile.user_id)} variant="outline" size="xl" className="flex-1">
-                              {shortlistedIds.has(selectedProfile.user_id) ? "Shortlisted" : "Intentional Save"}
+                               {shortlistedIds.has(selectedProfile.user_id) ? "Shortlisted" : "Intentional Save"}
                            </Button>
                         </div>
                      </div>

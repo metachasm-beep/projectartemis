@@ -78,10 +78,11 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
   const [composerTitle, setComposerTitle] = useState("");
   const [composerCategory, setComposerCategory] = useState("Safety");
 
-  const isVerifiedMatriarch = profile.is_verified && profile.role === 'woman';
+  const isWoman = profile.role === 'woman';
+  const isVerifiedWoman = isWoman && profile.is_verified;
 
   const loadTopics = async () => {
-     if (!isVerifiedMatriarch) return;
+     if (!isWoman) return;
      setLoading(true);
      try {
         const data = await ForumService.getTopics();
@@ -95,11 +96,11 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
 
   useEffect(() => {
      loadTopics();
-     if (isVerifiedMatriarch) {
+     if (isWoman) {
         const pollId = setInterval(loadTopics, 15000);
         return () => clearInterval(pollId);
      }
-  }, [isVerifiedMatriarch]);
+  }, [isWoman]);
 
   const handleComposeSubmit = async (content: string) => {
      try {
@@ -113,10 +114,10 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
   };
 
   // 🛡️ Access Gating Logic
-  if (!isVerifiedMatriarch) {
+  if (!isWoman) {
      return (
-       <div className={isInline ? "relative w-full min-h-[500px]" : ""}>
-         <ProtocolDeniedOverlay onClose={onClose} isUnverified={!profile.is_verified} />
+       <div className={isInline ? "relative w-full min-h-[400px]" : ""}>
+         <ProtocolDeniedOverlay onClose={onClose} isUnverified={false} />
        </div>
      );
   }
@@ -134,9 +135,13 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
           </div>
           <div className="flex items-center gap-4">
              <Button 
-                onPress={() => setIsComposing(true)} 
-                className="bg-mat-rose text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30 flex items-center justify-center gap-1"
+                onPress={() => {
+                  if (isVerifiedWoman) setIsComposing(true);
+                  else alert("IDENTITY SYNC REQUIRED: You must seal your truth (verify) to contribute to the Coven. Observation is currently read-only.");
+                }} 
+                className={`${isVerifiedWoman ? 'bg-mat-rose' : 'bg-mat-rose/20 text-white/40 cursor-not-allowed'} text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30 flex items-center justify-center gap-1`}
              >
+                {!isVerifiedWoman && <Lock size={12} className="mr-1" />}
                 <PenTool size={14} className="mr-1"/>
                 <span className="hidden xs:inline">Draft</span> Protocol
              </Button>

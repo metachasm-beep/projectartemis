@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft, Trophy, MessageSquarePlus } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { Camera, ShieldCheck, Clock, Crown, Lock, Heart, MessageSquarePlus } from 'lucide-react';
+import { AnimatePresence } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
-import CircularGallery from '@/components/animations/CircularGallery';
-import MenDiscovery from '@/components/discovery/MenDiscovery';
-import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
 import AdUnit from '@/components/common/AdUnit';
-import { TrumpCard } from '@/components/discovery/TrumpCard';
-import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
 import { VerificationModal } from '@/components/verification/VerificationModal';
 import { SanctuaryService } from '@/services/sanctuary';
 
@@ -20,121 +15,14 @@ interface WomenSanctuaryProps {
   onBeginDiscovery?: () => void;
 }
 
-const GALLERY_ITEMS = DUMMY_ASPIRANTS.map(m => ({ image: m.img, text: m.name }));
-
-export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing, onBeginDiscovery }) => {
+export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
   const forumRef = React.useRef<HTMLDivElement>(null);
-  const [isBrowsingArray, setIsBrowsingArray] = useState(false);
-  const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
-  const [isBrowsingLeaderboard, setIsBrowsingLeaderboard] = useState(false);
-  const [engagementTarget, setEngagementTarget] = useState<typeof DUMMY_ASPIRANTS[0] | null>(null);
   const [showVerification, setShowVerification] = useState(false);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   const scrollToForum = () => {
     forumRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  if (isBrowsingArray) {
-    return (
-      <div className="fixed inset-0 bg-black z-50 overflow-hidden flex flex-col">
-          <div className="absolute top-0 left-0 w-full p-8 z-50 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent pointer-events-none">
-            <Button 
-               onPress={() => setIsBrowsingArray(false)} 
-               variant="ghost" 
-               className="pointer-events-auto bg-white/10 text-white backdrop-blur-md rounded-full px-6 flex items-center gap-2"
-            >
-               <ArrowLeft size={16} />
-               Return to Sanctuary
-            </Button>
-            <div className="text-right">
-               <h2 className="text-mat-gold font-bold italic tracking-widest text-lg uppercase underline decoration-mat-gold/20 underline-offset-8">The Array</h2>
-               <p className="text-[10px] text-white/50 uppercase tracking-[0.3em] mt-1">Sovereign Browsing Active</p>
-            </div>
-          </div>
-          
-          <div className="absolute inset-0 z-0">
-            <CircularGallery 
-              items={GALLERY_ITEMS}
-              bend={1}
-              borderRadius={0}
-              font='900 40px "Roboto Condensed"'
-              scrollSpeed={2}
-              scrollEase={0.05}
-              onSelect={(idx) => {
-                 setEngagementTarget(DUMMY_ASPIRANTS[idx]);
-              }}
-            />
-          </div>
-
-          {/* Engagement Overlay */}
-          <AnimatePresence>
-            {engagementTarget && (
-              <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  className="absolute inset-0 z-[200] flex items-center justify-center bg-black/70 backdrop-blur-md p-6"
-                  onClick={() => setEngagementTarget(null)}
-              >
-                  <div onClick={(e) => e.stopPropagation()}>
-                    <TrumpCard 
-                        profile={{
-                          name: engagementTarget.name,
-                          age: engagementTarget.age,
-                          city: engagementTarget.city,
-                          img: engagementTarget.img,
-                          status: engagementTarget.status,
-                          bio: engagementTarget.bio,
-                          is_verified: engagementTarget.is_verified
-                        }}
-                        onClose={() => setEngagementTarget(null)}
-                        onAction={() => {
-                          const isHighRank = engagementTarget.status === 'Imperial' || engagementTarget.status === 'Vanguard';
-                          if (isHighRank && !engagementTarget.is_verified) {
-                             alert("PROTOCOL RESTRICTED: Aspirant identity sync required for this connection.");
-                             return;
-                          }
-                          alert(`Protocol Synced: Contact initiated with ${engagementTarget.name.toUpperCase()}.`);
-                          setEngagementTarget(null);
-                        }}
-                      />
-                  </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Interaction Hint */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[110] pointer-events-none text-center space-y-3">
-              <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/30 animate-pulse">Drag to Navigate</span>
-              <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent mx-auto" />
-          </div>
-
-          {/* Fast-Travel to Forum FAB */}
-          <div className="absolute bottom-8 right-8 lg:bottom-12 lg:right-12 z-[120]">
-            <Button
-                isIconOnly
-                onPress={() => {
-                    setIsBrowsingArray(false);
-                    // Instead of full-screen, we can scroll to forum if we return to sanctuary or leave as is
-                    setTimeout(scrollToForum, 100);
-                }}
-                className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#c9a75d] to-[#8a723e] border border-white/20 rounded-full shadow-[0_0_40px_rgba(201,167,93,0.4)] flex items-center justify-center hover:scale-110 transition-all duration-300 group"
-            >
-                <MessageSquarePlus size={24} className="text-black group-hover:-rotate-12 transition-transform duration-500" />
-            </Button>
-          </div>
-      </div>
-    );
-  }
-
-  if (isBrowsingDirectory) {
-    return <MenDiscovery onClose={() => setIsBrowsingDirectory(false)} />;
-  }
-
-  if (isBrowsingLeaderboard) {
-    return <Leaderboard onClose={() => setIsBrowsingLeaderboard(false)} />;
-  }
 
   return (
     <div className="w-full bg-mat-cream min-h-screen relative overflow-hidden">
@@ -213,83 +101,30 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                  </p>
               </div>
 
-              {/* The Massive Portal Actions */}
-              <div className="pt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                 <Button 
-                    onPress={() => setIsBrowsingArray(true)} 
-                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl shadow-mat-rose/20 bg-mat-wine border-none p-0"
-                 >
-                    <div className="absolute inset-0 bg-gradient-to-r from-mat-wine via-mat-rose-deep to-mat-wine opacity-90 group-hover:scale-110 transition-transform duration-700" />
-                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-cream">
-                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center backdrop-blur-md">
-                             <Sparkles size={20} className="text-mat-gold group-hover:animate-pulse" />
-                          </div>
-                          <div className="text-left text-white">
-                             <h3 className="text-lg font-bold italic">The Array</h3>
-                             <p className="text-[8px] font-black uppercase tracking-widest text-white/60">3D Discovery</p>
-                          </div>
-                       </div>
-                       <ChevronRight size={24} className="text-mat-gold/50 group-hover:text-mat-gold group-hover:translate-x-1 transition-all" />
-                    </div>
-                 </Button>
-
-                 <Button 
-                    onPress={() => {
-                      if (onBeginDiscovery) onBeginDiscovery();
-                      else setIsBrowsingDirectory(true);
-                    }} 
-                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden border border-mat-wine/10 bg-white hover:bg-mat-wine/5 transition-all duration-500 p-0"
-                 >
-                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-wine">
-                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-mat-wine/5 flex items-center justify-center backdrop-blur-md">
-                             <Lock size={20} className="text-mat-rose group-hover:animate-bounce" />
-                          </div>
-                          <div className="text-left text-mat-wine">
-                             <h3 className="text-lg font-bold italic">The Directory</h3>
-                             <p className="text-[8px] font-black uppercase tracking-widest text-mat-wine/30">Vertical Feed</p>
-                          </div>
-                       </div>
-                       <ChevronRight size={24} className="text-mat-wine/20 group-hover:text-mat-wine group-hover:translate-x-1" />
-                    </div>
-                 </Button>
-
+              {/* The Primary Actions */}
+              <div className="pt-8 flex flex-col sm:flex-row gap-6">
                  <Button 
                     onPress={scrollToForum} 
-                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl bg-[#0e0e0e] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
+                    className="group relative flex-1 h-20 rounded-[2rem] overflow-hidden shadow-2xl bg-[#0e0e0e] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
                  >
-                    <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-cream">
-                       <div className="flex items-center gap-4">
-                          <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
-                             <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
-                          </div>
-                          <div className="text-left">
-                             <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tight">THE COVEN</h3>
-                             <p className="text-[8px] font-black uppercase tracking-widest text-white/50">Elite Forums</p>
-                          </div>
+                    <div className="relative h-full w-full flex items-center justify-center gap-4 text-mat-cream">
+                       <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
+                          <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
                        </div>
-                       <ChevronRight size={24} className="text-mat-gold/30 group-hover:text-mat-gold group-hover:translate-x-1" />
+                       <div className="text-left">
+                          <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tight">THE COVEN</h3>
+                          <p className="text-[8px] font-black uppercase tracking-widest text-white/50">Elite Community Forums</p>
+                       </div>
                     </div>
                  </Button>
 
                  <Button 
-                    onPress={() => setIsBrowsingLeaderboard(true)} 
-                    className="group relative w-full h-24 rounded-[2rem] overflow-hidden shadow-2xl bg-white border border-mat-gold/30 hover:shadow-mat-gold/10 transition-all p-0"
-                   >
-                      <div className="relative h-full w-full flex items-center justify-between px-8 text-mat-wine">
-                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
-                               <Trophy size={20} className="text-mat-gold" />
-                            </div>
-                            <div className="text-left">
-                               <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tighter">LEADERBOARD</h3>
-                               <p className="text-[8px] font-black uppercase tracking-widest text-mat-wine/30">Rooted Ascent</p>
-                            </div>
-                         </div>
-                         <ChevronRight size={24} className="text-mat-gold/30 group-hover:text-mat-gold group-hover:translate-x-1" />
-                      </div>
-                   </Button>
+                    variant="ghost"
+                    className="flex-1 h-20 rounded-[2rem] border-mat-wine/10 text-mat-wine/60 hover:text-mat-wine hover:bg-mat-wine/5 uppercase tracking-[0.2em] font-black text-[10px] transition-all"
+                    onPress={() => setIsEditing(true)}
+                 >
+                    Adjust Sovereign Identity
+                 </Button>
               </div>
            </div>
 
