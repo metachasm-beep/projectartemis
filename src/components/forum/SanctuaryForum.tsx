@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button, Input, Select, SelectItem } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { Sparkles, PenTool, Hash, RefreshCw, X } from 'lucide-react';
 import { ForumService } from '@/lib/forumService';
-import { ForumPost, PostProps } from './ForumPost';
+import { ForumPost } from './ForumPost';
+import type { PostProps } from './ForumPost';
 import { MarkdownEditor } from './MarkdownEditor';
 
 const CATEGORIES = ["Safety", "Health", "Career", "Dating Advice", "General"];
@@ -19,7 +20,7 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
      setLoading(true);
      try {
         const data = await ForumService.getTopics();
-        setTopics(data as PostProps[]);
+        setTopics(data as unknown as PostProps[]);
      } catch (err) {
         console.error(err);
      } finally {
@@ -59,9 +60,9 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
           <div className="flex items-center gap-4">
              <Button 
                 onPress={() => setIsComposing(true)} 
-                startContent={<PenTool size={14}/>} 
-                className="bg-mat-rose text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30"
+                className="bg-mat-rose text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30 flex items-center justify-center gap-1"
              >
+                <PenTool size={14} className="mr-1"/>
                 <span className="hidden xs:inline">Draft</span> Protocol
              </Button>
              <Button isIconOnly variant="ghost" onPress={onClose} className="text-white/40 hover:text-white rounded-full">
@@ -120,24 +121,24 @@ export const SanctuaryForum: React.FC<{ onClose: () => void }> = ({ onClose }) =
                    
                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                         <Select 
-                           label="Category" 
-                           variant="faded"
-                           selectedKeys={[composerCategory]}
-                           onChange={(e) => setComposerCategory(e.target.value)}
-                           className="col-span-1"
-                           classNames={{ trigger: "bg-white/5 border-white/10" }}
-                         >
-                            {CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
-                         </Select>
-                         <Input 
-                           label="Title"
-                           variant="faded"
-                           value={composerTitle}
-                           onValueChange={setComposerTitle}
-                           className="col-span-1 md:col-span-2"
-                           classNames={{ inputWrapper: "bg-white/5 border-white/10 text-white" }}
-                         />
+                         <div className="col-span-1 flex flex-col justify-end pb-1">
+                            <select 
+                               value={composerCategory}
+                               onChange={(e) => setComposerCategory(e.target.value)}
+                               className="h-14 bg-white/5 border-2 border-white/10 text-white rounded-xl px-4 outline-none focus:border-mat-rose transition-all text-sm w-full font-medium"
+                            >
+                               {CATEGORIES.map(c => <option key={c} value={c} className="bg-black text-white">{c}</option>)}
+                            </select>
+                         </div>
+                         <div className="col-span-1 md:col-span-2 flex flex-col justify-end pb-1">
+                            <label className="text-[10px] text-white/50 mb-1 ml-1 px-1">Title</label>
+                            <input 
+                               value={composerTitle}
+                               onChange={(e) => setComposerTitle(e.target.value)}
+                               placeholder="Summon the Council..."
+                               className="h-14 bg-white/5 border-2 border-white/10 text-white rounded-xl px-4 outline-none focus:border-mat-rose transition-all text-sm w-full placeholder:text-white/20 font-medium"
+                            />
+                         </div>
                       </div>
                       
                       <div className="space-y-2">
