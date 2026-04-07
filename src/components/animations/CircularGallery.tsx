@@ -395,6 +395,7 @@ interface AppConfig {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  onSelect?: (index: number) => void;
 }
 
 class App {
@@ -423,10 +424,11 @@ class App {
   boundOnWheel!: (e: Event) => void;
   boundOnTouchDown!: (e: MouseEvent | TouchEvent) => void;
   boundOnTouchMove!: (e: MouseEvent | TouchEvent) => void;
-  boundOnTouchUp!: () => void;
+  boundOnTouchUp!: (e: MouseEvent | TouchEvent) => void;
 
   isDown: boolean = false;
   start: number = 0;
+  onSelect?: (index: number) => void;
 
   constructor(
     container: HTMLElement,
@@ -437,11 +439,13 @@ class App {
       borderRadius = 0,
       font = 'bold 30px Figtree',
       scrollSpeed = 2,
-      scrollEase = 0.05
+      scrollEase = 0.05,
+      onSelect
     }: AppConfig
   ) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
+    this.onSelect = onSelect;
     this.scrollSpeed = scrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
@@ -535,9 +539,21 @@ class App {
     this.scroll.target = (this.scroll.position ?? 0) + distance;
   }
 
-  onTouchUp() {
+  onTouchUp(e: MouseEvent | TouchEvent) {
     this.isDown = false;
     this.onCheck();
+    
+    if (this.onSelect && e) {
+      const x = 'changedTouches' in e ? (e as TouchEvent).changedTouches[0].clientX : (e as MouseEvent).clientX;
+      if (Math.abs(this.start - x) < 5) {
+         if (this.medias && this.medias.length > 0) {
+            const width = this.medias[0].width;
+            const itemIndex = Math.round(Math.abs(this.scroll.target) / width);
+            const originalLength = this.mediasImages.length / 2;
+            this.onSelect(itemIndex % originalLength);
+         }
+      }
+    }
   }
 
   onWheel(e: Event) {
@@ -626,6 +642,7 @@ interface CircularGalleryProps {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  onSelect?: (index: number) => void;
 }
 
 export default function CircularGallery({
@@ -635,7 +652,8 @@ export default function CircularGallery({
   borderRadius = 0.05,
   font = 'bold 30px Figtree',
   scrollSpeed = 2,
-  scrollEase = 0.05
+  scrollEase = 0.05,
+  onSelect
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -647,7 +665,8 @@ export default function CircularGallery({
       borderRadius,
       font,
       scrollSpeed,
-      scrollEase
+      scrollEase,
+      onSelect
     });
     return () => {
       app.destroy();

@@ -61,6 +61,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
               borderRadius={0.15}
               scrollSpeed={2}
               scrollEase={0.05}
+              onSelect={() => {
+                 if (onBeginDiscovery) onBeginDiscovery();
+              }}
             />
             {/* Interaction Hint */}
             <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[110] pointer-events-none">
