@@ -27,7 +27,7 @@ const DUMMY_MEN = [
 const GALLERY_ITEMS = DUMMY_MEN.map(m => ({ image: m.image, text: m.title }));
 
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
-  const [isBrowsingArray, setIsBrowsingArray] = useState(false);
+  const [isBrowsingArray, setIsBrowsingArray] = useState(true);
   const [isBrowsingDirectory, setIsBrowsingDirectory] = useState(false);
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   

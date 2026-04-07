@@ -557,8 +557,8 @@ class App {
 
   onResize() {
     this.screen = {
-      width: this.container.clientWidth,
-      height: this.container.clientHeight
+      width: this.container.clientWidth || window.innerWidth,
+      height: (this.container.clientHeight > 300) ? this.container.clientHeight : window.innerHeight
     };
     this.renderer.setSize(this.screen.width, this.screen.height);
     this.camera.perspective({
