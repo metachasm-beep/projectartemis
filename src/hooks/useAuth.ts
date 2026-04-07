@@ -144,5 +144,12 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, [fetchProfile]);
 
-  return { session, user, profile, loading, fetchingProfile, setProfile, refreshProfile, signOut };
+  // 👑 Admin Override Logic
+  const adminOverride = typeof window !== 'undefined' ? sessionStorage.getItem('adminViewRole') : null;
+  const isAdmin = profile?.role === 'admin';
+  const effectiveProfile = isAdmin && adminOverride
+    ? { ...profile, role: adminOverride as any }
+    : profile;
+
+  return { session, user, profile: effectiveProfile, isAdmin, loading, fetchingProfile, setProfile, refreshProfile, signOut };
 };

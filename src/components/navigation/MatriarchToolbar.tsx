@@ -14,7 +14,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   setActiveTab, 
   onLogout 
 }) => {
-  const { profile } = useAuth();
+  const { profile, isAdmin } = useAuth() as any; // Cast as any because we just added isAdmin and TS might complain before full reload
   
   const navItems = [
     { id: 'discovery', label: 'My Home', icon: Home },
@@ -22,6 +22,11 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
     { id: 'messages', label: 'Messages', icon: MessageCircle },
     { id: 'store', label: 'Buy Aura', icon: Wallet },
   ] as const;
+
+  const handleAdminToggle = (role: 'man' | 'woman') => {
+    sessionStorage.setItem('adminViewRole', role);
+    window.location.reload();
+  };
 
   // 🍷 Don't show toolbar in Sovereign Browse mode to maximize visual essence
   if (activeTab === 'sovereign_browse') return null;
@@ -67,19 +72,38 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
         </div>
 
         {/* 🍷 Action Ritual (Right-Aligned Symmetry) */}
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={onLogout}
-              className="p-3 md:p-4 rounded-full bg-mat-rose text-mat-cream transition-all hover:bg-mat-rose-deep shadow-mat-rose hover:scale-105 active:scale-90 group"
-            >
-              <LogOut size={14} className="group-hover:translate-x-1 transition-transform" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-            Dissolve Session
-          </TooltipContent>
-        </Tooltip>
+        <div className="flex items-center gap-2 md:gap-4">
+          {isAdmin && (
+             <div className="hidden lg:flex bg-mat-rose/10 p-1 rounded-full items-center">
+               <button 
+                 onClick={() => handleAdminToggle('man')}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-rose text-mat-cream shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+               >
+                 View Man
+               </button>
+               <button 
+                 onClick={() => handleAdminToggle('woman')}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-rose text-mat-cream shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+               >
+                 View Woman
+               </button>
+             </div>
+          )}
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onLogout}
+                className="p-3 md:p-4 rounded-full bg-mat-rose text-mat-cream transition-all hover:bg-mat-rose-deep shadow-mat-rose hover:scale-105 active:scale-90 group"
+              >
+                <LogOut size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+              Dissolve Session
+            </TooltipContent>
+          </Tooltip>
+        </div>
       </div>
     </TooltipProvider>
   );
