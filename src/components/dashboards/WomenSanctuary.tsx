@@ -72,6 +72,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                   <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
                </div>
             </div>
+
+            {/* Fast-Travel to Forum FAB */}
+            <div className="absolute bottom-8 right-8 lg:bottom-12 lg:right-12 z-[120]">
+               <Button
+                  isIconOnly
+                  onPress={() => {
+                     setIsBrowsingArray(false);
+                     setIsBrowsingForum(true);
+                  }}
+                  className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-[#c9a75d] to-[#8a723e] border border-white/20 rounded-full shadow-[0_0_40px_rgba(201,167,93,0.4)] flex items-center justify-center hover:scale-110 transition-all duration-300 group"
+               >
+                  <MessageSquarePlus size={24} className="text-black group-hover:-rotate-12 transition-transform duration-500" />
+               </Button>
+            </div>
          </div>
       </div>
     );
