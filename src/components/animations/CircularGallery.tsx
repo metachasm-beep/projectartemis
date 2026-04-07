@@ -322,6 +322,7 @@ class Media {
 
     if (this.bend === 0) {
       this.plane.position.y = 0;
+      this.plane.position.z = this.index * 0.001; // Tiny offset to prevent Z-fighting
       this.plane.rotation.z = 0;
     } else {
       const B_abs = Math.abs(this.bend);
@@ -329,6 +330,7 @@ class Media {
       const effectiveX = Math.min(Math.abs(x), H);
 
       const arc = R - Math.sqrt(R * R - effectiveX * effectiveX);
+      this.plane.position.z = this.index * 0.001; // Tiny offset to prevent Z-fighting
       if (this.bend > 0) {
         this.plane.position.y = -arc;
         this.plane.rotation.z = -Math.sign(x) * Math.asin(effectiveX / R);

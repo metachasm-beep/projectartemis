@@ -10,11 +10,16 @@ import {
   ShieldAlert, 
   UserX, 
   EyeOff,
-  X
+  X,
+  Lock,
+  MapPin,
+  Trophy
 } from 'lucide-react';
 import { mapToTrumpStats } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { VerificationBadge } from '@/components/verification/VerificationBadge';
+import { cn } from '@/lib/utils';
 
 interface TrumpCardProps {
   profile: {
@@ -25,6 +30,9 @@ interface TrumpCardProps {
     img: string;
     status: string;
     bio: string;
+    height_str: string;
+    vocation: string;
+    tier: string;
     is_verified?: boolean;
   };
   onClose?: () => void;
@@ -48,7 +56,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[420px] aspect-[2/3.2] bg-mat-obsidian border-[6px] border-mat-gold rounded-[2.5rem] shadow-[0_0_80px_rgba(191,160,106,0.4)] overflow-hidden flex flex-col"
+      className="relative w-full max-w-[420px] aspect-[2/3.4] bg-mat-obsidian border-[6px] border-mat-gold rounded-[2.5rem] shadow-[0_0_80px_rgba(191,160,106,0.4)] overflow-hidden flex flex-col"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-40 mix-blend-overlay" />}
       
@@ -64,7 +72,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* HERO IMAGE */}
-      <div className="relative h-[55%] mt-14 overflow-hidden border-b-[3px] border-mat-gold">
+      <div className="relative h-[48%] mt-14 overflow-hidden border-b-[3px] border-mat-gold">
         <img 
           src={profile.img} 
           className="w-full h-full object-cover mat-gritty-filter scale-110" 
@@ -77,18 +85,20 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
               </p>
               <VerificationBadge verified={profile.is_verified} />
            </div>
-           <p className="text-[10px] uppercase tracking-[0.4em] font-black text-mat-cream/60 mt-1">
+           <p className="text-[10px] uppercase tracking-[0.4em] font-black text-white/50 mt-1">
              Age {profile.age} • {profile.city.toUpperCase()}
            </p>
         </div>
       </div>
 
-      {/* STATS & QUICK ACTIONS */}
+      {/* STATS & MINI DOSSIER */}
       <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-md p-6 flex flex-col justify-between">
+        
+        {/* Core Stats Bar */}
         <div className="grid grid-cols-5 gap-3">
           {statItems.map((s, i) => (
             <div key={i} className="flex flex-col items-center">
-              <s.icon size={12} className={`${s.color} mb-1.5`} />
+              <s.icon size={10} className={`${s.color} mb-1.5`} />
               <div className="w-full h-1 bg-white/10 rounded-full overflow-hidden">
                 <motion.div 
                    initial={{ width: 0 }}
@@ -96,49 +106,95 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                    className={`h-full ${s.color.replace('text-', 'bg-')}`} 
                 />
               </div>
-              <span className="text-[7px] font-black uppercase text-white/30 mt-1.5">{s.label}</span>
             </div>
           ))}
         </div>
 
-        {/* ENGAGEMENT MATRIX */}
-        <div className="grid grid-cols-4 gap-3 mt-4">
-           {/* PING - PRIMARY ACTION */}
+        {/* Mini Dossier Summary */}
+        <div className="mt-4 space-y-2 border-y border-white/5 py-4">
+           <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white/30">
+                 <Trophy size={10} />
+                 <span className="text-[8px] uppercase font-black tracking-widest">Tier</span>
+              </div>
+              <span className="text-mat-gold text-[9px] font-bold italic uppercase">{profile.tier}</span>
+           </div>
+           <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white/30">
+                 <MapPin size={10} />
+                 <span className="text-[8px] uppercase font-black tracking-widest">Stature</span>
+              </div>
+              <span className="text-mat-cream/60 text-[9px] font-medium">{profile.height_str}</span>
+           </div>
+           <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2 text-white/30">
+                 <Lock size={10} />
+                 <span className="text-[8px] uppercase font-black tracking-widest">Vocation</span>
+              </div>
+              <span className="text-mat-cream/40 text-[9px] font-medium italic">{profile.vocation}</span>
+           </div>
+        </div>
+
+        {/* REFINED ENGAGEMENT MATRIX (Neat Icon-Sized Buttons) */}
+        <div className="flex items-center justify-center gap-5 mt-4">
+           <Tooltip>
+              <TooltipTrigger>
+                 <Button 
+                   onPress={() => onAction?.('report')}
+                   isIconOnly 
+                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-full p-0"
+                 >
+                    <ShieldAlert size={16} />
+                 </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Report Signal</TooltipContent>
+           </Tooltip>
+
+           <Tooltip>
+              <TooltipTrigger>
+                 <Button 
+                   onPress={() => onAction?.('block')}
+                   isIconOnly 
+                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-full p-0"
+                 >
+                    <UserX size={16} />
+                 </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Purge Resonance</TooltipContent>
+           </Tooltip>
+
            <Button 
              onPress={() => onAction?.('ping')}
-             className="col-span-4 h-14 bg-mat-gold text-mat-obsidian rounded-xl font-black uppercase tracking-[0.2em] text-[11px] shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3"
+             isIconOnly
+             className={cn(
+               "w-12 h-12 min-w-0 rounded-full shadow-2xl transition-all flex items-center justify-center p-0",
+               profile.is_verified ? "bg-mat-gold text-mat-obsidian" : "bg-white/10 text-white/20"
+             )}
            >
-              <MessageSquarePlus size={18} /> Ping Resonance
+              {profile.is_verified ? <MessageSquarePlus size={24} /> : <Lock size={20} />}
            </Button>
 
-           {/* SECONDARY UTILITIES */}
-           <Button 
-             onPress={() => onAction?.('report')}
-             isIconOnly 
-             className="h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-xl"
-           >
-              <ShieldAlert size={16} />
-           </Button>
-           <Button 
-             onPress={() => onAction?.('block')}
-             isIconOnly 
-             className="h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-mat-wine transition-all rounded-xl"
-           >
-              <UserX size={16} />
-           </Button>
-           <Button 
-             onPress={() => onAction?.('never_show')}
-             className="col-span-2 h-12 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-xl font-black uppercase tracking-widest text-[8px] flex items-center justify-center gap-2"
-           >
-              <EyeOff size={12} /> Filter
-           </Button>
+           <Tooltip>
+              <TooltipTrigger>
+                 <Button 
+                   onPress={() => onAction?.('never_show')}
+                   isIconOnly
+                   className="w-10 h-10 min-w-0 bg-white/5 border border-white/10 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full p-0"
+                 >
+                    <EyeOff size={14} />
+                 </Button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Filter Protocol</TooltipContent>
+           </Tooltip>
         </div>
       </div>
 
       {/* DECORATIVE CROSSHAIR */}
       <div className="absolute top-16 right-4 text-mat-gold/10 z-0 pointer-events-none">
-         <Crosshair size={120} strokeWidth={0.5} />
+         <Crosshair size={100} strokeWidth={0.5} />
       </div>
     </motion.div>
   );
 };
+
+export default TrumpCard;

@@ -8,6 +8,9 @@ export interface AspirantProfile {
   bio: string;
   img: string;
   height?: number; // Used for masonry layout calculation
+  height_str: string; // e.g. 6'2"
+  vocation: string; // e.g. AI Logistics Founder
+  tier: string; // e.g. Sovereign Asset Tier
   is_verified?: boolean;
 }
 
@@ -21,7 +24,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'Founder of an AI logistics startup. Alumnus of IIT Delhi. Loves trekking in Ladakh.',
     img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1287&auto=format&fit=crop',
-    height: 1600
+    height: 1600,
+    height_str: "6'2\"",
+    vocation: 'AI Logistics Founder',
+    tier: 'Imperial Asset Tier'
   },
   {
     id: 'm2',
@@ -32,7 +38,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Vanguard',
     bio: 'Investment banker with a passion for classical piano. Architect of his own life.',
     img: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1287&auto=format&fit=crop',
-    height: 1400
+    height: 1400,
+    height_str: "5'11\"",
+    vocation: 'Investment Banker',
+    tier: 'Vanguard Equity Tier'
   },
   {
     id: 'm3',
@@ -43,7 +52,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Sealed',
     bio: 'Architectural designer. Believes in minimal living and maximal thinking.',
     img: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=1287&auto=format&fit=crop',
-    height: 1800
+    height: 1800,
+    height_str: "6'4\"",
+    vocation: 'Architectural Designer',
+    tier: 'Prime Capital Tier'
   },
   {
     id: 'm4',
@@ -54,7 +66,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Rising',
     bio: 'Data scientist and competitive chess player. Seeking a resonance of the mind.',
     img: 'https://images.unsplash.com/photo-1552374196-c4e7ffc6e126?q=80&w=1287&auto=format&fit=crop',
-    height: 1500
+    height: 1500,
+    height_str: "5'10\"",
+    vocation: 'Data Scientist',
+    tier: 'Emergent Signal Tier'
   },
   {
     id: 'm5',
@@ -66,6 +81,9 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     bio: 'International corporate lawyer. World traveler. Seeking a sovereign partner.',
     img: 'https://images.unsplash.com/photo-1531384441138-2736e62e0919?q=80&w=1287&auto=format&fit=crop',
     height: 1700,
+    height_str: "6'1\"",
+    vocation: 'Corporate Lawyer',
+    tier: 'Global Asset Tier',
     is_verified: true
   },
   {
@@ -77,7 +95,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Rising',
     bio: 'Software engineer at a FAANG company. Weekend baker and cyclist.',
     img: 'https://images.unsplash.com/photo-1528892952291-009c663ce843?q=80&w=1287&auto=format&fit=crop',
-    height: 1450
+    height: 1450,
+    height_str: "5'9\"",
+    vocation: 'Software Engineer',
+    tier: 'Ascent Signal Tier'
   },
   {
     id: 'm7',
@@ -88,7 +109,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Vanguard',
     bio: 'Real estate developer. Collector of vintage watches. Guided by tradition.',
     img: 'https://images.unsplash.com/photo-1618077360395-f3068be8e001?q=80&w=1287&auto=format&fit=crop',
-    height: 1650
+    height: 1650,
+    height_str: "6'0\"",
+    vocation: 'Real Estate Developer',
+    tier: 'Legacy Asset Tier'
   },
   {
     id: 'm8',
@@ -98,8 +122,11 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     rank: 'Entry (1,204)',
     status: 'Rising',
     bio: 'Public policy researcher. Believes in the power of conversation.',
-    img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=1287&auto=format&fit=crop',
-    height: 1550
+    img: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbbce?q=80&w=1287&auto=format&fit=crop',
+    height: 1550,
+    height_str: "5'11\"",
+    vocation: 'Policy Researcher',
+    tier: 'Civic Signal Tier'
   },
   {
     id: 'm9',
@@ -110,7 +137,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'Automotive engineer. Raced in Formula 3. Precision is my lifestyle.',
     img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=1287&auto=format&fit=crop',
-    height: 1600
+    height: 1600,
+    height_str: "6'2\"",
+    vocation: 'Automotive Engineer',
+    tier: 'Supreme Precision Tier'
   },
   {
     id: 'm10',
@@ -121,7 +151,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Vanguard',
     bio: 'Art gallery owner. Searching for the ultimate aesthetic resonance.',
     img: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=1287&auto=format&fit=crop',
-    height: 1750
+    height: 1750,
+    height_str: "6'1\"",
+    vocation: 'Art Gallery Owner',
+    tier: 'Aesthetic Equity Tier'
   },
   {
     id: 'm11',
@@ -132,7 +165,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Sealed',
     bio: 'Neurosurgeon. Life is a delicate balance of surgery and poetry.',
     img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=1287&auto=format&fit=crop',
-    height: 1500
+    height: 1500,
+    height_str: "5'11\"",
+    vocation: 'Neurosurgeon',
+    tier: 'Clinical Asset Tier'
   },
   {
     id: 'm12',
@@ -143,7 +179,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Rising',
     bio: 'Marine biologist. The ocean holds the secrets I strive to learn.',
     img: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=1287&auto=format&fit=crop',
-    height: 1400
+    height: 1400,
+    height_str: "5'10\"",
+    vocation: 'Marine Biologist',
+    tier: 'Oceanic Signal Tier'
   },
   {
     id: 'm13',
@@ -154,7 +193,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'Hedge fund manager. Strategy is the core of every success.',
     img: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=1287&auto=format&fit=crop',
-    height: 1650
+    height: 1650,
+    height_str: "6'2\"",
+    vocation: 'Hedge Fund Manager',
+    tier: 'Strategic Asset Tier'
   },
   {
     id: 'm14',
@@ -165,7 +207,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Vanguard',
     bio: 'Journalist. Uncovering truths is my life mission.',
     img: 'https://images.unsplash.com/photo-1534030347209-467a5b0ad3e6?q=80&w=1287&auto=format&fit=crop',
-    height: 1580
+    height: 1580,
+    height_str: "6'0\"",
+    vocation: 'Journalist',
+    tier: 'Truth Equity Tier'
   },
   {
     id: 'm15',
@@ -176,7 +221,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Sealed',
     bio: 'Philosopher and author. Every soul is a complex architecture.',
     img: 'https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?q=80&w=1287&auto=format&fit=crop',
-    height: 1720
+    height: 1720,
+    height_str: "6'3\"",
+    vocation: 'Philosopher/Author',
+    tier: 'Intellectual Asset Tier'
   },
   {
     id: 'm16',
@@ -187,7 +235,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Rising',
     bio: 'Diamond merchant. Refined taste, unmatched ambition.',
     img: 'https://images.unsplash.com/photo-1504257432389-52343af06ae3?q=80&w=1287&auto=format&fit=crop',
-    height: 1480
+    height: 1480,
+    height_str: "5'9\"",
+    vocation: 'Diamond Merchant',
+    tier: 'Refined Signal Tier'
   },
   {
     id: 'm17',
@@ -198,7 +249,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'Digital nomad. Founding the future of work.',
     img: 'https://images.unsplash.com/photo-1513956589380-bad6acb9b9d4?q=80&w=1287&auto=format&fit=crop',
-    height: 1680
+    height: 1680,
+    height_str: "6'1\"",
+    vocation: 'Digital Nomad Founder',
+    tier: 'Future Asset Tier'
   },
   {
     id: 'm18',
@@ -209,7 +263,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Vanguard',
     bio: 'Classical poet. Modern heart. Seeking resonance.',
     img: 'https://images.unsplash.com/photo-1522556189639-b150ed9c4330?q=80&w=1287&auto=format&fit=crop',
-    height: 1540
+    height: 1540,
+    height_str: "5'11\"",
+    vocation: 'Classical Poet',
+    tier: 'Lyric Equity Tier'
   },
   {
     id: 'm19',
@@ -220,7 +277,10 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Imperial',
     bio: 'Avenue of the stars. Guided by excellence.',
     img: 'https://images.unsplash.com/photo-1605664041952-4a285090173e?q=80&w=1287&auto=format&fit=crop',
-    height: 1780
+    height: 1780,
+    height_str: "6'5\"",
+    vocation: 'Private Equity Principal',
+    tier: 'Supreme Asset Tier'
   },
   {
     id: 'm20',
@@ -231,6 +291,9 @@ export const DUMMY_ASPIRANTS: AspirantProfile[] = [
     status: 'Rising',
     bio: 'Textile industrialist. Heritage is the loom of life.',
     img: 'https://images.unsplash.com/photo-1583195764036-6dc248ac07d9?q=80&w=1287&auto=format&fit=crop',
-    height: 1510
+    height: 1510,
+    height_str: "6'0\"",
+    vocation: 'Textile Industrialist',
+    tier: 'Industrial Signal Tier'
   }
 ];
