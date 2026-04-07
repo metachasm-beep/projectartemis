@@ -8,6 +8,7 @@ import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import AdUnit from '@/components/common/AdUnit';
 import { VerificationModal } from '@/components/verification/VerificationModal';
 import { SanctuaryService } from '@/services/sanctuary';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -26,6 +27,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
   };
 
   return (
+    <TooltipProvider>
     <div className="w-full bg-mat-cream min-h-screen relative overflow-hidden">
       {/* Mystical Background Glows */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-mat-rose/5 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }} />
@@ -36,18 +38,25 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
         {/* Header Actions & Branding */}
         <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-center pointer-events-none">
           <div className="pointer-events-auto">
-             <Button 
-                onPress={() => setShowVerification(true)}
-                className={`h-10 px-6 rounded-full font-black uppercase tracking-widest text-[9px] border transition-all ${profile.is_verified ? 'bg-green-500/10 border-green-500/30 text-green-500 cursor-default' : 'bg-mat-gold text-black border-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-[1.05]'}`}
-             >
-                {profile.is_verified ? (
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck size={12} /> Sync Established
-                  </div>
-                ) : (
-                  "Secure Identity"
-                )}
-             </Button>
+             <Tooltip>
+                <TooltipTrigger asChild>
+                   <Button 
+                      onPress={() => setShowVerification(true)}
+                      className={`h-10 px-6 rounded-full font-black uppercase tracking-widest text-[9px] border transition-all ${profile.is_verified ? 'bg-green-500/10 border-green-500/30 text-green-500 cursor-default' : 'bg-mat-gold text-black border-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-[1.05]'}`}
+                   >
+                      {profile.is_verified ? (
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck size={12} /> Sync Established
+                        </div>
+                      ) : (
+                        "Secure Identity"
+                      )}
+                   </Button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+                   Establish biometric synchronization to seal your sanctuary presence.
+                </TooltipContent>
+             </Tooltip>
           </div>
           <div className="text-right hidden sm:block">
              <h1 className="text-mat-wine text-sm font-black tracking-tighter uppercase italic">The Sanctuary</h1>
@@ -70,13 +79,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                          className="w-full h-full object-cover scale-105"
                        />
                     </div>
-                    <Button 
-                       isIconOnly
-                       onPress={() => setIsEditing(true)}
-                       className="absolute -bottom-4 -right-4 w-14 h-14 bg-mat-wine text-mat-cream rounded-full shadow-lg hover:scale-110 flex items-center justify-center p-0"
-                    >
-                       <Camera size={20} />
-                    </Button>
+                    <Tooltip>
+                       <TooltipTrigger asChild>
+                          <Button 
+                             isIconOnly
+                             onPress={() => setIsEditing(true)}
+                             className="absolute -bottom-4 -right-4 w-14 h-14 bg-mat-wine text-mat-cream rounded-full shadow-lg hover:scale-110 flex items-center justify-center p-0"
+                          >
+                             <Camera size={20} />
+                          </Button>
+                       </TooltipTrigger>
+                       <TooltipContent side="right" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+                          Capture your sovereign essence for the discovery archive.
+                       </TooltipContent>
+                    </Tooltip>
                  </div>
               </div>
            </div>
@@ -104,28 +120,42 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
 
               {/* The Primary Actions */}
               <div className="pt-8 flex flex-col sm:flex-row gap-6">
-                 <Button 
-                    onPress={scrollToForum} 
-                    className="group relative flex-1 h-20 rounded-[2rem] overflow-hidden shadow-2xl bg-[#0e0e0e] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
-                 >
-                    <div className="relative h-full w-full flex items-center justify-center gap-4 text-mat-cream">
-                       <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
-                          <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
-                       </div>
-                       <div className="text-left">
-                          <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tight">THE COVEN</h3>
-                          <p className="text-[8px] font-black uppercase tracking-widest text-white/50">Elite Community Forums</p>
-                       </div>
-                    </div>
-                 </Button>
+                 <Tooltip>
+                    <TooltipTrigger asChild>
+                       <Button 
+                          onPress={scrollToForum} 
+                          className="group relative flex-1 h-20 rounded-[2rem] overflow-hidden shadow-2xl bg-[#0e0e0e] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
+                       >
+                          <div className="relative h-full w-full flex items-center justify-center gap-4 text-mat-cream">
+                             <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
+                                <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
+                             </div>
+                             <div className="text-left">
+                                <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tight">THE COVEN</h3>
+                                <p className="text-[8px] font-black uppercase tracking-widest text-white/50">Elite Community Forums</p>
+                             </div>
+                          </div>
+                       </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+                       Enter the sacred forum of the Matriarch to commune with the high-strata community.
+                    </TooltipContent>
+                 </Tooltip>
 
-                 <Button 
-                    variant="ghost"
-                    className="flex-1 h-20 rounded-[2rem] border-mat-wine/10 text-mat-wine/60 hover:text-mat-wine hover:bg-mat-wine/5 uppercase tracking-[0.2em] font-black text-[10px] transition-all"
-                    onPress={() => setIsEditing(true)}
-                 >
-                    Adjust Sovereign Identity
-                 </Button>
+                 <Tooltip>
+                    <TooltipTrigger asChild>
+                       <Button 
+                          variant="ghost"
+                          className="flex-1 h-20 rounded-[2rem] border-mat-wine/10 text-mat-wine/60 hover:text-mat-wine hover:bg-mat-wine/5 uppercase tracking-[0.2em] font-black text-[10px] transition-all"
+                          onPress={() => setIsEditing(true)}
+                       >
+                          Adjust Sovereign Identity
+                       </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+                       Refine the parameters of your sovereign identity.
+                    </TooltipContent>
+                 </Tooltip>
               </div>
            </div>
 
@@ -180,9 +210,16 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
                        <h4 className="text-2xl font-bold italic leading-tight">Identity Sealed</h4>
                        <p className="text-xs text-white/40 mt-2 leading-relaxed whitespace-pre-wrap">Your true identity remains completely hidden from observers until a resonance is confirmed.</p>
                     </div>
-                    <Button className="w-full bg-white/10 text-white border border-white/10 rounded-2xl h-14 flex items-center justify-center gap-3 uppercase tracking-widest font-black text-[9px] mt-2 group hover:bg-white/20 transition-all">
-                       <Lock size={14} className="group-hover:scale-110 transition-transform" /> Review Visibility Rules
-                    </Button>
+                    <Tooltip>
+                       <TooltipTrigger asChild>
+                          <Button className="w-full bg-white/10 text-white border border-white/10 rounded-2xl h-14 flex items-center justify-center gap-3 uppercase tracking-widest font-black text-[9px] mt-2 group hover:bg-white/20 transition-all">
+                             <Lock size={14} className="group-hover:scale-110 transition-transform" /> Review Visibility Rules
+                          </Button>
+                       </TooltipTrigger>
+                       <TooltipContent className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
+                          Examine the protocols governing your presence and visibility.
+                       </TooltipContent>
+                    </Tooltip>
                  </CardContent>
               </Card>
 
@@ -223,5 +260,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
         )}
       </AnimatePresence>
     </div>
+    </TooltipProvider>
   );
 };
+
+export default WomenSanctuary;
