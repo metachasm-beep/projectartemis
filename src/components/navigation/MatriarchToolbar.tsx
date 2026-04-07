@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, User, MessageCircle, LogOut, Wallet, Shield } from 'lucide-react';
+import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 
 interface MatriarchToolbarProps {
@@ -18,7 +18,10 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   const navItems = [
     ...(profile?.role === 'admin' ? [{ id: 'admin_panel' as const, label: 'Control Panel', icon: Shield }] : []),
     { id: 'profile' as const, label: profile?.role === 'woman' ? 'My Home' : 'My Profile', icon: profile?.role === 'woman' ? Home : User },
-    { id: 'discovery' as const, label: profile?.role === 'woman' ? 'Browse' : 'My Home', icon: profile?.role === 'woman' ? User : Home },
+    ...(profile?.role === 'woman' 
+      ? [{ id: 'discovery' as const, label: 'Browse', icon: User }] 
+      : [{ id: 'leaderboard' as const, label: 'Leaderboard', icon: Trophy }]
+    ),
     { id: 'messages' as const, label: 'Messages', icon: MessageCircle },
     { id: 'store' as const, label: 'Buy Aura', icon: Wallet },
   ];

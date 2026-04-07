@@ -8,6 +8,7 @@ import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { PaymentScreen } from '@/components/payments/PaymentScreen';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
+import { Leaderboard } from '@/components/discovery/Leaderboard';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
@@ -86,6 +87,12 @@ export const DashboardLayout: React.FC = () => {
             <motion.div key="profile" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
               <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
             </motion.div>
+          )}
+
+          {activeTab === 'leaderboard' && (
+             <motion.div key="leaderboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <Leaderboard />
+             </motion.div>
           )}
 
           {activeTab === 'store' && (
