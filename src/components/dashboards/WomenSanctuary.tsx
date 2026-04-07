@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Camera, ShieldCheck, Clock, Crown, Sparkles, ChevronRight, Lock, Heart, ArrowLeft } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
 import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
-import InfiniteMenu from '@/components/ui/InfiniteMenu';
+import CircularGallery from '@/components/animations/CircularGallery';
 import MenDiscovery from '@/components/discovery/MenDiscovery';
 import AdUnit from '@/components/common/AdUnit';
 
@@ -48,9 +48,22 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
             </div>
          </div>
          
-         {/* 3D Infinite Menu (ReactBits Component) */}
-         <div className="flex-1 w-full h-full">
-            <InfiniteMenu items={DUMMY_MEN} scale={1.2} />
+         {/* 3D Circular Gallery */}
+         <div className="flex-1 w-full h-full relative">
+            <CircularGallery 
+              items={DUMMY_MEN.map(m => ({ image: m.image, text: m.title }))}
+              bend={0}
+              borderRadius={0.15}
+              scrollSpeed={2}
+              scrollEase={0.05}
+            />
+            {/* Interaction Hint */}
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 z-[110] pointer-events-none">
+               <div className="flex flex-col items-center gap-3">
+                  <span className="text-[9px] font-black uppercase tracking-[0.6em] text-white/30 animate-pulse">Drag to Navigate</span>
+                  <div className="w-px h-12 bg-gradient-to-b from-white/20 to-transparent" />
+               </div>
+            </div>
          </div>
       </div>
     );
