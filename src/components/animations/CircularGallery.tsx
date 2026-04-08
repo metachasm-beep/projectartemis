@@ -35,61 +35,77 @@ function createTextTexture(
   subText: string = '',
   font: string = '700 48px "Playfair Display", serif',
   color: string = 'white'
-): { texture: Texture; width: number; height: number } {
+): { texture: Texture; width: number; height: number; update: () => void } {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Could not get 2d context');
 
-  // Aesthetic multiline rendering - Magazine feel
-  const subFont = '400 16px "Roboto Condensed", sans-serif';
-  
-  context.font = font;
-  const textWidth = Math.ceil(context.measureText(text).width);
-  context.font = subFont;
-  const subTextWidth = Math.ceil(context.measureText(subText).width);
-  
-  const maxWidth = Math.max(textWidth, subTextWidth);
-  const fontSize = getFontSize(font);
-  const subFontSize = getFontSize(subFont);
-  
-  // Padding and line height
-  const paddingX = 80;
-  const paddingY = 40;
-  const lineHeight = 1.1;
-  const canvasWidth = maxWidth + paddingX;
-  const canvasHeight = (fontSize + subFontSize) * lineHeight + paddingY;
+  const texture = new Texture(gl, { generateMipmaps: false });
 
-  canvas.width = canvasWidth;
-  canvas.height = canvasHeight;
-
-  // Render Premium Gradient Shadow for legibility on card
-  const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
-  gradient.addColorStop(0, 'rgba(0,0,0,0.7)');
-  gradient.addColorStop(0.6, 'rgba(0,0,0,0.2)');
-  gradient.addColorStop(1, 'rgba(0,0,0,0)');
-  context.fillStyle = gradient;
-  context.fillRect(0, 0, canvasWidth, canvasHeight);
-
-  // Render Main Text (Name/Age) - Serif
-  context.font = font;
-  context.fillStyle = color;
-  context.textBaseline = 'top';
-  context.textAlign = 'left';
-  context.shadowColor = 'rgba(0,0,0,0.3)';
-  context.shadowBlur = 10;
-  context.fillText(text, paddingX / 4, paddingY / 4);
-
-  // Render Subtext (Location) - Meta Sans
-  if (subText) {
+  const update = () => {
+    // Aesthetic multiline rendering - Magazine feel
+    const subFont = '400 16px "Roboto Condensed", sans-serif';
+    
+    context.font = font;
+    const textWidth = Math.ceil(context.measureText(text).width);
     context.font = subFont;
-    context.fillStyle = 'rgba(255, 255, 255, 0.7)';
-    context.letterSpacing = '2px';
-    context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.1);
+    const subTextWidth = Math.ceil(context.measureText(subText).width);
+    
+    const maxWidth = Math.max(textWidth, subTextWidth);
+    const fontSize = getFontSize(font);
+    const subFontSize = getFontSize(subFont);
+    
+    // Padding and line height
+    const paddingX = 80;
+    const paddingY = 40;
+    const lineHeight = 1.1;
+    const canvasWidth = maxWidth + paddingX;
+    const canvasHeight = (fontSize + subFontSize) * lineHeight + paddingY;
+
+    if (canvas.width !== canvasWidth || canvas.height !== canvasHeight) {
+      canvas.width = canvasWidth;
+      canvas.height = canvasHeight;
+    }
+
+    // Render Premium Gradient Shadow
+    context.clearRect(0, 0, canvasWidth, canvasHeight);
+    const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
+    gradient.addColorStop(0, 'rgba(0,0,0,0.85)');
+    gradient.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+    gradient.addColorStop(1, 'rgba(0,0,0,0)');
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    // Render Main Text (Name/Age) - Serif
+    context.font = font;
+    context.fillStyle = color;
+    context.textBaseline = 'top';
+    context.textAlign = 'left';
+    context.shadowColor = 'rgba(0,0,0,0.4)';
+    context.shadowBlur = 10;
+    context.fillText(text, paddingX / 4, paddingY / 4);
+
+    // Render Subtext (Location) - Meta Sans
+    if (subText) {
+      context.font = subFont;
+      context.fillStyle = 'rgba(255, 255, 255, 0.8)';
+      context.letterSpacing = '2px';
+      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.05);
+    }
+    texture.image = canvas;
+  };
+
+  // Initial draw
+  update();
+  
+  // Wait for fonts to ensure absolute measurement accuracy
+  if ('fonts' in document) {
+    (document as any).fonts.ready.then(() => {
+      update();
+    });
   }
 
-  const texture = new Texture(gl, { generateMipmaps: false });
-  texture.image = canvas;
-  return { texture, width: canvas.width, height: canvas.height };
+  return { texture, width: canvas.width, height: canvas.height, update };
 }
 
 interface TitleProps {
@@ -111,8 +127,10 @@ class Title {
   textColor: string;
   font: string;
   mesh!: Mesh;
+  aspect: number = 1;
+  updateTexture!: () => void;
 
-  constructor({ gl, plane, renderer, text, subText = '', textColor = '#ffffff', font = '900 36px "Roboto Condensed"' }: TitleProps) {
+  constructor({ gl, plane, renderer, text, subText = '', textColor = '#ffffff', font = '700 48px "Playfair Display", serif' }: TitleProps) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
@@ -125,7 +143,10 @@ class Title {
   }
 
   createMesh() {
-    const { texture, width, height } = createTextTexture(this.gl, this.text, this.subText, this.font, this.textColor);
+    const { texture, width, height, update } = createTextTexture(this.gl, this.text, this.subText, this.font, this.textColor);
+    this.updateTexture = update;
+    this.aspect = width / height;
+    
     const geometry = new Plane(this.gl);
     const program = new Program(this.gl, {
       vertex: `
@@ -145,25 +166,33 @@ class Title {
         varying vec2 vUv;
         void main() {
           vec4 color = texture2D(tMap, vUv);
-          if (color.a < 0.1) discard;
+          if (color.a < 0.05) discard;
           gl_FragColor = color;
         }
       `,
       uniforms: { tMap: { value: texture } },
-      transparent: true
+      transparent: true,
+      depthTest: false,
+      depthWrite: false
     });
+    
     this.mesh = new Mesh(this.gl, { geometry, program });
-    const aspect = width / height;
-    const textHeightScaled = this.plane.scale.y * 0.12;
-    const textWidthScaled = textHeightScaled * aspect;
+    this.mesh.renderOrder = 10;
+    this.reposition();
+    this.mesh.setParent(this.plane);
+  }
+
+  reposition() {
+    if (!this.mesh) return;
+    const textHeightScaled = this.plane.scale.y * 0.15;
+    const textWidthScaled = textHeightScaled * this.aspect;
     this.mesh.scale.set(textWidthScaled, textHeightScaled, 1);
-    // Magazine Placement: Bottom-Left ON the card with a slight Z-offset to prevent glitching
+    
     this.mesh.position.set(
       -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.1,
       -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.1,
-      0.01 
+      0.05
     );
-    this.mesh.setParent(this.plane);
   }
 }
 
@@ -338,8 +367,16 @@ class Media {
     };
     img.onerror = () => {
       console.error('Failed to load image for sanctuary gaze:', this.image);
-      // Fallback to a high-fidelity placeholder if Unsplash blocks
-      img.src = `https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?auto=format&fit=crop&q=80&w=800`;
+      // Diversify fallback to prevent identical profile pictures
+      const fallbacks = [
+        'photo-1494790108377-be9c29b29330', // Female Portrait 1
+        'photo-1488426862026-3ee34a7d66df', // Female Portrait 2
+        'photo-1524504388940-b1c1722653e1', // Female Portrait 3
+        'photo-1506794778202-cad84cf45f1d', // Diverse 4
+        'photo-1534528741775-53994a69daeb'  // Diverse 5
+      ];
+      const randomFallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+      img.src = `https://images.unsplash.com/${randomFallback}?auto=format&fit=crop&q=80&w=800&sig=${Math.random()}`;
     };
   }
 
@@ -435,6 +472,10 @@ class Media {
     this.width = this.plane.scale.x + this.padding;
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
+
+    if (this.title) {
+      this.title.reposition();
+    }
   }
 }
 
