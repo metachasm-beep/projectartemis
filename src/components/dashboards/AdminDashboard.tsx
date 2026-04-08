@@ -8,7 +8,11 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
 
-export const AdminDashboard: React.FC = () => {
+interface AdminDashboardProps {
+  onOpenPictureManager?: () => void;
+}
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureManager }) => {
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -68,6 +72,14 @@ export const AdminDashboard: React.FC = () => {
       <div className="text-center space-y-4">
          <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-rose/5">The Architect</Badge>
          <h1 className="text-5xl md:text-7xl mat-text-display-pro text-mat-wine italic">Sovereign <br /><span className="text-mat-rose/20">Control Panel.</span></h1>
+         <div className="flex justify-center gap-4">
+            <button 
+              onClick={onOpenPictureManager}
+              className="px-6 py-2 bg-mat-wine text-white rounded-full text-[10px] font-black tracking-widest uppercase hover:bg-mat-rose transition-all flex items-center gap-2"
+            >
+               <Users className="w-3 h-3" /> Manage Identity Assets
+            </button>
+         </div>
       </div>
 
       {/* 📊 Metrics Ribbon */}

@@ -411,10 +411,15 @@ class Media {
       console.error('Failed to load image for sanctuary gaze:', this.image);
       // Diversify fallback to prevent identical profile pictures
       const fallbacks = [
-        'photo-1494790108377-be9c29b29330' // Verified Female Anchor Portrait
+        'photo-1494790108377-be9c29b29330', // Verified Female Anchor Portrait
+        'photo-1531746020798-e6953c6e8e04', // Professional Portrait
+        'photo-1544005313-94ddf0286df2', // Aesthetic Portrait
+        'photo-1580489944761-15a19d654956', // Modern Portrait
+        'photo-1438761681033-6461ffad8d80'  // Diverse Representation
       ];
-      const randomFallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
-      img.src = `https://images.unsplash.com/${randomFallback}?auto=format&fit=crop&q=80&w=800&sig=${Math.random()}`;
+      const deterministicIndex = Math.abs(this.index) % fallbacks.length;
+      const fallbackId = fallbacks[deterministicIndex];
+      img.src = `https://images.unsplash.com/${fallbackId}?auto=format&fit=crop&q=80&w=800&sig=${this.index}`;
     };
   }
 
@@ -639,7 +644,8 @@ class App {
       }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    this.mediasImages = galleryItems.concat(galleryItems); // Create infinite loop
+    // Purity Fix: Only double if dataset is small. For discovery streams (200+), doubling creates perceived duplicates.
+    this.mediasImages = galleryItems.length < 24 ? galleryItems.concat(galleryItems) : galleryItems;
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
         geometry: this.planeGeometry,
@@ -800,8 +806,8 @@ export default function CircularGallery({
   textColor = '#ffffff',
   borderRadius = 0.05,
   font = '900 40px "Roboto Condensed"',
-  scrollSpeed = 2,
-  scrollEase = 0.05,
+  scrollSpeed = 3,
+  scrollEase = 0.23,
   onSelect,
   onCenterUpdate
 }: CircularGalleryProps) {

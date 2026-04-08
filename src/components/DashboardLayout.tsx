@@ -8,6 +8,7 @@ import { ProfileDashboard } from '@/components/ProfileDashboard';
 import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { PaymentScreen } from '@/components/payments/PaymentScreen';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
+import PictureManager from '@/components/dashboards/PictureManager';
 import { Leaderboard } from '@/components/discovery/Leaderboard';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
@@ -103,7 +104,13 @@ export const DashboardLayout: React.FC = () => {
 
           {activeTab === 'admin_panel' && profile?.role === 'admin' && (
              <motion.div key="admin_panel" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
-                <AdminDashboard />
+                <AdminDashboard onOpenPictureManager={() => setActiveTab('picture_manager' as any)} />
+             </motion.div>
+          )}
+
+          {activeTab === 'picture_manager' && profile?.role === 'admin' && (
+             <motion.div key="picture_manager" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }}>
+                <PictureManager onBack={() => setActiveTab('admin_panel')} />
              </motion.div>
           )}
         </AnimatePresence>
