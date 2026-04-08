@@ -414,8 +414,8 @@ class Media {
         'photo-1494790108377-be9c29b29330', // Female Portrait 1
         'photo-1488426862026-3ee34a7d66df', // Female Portrait 2
         'photo-1524504388940-b1c1722653e1', // Female Portrait 3
-        'photo-1506794778202-cad84cf45f1d', // Diverse 4
-        'photo-1534528741775-53994a69daeb'  // Diverse 5
+        'photo-1544005313-94ddf0286df2', // Female Portrait 4
+        'photo-1554151228-14d9def656e4'  // Female Portrait 5
       ];
       const randomFallback = fallbacks[Math.floor(Math.random() * fallbacks.length)];
       img.src = `https://images.unsplash.com/${randomFallback}?auto=format&fit=crop&q=80&w=800&sig=${Math.random()}`;

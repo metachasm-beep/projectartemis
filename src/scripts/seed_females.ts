@@ -88,8 +88,8 @@ async function seedFemales() {
     const bio = bios[Math.floor(Math.random() * bios.length)];
     const occupation = occupations[Math.floor(Math.random() * occupations.length)];
     
-    // Absolute Uniqueness: 1-to-1 mapping from the Immutable Registry
-    const photoId = unsplashRegistry[i];
+    // Absolute Uniqueness: Modulo cycling from the Immutable Registry to prevent undefined
+    const photoId = unsplashRegistry[i % unsplashRegistry.length];
     const photoUrl = `https://images.unsplash.com/${photoId}?auto=format&fit=crop&q=90&w=1200`;
     
     const photos = JSON.stringify([photoUrl]);
@@ -97,10 +97,10 @@ async function seedFemales() {
 
     batched.push({
       sql: `INSERT INTO profiles (
-        user_id, full_name, role, date_of_birth, bio, city, photos, 
+        user_id, full_name, role, rank_tier, date_of_birth, bio, city, photos, 
         occupation, is_verified, tokens, rank_score, onboarding_status,
         created_at, updated_at
-      ) VALUES (?, ?, 'woman', ?, ?, ?, ?, ?, 1, 1000, ?, 'COMPLETED', ?, ?)`,
+      ) VALUES (?, ?, 'woman', 'Aspirant', ?, ?, ?, ?, ?, 1, 1000, ?, 'COMPLETED', ?, ?)`,
       args: [
         id, 
         fullName, 

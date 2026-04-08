@@ -69,9 +69,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         SELECT full_name, photos, city, date_of_birth 
         FROM profiles 
         WHERE role = 'woman' 
+        AND rank_tier = 'Aspirant'
         AND full_name NOT LIKE '%Paul%' 
-        AND full_name NOT LIKE '%Aspirant%'
-        AND full_name NOT LIKE '%Seeker%'
         ORDER BY created_at DESC 
         LIMIT 200
       `, []);
