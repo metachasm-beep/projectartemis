@@ -32,6 +32,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
+    "dotenv": "^17.4.1",
     "face-api.js": "^0.22.2",
     "framer-motion": "^12.38.0",
     "gl-matrix": "^3.4.4",
