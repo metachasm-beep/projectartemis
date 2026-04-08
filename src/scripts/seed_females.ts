@@ -54,15 +54,31 @@ const bios = [
   "Resonating with excellence and integrity."
 ];
 
-const unsplashKeywords = [
-  'indian-woman-fashion',
-  'indian-model-portrait',
-  'desi-girl-aesthetic',
-  'indian-luxury-lifestyle',
-  'bollywood-glamour',
-  'indian-bridal-couture',
-  'urban-indian-girl',
-  'indian-traditional-beauty'
+const unsplashIds = [
+  'photo-1524504388940-b1c1722653e1',
+  'photo-1581091226825-a6a2a5aee158',
+  'photo-1594744803329-a584af1ea41f',
+  'photo-1503105903301-8314e922f302',
+  'photo-1621605815971-fbc388062193',
+  'photo-1589156280159-27698a70f29e',
+  'photo-1614283233556-f35b0c801ef1',
+  'photo-1512436991641-6745cdb1723f',
+  'photo-1515886657613-9f3515b0c78f',
+  'photo-1539109136881-3be0616acf4b',
+  'photo-1529139572765-397507c3236e',
+  'photo-1512316609839-ce289d3eba0a',
+  'photo-1500917293891-ef795e70e1f6',
+  'photo-1494790108377-be9c29b29330',
+  'photo-1488426862026-3ee34a7d66df',
+  'photo-1506794778202-cad84cf45f1d',
+  'photo-1534528741775-53994a69daeb',
+  'photo-1507003211169-0a1dd7228f2d',
+  'photo-1517841905240-472988babdf9',
+  'photo-1539571696357-5a69c17a67c6',
+  'photo-1512316609839-ce289d3eba0a',
+  'photo-1511551203524-9a24350a5e83',
+  'photo-1469334031218-e382a71b716b',
+  'photo-1524250502761-1ac6f2e30d43'
 ];
 
 async function seedFemales() {
@@ -85,9 +101,9 @@ async function seedFemales() {
     const bio = bios[Math.floor(Math.random() * bios.length)];
     const occupation = occupations[Math.floor(Math.random() * occupations.length)];
     
-    const keyword = unsplashKeywords[i % unsplashKeywords.length];
-    // Using high-res fashion photography keywords
-    const photoUrl = `https://images.unsplash.com/photo-${1500000000000 + (i * 123456) % 1000000000}?auto=format&fit=crop&q=80&w=800&keyword=${keyword}`;
+    const photoId = unsplashIds[i % unsplashIds.length];
+    // Using direct high-res image IDs from Unsplash
+    const photoUrl = `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&q=80&w=800`;
     const photos = JSON.stringify([photoUrl]);
 
     const rankScore = Math.floor(Math.random() * 5000) + 1000;

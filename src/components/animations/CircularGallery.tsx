@@ -32,30 +32,60 @@ function getFontSize(font: string): number {
 function createTextTexture(
   gl: GL,
   text: string,
-  font: string = '900 30px "Roboto Condensed"',
+  subText: string = '',
+  font: string = '900 36px "Roboto Condensed"',
   color: string = 'white'
 ): { texture: Texture; width: number; height: number } {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Could not get 2d context');
 
+  // Aesthetic multiline rendering
+  const subFont = '700 18px "Roboto Condensed"';
+  
   context.font = font;
-  const metrics = context.measureText(text);
-  const textWidth = Math.ceil(metrics.width);
+  const textWidth = Math.ceil(context.measureText(text).width);
+  context.font = subFont;
+  const subTextWidth = Math.ceil(context.measureText(subText).width);
+  
+  const maxWidth = Math.max(textWidth, subTextWidth);
   const fontSize = getFontSize(font);
-  const textHeight = Math.ceil(fontSize * 1.2);
+  const subFontSize = getFontSize(subFont);
+  
+  // Padding and line height
+  const padding = 60;
+  const lineHeight = 1.2;
+  const canvasWidth = maxWidth + padding;
+  const canvasHeight = (fontSize + subFontSize) * lineHeight + padding;
 
-  canvas.width = textWidth + 40;
-  canvas.height = textHeight + 40;
+  canvas.width = canvasWidth;
+  canvas.height = canvasHeight;
 
+  // Render Background Glow
+  const gradient = context.createRadialGradient(
+    canvasWidth / 2, canvasHeight / 2, 0,
+    canvasWidth / 2, canvasHeight / 2, maxWidth
+  );
+  gradient.addColorStop(0, 'rgba(0,0,0,0.5)');
+  gradient.addColorStop(1, 'rgba(0,0,0,0)');
+  context.fillStyle = gradient;
+  context.fillRect(0, 0, canvasWidth, canvasHeight);
+
+  // Render Main Text
   context.font = font;
   context.fillStyle = color;
-  context.textBaseline = 'middle';
+  context.textBaseline = 'top';
   context.textAlign = 'center';
-  context.shadowColor = 'rgba(0,0,0,0.5)';
-  context.shadowBlur = 10;
-  context.clearRect(0, 0, canvas.width, canvas.height);
-  context.fillText(text, canvas.width / 2, canvas.height / 2);
+  context.shadowColor = 'rgba(0,0,0,0.4)';
+  context.shadowBlur = 15;
+  context.fillText(text, canvasWidth / 2, padding / 2);
+
+  // Render Subtext (Age/City)
+  if (subText) {
+    context.font = subFont;
+    context.fillStyle = 'rgba(255, 255, 255, 0.6)';
+    context.fillText(subText.toUpperCase(), canvasWidth / 2, padding / 2 + fontSize * 1.1);
+  }
 
   const texture = new Texture(gl, { generateMipmaps: false });
   texture.image = canvas;
@@ -67,6 +97,7 @@ interface TitleProps {
   plane: Mesh;
   renderer: Renderer;
   text: string;
+  subText?: string;
   textColor?: string;
   font?: string;
 }
@@ -76,23 +107,25 @@ class Title {
   plane: Mesh;
   renderer: Renderer;
   text: string;
+  subText: string;
   textColor: string;
   font: string;
   mesh!: Mesh;
 
-  constructor({ gl, plane, renderer, text, textColor = '#ffffff', font = '900 30px "Roboto Condensed"' }: TitleProps) {
+  constructor({ gl, plane, renderer, text, subText = '', textColor = '#ffffff', font = '900 36px "Roboto Condensed"' }: TitleProps) {
     autoBind(this);
     this.gl = gl;
     this.plane = plane;
     this.renderer = renderer;
     this.text = text;
+    this.subText = subText;
     this.textColor = textColor;
     this.font = font;
     this.createMesh();
   }
 
   createMesh() {
-    const { texture, width, height } = createTextTexture(this.gl, this.text, this.font, this.textColor);
+    const { texture, width, height } = createTextTexture(this.gl, this.text, this.subText, this.font, this.textColor);
     const geometry = new Plane(this.gl);
     const program = new Program(this.gl, {
       vertex: `
@@ -149,6 +182,7 @@ interface MediaProps {
   scene: Transform;
   screen: ScreenSize;
   text: string;
+  subText: string;
   viewport: Viewport;
   bend: number;
   textColor: string;
@@ -167,6 +201,7 @@ class Media {
   scene: Transform;
   screen: ScreenSize;
   text: string;
+  subText: string;
   viewport: Viewport;
   bend: number;
   textColor: string;
@@ -194,6 +229,7 @@ class Media {
     scene,
     screen,
     text,
+    subText = '',
     viewport,
     bend,
     textColor,
@@ -209,6 +245,7 @@ class Media {
     this.scene = scene;
     this.screen = screen;
     this.text = text;
+    this.subText = subText;
     this.viewport = viewport;
     this.bend = bend;
     this.textColor = textColor;
@@ -309,6 +346,7 @@ class Media {
       plane: this.plane,
       renderer: this.renderer,
       text: this.text,
+      subText: this.subText,
       textColor: this.textColor,
       font: this.font
     });
@@ -390,7 +428,7 @@ class Media {
 }
 
 interface AppConfig {
-  items?: { image: string; text: string }[];
+  items?: { image: string; text: string; subText?: string }[];
   bend?: number;
   textColor?: string;
   borderRadius?: number;
@@ -417,7 +455,7 @@ class App {
   scene!: Transform;
   planeGeometry!: Plane;
   medias: Media[] = [];
-  mediasImages: { image: string; text: string }[] = [];
+  mediasImages: { image: string; text: string; subText?: string }[] = [];
   screen!: { width: number; height: number };
   viewport!: { width: number; height: number };
   raf: number = 0;
@@ -494,7 +532,7 @@ class App {
   }
 
   createMedias(
-    items: { image: string; text: string }[] | undefined,
+    items: { image: string; text: string; subText?: string }[] | undefined,
     bend: number = 1,
     textColor: string,
     borderRadius: number,
@@ -519,6 +557,7 @@ class App {
         scene: this.scene,
         screen: this.screen,
         text: data.text,
+        subText: data.subText || '',
         viewport: this.viewport,
         bend,
         textColor,
@@ -637,7 +676,7 @@ class App {
 }
 
 interface CircularGalleryProps {
-  items?: { image: string; text: string }[];
+  items?: { image: string; text: string; subText?: string }[];
   bend?: number;
   textColor?: string;
   borderRadius?: number;

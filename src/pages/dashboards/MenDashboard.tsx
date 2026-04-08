@@ -45,7 +45,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   metrics: externalMetrics
 }) => {
   const [absRank, setAbsRank] = useState<number | null>(null);
-  const [totalMen, setTotalMen] = useState<number>(0);
+  const [_totalMen, _setTotalMen] = useState<number>(0);
   const [isBumping, setIsBumping] = useState(false);
   const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
 
@@ -63,11 +63,15 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const fetchGaze = useCallback(async () => {
     try {
-      const result = await turso.execute("SELECT full_name, photos, city FROM profiles WHERE role = 'woman' LIMIT 12");
-      const mapped = result.rows.map(r => ({
-        image: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
-        text: `${r.full_name?.toString().split(' ')[0]} | ${r.city}`
-      }));
+      const result = await turso.execute("SELECT full_name, photos, city, date_of_birth FROM profiles WHERE role = 'woman' LIMIT 24");
+      const mapped = result.rows.map(r => {
+        const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
+        return {
+          image: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
+          text: `${r.full_name?.toString().split(' ')[0]}, ${age}`,
+          subText: `${r.city}`
+        };
+      });
       setGazeProfiles(mapped);
     } catch (err) {
       console.error("Gaze sync failed:", err);
@@ -82,7 +86,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     if (!profile?.user_id) return;
     try {
       const totalResult = await turso.execute("SELECT COUNT(*) as total FROM profiles WHERE role = 'man'", []);
-      setTotalMen(Number(totalResult.rows[0].total) || 0);
+      _setTotalMen(Number(totalResult.rows[0].total) || 0);
       setAbsRank(profile.absolute_rank || 0);
     } catch (err) {
       console.error("Rank ritual failure:", err);
@@ -184,8 +188,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
                           vocation: profile.occupation || 'Aspirant',
                           tier: status?.rank_tier || 'Aspirant',
-                          is_verified: profile.is_verified,
-                          rank_display: `#${absRank || '--'}` // Custom property for TrumpCard if it's updated, or we'll overlay it
+                          is_verified: profile.is_verified
                         }}
                       />
                       
