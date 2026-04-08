@@ -26,8 +26,9 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
       const result = await turso.execute(`
         SELECT full_name, date_of_birth, city, photos, absolute_rank
         FROM profiles 
-        WHERE role = 'man'
-        ORDER BY absolute_rank ASC
+        WHERE role = 'woman'
+        ORDER BY created_at DESC
+        LIMIT 200
       `, []);
 
       const mapped = result.rows.map((r: any) => {
@@ -79,7 +80,7 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
             <ArrowLeft size={24} className="text-white" />
           </Button>
           <div>
-            <h2 className="text-2xl font-black text-white italic tracking-tight">The Aspirant Directory</h2>
+            <h2 className="text-2xl font-black text-white italic tracking-tight">The Sanctuary Array</h2>
             <div className="flex items-center gap-2 mt-1">
                <ShieldCheck size={12} className="text-mat-gold" />
                <span className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Sovereign Discovery Active</span>
@@ -119,7 +120,7 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
            <div className="flex items-center justify-center h-full">
               <div className="space-y-4 text-center">
                  <div className="w-16 h-16 border-4 border-mat-gold/20 border-t-mat-gold rounded-full animate-spin mx-auto" />
-                 <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-mat-gold animate-pulse">Syncing Directory...</p>
+                 <p className="text-[10px] font-bold uppercase tracking-[0.6em] text-mat-gold animate-pulse">Syncing Array...</p>
               </div>
            </div>
         )}

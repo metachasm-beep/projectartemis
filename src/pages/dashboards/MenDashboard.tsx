@@ -66,12 +66,20 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       const result = await turso.execute("SELECT full_name, photos, city, date_of_birth FROM profiles WHERE role = 'woman' LIMIT 200");
       const mapped = result.rows.map(r => {
         const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
+        const photos = JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`;
         return {
-          image: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
+          image: photos,
           text: `${r.full_name?.toString().split(' ')[0]}, ${age}`,
           subText: `${r.city}`
         };
       });
+
+      console.log('--- Sanctuary 2.2 Telemetry Pulse ---');
+      console.log('Discovery ID Stream (First 5):', mapped.slice(0, 5).map(p => {
+         const match = p.image.match(/photo-[\w-]+/);
+         return match ? match[0] : 'external';
+      }));
+
       setGazeProfiles(mapped);
     } catch (err) {
       console.error("Gaze sync failed:", err);

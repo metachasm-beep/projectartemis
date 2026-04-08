@@ -33,7 +33,7 @@ function createTextTexture(
   gl: GL,
   text: string,
   subText: string = '',
-  font: string = '700 48px "Playfair Display", serif',
+  font: string = '900 64px "Roboto Condensed", sans-serif',
   textColor: string = 'white',
   onUpdate?: (width: number, height: number) => void
 ): { texture: Texture; width: number; height: number; update: () => void } {
@@ -71,18 +71,25 @@ function createTextTexture(
     // Render Premium High-Contrast Interface
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     
-    // Aesthetic Semi-Transparent Backing for depth
-    context.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    // Legacy-Safe Pill Shape (Standard Path)
+    const r = 24;
+    context.fillStyle = 'rgba(0, 0, 0, 1.0)'; // SOLID BLACK for maximum contrast
     context.beginPath();
-    context.roundRect(0, 0, canvasWidth, canvasHeight, 20);
+    context.moveTo(r, 0);
+    context.lineTo(canvasWidth - r, 0);
+    context.quadraticCurveTo(canvasWidth, 0, canvasWidth, r);
+    context.lineTo(canvasWidth, canvasHeight - r);
+    context.quadraticCurveTo(canvasWidth, canvasHeight, canvasWidth - r, canvasHeight);
+    context.lineTo(r, canvasHeight);
+    context.quadraticCurveTo(0, canvasHeight, 0, canvasHeight - r);
+    context.lineTo(0, r);
+    context.quadraticCurveTo(0, 0, r, 0);
+    context.closePath();
     context.fill();
 
     const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
-    gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
-    gradient.addColorStop(0.7, 'rgba(0,0,0,0.2)');
-    gradient.addColorStop(1, 'rgba(0,0,0,0)');
     context.fillStyle = gradient;
-    context.fillRect(0, 0, canvasWidth, canvasHeight);
+    context.fill(); // Re-apply fill with gradient
 
     // Render Text with "Sanctuary Glow"
     context.font = font;
@@ -105,10 +112,10 @@ function createTextTexture(
 
     if (subText) {
       context.font = subFont;
-      context.fillStyle = 'rgba(255, 255, 255, 0.95)';
-      context.letterSpacing = '4px';
+      context.fillStyle = 'rgba(255, 255, 255, 1.0)';
+      // Removed letterSpacing for legacy compatibility
       context.shadowBlur = 10;
-      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.15);
+      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.1);
     }
     texture.image = canvas;
     if (onUpdate) onUpdate(canvasWidth, canvasHeight);
@@ -206,7 +213,7 @@ class Title {
     });
     
     this.mesh = new Mesh(this.gl, { geometry, program });
-    this.mesh.renderOrder = 10;
+    this.mesh.renderOrder = 9999; // Absolute front-most layer
     this.reposition();
     this.mesh.setParent(this.plane);
   }
@@ -218,9 +225,9 @@ class Title {
     this.mesh.scale.set(textWidthScaled, textHeightScaled, 1);
     
     this.mesh.position.set(
-      -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.1,
-      -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.1,
-      0.2 // Boosted Z-offset to prevent any clipping from card curvature
+      -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.15,
+      -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.15,
+      0.8 // Definitive holographic depth offset
     );
   }
 }

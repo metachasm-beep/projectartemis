@@ -1,21 +1,49 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/animations/CircularGallery';
-import { DUMMY_ASPIRANTS } from '@/data/dummyProfiles';
+import { turso } from '@/lib/turso';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
 
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
+  const [aspirants, setAspirants] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchAspirants = async () => {
+      try {
+        const result = await turso.execute("SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion FROM profiles WHERE role = 'woman' ORDER BY created_at DESC LIMIT 200");
+        const mapped = result.rows.map(r => ({
+          id: r.user_id,
+          user_id: r.user_id,
+          name: r.full_name,
+          age: r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25,
+          city: r.city || 'Undisclosed',
+          img: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
+          bio: r.bio || "Identity narrative not established.",
+          is_verified: r.is_verified,
+          height: r.height,
+          occupation: r.occupation,
+          religion: r.religion
+        }));
+        setAspirants(mapped);
+      } catch (err) {
+        console.error("Discovery synchronization failed:", err);
+      }
+    };
+    fetchAspirants();
+  }, []);
 
   // Memoize Gallery Items to prevent re-instantiation of WebGL App and blinking
   const GALLERY_ITEMS = useMemo(() => 
-    DUMMY_ASPIRANTS.map(m => ({ 
+    aspirants.map(m => ({ 
       image: m.img, 
       text: m.name.toUpperCase() 
-    })), []);
+    })), [aspirants]);
 
   const handleSelect = (index: number) => {
-    setSelectedProfile(DUMMY_ASPIRANTS[index % DUMMY_ASPIRANTS.length]);
+    if (aspirants.length > 0) {
+      setSelectedProfile(aspirants[index % aspirants.length]);
+    }
   };
 
   const handleAction = (type: string, profile: any) => {
@@ -48,7 +76,7 @@ export const Discovery: React.FC = () => {
            className="space-y-1"
          >
             <h2 className="mat-text-impact text-mat-gold text-2xl tracking-tighter uppercase italic">The Array</h2>
-            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30">Navigating {DUMMY_ASPIRANTS.length} Active Aspirants</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30">Navigating {aspirants.length} Active Sanctuary Identities</p>
          </motion.div>
       </div>
 
