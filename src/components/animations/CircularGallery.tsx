@@ -34,7 +34,8 @@ function createTextTexture(
   text: string,
   subText: string = '',
   font: string = '700 48px "Playfair Display", serif',
-  color: string = 'white'
+  textColor: string = 'white',
+  onUpdate?: (width: number, height: number) => void
 ): { texture: Texture; width: number; height: number; update: () => void } {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
@@ -67,48 +68,59 @@ function createTextTexture(
       canvas.height = canvasHeight;
     }
 
-    // Render Premium Gradient Shadow for maximum text legibility
+    // Render Premium High-Contrast Interface
     context.clearRect(0, 0, canvasWidth, canvasHeight);
+    
+    // Aesthetic Semi-Transparent Backing for depth
+    context.fillStyle = 'rgba(0, 0, 0, 0.4)';
+    context.beginPath();
+    context.roundRect(0, 0, canvasWidth, canvasHeight, 20);
+    context.fill();
+
     const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
-    gradient.addColorStop(0, 'rgba(0,0,0,0.95)'); // Darker for high contrast
-    gradient.addColorStop(0.6, 'rgba(0,0,0,0.4)');
+    gradient.addColorStop(0, 'rgba(0,0,0,0.95)');
+    gradient.addColorStop(0.7, 'rgba(0,0,0,0.2)');
     gradient.addColorStop(1, 'rgba(0,0,0,0)');
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Render Main Text (Name/Age) - Serif with outer glow effect
+    // Render Text with "Sanctuary Glow"
     context.font = font;
     context.textBaseline = 'top';
     context.textAlign = 'left';
     
-    // Subtle Dark Outline for Absolute Contrast
-    context.strokeStyle = 'rgba(0,0,0,0.8)';
-    context.lineWidth = 4;
+    // Outer Glow Shadow
+    context.shadowColor = 'rgba(0,0,0,1)';
+    context.shadowBlur = 20;
+    context.shadowOffsetX = 0;
+    context.shadowOffsetY = 2;
+
+    // Bold Stroke for absolute legibility
+    context.strokeStyle = 'rgba(0,0,0,0.9)';
+    context.lineWidth = 6;
     context.strokeText(text, paddingX / 4, paddingY / 4);
     
-    context.fillStyle = color;
-    context.shadowColor = 'rgba(0,0,0,0.8)';
-    context.shadowBlur = 15;
+    context.fillStyle = textColor;
     context.fillText(text, paddingX / 4, paddingY / 4);
 
-    // Render Subtext (Location) - Meta Sans
     if (subText) {
       context.font = subFont;
-      context.fillStyle = 'rgba(255, 255, 255, 0.9)';
-      context.letterSpacing = '3px';
-      context.shadowBlur = 5;
-      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.1);
+      context.fillStyle = 'rgba(255, 255, 255, 0.95)';
+      context.letterSpacing = '4px';
+      context.shadowBlur = 10;
+      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.15);
     }
     texture.image = canvas;
+    if (onUpdate) onUpdate(canvasWidth, canvasHeight);
   };
 
-  // Initial draw
-  update();
-  
-  // Wait for fonts to ensure absolute measurement accuracy
+  // Absolute Font Ready Synchronization
   if ('fonts' in document) {
     (document as any).fonts.ready.then(() => {
-      update();
+       // Short delay to ensure browser layout sync and consistent measurement
+       setTimeout(() => {
+         update();
+       }, 250);
     });
   }
 
@@ -150,7 +162,17 @@ class Title {
   }
 
   createMesh() {
-    const { texture, width, height, update } = createTextTexture(this.gl, this.text, this.subText, this.font, this.textColor);
+    const { texture, width, height, update } = createTextTexture(
+      this.gl, 
+      this.text, 
+      this.subText, 
+      this.font, 
+      this.textColor,
+      (w, h) => {
+        this.aspect = w / h;
+        this.reposition();
+      }
+    );
     this.updateTexture = update;
     this.aspect = width / height;
     
@@ -327,6 +349,7 @@ class Media {
         uniform vec2 uPlaneSizes;
         uniform sampler2D tMap;
         uniform float uBorderRadius;
+        uniform float uTime;
         varying vec2 vUv;
         
         float roundedBoxSDF(vec2 p, vec2 b, float r) {
@@ -344,6 +367,11 @@ class Media {
             vUv.y * ratio.y + (1.0 - ratio.y) * 0.5
           );
           vec4 color = texture2D(tMap, uv);
+          
+          // --- Sanctuary Holographic Glint ---
+          float shine = step(0.98, sin(vUv.x * 2.0 + vUv.y * 1.5 + uTime * 0.5));
+          shine *= step(0.5, vUv.y); // Only top half shimmer
+          color.rgb += shine * 0.15;
           
           float d = roundedBoxSDF(vUv - 0.5, vec2(0.5 - uBorderRadius), uBorderRadius);
           
@@ -641,6 +669,11 @@ class App {
 
   onTouchUp(e: MouseEvent | TouchEvent) {
     this.isDown = false;
+    
+    // Weighted inertia calculation
+    const vel = this.scroll.target - (this.scroll.position ?? 0);
+    this.scroll.target += vel * 0.5; // Continue the motion
+
     this.onCheck();
     
     if (this.onSelect && e) {
