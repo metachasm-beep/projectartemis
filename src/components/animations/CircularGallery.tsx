@@ -67,30 +67,37 @@ function createTextTexture(
       canvas.height = canvasHeight;
     }
 
-    // Render Premium Gradient Shadow
+    // Render Premium Gradient Shadow for maximum text legibility
     context.clearRect(0, 0, canvasWidth, canvasHeight);
     const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
-    gradient.addColorStop(0, 'rgba(0,0,0,0.85)');
-    gradient.addColorStop(0.5, 'rgba(0,0,0,0.3)');
+    gradient.addColorStop(0, 'rgba(0,0,0,0.95)'); // Darker for high contrast
+    gradient.addColorStop(0.6, 'rgba(0,0,0,0.4)');
     gradient.addColorStop(1, 'rgba(0,0,0,0)');
     context.fillStyle = gradient;
     context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // Render Main Text (Name/Age) - Serif
+    // Render Main Text (Name/Age) - Serif with outer glow effect
     context.font = font;
-    context.fillStyle = color;
     context.textBaseline = 'top';
     context.textAlign = 'left';
-    context.shadowColor = 'rgba(0,0,0,0.4)';
-    context.shadowBlur = 10;
+    
+    // Subtle Dark Outline for Absolute Contrast
+    context.strokeStyle = 'rgba(0,0,0,0.8)';
+    context.lineWidth = 4;
+    context.strokeText(text, paddingX / 4, paddingY / 4);
+    
+    context.fillStyle = color;
+    context.shadowColor = 'rgba(0,0,0,0.8)';
+    context.shadowBlur = 15;
     context.fillText(text, paddingX / 4, paddingY / 4);
 
     // Render Subtext (Location) - Meta Sans
     if (subText) {
       context.font = subFont;
-      context.fillStyle = 'rgba(255, 255, 255, 0.8)';
-      context.letterSpacing = '2px';
-      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.05);
+      context.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      context.letterSpacing = '3px';
+      context.shadowBlur = 5;
+      context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.1);
     }
     texture.image = canvas;
   };
@@ -191,7 +198,7 @@ class Title {
     this.mesh.position.set(
       -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.1,
       -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.1,
-      0.05
+      0.2 // Boosted Z-offset to prevent any clipping from card curvature
     );
   }
 }

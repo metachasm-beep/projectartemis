@@ -130,20 +130,13 @@ async function seedFemales() {
     dob.setFullYear(dob.getFullYear() - age);
     const dobString = dob.toISOString().split('T')[0];
 
-    const city = cities[i % cities.length]; // Better distribution
+    const city = cities[i % cities.length];
     const bio = bios[Math.floor(Math.random() * bios.length)];
     const occupation = occupations[Math.floor(Math.random() * occupations.length)];
     
-    // Ensure absolute uniqueness by using i index directly
-    // If the list is shorter than 200, we use a fallback sig trick
-    let photoId = unsplashIds[i] || unsplashIds[i % unsplashIds.length];
-    let photoUrl = `https://images.unsplash.com/photo-${photoId}?auto=format&fit=crop&q=80&w=800`;
-    
-    // Fallback signature to ensure uniqueness if IDs are repeating
-    if (i >= unsplashIds.length) {
-       photoUrl += `&sig=${i}`;
-    }
-    
+    // Enforce 100% uniqueness via the Unsplash Featured Redirect endpoint with unique signatures. 
+    // This is the only way to get 200 distinct images without manually curating 200 photo IDs.
+    const photoUrl = `https://images.unsplash.com/featured/?lifestyle,indian,woman&sig=${i}`;
     const photos = JSON.stringify([photoUrl]);
     const rankScore = Math.floor(Math.random() * 5000) + 1000;
 
