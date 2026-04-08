@@ -32,6 +32,7 @@ app.add_middleware(
         "http://localhost:5173",
         "https://www.matriarchindia.com",
         "https://matriarchindia.com",
+        "https://matriarch-api.vercel.app",
         "https://projectartemis-rlah214kw-metachasm-2559s-projects.vercel.app"
     ],
     allow_credentials=True,
