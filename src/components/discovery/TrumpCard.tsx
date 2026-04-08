@@ -98,8 +98,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
         <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/60 to-transparent z-10">
            <div className="flex items-center gap-3">
-              <p className="mat-text-impact text-mat-gold text-5xl italic drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tighter">
-                {profile.name.split(' ')[0].toUpperCase()}
+              <p className="mat-text-impact text-mat-gold text-5xl italic drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tighter leading-tight">
+                {profile.name.toUpperCase()}
               </p>
               <VerificationBadge verified={profile.is_verified} />
            </div>

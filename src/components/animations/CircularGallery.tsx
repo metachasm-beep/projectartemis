@@ -530,6 +530,7 @@ interface AppConfig {
   scrollSpeed?: number;
   scrollEase?: number;
   onSelect?: (index: number) => void;
+  onCenterUpdate?: (index: number) => void;
 }
 
 class App {
@@ -563,6 +564,7 @@ class App {
   isDown: boolean = false;
   start: number = 0;
   onSelect?: (index: number) => void;
+  onCenterUpdate?: (index: number) => void;
 
   constructor(
     container: HTMLElement,
@@ -574,12 +576,14 @@ class App {
       font = '700 48px "Playfair Display", serif',
       scrollSpeed = 2,
       scrollEase = 0.05,
-      onSelect
+      onSelect,
+      onCenterUpdate
     }: AppConfig
   ) {
     document.documentElement.classList.remove('no-js');
     this.container = container;
     this.onSelect = onSelect;
+    this.onCenterUpdate = onCenterUpdate;
     this.scrollSpeed = scrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
@@ -737,6 +741,14 @@ class App {
     }
     this.renderer.render({ scene: this.scene, camera: this.camera });
     this.scroll.last = this.scroll.current;
+    
+    // Broadcast Center Tracking for Hybrid DOM
+    if (this.onCenterUpdate && this.medias.length > 0) {
+      const width = this.medias[0].width;
+      const centeredIndex = Math.round(Math.abs(this.scroll.current) / width);
+      this.onCenterUpdate(centeredIndex % (this.mediasImages.length / 2));
+    }
+    
     this.raf = window.requestAnimationFrame(this.update.bind(this));
   }
 
@@ -783,6 +795,7 @@ interface CircularGalleryProps {
   scrollSpeed?: number;
   scrollEase?: number;
   onSelect?: (index: number) => void;
+  onCenterUpdate?: (index: number) => void;
 }
 
 export default function CircularGallery({
@@ -793,9 +806,11 @@ export default function CircularGallery({
   font = '900 40px "Roboto Condensed"',
   scrollSpeed = 2,
   scrollEase = 0.05,
-  onSelect
+  onSelect,
+  onCenterUpdate
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!containerRef.current) return;
     const app = new App(containerRef.current, {
@@ -806,11 +821,13 @@ export default function CircularGallery({
       font,
       scrollSpeed,
       scrollEase,
-      onSelect
+      onSelect,
+      onCenterUpdate
     });
     return () => {
       app.destroy();
     };
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
+  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, onSelect, onCenterUpdate]);
+
   return <div className="absolute inset-0 overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
 }

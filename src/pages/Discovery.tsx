@@ -7,11 +7,22 @@ import { TrumpCard } from '@/components/discovery/TrumpCard';
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
   const [aspirants, setAspirants] = useState<any[]>([]);
+  const [activeGazeIndex, setActiveGazeIndex] = useState(0);
 
   useEffect(() => {
     const fetchAspirants = async () => {
       try {
-        const result = await turso.execute("SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion FROM profiles WHERE role = 'woman' ORDER BY created_at DESC LIMIT 200");
+        const result = await turso.execute(`
+          SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion 
+          FROM profiles 
+          WHERE role = 'woman' 
+          AND full_name NOT LIKE '%Paul%' 
+          AND full_name NOT LIKE '%Aspirant%'
+          AND full_name NOT LIKE '%Seeker%'
+          ORDER BY created_at DESC 
+          LIMIT 200
+        `, []);
+
         const mapped = result.rows.map(r => ({
           id: r.user_id,
           user_id: r.user_id,
@@ -33,11 +44,11 @@ export const Discovery: React.FC = () => {
     fetchAspirants();
   }, []);
 
-  // Memoize Gallery Items to prevent re-instantiation of WebGL App and blinking
+  // Memoize Gallery Items
   const GALLERY_ITEMS = useMemo(() => 
     aspirants.map(m => ({ 
       image: m.img, 
-      text: m.name.toUpperCase() 
+      text: m.name.toString().toUpperCase() 
     })), [aspirants]);
 
   const handleSelect = (index: number) => {
@@ -51,7 +62,6 @@ export const Discovery: React.FC = () => {
         alert("Sovereign resonance requires identity verification. Please seal your identity in the Sanctuary.");
         return;
      }
-     // Action logic here
   };
 
   return (
@@ -65,7 +75,27 @@ export const Discovery: React.FC = () => {
           scrollSpeed={0.2}
           textColor="#D4AF37" 
           onSelect={handleSelect}
+          onCenterUpdate={setActiveGazeIndex}
         />
+        
+        {/* 2.4.4 HYBRID DISCOVERY OVERLAY */}
+        {aspirants.length > 0 && (
+          <div className="absolute inset-x-0 bottom-32 flex justify-center pointer-events-none z-[100]">
+            <motion.div 
+              key={activeGazeIndex}
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="bg-black/90 px-12 py-6 rounded-3xl border border-mat-gold/50 shadow-[0_0_80px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col items-center gap-1.5"
+            >
+              <span className="text-4xl font-black text-white italic tracking-tighter uppercase whitespace-nowrap drop-shadow-2xl">
+                {aspirants[activeGazeIndex]?.name || 'Sanctuary Identity'}
+              </span>
+              <span className="text-[12px] font-black text-mat-gold uppercase tracking-[0.5em] opacity-100">
+                Age {aspirants[activeGazeIndex]?.age || '??'} • {aspirants[activeGazeIndex]?.city || 'Verified'}
+              </span>
+            </motion.div>
+          </div>
+        )}
       </div>
 
       {/* 🏛️ UI OVERLAY: HUD */}

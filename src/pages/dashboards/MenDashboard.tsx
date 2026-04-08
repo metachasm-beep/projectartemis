@@ -48,6 +48,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [_totalMen, _setTotalMen] = useState<number>(0);
   const [isBumping, setIsBumping] = useState(false);
   const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
+  const [activeGazeIndex, setActiveGazeIndex] = useState(0);
 
   // ─── LIVE IDENTITY METRICS ───
   const calculateIntegrity = () => {
@@ -63,22 +64,30 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const fetchGaze = useCallback(async () => {
     try {
-      const result = await turso.execute("SELECT full_name, photos, city, date_of_birth FROM profiles WHERE role = 'woman' LIMIT 200");
+      // 2.4.2 Rectification: Hard-Filtering Seekers and Ensuring Live Assets
+      const result = await turso.execute(`
+        SELECT full_name, photos, city, date_of_birth 
+        FROM profiles 
+        WHERE role = 'woman' 
+        AND full_name NOT LIKE '%Paul%' 
+        AND full_name NOT LIKE '%Aspirant%'
+        AND full_name NOT LIKE '%Seeker%'
+        ORDER BY created_at DESC 
+        LIMIT 200
+      `, []);
+
       const mapped = result.rows.map(r => {
         const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
         const photos = JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`;
         return {
           image: photos,
-          text: `${r.full_name?.toString().split(' ')[0]}, ${age}`,
-          subText: `${r.city}`
+          text: r.full_name?.toString().split(' ')[0] || 'Sanctuary Identity',
+          subText: `${age} • ${r.city || 'Undisclosed'}`,
+          originalName: r.full_name,
+          age: age,
+          city: r.city
         };
       });
-
-      console.log('--- Sanctuary 2.2 Telemetry Pulse ---');
-      console.log('Discovery ID Stream (First 5):', mapped.slice(0, 5).map(p => {
-         const match = p.image.match(/photo-[\w-]+/);
-         return match ? match[0] : 'external';
-      }));
 
       setGazeProfiles(mapped);
     } catch (err) {
@@ -321,12 +330,32 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             <div className="absolute inset-y-0 right-0 w-40 z-10 pointer-events-none bg-gradient-to-l from-mat-cream/60 to-transparent" />
             
             {gazeProfiles.length > 0 && (
-              <CircularGallery 
-                items={gazeProfiles}
-                bend={0}
-                scrollSpeed={0.4}
-                scrollEase={0.05}
-              />
+              <div className="relative w-full h-full">
+                <CircularGallery 
+                  items={gazeProfiles}
+                  bend={0}
+                  scrollSpeed={0.4}
+                  scrollEase={0.05}
+                  onCenterUpdate={setActiveGazeIndex}
+                />
+                
+                {/* 2.4.4 HYBRID DOM OVERLAY: VIVID VISIBILITY REINFORCED */}
+                <div className="absolute inset-x-0 bottom-32 flex justify-center pointer-events-none z-[100]">
+                  <motion.div 
+                    key={activeGazeIndex}
+                    initial={{ y: 20, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    className="bg-black/90 px-12 py-6 rounded-3xl border border-mat-gold/50 shadow-[0_0_80px_rgba(0,0,0,0.9)] backdrop-blur-xl flex flex-col items-center gap-1.5"
+                  >
+                    <span className="text-4xl font-black text-white italic tracking-tighter uppercase whitespace-nowrap drop-shadow-2xl">
+                      {gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary Identity'}
+                    </span>
+                    <span className="text-[12px] font-black text-mat-gold uppercase tracking-[0.5em] opacity-100">
+                      Age {gazeProfiles[activeGazeIndex]?.age || '??'} • {gazeProfiles[activeGazeIndex]?.city || 'Verified'}
+                    </span>
+                  </motion.div>
+                </div>
+              </div>
             )}
             
             {/* Elegant Focal Mask */}
