@@ -63,7 +63,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const fetchGaze = useCallback(async () => {
     try {
-      const result = await turso.execute("SELECT full_name, photos, city, date_of_birth FROM profiles WHERE role = 'woman' LIMIT 24");
+      const result = await turso.execute("SELECT full_name, photos, city, date_of_birth FROM profiles WHERE role = 'woman' LIMIT 200");
       const mapped = result.rows.map(r => {
         const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
         return {
