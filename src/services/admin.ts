@@ -80,18 +80,110 @@ export const AdminService = {
 
   /**
    * 🧪 Absolute Excision: Removes a user from the db fully.
-   * Note: This does not delete their Supabase Auth Identity, merely their Matriarch access.
    */
   deleteUserRecord: async (userId: string) => {
     try {
-      // Best-effort cascade delete starting with profiles. 
-      // If FKs aren't strict, we should manually rip out sub-tables if needed.
-      // But for now, deleting the profile stops access.
-      await turso.execute({ sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] });
+      await turso.batch([
+        { sql: "DELETE FROM forum_replies WHERE user_id = ?", args: [userId] },
+        { sql: "DELETE FROM forum_topics_likes WHERE user_id = ?", args: [userId] },
+        { sql: "DELETE FROM forum_topics_saves WHERE user_id = ?", args: [userId] },
+        { sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] }
+      ], "write");
       return true;
     } catch (err) {
       console.error("ADMIN_DELETE_ERROR:", err);
       return false;
+    }
+  },
+
+  /**
+   * 🎨 Visual Curation Index: Fetch all profile identifying data.
+   * Optimized with a schema-resilient normalization layer.
+   */
+  getAllCurationProfiles: async (): Promise<MatriarchProfile[]> => {
+    try {
+      const r = await turso.execute("SELECT * FROM profiles ORDER BY created_at DESC");
+      
+      return r.rows.map(row => {
+        // Normalization Layer: Bridge between 'photos' (JSON) and 'image_url' (String)
+        let photos: string[] = [];
+        
+        if (row.photos) {
+          photos = typeof row.photos === 'string' ? JSON.parse(row.photos) : row.photos;
+        } else if (row.image_url) {
+          photos = [row.image_url as string];
+        }
+
+        return {
+          ...row,
+          photos
+        } as unknown as MatriarchProfile;
+      });
+    } catch (err) {
+      console.error("ADMIN_CURATION_FETCH_ERROR:", err);
+      return [];
+    }
+  },
+
+  /**
+   * 🌪️ Purge Protocol: Automated removal of visual asset clones.
+   */
+  performBulkDedupe: async () => {
+    try {
+      const r = await turso.execute("SELECT * FROM profiles");
+      const rows = r.rows as unknown as any[];
+      const profiles = rows.map(row => {
+        let photos: string[] = [];
+        if (row.photos) {
+          photos = typeof row.photos === 'string' ? JSON.parse(row.photos) : row.photos;
+        } else if (row.image_url) {
+          photos = [row.image_url as string];
+        }
+        return { ...row, photos };
+      });
+
+      const photoMap = new Map<string, { user_id: string, created_at: string }>();
+      const toDelete: string[] = [];
+
+      profiles.forEach(p => {
+        const photoUrl = (p.photos as string[])?.[0];
+        if (!photoUrl) return;
+
+        if (photoMap.has(photoUrl)) {
+          const existing = photoMap.get(photoUrl)!;
+          if (p.created_at < existing.created_at) {
+            // New one is older
+            toDelete.push(existing.user_id);
+            photoMap.set(photoUrl, { user_id: p.user_id as string, created_at: p.created_at as string });
+          } else {
+            // Existing is older
+            toDelete.push(p.user_id as string);
+          }
+        } else {
+          photoMap.set(photoUrl, { user_id: p.user_id as string, created_at: p.created_at as string });
+        }
+      });
+
+      if (toDelete.length === 0) return { deletedCount: 0 };
+
+      // Chunk deletes to avoid hitting transaction limits if huge
+      const chunks = [];
+      for (let i = 0; i < toDelete.length; i += 20) {
+        chunks.push(toDelete.slice(i, i + 20));
+      }
+
+      for (const chunk of chunks) {
+        const batch = chunk.flatMap(id => [
+          { sql: "DELETE FROM forum_replies WHERE user_id = ?", args: [id] },
+          { sql: "DELETE FROM profiles WHERE user_id = ?", args: [id] }
+        ]);
+        await turso.batch(batch, "write");
+      }
+
+      return { deletedCount: toDelete.length };
+    } catch (err) {
+      console.error("ADMIN_BULK_DEDUPE_ERROR:", err);
+      throw err;
     }
   },
 

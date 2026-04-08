@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
 import { 
   Trash2, 
   Layers, 
@@ -13,21 +12,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-
-interface Profile {
-    user_id: string;
-    full_name: string;
-    photos: string[];
-    role: string;
-    created_at: string;
-}
+import { AdminService } from '@/services/admin';
+import type { MatriarchProfile } from '@/types';
 
 interface PictureManagerProps {
     onBack?: () => void;
 }
 
 const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
-    const [profiles, setProfiles] = useState<Profile[]>([]);
+    const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [viewMode, setViewMode] = useState<'grid' | 'dedupe'>('grid');
@@ -36,16 +29,13 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/profiles`, {
-                headers: { 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` }
-            });
-            const data = await res.json();
+            const data = await AdminService.getAllCurationProfiles();
             setProfiles(data);
             
             // Calculate duplicates
             const photoCounts: Record<string, number> = {};
-            data.forEach((p: Profile) => {
-                const url = p.photos[0];
+            data.forEach((p) => {
+                const url = p.photos?.[0];
                 if (url) photoCounts[url] = (photoCounts[url] || 0) + 1;
             });
             const dupeCount = Object.values(photoCounts).filter(c => c > 1).length;
@@ -65,11 +55,10 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
         if (!confirm("ARE YOU SURE? THIS IS A PERMANENT EVICTION FROM THE SANCTUARY.")) return;
         
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/user/${userId}`, {
-                method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` }
-            });
-            setProfiles(prev => prev.filter(p => p.user_id !== userId));
+            const success = await AdminService.deleteUserRecord(userId);
+            if (success) {
+                setProfiles(prev => prev.filter(p => p.user_id !== userId));
+            }
         } catch (err) {
             console.error("Deletion failed", err);
         }
@@ -79,22 +68,23 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
         if (!confirm("COLLECTIVE PURGE: Nuke all visual clones while preserving original identities?")) return;
         
         try {
-            await fetch(`${import.meta.env.VITE_API_URL}/api/v1/admin/bulk-dedupe`, {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}` }
-            });
+            setLoading(true);
+            const result = await AdminService.performBulkDedupe();
+            alert(`Purge Complete: ${result.deletedCount} redundant identities evicted.`);
             fetchData();
         } catch (err) {
             console.error("Bulk dedupe failed", err);
+        } finally {
+            setLoading(false);
         }
     };
 
     const groupedProfiles = profiles.reduce((acc, p) => {
-        const url = p.photos[0] || 'none';
+        const url = (p.photos && p.photos[0]) || 'none';
         if (!acc[url]) acc[url] = [];
         acc[url].push(p);
         return acc;
-    }, {} as Record<string, Profile[]>);
+    }, {} as Record<string, MatriarchProfile[]>);
 
     const filteredProfiles = profiles.filter(p => 
         p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -184,7 +174,7 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {filteredProfiles.map(p => (
                             <div key={p.user_id} className="group relative aspect-square rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-matriarch-gold/50 transition-all">
-                                <img src={p.photos[0]} alt="" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500" />
+                                <img src={p.photos?.[0]} alt="" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
                                     <div className="text-[10px] font-black text-matriarch-gold uppercase tracking-tighter truncate">{p.full_name}</div>
                                     <div className="text-[8px] text-white/60 mb-2 uppercase">{p.role === 'woman' ? 'MATRIARCH' : 'SEEKER'}</div>
