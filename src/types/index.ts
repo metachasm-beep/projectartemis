@@ -25,7 +25,7 @@ export interface MatriarchProfile {
   profile_strength?: number;
   onboarding_status?: 'STARTED' | 'COMPLETED';
   is_verified?: boolean;
-  rank_boost_count?: number;
+  absolute_rank?: number;
   rank_score?: number;
   tokens?: number;
   view_count?: number;

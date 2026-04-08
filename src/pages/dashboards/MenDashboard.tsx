@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  ShieldCheck, 
   Zap, 
   Crown,
   Activity,
   ArrowUpRight,
   TrendingUp,
-  MessageSquare,
   Clock,
-  Heart,
-  ChevronDown,
-  UserCheck
+  UserCheck as UserCheckIcon,
+  Eye
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
-import { turso, tursoHelpers } from '@/lib/turso';
+import { turso } from '@/lib/turso';
 import { motion } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
+import TrumpCard from '@/components/discovery/TrumpCard';
+import CircularGallery from '@/components/animations/CircularGallery';
 
 interface MenDashboardProps {
   profile: MatriarchProfile;
@@ -43,14 +42,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [absRank, setAbsRank] = useState<number | null>(null);
   const [totalMen, setTotalMen] = useState<number>(0);
   const [isBumping, setIsBumping] = useState(false);
+  const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
 
-  // Female Discovery (The Gaze) State
-  const [females, setFemales] = useState<any[]>([]);
-  const [page, setPage] = useState(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [discoveryLoading, setDiscoveryLoading] = useState(false);
-
-  // ─── LIVE IDENTITY METRICS (Derived Logic) ───
+  // ─── LIVE IDENTITY METRICS ───
   const calculateIntegrity = () => {
      let score = 0;
      if (profile.full_name) score += 10;
@@ -62,62 +56,29 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
      return Math.min(100, score);
   };
 
-  const fetchFemales = useCallback(async (pageNum: number) => {
-    setDiscoveryLoading(true);
+  const fetchGaze = useCallback(async () => {
     try {
-      const result = await turso.execute(
-        "SELECT * FROM profiles WHERE role = 'woman' LIMIT 10 OFFSET ?",
-        [pageNum * 10]
-      );
-      
-      const rows = result.rows.map(r => ({
-        ...r,
-        photos: tursoHelpers.deserialize(r.photos as string) || []
+      const result = await turso.execute("SELECT full_name, photos, city FROM profiles WHERE role = 'woman' LIMIT 12");
+      const mapped = result.rows.map(r => ({
+        image: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
+        text: `${r.full_name?.toString().split(' ')[0]} | ${r.city}`
       }));
-
-      if (rows.length < 10) setHasMore(false);
-      setFemales(prev => pageNum === 0 ? rows : [...prev, ...rows]);
+      setGazeProfiles(mapped);
     } catch (err) {
-      console.error("Gaze fetch error:", err);
-    } finally {
-      setDiscoveryLoading(false);
+      console.error("Gaze sync failed:", err);
     }
   }, []);
 
   useEffect(() => {
-    fetchFemales(0);
-  }, [fetchFemales]);
+    fetchGaze();
+  }, [fetchGaze]);
 
   const fetchRank = useCallback(async () => {
     if (!profile?.user_id) return;
-    
     try {
-      const totalResult = await turso.execute(
-        "SELECT COUNT(*) as total FROM profiles WHERE role = 'man'",
-        []
-      );
+      const totalResult = await turso.execute("SELECT COUNT(*) as total FROM profiles WHERE role = 'man'", []);
       setTotalMen(Number(totalResult.rows[0].total) || 0);
-
-      const rankResult = await turso.execute(
-        `
-          SELECT COUNT(*) as higher_ranked FROM profiles 
-          WHERE role = 'man' AND (
-            is_verified > ? OR 
-            (is_verified = ? AND rank_boost_count > ?) OR 
-            (is_verified = ? AND rank_boost_count = ? AND created_at < ?)
-          )
-        `,
-        [
-          profile.is_verified ? 1 : 0,
-          profile.is_verified ? 1 : 0,
-          profile.rank_boost_count || 0,
-          profile.is_verified ? 1 : 0,
-          profile.rank_boost_count || 0,
-          profile.created_at
-        ]
-      );
-      
-      setAbsRank(Number(rankResult.rows[0].higher_ranked) + 1);
+      setAbsRank(profile.absolute_rank || 0);
     } catch (err) {
       console.error("Rank ritual failure:", err);
     }
@@ -132,11 +93,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       alert("Insufficient Tokens. Each bump costs 49 tokens.");
       return;
     }
-
     setIsBumping(true);
     try {
       await turso.execute(
-        "UPDATE profiles SET tokens = tokens - 49, rank_boost_count = rank_boost_count + 1, updated_at = ? WHERE user_id = ?",
+        "UPDATE profiles SET tokens = tokens - 49, rank_score = rank_score + 500, updated_at = ? WHERE user_id = ?",
         [new Date().toISOString(), profile.user_id]
       );
       await refreshProfile();
@@ -150,11 +110,11 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const currentLevel = RANK_LADDER.find(r => r.id === status?.rank_tier?.toLowerCase()) || RANK_LADDER[0];
   const nextLevel = RANK_LADDER[RANK_LADDER.indexOf(currentLevel) + 1] || currentLevel;
-  const progressToNext = ((status?.rank_score || 0) - currentLevel.min) / (nextLevel.min - currentLevel.min) * 100;
+  const progressToNext = ((profile?.rank_score || 0) - currentLevel.min) / (nextLevel.min - currentLevel.min) * 100;
 
   return (
     <div className="space-y-12 pb-24">
-      {/* Dynamic Header */}
+      {/* Header Section */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-12 border-b border-mat-rose/20">
         <div className="space-y-4">
           <Badge variant="outline" className="px-4 py-1 border-mat-gold/20 text-mat-gold text-[9px] font-bold uppercase tracking-[0.4em] rounded-full">Sanctuary // Status</Badge>
@@ -189,49 +149,66 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </div>
       )}
 
-      {/* Bento Matrix */}
+      {/* Hero Bento Grid */}
       <div className="bento-grid">
          {/* Identity Module */}
-         <div className="bento-span-8 bento-item mat-glass-deep group min-h-[450px]">
-            <div className="flex flex-col md:flex-row h-full gap-12">
-                <div className="relative shrink-0 w-full md:w-64 aspect-[3/4] md:h-full bg-mat-rose/5 rounded-[3.5rem] overflow-hidden border border-mat-rose/20">
-                  {profile?.photos?.[0] ? (
-                    <img src={profile.photos[0]} className="w-full h-full object-cover grayscale group-hover:scale-105 transition-all duration-1000 filter sepia-[0.3]" alt="Identity" />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-12 text-center text-mat-rose/20 bg-mat-rose/5">
-                      <ShieldCheck className="w-12 h-12 mb-4 opacity-40" />
-                      <p className="text-[9px] font-bold uppercase tracking-widest leading-relaxed">Identity <br />Awaiting</p>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/40 via-transparent to-transparent opacity-60" />
-                  <div className="absolute bottom-6 left-6 right-6 flex justify-between items-center z-10">
-                     <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/20">
-                        <ShieldCheck className="text-white w-6 h-6" />
-                     </div>
-                     <Badge className="bg-mat-gold text-mat-wine px-4 py-1.5 rounded-full text-[9px] font-bold uppercase tracking-widest">{status?.rank_tier || 'Seeker'}</Badge>
-                  </div>
+         <div className="bento-span-8 bento-item mat-glass-deep group min-h-[550px] overflow-visible">
+            <div className="flex flex-col md:flex-row h-full gap-8 p-8">
+                {/* TrumpCard Focal Point */}
+                <div className="shrink-0 w-full md:w-[320px] scale-90 md:scale-100 origin-top">
+                    <TrumpCard 
+                      profile={{
+                        id: profile.user_id,
+                        user_id: profile.user_id,
+                        name: profile.full_name,
+                        age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+                        city: profile.city || 'Undisclosed',
+                        img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+                        status: status?.rank_tier || 'Aspirant',
+                        bio: profile.bio || "Identity narrative not established.",
+                        height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+                        vocation: profile.occupation || 'Aspirant',
+                        tier: status?.rank_tier || 'Aspirant',
+                        is_verified: profile.is_verified
+                      }}
+                    />
                </div>
 
-                <div className="flex-1 flex flex-col justify-between py-4">
-                  <div className="space-y-8">
-                     <div className="space-y-2">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.5em] text-mat-rose">Gentleman Identification</span>
-                        <h2 className="text-5xl font-bold text-mat-wine italic leading-none truncate">
-                           {profile?.full_name?.split(' ')[0]} <br />
-                           <span className="opacity-20 italic font-light">{profile?.full_name?.split(' ').slice(1).join(' ')}</span>
+                <div className="flex-1 flex flex-col justify-between py-6">
+                  <div className="space-y-10">
+                     <div className="space-y-4">
+                        <div className="flex items-center gap-3">
+                           <div className="h-px flex-1 bg-mat-rose/20" />
+                           <span className="text-[9px] font-black uppercase tracking-[0.6em] text-mat-rose italic">Advanced Intel</span>
+                        </div>
+                        <h2 className="text-4xl font-bold text-mat-wine italic leading-none truncate">
+                           Collective Reputation <br />
+                           <span className="opacity-40 italic font-light text-2xl">Dossier #MD-{profile?.user_id?.slice(0, 4)}</span>
                         </h2>
                      </div>
                      <div className="flex flex-wrap gap-3">
-                        <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 bg-mat-rose/5 text-mat-wine text-[9px] font-bold uppercase tracking-widest rounded-xl italic">{profile?.city || 'Undisclosed'}</Badge>
-                        <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 bg-mat-gold/5 text-mat-gold-deep text-[9px] font-bold uppercase tracking-widest rounded-xl italic">Verified Profile</Badge>
+                        <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 bg-mat-rose/5 text-mat-wine text-[9px] font-bold uppercase tracking-widest rounded-xl italic">Legacy: {profile?.city || 'Undisclosed'}</Badge>
+                        <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 bg-mat-gold/5 text-mat-gold-deep text-[9px] font-bold uppercase tracking-widest rounded-xl italic">Social Proof: 100%</Badge>
                      </div>
-                     <p className="text-[14px] text-mat-slate font-medium leading-relaxed italic border-l-2 border-mat-gold/30 pl-6 max-h-[100px] overflow-hidden truncate">
-                        "{profile?.bio || "Identity narrative not established. Update your profile to improve standing."}"
-                     </p>
+                     <div className="space-y-4 pt-4 border-t border-mat-rose/10">
+                        <p className="text-[14px] text-mat-slate font-medium leading-relaxed italic">
+                           {profile?.bio || "Identity narrative not established. Update your profile to improve standing."}
+                        </p>
+                        <div className="grid grid-cols-2 gap-8 text-[11px] font-bold uppercase tracking-widest text-mat-wine/40">
+                           <div className="space-y-1">
+                              <p className="opacity-50 text-[8px]">Core Occpuation</p>
+                              <p className="text-mat-wine">{profile?.occupation || 'Private'}</p>
+                           </div>
+                           <div className="space-y-1">
+                              <p className="opacity-50 text-[8px]">Spiritual Path</p>
+                              <p className="text-mat-wine">{profile?.religion || 'Undisclosed'}</p>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                   <div className="pt-8 flex items-center gap-6 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/50">
-                     <div className="flex items-center gap-2"><Clock size={12} className="text-mat-rose" /> Joined {new Date(profile?.created_at).toLocaleDateString()}</div>
-                     <div className="flex items-center gap-2"><Activity size={12} className="text-mat-rose" /> Rank Logic: Live Resonance</div>
+                     <div className="flex items-center gap-2"><Clock size={12} className="text-mat-rose" /> Protocol Start: {new Date(profile?.created_at).toLocaleDateString()}</div>
+                     <div className="flex items-center gap-2"><Activity size={12} className="text-mat-rose" /> Frequency: Stable</div>
                   </div>
                </div>
             </div>
@@ -239,7 +216,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
          {/* Rank Status */}
          <div className="bento-span-4 bento-item bg-mat-wine text-mat-cream group h-full shadow-mat-premium">
-            <div className="flex flex-col h-full justify-between">
+            <div className="flex flex-col h-full justify-between p-8">
                <div className="space-y-6">
                   <div className="flex justify-between items-start">
                      <h3 className="text-2xl font-bold italic leading-none text-mat-cream">Sanctuary <br /><span className="text-mat-gold/40 text-xl">Absolute.</span></h3>
@@ -269,7 +246,39 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                </button>
             </div>
          </div>
+      </div>
 
+      {/* The Infinite Gaze Gallery */}
+      <div className="space-y-8 py-12">
+        <div className="flex items-center justify-between">
+           <div className="flex items-center gap-4">
+              <div className="w-10 h-10 mat-glass rounded-2xl flex items-center justify-center text-mat-wine">
+                 <Eye size={20} />
+              </div>
+              <div>
+                 <h3 className="text-xl font-bold italic text-mat-wine leading-none">The Infinite Gaze.</h3>
+                 <p className="text-[9px] font-black uppercase tracking-[0.4em] text-mat-rose/60 mt-1">Live Sanctuary Stream</p>
+              </div>
+           </div>
+           <div className="h-px flex-1 bg-mat-gold/20 mx-12 hidden md:block" />
+           <Badge className="bg-mat-gold/10 text-mat-gold border-mat-gold/20 px-6 py-2 rounded-full text-[8px] font-black uppercase tracking-widest">Ambient Mode Active</Badge>
+        </div>
+        
+        <div className="h-72 w-full relative rounded-[3rem] overflow-hidden border border-mat-gold/20 mat-glass pointer-events-none">
+            {gazeProfiles.length > 0 && (
+              <CircularGallery 
+                items={gazeProfiles}
+                bend={0}
+                scrollSpeed={0.5}
+                scrollEase={0.05}
+              />
+            )}
+            <div className="absolute inset-0 bg-mat-obsidian/10 pointer-events-none backdrop-sepia-[0.2]" />
+        </div>
+      </div>
+
+      {/* Metrics Bento Grid */}
+      <div className="bento-grid">
          {/* Identity Analysis */}
          <div className="bento-span-8 bento-item mat-glass p-12">
             <div className="space-y-12">
@@ -284,7 +293,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   {[
                     { label: 'Narrative Density', val: calculateIntegrity(), color: 'bg-mat-gold' },
                     { label: 'Verified Status', val: profile.is_verified ? 100 : 0, color: 'bg-mat-rose' },
-                    { label: 'Portrait Fidelity', val: profile.photos?.length ? 100 : 0, color: 'bg-mat-wine' },
+                    { label: 'Portrait Fidelity', val: (profile.photos?.length || 0) > 0 ? 100 : 0, color: 'bg-mat-wine' },
                     { label: 'Sovereign Compliance', val: 90, color: 'bg-mat-rose-deep' },
                   ].map((stat, i) => (
                     <div key={i} className="space-y-3">
@@ -303,17 +312,17 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
          {/* Archives Section */}
          <div className="bento-span-4 bento-item mat-glass group h-full">
-            <div className="flex flex-col h-full justify-between gap-12">
+            <div className="flex flex-col h-full justify-between gap-12 p-8">
                <div className="space-y-6">
                   <div className="w-14 h-14 mat-glass rounded-2xl flex items-center justify-center text-mat-rose group-hover:text-mat-wine transition-all">
-                     <UserCheck size={24} />
+                     <UserCheckIcon size={24} />
                   </div>
                   <h4 className="text-xl font-bold italic leading-none text-mat-wine">Resonance <br /><span className="text-mat-rose/40 text-lg">Archives.</span></h4>
                </div>
                <div className="space-y-4">
                   {[
                     { label: 'Aura Balance', val: profile.tokens || 0 },
-                    { label: 'Identity Jumps', val: profile.rank_boost_count || 0 },
+                    { label: 'Status Points', val: profile.rank_score || 0 },
                     { label: 'Profile Exposure', val: profile.view_count || 0 }
                   ].map((item, i) => (
                     <div key={i} className="flex justify-between items-center py-3 border-b border-mat-rose/10 text-[10px] font-bold uppercase tracking-widest">

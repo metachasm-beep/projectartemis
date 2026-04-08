@@ -7,8 +7,17 @@
     <meta name="google-adsense-account" content="ca-pub-8618345567810746">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618345567810746"
      crossorigin="anonymous"></script>
-    <title>MATRIARCH | Premium Selection Protocol</title>
-    <meta name="description" content="The elite selection engine for high-fidelity connections." />
+    <title>MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating</title>
+    <meta name="description" content="Delhi's most exclusive verification-based dating protocol. Join the sanctuary of verified professionals in South Delhi, Gurgaon, and beyond." />
+    <link rel="canonical" href="https://www.matriarchindia.com/" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://www.matriarchindia.com/" />
+    <meta property="og:title" content="MATRIARCH | Premium Selection Protocol" />
+    <meta property="og:description" content="Elite verification-based dating for Delhi's professionals. High-fidelity connections in a secure sanctuary." />
+    <meta property="og:image" content="https://www.matriarchindia.com/og-image.jpg" />
+
     <!-- Preconnect to fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -65,13 +74,13 @@
         }
       });
 
-      // Fail-safe: If we are in an Oauth redirect, or it's been too long, force remove loader
+      // Fail-safe: If we are in an Oauth redirect, or it's been too long (reduced for SEO performance), force remove loader
       if (window.location.hash.includes('access_token')) {
         console.log("MATRIARCH_BOOT: Auth redirect detected. Prioritizing protocol UI.");
         setTimeout(removeLoader, 500); 
       }
       
-      setTimeout(removeLoader, 5000); 
+      setTimeout(removeLoader, 1000); 
     </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>

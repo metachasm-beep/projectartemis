@@ -22,7 +22,7 @@ interface LeaderboardUser {
   city: string;
   photos: string[];
   is_verified: boolean;
-  rank_boost_count: number;
+  absolute_rank: number;
   created_at: string;
   rank_score: number;
 }
@@ -38,7 +38,7 @@ export const Leaderboard: React.FC = () => {
     setLoading(true);
     try {
       let query = `
-        SELECT user_id, full_name, date_of_birth, city, photos, is_verified, rank_boost_count, created_at
+        SELECT user_id, full_name, date_of_birth, city, photos, is_verified, absolute_rank, rank_score, created_at
         FROM profiles 
         WHERE role = 'man'
       `;
@@ -49,16 +49,14 @@ export const Leaderboard: React.FC = () => {
         args.push(selectedCity);
       }
 
+      query += " ORDER BY absolute_rank ASC";
+
       const result = await turso.execute(query, args);
       
       const mapped = result.rows.map((r: any) => {
         const dob = new Date(r.date_of_birth);
         const age = isNaN(dob.getTime()) ? 25 : new Date().getFullYear() - dob.getFullYear();
         
-        // Ranking Logic: Verified (100k) + Boosts (1k) - Seniority Delay (createdAt timestamp)
-        const seniority = new Date(r.created_at).getTime() / 10000000;
-        const score = (r.is_verified ? 100000 : 0) + (r.rank_boost_count * 1000) - seniority;
-
         return {
           user_id: r.user_id,
           name: r.full_name?.split(' ')[0] || 'Aspirant',
@@ -66,15 +64,13 @@ export const Leaderboard: React.FC = () => {
           city: r.city || 'Skyline',
           photos: JSON.parse(r.photos || '[]'),
           is_verified: !!r.is_verified,
-          rank_boost_count: r.rank_boost_count || 0,
+          absolute_rank: Number(r.absolute_rank) || 999,
           created_at: r.created_at,
-          rank_score: score
+          rank_score: r.rank_score || 0
         };
       });
 
-      // Sort by score
-      const sorted = mapped.sort((a, b) => b.rank_score - a.rank_score);
-      setUsers(sorted);
+      setUsers(mapped);
 
       // Extract unique cities for filtering
       if (!selectedCity) {
@@ -153,7 +149,7 @@ export const Leaderboard: React.FC = () => {
                >
                   {/* Rank Badge */}
                   <div className="absolute top-4 left-4 z-20 w-10 h-10 bg-mat-gold rounded-2xl flex items-center justify-center border-2 border-mat-obsidian/20 shadow-2xl">
-                     <span className="mat-text-impact text-mat-obsidian text-lg">#{i + 1}</span>
+                     <span className="mat-text-impact text-mat-obsidian text-lg">#{user.absolute_rank}</span>
                   </div>
 
                   {/* Identity Portrait */}
@@ -182,7 +178,7 @@ export const Leaderboard: React.FC = () => {
                   </div>
 
                   {/* Holographic Overlays for Top 3 */}
-                  {i < 3 && <div className="absolute inset-0 mat-card-holographic pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity" />}
+                  {user.absolute_rank <= 3 && <div className="absolute inset-0 mat-card-holographic pointer-events-none opacity-20 group-hover:opacity-40 transition-opacity" />}
                </motion.div>
              ))}
            </AnimatePresence>
@@ -211,10 +207,10 @@ export const Leaderboard: React.FC = () => {
                     </tr>
                  </thead>
                  <tbody>
-                    {top100.map((user, i) => (
+                    {top100.map((user) => (
                        <tr key={user.user_id} className="group hover:bg-mat-rose/5 transition-all duration-300">
                           <td className="px-10 py-6">
-                             <span className="mat-text-impact text-3xl text-mat-rose/20 group-hover:text-mat-rose/40 transition-colors">#{i + 11}</span>
+                             <span className="mat-text-impact text-3xl text-mat-rose/20 group-hover:text-mat-rose/40 transition-colors">#{user.absolute_rank}</span>
                           </td>
                           <td className="px-10 py-6">
                              <div className="flex items-center gap-5">
@@ -230,7 +226,7 @@ export const Leaderboard: React.FC = () => {
                                       <span className="text-xs font-bold text-mat-wine uppercase tracking-widest">{user.name}</span>
                                       {user.is_verified && <Badge className="bg-mat-gold/10 text-mat-gold text-[7px] border-mat-gold/20 h-4 px-1">VERIFIED</Badge>}
                                    </div>
-                                   <span className="text-[10px] text-mat-slate font-medium italic">{user.rank_boost_count} Boost Rituals</span>
+                                   <span className="text-[10px] text-mat-slate font-medium italic">Aura Power: {user.rank_score}</span>
                                 </div>
                              </div>
                           </td>

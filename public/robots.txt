@@ -3,6 +3,9 @@ Allow: /
 
 User-agent: *
 Allow: /
+Allow: /delhi-dating/south-delhi
+Allow: /delhi-dating/gurgaon
+Allow: /delhi-dating/north-delhi
 Disallow: /api/
 Disallow: /admin/
 Disallow: /auth/

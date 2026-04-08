@@ -27,14 +27,14 @@ import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
-    "/assets/slideshow/desi_dating_1_cafe_1775523638878.png",
-    "/assets/slideshow/desi_dating_2_rooftop_1775523660443.png",
-    "/assets/slideshow/desi_dating_3_neon_1775523754700.png",
-    "/assets/slideshow/desi_dating_4_lounge_1775523860665.png",
-    "/assets/slideshow/desi_dating_5_gallery_1775523883488.png",
-    "/assets/slideshow/desi_dating_6_park_1775523903138.png",
-    "/assets/slideshow/desi_dating_7_drive_1775523924633.png",
-    "/assets/slideshow/desi_dating_8_event_1775523945442.png"
+    "/assets/slideshow/desi_dating_1_cafe_1775523638878.webp",
+    "/assets/slideshow/desi_dating_2_rooftop_1775523660443.webp",
+    "/assets/slideshow/desi_dating_3_neon_1775523754700.webp",
+    "/assets/slideshow/desi_dating_4_lounge_1775523860665.webp",
+    "/assets/slideshow/desi_dating_5_gallery_1775523883488.webp",
+    "/assets/slideshow/desi_dating_6_park_1775523903138.webp",
+    "/assets/slideshow/desi_dating_7_drive_1775523924633.webp",
+    "/assets/slideshow/desi_dating_8_event_1775523945442.webp"
   ];
   const [index, setIndex] = React.useState(0);
 
