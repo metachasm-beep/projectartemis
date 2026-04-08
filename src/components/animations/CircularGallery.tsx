@@ -33,15 +33,15 @@ function createTextTexture(
   gl: GL,
   text: string,
   subText: string = '',
-  font: string = '900 36px "Roboto Condensed"',
+  font: string = '700 48px "Playfair Display", serif',
   color: string = 'white'
 ): { texture: Texture; width: number; height: number } {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Could not get 2d context');
 
-  // Aesthetic multiline rendering
-  const subFont = '700 18px "Roboto Condensed"';
+  // Aesthetic multiline rendering - Magazine feel
+  const subFont = '400 16px "Roboto Condensed", sans-serif';
   
   context.font = font;
   const textWidth = Math.ceil(context.measureText(text).width);
@@ -53,38 +53,38 @@ function createTextTexture(
   const subFontSize = getFontSize(subFont);
   
   // Padding and line height
-  const padding = 60;
-  const lineHeight = 1.2;
-  const canvasWidth = maxWidth + padding;
-  const canvasHeight = (fontSize + subFontSize) * lineHeight + padding;
+  const paddingX = 80;
+  const paddingY = 40;
+  const lineHeight = 1.1;
+  const canvasWidth = maxWidth + paddingX;
+  const canvasHeight = (fontSize + subFontSize) * lineHeight + paddingY;
 
   canvas.width = canvasWidth;
   canvas.height = canvasHeight;
 
-  // Render Background Glow
-  const gradient = context.createRadialGradient(
-    canvasWidth / 2, canvasHeight / 2, 0,
-    canvasWidth / 2, canvasHeight / 2, maxWidth
-  );
-  gradient.addColorStop(0, 'rgba(0,0,0,0.5)');
+  // Render Premium Gradient Shadow for legibility on card
+  const gradient = context.createLinearGradient(0, canvasHeight, 0, 0);
+  gradient.addColorStop(0, 'rgba(0,0,0,0.7)');
+  gradient.addColorStop(0.6, 'rgba(0,0,0,0.2)');
   gradient.addColorStop(1, 'rgba(0,0,0,0)');
   context.fillStyle = gradient;
   context.fillRect(0, 0, canvasWidth, canvasHeight);
 
-  // Render Main Text
+  // Render Main Text (Name/Age) - Serif
   context.font = font;
   context.fillStyle = color;
   context.textBaseline = 'top';
-  context.textAlign = 'center';
-  context.shadowColor = 'rgba(0,0,0,0.4)';
-  context.shadowBlur = 15;
-  context.fillText(text, canvasWidth / 2, padding / 2);
+  context.textAlign = 'left';
+  context.shadowColor = 'rgba(0,0,0,0.3)';
+  context.shadowBlur = 10;
+  context.fillText(text, paddingX / 4, paddingY / 4);
 
-  // Render Subtext (Age/City)
+  // Render Subtext (Location) - Meta Sans
   if (subText) {
     context.font = subFont;
-    context.fillStyle = 'rgba(255, 255, 255, 0.6)';
-    context.fillText(subText.toUpperCase(), canvasWidth / 2, padding / 2 + fontSize * 1.1);
+    context.fillStyle = 'rgba(255, 255, 255, 0.7)';
+    context.letterSpacing = '2px';
+    context.fillText(subText.toUpperCase(), paddingX / 4, paddingY / 4 + fontSize * 1.1);
   }
 
   const texture = new Texture(gl, { generateMipmaps: false });
@@ -157,7 +157,12 @@ class Title {
     const textHeightScaled = this.plane.scale.y * 0.12;
     const textWidthScaled = textHeightScaled * aspect;
     this.mesh.scale.set(textWidthScaled, textHeightScaled, 1);
-    this.mesh.position.y = -this.plane.scale.y * 0.5 - textHeightScaled * 0.5 - 0.1;
+    // Magazine Placement: Bottom-Left ON the card with a slight Z-offset to prevent glitching
+    this.mesh.position.set(
+      -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.1,
+      -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.1,
+      0.01 
+    );
     this.mesh.setParent(this.plane);
   }
 }
@@ -259,7 +264,7 @@ class Media {
 
   createShader() {
     const texture = new Texture(this.gl, {
-      generateMipmaps: true
+      generateMipmaps: false // Fix black screen for NPOT Unsplash images
     });
     this.program = new Program(this.gl, {
       depthTest: false,
@@ -323,12 +328,18 @@ class Media {
       },
       transparent: true
     });
+
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+    };
+    img.onerror = () => {
+      console.error('Failed to load image for sanctuary gaze:', this.image);
+      // Fallback to a high-fidelity placeholder if Unsplash blocks
+      img.src = `https://images.unsplash.com/photo-1512316609839-ce289d3eba0a?auto=format&fit=crop&q=80&w=800`;
     };
   }
 
@@ -477,7 +488,7 @@ class App {
       bend = 1,
       textColor = '#ffffff',
       borderRadius = 0,
-      font = '900 40px "Roboto Condensed"',
+      font = '700 48px "Playfair Display", serif',
       scrollSpeed = 2,
       scrollEase = 0.05,
       onSelect
