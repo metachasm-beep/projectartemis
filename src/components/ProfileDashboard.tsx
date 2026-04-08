@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { EditProfile } from '@/components/EditProfile';
 import { useAuth } from '@/hooks/useAuth';
 import { SanctuaryService } from '@/services/sanctuary';
-import { MenDossier } from '@/components/dashboards/MenDossier';
+import { MenDashboard } from '@/pages/dashboards/MenDashboard';
 import { WomenSanctuary } from '@/components/dashboards/WomenSanctuary';
 
 export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ onBeginDiscovery }) => {
@@ -42,8 +42,6 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
     }
   };
 
-  const isMan = profile.role === 'man';
-  
   return (
     <div className="w-full">
       <AnimatePresence mode="wait">
@@ -51,9 +49,15 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
           <motion.div key="edit" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="pb-20 pt-8">
             <EditProfile profile={profile} onUpdate={() => { refreshProfile(); setIsEditing(false); }} onCancel={() => setIsEditing(false)} />
           </motion.div>
-        ) : isMan ? (
+        ) : profile.role === 'man' ? (
           <motion.div key="view-man" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">
-             <MenDossier profile={profile} metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }} setIsEditing={setIsEditing} handleVerify={handleVerify} refreshProfile={refreshProfile} />
+             <MenDashboard 
+               profile={profile} 
+               status={{ rank_tier: 'Aspirant' }} 
+               refreshProfile={refreshProfile}
+               setIsEditing={setIsEditing}
+               metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }}
+             />
           </motion.div>
         ) : (
           <motion.div key="view-woman" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">

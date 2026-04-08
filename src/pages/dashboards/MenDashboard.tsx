@@ -7,7 +7,8 @@ import {
   TrendingUp,
   Clock,
   UserCheck as UserCheckIcon,
-  Eye
+  Eye,
+  Camera
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
@@ -21,8 +22,10 @@ import CircularGallery from '@/components/animations/CircularGallery';
 interface MenDashboardProps {
   profile: MatriarchProfile;
   status: any;
-  handleLogout: () => void;
+  handleLogout?: () => void;
   refreshProfile: () => Promise<void>;
+  setIsEditing?: (val: boolean) => void;
+  metrics?: { impression: number; visit: number; save: number };
 }
 
 const RANK_LADDER = [
@@ -37,7 +40,9 @@ const RANK_LADDER = [
 export const MenDashboard: React.FC<MenDashboardProps> = ({ 
   profile,
   status,
-  refreshProfile
+  refreshProfile,
+  setIsEditing,
+  metrics: externalMetrics
 }) => {
   const [absRank, setAbsRank] = useState<number | null>(null);
   const [totalMen, setTotalMen] = useState<number>(0);
@@ -153,7 +158,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       <div className="bento-grid">
          {/* Identity Module */}
          <div className="bento-span-8 bento-item mat-glass-deep group min-h-[550px] overflow-visible">
-            <div className="flex flex-col md:flex-row h-full gap-8 p-8">
+            <div className="flex flex-col md:flex-row h-full gap-8 p-8 relative">
                 {/* TrumpCard Focal Point */}
                 <div className="shrink-0 w-full md:w-[320px] scale-90 md:scale-100 origin-top">
                     <TrumpCard 
@@ -181,10 +186,18 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                            <div className="h-px flex-1 bg-mat-rose/20" />
                            <span className="text-[9px] font-black uppercase tracking-[0.6em] text-mat-rose italic">Advanced Intel</span>
                         </div>
-                        <h2 className="text-4xl font-bold text-mat-wine italic leading-none truncate">
-                           Collective Reputation <br />
-                           <span className="opacity-40 italic font-light text-2xl">Dossier #MD-{profile?.user_id?.slice(0, 4)}</span>
-                        </h2>
+                        <div className="flex justify-between items-start">
+                          <h2 className="text-4xl font-bold text-mat-wine italic leading-none truncate">
+                             Collective Reputation <br />
+                             <span className="opacity-40 italic font-light text-2xl">Dossier #MD-{profile?.user_id?.slice(0, 4)}</span>
+                          </h2>
+                          <button 
+                            onClick={() => setIsEditing?.(true)}
+                            className="w-12 h-12 rounded-full mat-glass border border-mat-rose/20 flex items-center justify-center text-mat-rose hover:bg-mat-rose hover:text-white transition-all shadow-mat-rose/10 group"
+                          >
+                             <Camera size={18} className="group-hover:scale-110 transition-transform" />
+                          </button>
+                        </div>
                      </div>
                      <div className="flex flex-wrap gap-3">
                         <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 bg-mat-rose/5 text-mat-wine text-[9px] font-bold uppercase tracking-widest rounded-xl italic">Legacy: {profile?.city || 'Undisclosed'}</Badge>
@@ -323,7 +336,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   {[
                     { label: 'Aura Balance', val: profile.tokens || 0 },
                     { label: 'Status Points', val: profile.rank_score || 0 },
-                    { label: 'Profile Exposure', val: profile.view_count || 0 }
+                    { label: 'Profile Exposure', val: (externalMetrics?.visit || profile.view_count || 0) }
                   ].map((item, i) => (
                     <div key={i} className="flex justify-between items-center py-3 border-b border-mat-rose/10 text-[10px] font-bold uppercase tracking-widest">
                        <span className="text-mat-slate/40 whitespace-nowrap">{item.label}</span>
