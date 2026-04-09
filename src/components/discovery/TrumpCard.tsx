@@ -59,7 +59,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-full aspect-[2/3.1] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
+      className="relative w-full max-w-[420px] aspect-[2/3.1] md:aspect-[2/3.3] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
@@ -82,8 +82,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
       </div>
 
-      {/* 🖼️ HERO PORTRAIT AREA */}
-      <div className="relative h-[44%] mt-14 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] p-0.5">
+      {/* 🖼️ HERO PORTRAIT AREA - OPTIMIZED FOR VISIBILITY */}
+      <div className="relative h-[48%] mt-12 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.2rem]">
         <div className="w-full h-full relative overflow-hidden rounded-t-[1.2rem]">
           <img 
             src={profile.img} 

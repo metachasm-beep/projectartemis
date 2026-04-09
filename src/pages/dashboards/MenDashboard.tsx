@@ -148,8 +148,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       )}
 
       {/* SINGULAR HERO ANCHOR: THE TRUMP CARD */}
-      <div className="flex justify-center w-full px-4 transform translate-y-4">
-        <div className="w-full max-w-full transform group transition-all duration-700">
+      <div className="flex justify-center w-full px-4">
+        <div className="w-full max-w-[340px] md:max-w-[420px] transform group transition-all duration-700">
           <TrumpCard 
             profile={{
               id: profile.user_id,
