@@ -92,6 +92,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     const photoUrl = formData.photos?.[index];
     if (!photoUrl) return;
 
+    if ((formData.photos?.length || 0) <= 1) {
+      setError("IDENTITY INTEGRITY: You cannot remove your final portrait. The Sanctuary requires at least one active visual anchor.");
+      return;
+    }
+
     if (!window.confirm("Remove this photo from your story?")) return;
 
     setLoading(true);
@@ -117,6 +122,10 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
   };
 
   const handleSave = async () => {
+    if ((formData.photos?.length || 0) === 0) {
+      setError("IDENTITY VOID: The Sanctuary requires a visual anchor. Please upload at least one high-resolution portrait.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {

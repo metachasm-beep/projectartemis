@@ -224,16 +224,42 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
                 {step === 'PHOTO' && (
                    <motion.div key="photo" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-10 text-center">
-                      <div className="space-y-4"><Camera className="mx-auto text-mat-rose" size={40} /><h2 className="text-4xl font-bold text-mat-wine italic">Your Portrait</h2><p className="text-mat-slate text-sm italic">Let the sanctuary perceive your radiance.</p></div>
+                      <div className="space-y-4">
+                        <Camera className="mx-auto text-mat-rose" size={40} />
+                        <div className="flex flex-col items-center gap-2">
+                           <h2 className="text-4xl font-bold text-mat-wine italic">Your Portrait</h2>
+                           <div className="flex items-center gap-2 px-3 py-1 bg-mat-rose/10 border border-mat-rose/20 rounded-full">
+                              <ShieldCheck size={10} className="text-mat-rose" />
+                              <span className="text-[9px] font-black text-mat-rose uppercase tracking-[0.2em]">Mandatory Requirement</span>
+                           </div>
+                        </div>
+                        <p className="text-mat-slate text-sm italic max-w-xs mx-auto leading-relaxed">
+                          The Sanctuary requires a visual anchor. Please upload your <span className="text-mat-wine font-bold">best, high-resolution portrait</span> to begin your resonance.
+                        </p>
+                      </div>
                       <div className="grid grid-cols-3 gap-4">
                          {formData.photos.map((url, i) => (
-                            <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-mat-rose/10 group relative shadow-md"><img src={url} className="w-full h-full object-cover" /><button onClick={() => setFormData(p => ({...p, photos: p.photos.filter((_, idx)=>idx!==i)}))} className="absolute top-2 right-2 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100"><Trash2 size={10} /></button></div>
+                            <div key={i} className="aspect-square rounded-2xl overflow-hidden border border-mat-rose/10 group relative shadow-md">
+                               <img src={url} className="w-full h-full object-cover" />
+                               <button onClick={() => setFormData(p => ({...p, photos: p.photos.filter((_, idx)=>idx!==i)}))} className="absolute top-2 right-2 p-1.5 bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100"><Trash2 size={10} /></button>
+                            </div>
                          ))}
                          {formData.photos.length < 6 && (
-                            <div className="aspect-square border-2 border-dashed border-mat-rose/30 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-mat-rose/5 relative cursor-pointer"><Plus className="text-mat-rose/40" /><input type="file" accept="image/*" className="absolute inset-0 opacity-0" onChange={e => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} /></div>
+                            <div className="aspect-square border-2 border-dashed border-mat-rose/30 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-mat-rose/5 relative cursor-pointer">
+                               <Plus className="text-mat-rose/40" />
+                               <span className="text-[10px] font-bold text-mat-rose/40 uppercase tracking-widest">Select Image</span>
+                               <input type="file" accept="image/*" className="absolute inset-0 opacity-0" onChange={e => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
+                            </div>
                          )}
                       </div>
-                      <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">{loading ? 'Synthesizing...' : 'Continue'}</button>
+                      <div className="space-y-4">
+                        <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20 transition-all">
+                          {loading ? 'Synthesizing...' : 'Establish Portrait'}
+                        </button>
+                        {formData.photos.length === 0 && (
+                          <p className="text-[9px] font-bold text-mat-rose/60 uppercase tracking-widest animate-pulse">Portrait selection required to proceed</p>
+                        )}
+                      </div>
                    </motion.div>
                 )}
 
