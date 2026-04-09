@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ShieldCheck, ArrowRight, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AadhaarVerification } from './AadhaarVerification';
+import { cn } from '@/lib/utils';
 
 interface VerificationPromptProps {
   userId: string;
@@ -33,8 +34,16 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
             <ShieldCheck size={28} />
           </div>
           <div>
-            <h3 className="mat-text-label-pro !text-[11px] text-white not-italic mb-1">A Sanctuary Built on Truth</h3>
-            <p className="text-[10px] text-white/40 uppercase tracking-[0.25em] font-medium leading-relaxed italic">
+            <h3 className={cn(
+              "mat-text-label-pro !text-[11px] not-italic mb-1",
+              isMan ? "text-mat-obsidian" : "text-white"
+            )}>
+              A Sanctuary Built on Truth
+            </h3>
+            <p className={cn(
+              "text-[10px] uppercase tracking-[0.25em] font-medium leading-relaxed italic",
+              isMan ? "text-mat-obsidian/70" : "text-white/40"
+            )}>
               Let us know you are real, so you can truly be found in our Sanctuary.
             </p>
           </div>

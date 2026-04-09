@@ -12,35 +12,41 @@ let rosterCache: { data: MatriarchProfile[], timestamp: number } | null = null;
  * Defensive against double-stringified JSON and legacy field mapping.
  */
 const normalizeProfile = (row: any): MatriarchProfile => {
+  if (!row) return {} as MatriarchProfile;
+  
   let photos: string[] = [];
   
+  // 📸 RESILIENT ASSET RECOVERY: Handle raw strings, JSON arrays, and already-parsed objects.
   if (row.photos) {
-    try {
-      // Defensive: Handle potentially double-stringified JSON from mixed client imports
-      let parsed = row.photos;
-      while (typeof parsed === 'string' && (parsed.startsWith('[') || parsed.startsWith('"'))) {
-        parsed = JSON.parse(parsed);
+    let p = row.photos;
+    if (typeof p === 'string') {
+      try {
+        // Defensive: Some drivers return double-stringified JSON
+        while (typeof p === 'string' && (p.startsWith('[') || p.startsWith('"'))) {
+          p = JSON.parse(p);
+        }
+      } catch (e) {
+        p = [row.photos]; // Fallback to raw string as single item
       }
-      photos = Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-      photos = [row.photos]; // Fallback for raw string URLs
     }
-  } else if (row.image_url) {
-    photos = [row.image_url as string];
+    photos = Array.isArray(p) ? p : [p];
+  } else if (row.image_url || row.image) {
+    photos = [row.image_url || row.image];
   }
 
-  // Clean empty values and protocol fragments
-  photos = photos.filter(Boolean).map(url => {
-    if (typeof url !== 'string') return url;
-    let u = url.trim();
-    if (u.startsWith('//')) u = 'https:' + u;
-    return u;
-  });
+  // 🧹 SANITARY SWEEP: Remove nulls, protocol fragments, and invalid types
+  const sanitizedPhotos = photos
+    .filter(url => typeof url === 'string' && url.length > 0)
+    .map(url => {
+       let u = url.trim();
+       if (u.startsWith('//')) u = 'https:' + u;
+       return u;
+    });
 
   return {
     ...row,
-    photos: photos.length > 0 ? photos : [],
-    is_verified: row.is_verified === 1 || row.is_verified === true,
+    photos: sanitizedPhotos,
+    is_verified: row.is_verified === 1 || row.is_verified === true || row.verified === 1,
   } as unknown as MatriarchProfile;
 };
 
