@@ -23,6 +23,7 @@ import { turso, tursoHelpers } from '@/lib/turso';
 import { compressImage } from '@/lib/image-utils';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { CameraCapture } from './CameraCapture';
+import { sanitizeBio } from '@/utils/trumpData';
 
 interface EditProfileProps {
   profile: MatriarchProfile;
@@ -307,7 +308,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                    </label>
                    <textarea 
                       name="bio"
-                      value={formData.bio || ''}
+                      value={sanitizeBio(formData.bio) || ''}
                       onChange={handleChange}
                       rows={5}
                       className="w-full p-6 rounded-2xl bg-mat-cream border border-mat-rose/20 text-mat-wine font-bold text-sm tracking-tight focus:outline-none focus:border-mat-wine transition-all placeholder:text-mat-slate/20"

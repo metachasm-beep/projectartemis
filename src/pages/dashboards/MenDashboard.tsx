@@ -18,6 +18,7 @@ import { motion } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import TrumpCard from '@/components/discovery/TrumpCard';
 import CircularGallery from '@/components/animations/CircularGallery';
+import { sanitizeBio } from '@/utils/trumpData';
 
 interface MenDashboardProps {
   profile: MatriarchProfile;
@@ -272,7 +273,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                         </div>
                         
                         <p className="text-[18px] text-mat-slate font-medium leading-relaxed italic max-w-2xl border-l-4 border-mat-gold/20 pl-8">
-                           "{profile?.bio || "Identity narrative not established. Update your profile to improve standing."}"
+                           "{sanitizeBio(profile?.bio) || "Identity narrative not established. Update your profile to improve standing."}"
                         </p>
                         
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-[11px] font-bold uppercase tracking-widest text-mat-wine/40">

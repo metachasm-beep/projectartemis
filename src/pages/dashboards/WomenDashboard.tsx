@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { FAQ } from '@/components/FAQ';
 import { motion } from 'framer-motion';
+import { sanitizeBio } from '@/utils/trumpData';
 
 interface WomenDashboardProps {
   profile: any;
@@ -106,7 +107,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                      </div>
 
                      <p className="text-[14px] text-mat-slate font-medium leading-relaxed italic border-l-2 border-mat-rose/30 pl-6">
-                        "{profile?.bio || "Your sacred story awaits completion. Share your vision with the sanctuary."}"
+                        "{sanitizeBio(profile?.bio) || "Your sacred story awaits completion. Share your vision with the sanctuary."}"
                      </p>
                   </div>
 

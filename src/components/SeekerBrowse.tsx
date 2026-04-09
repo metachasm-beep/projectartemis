@@ -17,6 +17,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from './ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
+import { sanitizeBio } from '@/utils/trumpData';
 
 interface Profile {
   user_id: string;
@@ -218,7 +219,7 @@ export const SeekerBrowse: React.FC = () => {
 
                       <div className="space-y-12">
                          <div className="p-12 md:p-16 rounded-[4rem] bg-mat-wine/5 border border-mat-rose/5 relative">
-                            <p className="text-4xl md:text-5xl text-mat-wine/90 leading-tight italic font-medium">"{selectedProfile.bio || "The narrative remains unwoven, but their presence radiates clear intention."}"</p>
+                            <p className="text-4xl md:text-5xl text-mat-wine/90 leading-tight italic font-medium">"{sanitizeBio(selectedProfile.bio) || "The narrative remains unwoven, but their presence radiates clear intention."}"</p>
                          </div>
                       </div>
 

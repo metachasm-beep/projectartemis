@@ -10,6 +10,40 @@ export interface TrumpStats {
   trustFactor: number;
 }
 
+/**
+ * 🛡️ BIO SANITIZATION PROTOCOL:
+ * Recursively unwraps multiple layers of JSON strings to extract the narrative text.
+ * Defensive against double-stringified database rows and quoted fragments.
+ */
+export const sanitizeBio = (bio: any): string => {
+  if (!bio) return "";
+  
+  let current = bio;
+  
+  // 🔄 Recursive Unwrap: Handle strings that might be JSON-encoded multiple times
+  try {
+    let limit = 5; // Safety brake
+    while (typeof current === 'string' && limit > 0) {
+      const trimmed = current.trim();
+      if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('"') && trimmed.endsWith('"'))) {
+        current = JSON.parse(trimmed);
+        limit--;
+      } else {
+        break;
+      }
+    }
+  } catch (e) {
+    // Fallback on parse failure: use current state
+  }
+
+  // 💎 Extraction: If we reached an object, pull the 'text' field
+  if (current && typeof current === 'object') {
+    return current.text || current.bio || JSON.stringify(current);
+  }
+
+  return typeof current === 'string' ? current : String(current);
+};
+
 export const mapToTrumpStats = (profile: { name: string; bio: string; status: string; is_verified?: boolean }): TrumpStats => {
   const bio = profile.bio.toLowerCase();
   const name = profile.name.toUpperCase().split(' ')[0];

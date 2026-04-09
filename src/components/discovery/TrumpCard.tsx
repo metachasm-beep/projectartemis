@@ -12,7 +12,7 @@ import {
   EyeOff,
   Crosshair
 } from 'lucide-react';
-import { mapToTrumpStats } from '@/utils/trumpData';
+import { mapToTrumpStats, sanitizeBio } from '@/utils/trumpData';
 import { Button } from '@heroui/react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { VerificationBadge } from '@/components/verification/VerificationBadge';
@@ -51,20 +51,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
   // Calculate total power level
   const powerLevel = Math.round((stats.charisma + stats.stamina + stats.intellect + stats.vibe + stats.social) / 5);
-
-  // 🍷 BIO SANITIZATION: Prevents JSON "trump_stats" from leaking into the UI
-  const displayBio = (() => {
-    if (!profile.bio) return "";
-    try {
-      if (typeof profile.bio === 'string' && profile.bio.trim().startsWith('{')) {
-        const parsed = JSON.parse(profile.bio);
-        return parsed.text || profile.bio;
-      }
-      return profile.bio;
-    } catch {
-      return profile.bio;
-    }
-  })();
 
   return (
     <motion.div 
@@ -129,7 +115,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         {/* Bio Inlay */}
         <div className="mb-6">
            <p className="text-mat-cream/80 text-[11px] leading-relaxed font-light line-clamp-2 italic">
-              "{displayBio}"
+              "{sanitizeBio(profile.bio)}"
            </p>
         </div>
 
