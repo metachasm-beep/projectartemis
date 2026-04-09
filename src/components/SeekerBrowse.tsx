@@ -56,10 +56,12 @@ export const SeekerBrowse: React.FC = () => {
   const fetchProfiles = useCallback(async () => {
     setLoading(true);
     try {
+      const targetRole = myProfile?.role === 'woman' ? 'man' : 'woman';
+
       const { data, error } = await supabase
         .from('profiles')
         .select('*')
-        .eq('role', 'man')
+        .eq('role', targetRole)
         .eq('onboarding_status', 'COMPLETED')
         .order('rank_boost_count', { ascending: false })
         .range(offset, offset + LIMIT - 1);

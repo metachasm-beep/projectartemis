@@ -3,24 +3,42 @@ import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/animations/CircularGallery';
 import { turso } from '@/lib/turso';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
+import { useAuth } from '@/hooks/useAuth';
 
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
   const [aspirants, setAspirants] = useState<any[]>([]);
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
 
+  const { profile } = useAuth();
+  
   useEffect(() => {
     const fetchAspirants = async () => {
+      if (!profile?.role) return;
+
       try {
-        const result = await turso.execute(`
+        const targetRole = profile.role === 'woman' ? 'man' : 'woman';
+        
+        // 🔮 SQL Query: Role-Aware Discovery
+        // Women seek Men (Regardless of tier)
+        // Men seek Women (Typically 'Aspirants')
+        let query = `
           SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion 
           FROM profiles 
-          WHERE role = 'woman' 
-          AND rank_tier = 'Aspirant'
+          WHERE role = ?
+        `;
+
+        if (targetRole === 'woman') {
+          query += " AND rank_tier = 'Aspirant'";
+        }
+
+        query += `
           AND full_name NOT LIKE '%Paul%' 
           ORDER BY created_at DESC 
           LIMIT 200
-        `, []);
+        `;
+
+        const result = await turso.execute(query, [targetRole]);
 
         const mapped = result.rows.map(r => ({
           id: r.user_id,

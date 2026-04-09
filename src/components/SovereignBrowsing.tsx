@@ -45,11 +45,13 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
   const fetchProfiles = useCallback(async () => {
     setLoading(true);
     try {
+      const targetRole = myProfile?.role === 'woman' ? 'man' : 'woman';
+      
       // 💎 The Root Ascent: Sorting from Lowest Rank to Highest
       const { data, error } = await supabase
         .from('profiles')
         .select('user_id, full_name, age, photos, is_verified, rank_boost_count, bio')
-        .eq('role', 'man')
+        .eq('role', targetRole)
         .eq('onboarding_status', 'COMPLETED')
         .order('rank_boost_count', { ascending: true }) // Lowest to Highest
         .range(offset, offset + LIMIT - 1);
