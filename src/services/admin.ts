@@ -103,47 +103,59 @@ export const AdminService = {
   },
 
   /**
-   * 🧪 Absolute Excision (Deep Purge): 
-   * Removes a user from EVERY sanctuary table to ensure absolute registry integrity.
-   * Defensive against Foreign Key constraints and data residue.
+   * 🧪 Absolute Excision (Resilient Deep Purge): 
+   * Removes a user from EVERY sanctuary table.
+   * Uses sequential execution to survive missing optional tables (e.g. forum, matches).
    */
   deleteUserRecord: async (userId: string) => {
     if (!userId) return false;
+    
+    // 🛡️ INTERNAL PURGE PROTOCOL: Silently executes deletes, ignoring missing table errors.
+    const silentDelete = async (sql: string, args: any[]) => {
+      try {
+        await turso.execute({ sql, args });
+      } catch (err: any) {
+        // Ignore "no such table" errors (code: SQLITE_ERROR)
+        if (err?.message?.includes('no such table')) {
+          return;
+        }
+        console.warn(`ADMIN_PURGE_WARNING on table: ${sql.split(' ')[2]}`, err);
+      }
+    };
+
     try {
-      console.log(`ADMIN_SERVICE: Executing Deep Purge for identity: ${userId}`);
+      console.log(`ADMIN_SERVICE: Executing Resilient Deep Purge for identity: ${userId}`);
       
-      await turso.batch([
-        // 🗳️ Community Forums & Social
-        { sql: "DELETE FROM forum_replies WHERE author_id = ?", args: [userId] },
-        { sql: "DELETE FROM forum_topics_likes WHERE user_id = ?", args: [userId] },
-        { sql: "DELETE FROM forum_topics_saves WHERE user_id = ?", args: [userId] },
-        { sql: "DELETE FROM forum_tips WHERE sender_id = ? OR receiver_id = ?", args: [userId, userId] },
-        { sql: "DELETE FROM forum_topics WHERE author_id = ?", args: [userId] },
-        { sql: "DELETE FROM forum_circles WHERE created_by = ?", args: [userId] },
-        { sql: "DELETE FROM forum_circle_members WHERE user_id = ?", args: [userId] },
-        
-        // 💬 Messaging & Communication
-        { sql: "DELETE FROM messages WHERE sender_user_id = ?", args: [userId] },
-        { sql: "DELETE FROM message_receipts WHERE user_id = ?", args: [userId] },
-        { sql: "DELETE FROM prompt_responses WHERE responder_user_id = ?", args: [userId] },
-        { sql: "DELETE FROM call_requests WHERE requested_by_user_id = ?", args: [userId] },
-        
-        // 💎 Matches & Relationships
-        { sql: "DELETE FROM match_state_history WHERE changed_by_user_id = ?", args: [userId] },
-        { sql: "DELETE FROM matches WHERE woman_user_id = ? OR man_user_id = ?", args: [userId, userId] },
-        { sql: "DELETE FROM blocks WHERE blocker_user_id = ? OR blocked_user_id = ?", args: [userId, userId] },
-        { sql: "DELETE FROM reports WHERE reporter_user_id = ? OR reported_user_id = ?", args: [userId, userId] },
-        
-        // 👤 Primary Identity
-        { sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] }
-      ]);
+      // 🗳️ Community Forums & Social
+      await silentDelete("DELETE FROM forum_replies WHERE author_id = ?", [userId]);
+      await silentDelete("DELETE FROM forum_topics_likes WHERE user_id = ?", [userId]);
+      await silentDelete("DELETE FROM forum_topics_saves WHERE user_id = ?", [userId]);
+      await silentDelete("DELETE FROM forum_tips WHERE sender_id = ? OR receiver_id = ?", [userId, userId]);
+      await silentDelete("DELETE FROM forum_topics WHERE author_id = ?", [userId]);
+      await silentDelete("DELETE FROM forum_circles WHERE created_by = ?", [userId]);
+      await silentDelete("DELETE FROM forum_circle_members WHERE user_id = ?", [userId]);
+      
+      // 💬 Messaging & Communication
+      await silentDelete("DELETE FROM messages WHERE sender_user_id = ?", [userId]);
+      await silentDelete("DELETE FROM message_receipts WHERE user_id = ?", [userId]);
+      await silentDelete("DELETE FROM prompt_responses WHERE responder_user_id = ?", [userId]);
+      await silentDelete("DELETE FROM call_requests WHERE requested_by_user_id = ?", [userId]);
+      
+      // 💎 Matches & Relationships
+      await silentDelete("DELETE FROM match_state_history WHERE changed_by_user_id = ?", [userId]);
+      await silentDelete("DELETE FROM matches WHERE woman_user_id = ? OR man_user_id = ?", [userId, userId]);
+      await silentDelete("DELETE FROM blocks WHERE blocker_user_id = ? OR blocked_user_id = ?", [userId, userId]);
+      await silentDelete("DELETE FROM reports WHERE reporter_user_id = ? OR reported_user_id = ?", [userId, userId]);
+      
+      // 👤 Primary Identity (Always required)
+      const res = await turso.execute({ sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] });
       
       // Nuclear cache invalidation
       metricsCache = null;
       rosterCache = null;
       return true;
     } catch (err) {
-      console.error("ADMIN_DEEP_PURGE_ERROR (userId: " + userId + "):", err);
+      console.error("ADMIN_RESILIENT_PURGE_ERROR (userId: " + userId + "):", err);
       return false;
     }
   },
@@ -173,23 +185,21 @@ export const AdminService = {
   },
 
   /**
-   * 🌪️ Purge Protocol (Deep Dedupe):
-   * Automated removal of visual asset clones using the Deep Purge protocol.
+   * 🌪️ Purge Protocol (Resilient Dedupe):
+   * Automated removal of visual asset clones using the Resilient Deep Purge protocol.
    */
   performBulkDedupe: async () => {
     try {
-      const r = await turso.execute("SELECT user_id, photos, created_at FROM profiles");
-      const profiles = r.rows.map(row => ({
-        user_id: row.user_id as string,
-        created_at: row.created_at as string,
-        photos: typeof row.photos === 'string' ? JSON.parse(row.photos) : row.photos
-      }));
+      const r = await turso.execute("SELECT * FROM profiles");
+      const allProfiles = r.rows.map(normalizeProfile);
+      
+      console.log(`ADMIN_BULK_PURGE: Scanning ${allProfiles.length} profiles for visual collisions...`);
       
       const photoMap = new Map<string, { user_id: string, created_at: string }>();
       const toDelete: string[] = [];
 
-      profiles.forEach(p => {
-        const photoUrl = Array.isArray(p.photos) ? p.photos[0] : null;
+      allProfiles.forEach(p => {
+        const photoUrl = p.photos?.[0];
         if (!photoUrl) return;
 
         if (photoMap.has(photoUrl)) {
@@ -206,12 +216,13 @@ export const AdminService = {
         }
       });
 
-      if (toDelete.length === 0) return { deletedCount: 0 };
+      if (toDelete.length === 0) {
+        console.log("ADMIN_BULK_PURGE: Sanctuary is already pure. No collisions detected.");
+        return { deletedCount: 0 };
+      }
 
-      console.log(`ADMIN_BULK_PURGE: Commencing deep excision for ${toDelete.length} redundant identities.`);
+      console.log(`ADMIN_BULK_PURGE: Commencing resilient excision for ${toDelete.length} redundant identities.`);
 
-      // We use the expanded deleteUserRecord for each to ensure all table dependencies are cleared.
-      // We process sequentially or in small controlled batches to avoid Turso timeouts.
       let successfulDeletes = 0;
       for (const id of toDelete) {
         const success = await AdminService.deleteUserRecord(id);
