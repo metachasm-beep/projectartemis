@@ -59,7 +59,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[550px] aspect-[2/3.1] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
+      className="relative w-full max-w-full aspect-[2/3.1] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       

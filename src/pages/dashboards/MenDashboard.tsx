@@ -141,157 +141,34 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   return (
     <div className="space-y-16 pb-32 pt-8">
       {/* Dynamic Hero Integration: Trump Card Visual Anchor */}
-
       {!profile?.is_verified && (
         <div className="mat-glass-deep p-12 rounded-[4rem] border-mat-rose/10 shadow-mat-rose/5">
            <VerificationPrompt userId={profile?.user_id} role="man" onVerified={() => refreshProfile()} />
         </div>
       )}
 
-      {/* Hero Bento Grid - UPSIZED AND INTEGRATED */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-         {/* Identity Module - FULL WIDTH */}
-         <div className="lg:col-span-12 mat-glass-deep rounded-[4rem] border border-mat-rose/10 shadow-mat-premium overflow-hidden group">
-            <div className="grid grid-cols-1 lg:grid-cols-12 h-full">
-                {/* TrumpCard Focal Point - UPSIZED */}
-                <div className="lg:col-span-5 bg-mat-ivory/40 p-10 lg:p-16 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-mat-rose/10 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/5 to-transparent pointer-events-none" />
-                    <div className="w-full max-w-full lg:max-w-[420px] transform hover:scale-[1.02] transition-transform duration-700">
-                      <TrumpCard 
-                        profile={{
-                          id: profile.user_id,
-                          user_id: profile.user_id,
-                          name: profile.full_name,
-                          age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
-                          city: profile.city || 'Undisclosed',
-                          img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
-                          status: status?.rank_tier || 'Aspirant',
-                          bio: profile.bio || "Identity narrative not established.",
-                          height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
-                          vocation: profile.occupation || 'Aspirant',
-                          tier: status?.rank_tier || 'Aspirant',
-                          is_verified: profile.is_verified,
-                          absolute_rank: absRank,
-                          rank_tier: status?.rank_tier
-                        }}
-                      />
-                    </div>
-               </div>
-
-                <div className="lg:col-span-7 p-10 lg:p-16 flex flex-col justify-between space-y-12 bg-white/5 backdrop-blur-sm">
-                  <div className="space-y-16">
-                     {/* Integrated Status Center: Balance & Standing */}
-                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-12 border-b border-mat-rose/10">
-                        <div className="flex flex-col gap-2">
-                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/40">Sanctuary Standing</span>
-                            <h2 className="text-5xl lg:text-7xl font-bold text-mat-wine italic leading-none tracking-tight">#{absRank || '--'}</h2>
-                        </div>
-                        
-                        <div className="flex gap-px bg-mat-gold/10 p-px w-full md:w-auto overflow-hidden rounded-3xl mat-glass border border-mat-gold/20 shadow-mat-gold/5 shrink-0">
-                            <div className="bg-mat-ivory/80 px-8 py-4 flex flex-col justify-center min-w-[140px]">
-                                <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Aura</span>
-                                <span className="text-2xl font-black text-mat-wine">₹{profile?.tokens || 0}</span>
-                            </div>
-                            <button 
-                              onClick={() => {
-                                  const amount = window.prompt("Enter token amount to augment (₹1 = 1 Token):", "500");
-                                  if (amount) {
-                                      turso.execute({
-                                          sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
-                                          args: [Number(amount), profile.user_id]
-                                      }).then(() => refreshProfile());
-                                  }
-                              }}
-                              className="bg-mat-wine text-white px-8 py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-mat-wine-soft transition-all flex items-center justify-center gap-3 group"
-                            >
-                                Augment <Zap size={14} className="text-mat-gold group-hover:scale-125 transition-transform" />
-                            </button>
-                        </div>
-                     </div>
-
-                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                        <div className="space-y-6">
-                            <div className="flex items-center gap-4">
-                               <div className="h-px w-16 bg-mat-rose/30" />
-                               <span className="text-[10px] font-black uppercase tracking-[0.6em] text-mat-rose italic">Advanced Identity Dossier</span>
-                            </div>
-                            <h2 className="text-5xl lg:text-7xl font-bold text-mat-wine italic leading-none tracking-tight">
-                               #{absRank || '--'} <br className="hidden lg:block" />
-                               <span className="opacity-20 italic font-light text-3xl lg:text-4xl">MD-{profile?.user_id?.slice(0, 6)}</span>
-                            </h2>
-                        </div>
-                        
-                        <div className="flex items-center gap-4">
-                            <button 
-                                onClick={() => setIsEditing?.(true)}
-                                className="w-16 h-16 rounded-3xl mat-glass border border-mat-rose/20 flex items-center justify-center text-mat-rose hover:bg-mat-rose hover:text-white transition-all shadow-mat-rose/10 group order-2 md:order-1"
-                            >
-                                <Camera size={24} className="group-hover:scale-110 transition-transform" />
-                            </button>
-                            <button 
-                                onClick={handleBumpRank}
-                                disabled={isBumping || (profile?.tokens || 0) < 49}
-                                className="px-10 h-16 bg-mat-wine text-white font-black uppercase tracking-[0.4em] text-[11px] rounded-3xl hover:bg-mat-wine-soft transition-all flex items-center justify-center gap-4 group shadow-mat-premium order-1 md:order-2 flex-1 md:flex-none"
-                            >
-                                {isBumping ? "Ritual..." : "Augment Standing"} 
-                                <ArrowUpRight size={18} className="group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform" />
-                            </button>
-                        </div>
-                     </div>
-
-                     {/* Integrated Ascension Bar */}
-                     <div className="p-8 bg-mat-rose/5 rounded-[2.5rem] border border-mat-rose/10 space-y-6">
-                        <div className="flex justify-between items-end">
-                            <div className="space-y-1">
-                                <p className="text-[10px] font-black uppercase text-mat-wine/40 tracking-[0.4em]">Path to Ascension</p>
-                                <h3 className="text-xl font-bold italic text-mat-wine">{currentLevel.name} → <span className="text-mat-gold font-black">{nextLevel.name}</span></h3>
-                            </div>
-                            <span className="text-3xl font-serif italic text-mat-gold">{Math.round(progressToNext)}%</span>
-                        </div>
-                        <div className="h-2.5 bg-mat-cream rounded-full overflow-hidden p-0.5 border border-mat-rose/10">
-                            <motion.div initial={{ width: 0 }} animate={{ width: `${progressToNext}%` }} className="h-full bg-mat-gold rounded-full shadow-[0_0_20px_rgba(191,160,106,0.4)]" />
-                        </div>
-                     </div>
-
-                     <div className="space-y-8 pt-4">
-                        <div className="flex flex-wrap gap-4">
-                           <Badge variant="outline" className="px-8 py-3 border-mat-rose/20 bg-mat-rose/5 text-mat-wine text-[10px] font-black uppercase tracking-widest rounded-2xl italic">Legacy: {profile?.city || 'Undisclosed'}</Badge>
-                           <Badge variant="outline" className="px-8 py-3 border-mat-gold/30 bg-mat-gold/5 text-mat-gold-deep text-[10px] font-black uppercase tracking-widest rounded-2xl italic">Social Proof: 100%</Badge>
-                           <Badge variant="outline" className="px-8 py-3 bg-mat-wine text-mat-cream border-none text-[10px] font-black uppercase tracking-widest rounded-2xl italic">{status?.rank_tier || 'Aspirant'}</Badge>
-                        </div>
-                        
-                        <p className="text-[18px] text-mat-slate font-medium leading-relaxed italic max-w-2xl border-l-4 border-mat-gold/20 pl-8">
-                           "{sanitizeBio(profile?.bio) || "Identity narrative not established. Update your profile to improve standing."}"
-                        </p>
-                        
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 text-[11px] font-bold uppercase tracking-widest text-mat-wine/40">
-                           <div className="space-y-2">
-                              <p className="opacity-40 text-[8px] tracking-[0.4em]">Core Occupation</p>
-                              <p className="text-mat-wine text-base">{profile?.occupation || 'Private'}</p>
-                           </div>
-                           <div className="space-y-2">
-                              <p className="opacity-40 text-[8px] tracking-[0.4em]">Spiritual Path</p>
-                              <p className="text-mat-wine text-base">{profile?.religion || 'Undisclosed'}</p>
-                           </div>
-                           <div className="space-y-2">
-                              <p className="opacity-40 text-[8px] tracking-[0.4em]">Height</p>
-                              <p className="text-mat-wine text-base">{profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\""}</p>
-                           </div>
-                           <div className="space-y-2">
-                              <p className="opacity-40 text-[8px] tracking-[0.4em]">Collective Age</p>
-                              <p className="text-mat-wine text-base">{profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25} Cycles</p>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="pt-12 flex flex-wrap items-center gap-12 text-[10px] font-bold uppercase tracking-[0.3em] text-mat-slate/30 border-t border-mat-rose/10 mt-16">
-                     <div className="flex items-center gap-4"><Clock size={16} className="text-mat-rose/40" /> Protocol Entry: {new Date(profile?.created_at).toLocaleDateString()}</div>
-                     <div className="flex items-center gap-4"><Activity size={16} className="text-mat-rose/40" /> Resonance: Stable</div>
-                     <div className="flex items-center gap-4 ml-auto text-mat-gold"><Crown size={18} /> Sanctuary Verified Identity</div>
-                  </div>
-               </div>
-            </div>
-         </div>
+      {/* SINGULAR HERO ANCHOR: THE TRUMP CARD */}
+      <div className="flex justify-center w-full px-4 transform translate-y-4">
+        <div className="w-full max-w-full transform group transition-all duration-700">
+          <TrumpCard 
+            profile={{
+              id: profile.user_id,
+              user_id: profile.user_id,
+              name: profile.full_name,
+              age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+              city: profile.city || 'Undisclosed',
+              img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+              status: status?.rank_tier || 'Aspirant',
+              bio: profile.bio || "Identity narrative not established.",
+              height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+              vocation: profile.occupation || 'Aspirant',
+              tier: status?.rank_tier || 'Aspirant',
+              is_verified: profile.is_verified,
+              absolute_rank: absRank,
+              rank_tier: status?.rank_tier
+            }}
+          />
+        </div>
       </div>
 
       {/* The Infinite Gaze Gallery - Expanded to Fix 'Blockage' */}
@@ -360,73 +237,76 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </div>
       </div>
 
-      {/* Metrics Bento Grid - Organized and Clean */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-         {/* Identity Analysis */}
-         <div className="lg:col-span-8 mat-glass-deep p-16 rounded-[4rem] border border-mat-rose/10 shadow-mat-premium">
-            <div className="space-y-20">
-               <div className="flex justify-between items-start">
-                  <div className="space-y-4">
-                     <h3 className="text-5xl font-bold italic leading-none text-mat-wine">Integrity Multipliers.</h3>
-                     <p className="text-mat-rose font-black uppercase tracking-[0.6em] text-[11px]">Live Profile Resonance strength Metrics</p>
-                  </div>
-                  <div className="w-20 h-20 rounded-full bg-mat-rose/5 flex items-center justify-center text-mat-rose/20">
-                    <TrendingUp size={40} />
-                  </div>
+      {/* HIGH-DENSITY BENTO METRICS: COMPACT & ELEGANT */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+         {/* Identity Multipliers */}
+         <div className="mat-glass-deep p-10 rounded-[3rem] border border-mat-gold/10 shadow-mat-premium hover:border-mat-gold/30 transition-all">
+            <div className="flex justify-between items-start mb-10">
+               <div className="space-y-2">
+                  <h3 className="text-3xl font-black italic text-mat-wine tracking-tighter">Integrity Multipliers</h3>
+                  <p className="text-mat-rose font-black uppercase tracking-[0.4em] text-[8px]">Profile Resonance Metrics</p>
                </div>
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-x-24 gap-y-16">
-                  {[
-                    { label: 'Narrative Density', val: calculateIntegrity(), color: 'bg-mat-gold', sub: 'Depth of bio & details' },
-                    { label: 'Verified Status', val: profile.is_verified ? 100 : 0, color: 'bg-mat-wine', sub: 'Identity authentication' },
-                    { label: 'Portrait Fidelity', val: (profile.photos?.length || 0) > 0 ? 100 : 0, color: 'bg-mat-rose', sub: 'Visual clarity & count' },
-                    { label: 'Sovereign Compliance', val: 90, color: 'bg-mat-gold-deep', sub: 'Platform standard alignment' },
-                  ].map((stat, i) => (
-                    <div key={i} className="space-y-6">
-                       <div className="flex justify-between items-end">
-                          <div className="space-y-2">
-                            <span className="text-xs font-black uppercase tracking-[0.2em] text-mat-wine italic">{stat.label}</span>
-                            <p className="text-[10px] text-mat-slate/40 uppercase font-bold tracking-[0.3em]">{stat.sub}</p>
-                          </div>
-                          <span className="text-2xl font-serif font-bold text-mat-wine">{stat.val}%</span>
-                       </div>
-                       <div className="h-2 bg-mat-rose/5 rounded-full overflow-hidden p-0.5">
-                          <motion.div initial={{ width: 0 }} animate={{ width: `${stat.val}%` }} className={`h-full ${stat.color} rounded-full`} />
-                       </div>
+               <TrendingUp size={24} className="text-mat-gold/40" />
+            </div>
+            <div className="grid grid-cols-2 gap-6">
+               {[
+                 { label: 'Narrative', val: calculateIntegrity(), color: 'bg-mat-gold' },
+                 { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, color: 'bg-mat-rose' },
+                 { label: 'Social', val: 90, color: 'bg-mat-gold-deep' },
+                 { label: 'Verified', val: profile.is_verified ? 100 : 0, color: 'bg-mat-wine' }
+               ].map((stat, i) => (
+                 <div key={i} className="space-y-3">
+                    <div className="flex justify-between items-end px-1">
+                       <span className="text-[7px] font-black uppercase text-mat-wine/40">{stat.label}</span>
+                       <span className="text-xs font-black text-mat-wine">{stat.val}%</span>
                     </div>
-                  ))}
-               </div>
+                    <div className="h-1 bg-mat-rose/5 rounded-full overflow-hidden">
+                       <motion.div initial={{ width: 0 }} animate={{ width: `${stat.val}%` }} className={`h-full ${stat.color} rounded-full`} />
+                    </div>
+                 </div>
+               ))}
+            </div>
+            <div className="mt-8 flex justify-center">
+               <button 
+                 onClick={() => setIsEditing?.(true)}
+                 className="px-6 py-2 bg-mat-wine/10 text-mat-wine border border-mat-wine/20 rounded-xl text-[8px] font-black uppercase tracking-widest hover:bg-mat-wine hover:text-white transition-all flex items-center gap-2"
+               >
+                  <Camera size={12} /> Edit Identity dossier
+               </button>
             </div>
          </div>
 
-         {/* Archives Section */}
-         <div className="lg:col-span-4 mat-glass-deep rounded-[4rem] border border-mat-rose/10 shadow-mat-premium p-12 flex flex-col justify-between group">
-               <div className="space-y-10">
-                  <div className="w-20 h-20 bg-mat-rose/5 rounded-[2.5rem] flex items-center justify-center text-mat-rose border border-mat-rose/10">
-                     <UserCheckIcon size={32} />
-                  </div>
-                  <div>
-                    <h4 className="text-4xl font-bold italic leading-none text-mat-wine">Resonance <br /><span className="text-mat-rose/50 text-3xl tracking-widest">Archives.</span></h4>
-                    <p className="text-[11px] text-mat-slate/40 font-bold uppercase tracking-widest mt-6 leading-relaxed">Systematic trace of observer interactions within the sanctuary.</p>
-                  </div>
+         {/* Resonance Archives */}
+         <div className="mat-glass-deep p-10 rounded-[3rem] border border-mat-gold/10 shadow-mat-premium hover:border-mat-gold/30 transition-all flex flex-col justify-between">
+            <div className="flex justify-between items-start mb-6">
+               <div className="space-y-2">
+                  <h3 className="text-3xl font-black italic text-mat-wine tracking-tighter">Resonance Archives</h3>
+                  <p className="text-mat-rose font-black uppercase tracking-[0.4em] text-[8px]">Observer Interaction Trace</p>
                </div>
-               <div className="space-y-8 pt-12 border-t border-mat-rose/10">
-                  {[
-                    { label: 'Aura Balance', val: `₹${profile.tokens || 0}`, icon: Zap },
-                    { label: 'Status Points', val: (profile.rank_score || 0).toLocaleString(), icon: Crown },
-                    { label: 'Profile Exposure', val: (externalMetrics?.visit || profile.view_count || 0).toLocaleString(), icon: Eye }
-                  ].map((item, i) => (
-                    <div key={i} className="flex justify-between items-center py-5 border-b border-mat-rose/5 text-[12px] font-black uppercase tracking-[0.2em]">
-                       <div className="flex items-center gap-4 text-mat-slate/40">
-                          <item.icon size={16} className="text-mat-rose/40" />
-                          <span>{item.label}</span>
-                       </div>
-                       <span className="text-mat-wine italic">{item.val}</span>
-                    </div>
-                  ))}
-               </div>
-               <div className="mt-12 p-8 bg-mat-wine/[0.02] border border-mat-rose/5 rounded-[2.5rem] text-center">
-                  <p className="text-[10px] font-black text-mat-slate/30 uppercase tracking-[0.5em] italic">Synchronized // Sovereign Oracle</p>
-               </div>
+               <UserCheckIcon size={24} className="text-mat-rose/40" />
+            </div>
+            <div className="grid grid-cols-3 gap-4">
+              {[
+                { label: 'Aura', val: `₹${profile.tokens || 0}`, icon: Zap },
+                { label: 'Status', val: (profile.rank_score || 0).toLocaleString(), icon: Crown },
+                { label: 'Views', val: (externalMetrics?.visit || profile.view_count || 0).toLocaleString(), icon: Eye }
+              ].map((item, i) => (
+                <div key={i} className="bg-mat-ivory/40 p-3 rounded-2xl border border-mat-rose/5 flex flex-col items-center justify-center text-center">
+                   <item.icon size={14} className="text-mat-rose/40 mb-2" />
+                   <span className="text-[6px] font-black uppercase text-mat-slate/40 tracking-widest">{item.label}</span>
+                   <span className="text-sm font-black text-mat-wine italic">{item.val}</span>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6">
+                <button 
+                  onClick={handleBumpRank}
+                  disabled={isBumping || (profile?.tokens || 0) < 49}
+                  className="w-full py-3 bg-mat-wine text-white rounded-2xl text-[8px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-2 hover:bg-mat-wine-soft disabled:opacity-50 transition-all shadow-mat-premium"
+                >
+                   {isBumping ? "Ritual..." : "Augment Standing"} <Zap size={10} className="text-mat-gold" />
+                </button>
+            </div>
          </div>
       </div>
     </div>
