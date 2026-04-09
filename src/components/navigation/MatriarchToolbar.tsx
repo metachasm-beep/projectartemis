@@ -17,7 +17,10 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   
   const navItems = [
     ...(profile?.role === 'admin' ? [{ id: 'admin_panel' as const, label: 'Control Panel', icon: Shield }] : []),
-    { id: 'profile' as const, label: profile?.role === 'woman' ? 'My Home' : 'My Profile', icon: profile?.role === 'woman' ? Home : User },
+    ...(profile?.role !== 'admin' 
+      ? [{ id: 'profile' as const, label: profile?.role === 'woman' ? 'My Home' : 'My Profile', icon: profile?.role === 'woman' ? Home : User }] 
+      : []
+    ),
     ...(profile?.role === 'woman' 
       ? [{ id: 'discovery' as const, label: 'Browse', icon: User }] 
       : [{ id: 'leaderboard' as const, label: 'Leaderboard', icon: Trophy }]
@@ -72,24 +75,24 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
         {/* 🍷 Action Ritual (Right-Aligned Symmetry) */}
         <div className="flex items-center gap-2 md:gap-4">
           {isAdmin && (
-             <div className="hidden lg:flex bg-mat-rose/10 p-1 rounded-full items-center">
+             <div className="hidden lg:flex bg-black/30 p-1 rounded-full items-center border border-white/10">
                <button 
                  onClick={() => handleAdminToggle('man')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-rose text-mat-cream shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
-                 View Man
+                 Man
                </button>
                <button 
                  onClick={() => handleAdminToggle('woman')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-rose text-mat-cream shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
-                 View Woman
+                 Woman
                </button>
                <button 
                  onClick={() => handleAdminToggle('admin')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/60 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
-                 View Admin
+                 Admin
                </button>
              </div>
           )}
