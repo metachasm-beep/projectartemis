@@ -116,20 +116,58 @@ export const AdminService = {
   },
 
   /**
-   * 🔍 Sovereign Roster Search: Deep DB text-search for profiles.
+   * 🔍 Sovereign Roster Search: Deep DB multi-parameter search for profiles.
    */
-  searchProfiles: async (queryText: string = "", limit: number = 50): Promise<MatriarchProfile[]> => {
-    try {
-      let sql = "SELECT * FROM profiles";
-      let args: any[] = [];
+  searchProfiles: async (options: {
+    query?: string;
+    role?: 'man' | 'woman' | 'admin' | 'all';
+    isVerified?: boolean | 'all';
+    city?: string;
+    minTokens?: number;
+    dateSort?: 'newest' | 'oldest';
+    limit?: number;
+  } = {}): Promise<MatriarchProfile[]> => {
+    const { 
+      query = "", 
+      role = 'all', 
+      isVerified = 'all', 
+      city = "", 
+      minTokens = 0, 
+      dateSort = 'newest', 
+      limit = 1000 
+    } = options;
 
-      if (queryText && queryText.trim() !== '') {
-        sql += " WHERE full_name LIKE ? OR city LIKE ? OR user_id LIKE ?";
-        const wildcard = `%${queryText}%`;
-        args = [wildcard, wildcard, wildcard];
+    try {
+      let sql = "SELECT * FROM profiles WHERE 1=1";
+      const args: any[] = [];
+
+      if (query && query.trim() !== '') {
+        sql += " AND (full_name LIKE ? OR user_id LIKE ?)";
+        const wildcard = `%${query.trim()}%`;
+        args.push(wildcard, wildcard);
       }
 
-      sql += " ORDER BY created_at DESC LIMIT ?";
+      if (role !== 'all') {
+        sql += " AND role = ?";
+        args.push(role);
+      }
+
+      if (isVerified !== 'all') {
+        sql += " AND is_verified = ?";
+        args.push(isVerified ? 1 : 0);
+      }
+
+      if (city && city.trim() !== '') {
+        sql += " AND city LIKE ?";
+        args.push(`%${city.trim()}%`);
+      }
+
+      if (minTokens > 0) {
+        sql += " AND tokens >= ?";
+        args.push(minTokens);
+      }
+
+      sql += ` ORDER BY created_at ${dateSort === 'newest' ? 'DESC' : 'ASC'} LIMIT ?`;
       args.push(limit);
 
       const r = await turso.execute({ sql, args });
