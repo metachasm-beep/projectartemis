@@ -115,7 +115,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         {/* Bio Inlay */}
         <div className="mb-6">
            <p className="text-mat-cream/80 text-[11px] leading-relaxed font-light line-clamp-2 italic">
-              "{sanitizeBio(profile.bio)}"
+              "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
 

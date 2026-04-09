@@ -38,7 +38,11 @@ export const sanitizeBio = (bio: any): string => {
 
   // 💎 Extraction: If we reached an object, pull the 'text' field
   if (current && typeof current === 'object') {
-    return current.text || current.bio || JSON.stringify(current);
+    // Check for 'text' property specifically (even if it's an empty string)
+    if ('text' in current) {
+      return current.text || "";
+    }
+    return current.bio || "";
   }
 
   return typeof current === 'string' ? current : String(current);
