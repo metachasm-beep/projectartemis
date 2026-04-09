@@ -9,43 +9,59 @@ let rosterCache: { data: MatriarchProfile[], timestamp: number } | null = null;
 /**
  * 🛠️ DEEP NORMALIZATION LAYER:
  * Standardizes raw Turso rows into valid MatriarchProfile objects.
- * Defensive against double-stringified JSON and legacy field mapping.
+ * Defensive against double-stringified JSON, legacy field mapping, and column aliases.
  */
 const normalizeProfile = (row: any): MatriarchProfile => {
   if (!row) return {} as MatriarchProfile;
   
+  let rawPhotos: any = row.photos || row.avatar_url || row.image_url || row.image || row.photo;
   let photos: string[] = [];
   
   // 📸 RESILIENT ASSET RECOVERY: Handle raw strings, JSON arrays, and already-parsed objects.
-  if (row.photos) {
-    let p = row.photos;
-    if (typeof p === 'string') {
-      try {
-        // Defensive: Some drivers return double-stringified JSON
-        while (typeof p === 'string' && (p.startsWith('[') || p.startsWith('"'))) {
-          p = JSON.parse(p);
+  if (rawPhotos) {
+    let p = rawPhotos;
+    
+    // Attempt recursive unwrap if it's a string (handles double-stringification)
+    try {
+      let limit = 5;
+      while (typeof p === 'string' && limit > 0) {
+        const trimmed = p.trim();
+        if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
+          p = JSON.parse(trimmed);
+          limit--;
+        } else {
+          break;
         }
-      } catch (e) {
-        p = [row.photos]; // Fallback to raw string as single item
       }
+    } catch (e) {
+      // Fallback: If parse fails, p remains at its last successful state
     }
-    photos = Array.isArray(p) ? p : [p];
-  } else if (row.image_url || row.image) {
-    photos = [row.image_url || row.image];
+
+    // Convert to array
+    if (Array.isArray(p)) {
+      photos = p;
+    } else if (p && typeof p === 'string') {
+      photos = [p];
+    }
   }
 
-  // 🧹 SANITARY SWEEP: Remove nulls, protocol fragments, and invalid types
+  // 🧹 SANITARY SWEEP & FALLBACK: Remove invalid types and add placeholder if empty
   const sanitizedPhotos = photos
-    .filter(url => typeof url === 'string' && url.length > 0)
+    .filter(url => typeof url === 'string' && url.length > 5)
     .map(url => {
        let u = url.trim();
        if (u.startsWith('//')) u = 'https:' + u;
        return u;
     });
 
+  // 🎭 Identity Fallback: If no photos exist, generate a consistent DiceBear avatar
+  const finalPhotos = sanitizedPhotos.length > 0 
+    ? sanitizedPhotos 
+    : [`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user_id || row.id || row.full_name || 'anon'}`];
+
   return {
     ...row,
-    photos: sanitizedPhotos,
+    photos: finalPhotos,
     is_verified: row.is_verified === 1 || row.is_verified === true || row.verified === 1,
   } as unknown as MatriarchProfile;
 };

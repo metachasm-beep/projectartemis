@@ -235,7 +235,7 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {filteredProfiles.map(p => (
                             <div key={p.user_id} className="group relative aspect-square rounded-[2rem] overflow-hidden bg-white/5 border border-white/10 hover:border-matriarch-gold/50 transition-all">
-                                <img src={p.photos?.[0]} alt="" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500" />
+                                <img src={p.photos?.[0]} alt="" className="w-full h-full object-cover transition-all duration-500 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
                                     <div className="text-[10px] font-black text-matriarch-gold uppercase tracking-tighter truncate">{p.full_name}</div>
                                     <div className="text-[8px] text-white/60 mb-2 uppercase">{p.role === 'woman' ? 'MATRIARCH' : 'SEEKER'}</div>
