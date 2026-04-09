@@ -67,7 +67,7 @@ const normalizeProfile = (row: any): MatriarchProfile => {
          // Scrub any remaining single/double quotes or brackets from the URL itself
          return u.trim().replace(/^['"\[]+|['"\]]+$/g, '');
       })
-      .filter(u => u.length > 5 && u.includes('.'));
+      .filter(u => (u.startsWith('http') || u.startsWith('https')) && u.includes('.'));
   }
 
   // 🎭 Final Fallback: Generator
