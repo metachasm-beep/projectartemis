@@ -27,14 +27,14 @@ import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
-    "/assets/slideshow-v2/hero_1.png",
-    "/assets/slideshow-v2/hero_2.png",
-    "/assets/slideshow-v2/hero_3.png",
-    "/assets/slideshow-v2/hero_4.png",
-    "/assets/slideshow-v2/hero_5.jpeg",
-    "/assets/slideshow-v2/hero_6.jpeg",
-    "/assets/slideshow-v2/hero_7.jpeg",
-    "/assets/slideshow-v2/hero_8.jpeg"
+    "/assets/slideshow/h_1.png",
+    "/assets/slideshow/h_2.png",
+    "/assets/slideshow/h_3.png",
+    "/assets/slideshow/h_4.png",
+    "/assets/slideshow/h_5.jpeg",
+    "/assets/slideshow/h_6.jpeg",
+    "/assets/slideshow/h_7.jpeg",
+    "/assets/slideshow/h_8.jpeg"
   ];
   const [index, setIndex] = React.useState(0);
 
