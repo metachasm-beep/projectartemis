@@ -9,54 +9,70 @@ let rosterCache: { data: MatriarchProfile[], timestamp: number } | null = null;
 /**
  * 🛠️ DEEP NORMALIZATION LAYER:
  * Standardizes raw Turso rows into valid MatriarchProfile objects.
- * Defensive against double-stringified JSON, legacy field mapping, and column aliases.
+ * Defensive against double-stringified JSON, single-quoted arrays, and legacy lists.
  */
 const normalizeProfile = (row: any): MatriarchProfile => {
   if (!row) return {} as MatriarchProfile;
   
-  let rawPhotos: any = row.photos || row.avatar_url || row.image_url || row.image || row.photo;
+  const rawPhotos: any = row.photos || row.avatar_url || row.image_url || row.image || row.photo || row.avatar || row.profile_picture;
   let photos: string[] = [];
   
-  // 📸 RESILIENT ASSET RECOVERY: Handle raw strings, JSON arrays, and already-parsed objects.
   if (rawPhotos) {
     let p = rawPhotos;
     
-    // Attempt recursive unwrap if it's a string (handles double-stringification)
+    // 🛡️ RECURSIVE MULTI-MODE DE-STRINGIFIER
     try {
       let limit = 5;
       while (typeof p === 'string' && limit > 0) {
-        const trimmed = p.trim();
-        if ((trimmed.startsWith('[') && trimmed.endsWith(']')) || (trimmed.startsWith('"') && trimmed.endsWith('"')) || (trimmed.startsWith('{') && trimmed.endsWith('}'))) {
-          p = JSON.parse(trimmed);
-          limit--;
-        } else {
-          break;
+        let trimmed = p.trim();
+        
+        // Mode 1: Standard / Double-Stringified JSON
+        if (trimmed.startsWith('[') || trimmed.startsWith('"') || trimmed.startsWith('{')) {
+          try {
+            // Fix single-quoted "fake" JSON arrays (common JS .toString() output)
+            if (trimmed.startsWith('[') && trimmed.includes("'") && !trimmed.includes('"')) {
+              trimmed = trimmed.replace(/'/g, '"');
+            }
+            p = JSON.parse(trimmed);
+            limit--;
+            continue;
+          } catch (e) {
+             // Fall through to other modes
+          }
         }
+
+        // Mode 2: Comma-Separated Literals
+        if (trimmed.includes(',') && !trimmed.includes('[') && !trimmed.includes('{')) {
+           p = trimmed.split(',').map(s => s.trim());
+           break;
+        }
+
+        // Mode 3: Bracketed list without valid JSON quotes
+        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
+           p = trimmed.slice(1, -1).split(',').map(s => s.trim());
+           break;
+        }
+
+        break;
       }
     } catch (e) {
-      // Fallback: If parse fails, p remains at its last successful state
+      console.warn("Normalize: Recovery attempt failed", e);
     }
 
-    // Convert to array
-    if (Array.isArray(p)) {
-      photos = p;
-    } else if (p && typeof p === 'string') {
-      photos = [p];
-    }
+    // Convert result to cleaned array
+    const rawArray = Array.isArray(p) ? p : [p];
+    photos = rawArray
+      .filter(u => u && typeof u === 'string')
+      .map(u => {
+         // Scrub any remaining single/double quotes or brackets from the URL itself
+         return u.trim().replace(/^['"\[]+|['"\]]+$/g, '');
+      })
+      .filter(u => u.length > 5 && u.includes('.'));
   }
 
-  // 🧹 SANITARY SWEEP & FALLBACK: Remove invalid types and add placeholder if empty
-  const sanitizedPhotos = photos
-    .filter(url => typeof url === 'string' && url.length > 5)
-    .map(url => {
-       let u = url.trim();
-       if (u.startsWith('//')) u = 'https:' + u;
-       return u;
-    });
-
-  // 🎭 Identity Fallback: If no photos exist, generate a consistent DiceBear avatar
-  const finalPhotos = sanitizedPhotos.length > 0 
-    ? sanitizedPhotos 
+  // 🎭 Final Fallback: Generator
+  const finalPhotos = photos.length > 0 
+    ? photos 
     : [`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user_id || row.id || row.full_name || 'anon'}`];
 
   return {
