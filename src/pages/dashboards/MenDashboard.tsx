@@ -336,6 +336,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   bend={0}
                   scrollSpeed={1.2}
                   scrollEase={0.2}
+                  autoScroll={true}
+                  autoScrollSpeed={0.3}
                   onCenterUpdate={setActiveGazeIndex}
                 />
                 

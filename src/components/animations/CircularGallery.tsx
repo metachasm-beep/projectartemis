@@ -530,6 +530,8 @@ interface AppConfig {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  autoScroll?: boolean;
+  autoScrollSpeed?: number;
   onSelect?: (index: number) => void;
   onCenterUpdate?: (index: number) => void;
 }
@@ -544,6 +546,8 @@ class App {
     last: number;
     position?: number;
   };
+  autoScroll: boolean;
+  autoScrollSpeed: number;
   onCheckDebounce: (...args: any[]) => void;
   renderer!: Renderer;
   gl!: GL;
@@ -577,6 +581,8 @@ class App {
       font = '700 48px "Playfair Display", serif',
       scrollSpeed = 2,
       scrollEase = 0.05,
+      autoScroll = false,
+      autoScrollSpeed = 1,
       onSelect,
       onCenterUpdate
     }: AppConfig
@@ -586,6 +592,8 @@ class App {
     this.onSelect = onSelect;
     this.onCenterUpdate = onCenterUpdate;
     this.scrollSpeed = scrollSpeed;
+    this.autoScroll = autoScroll;
+    this.autoScrollSpeed = autoScrollSpeed;
     this.scroll = { ease: scrollEase, current: 0, target: 0, last: 0 };
     this.onCheckDebounce = debounce(this.onCheck.bind(this), 200);
     this.createRenderer();
@@ -742,6 +750,9 @@ class App {
   }
 
   update() {
+    if (this.autoScroll && !this.isDown) {
+      this.scroll.target += this.autoScrollSpeed;
+    }
     this.scroll.current = lerp(this.scroll.current, this.scroll.target, this.scroll.ease);
     const direction = this.scroll.current > this.scroll.last ? 'right' : 'left';
     if (this.medias) {
@@ -802,6 +813,8 @@ interface CircularGalleryProps {
   font?: string;
   scrollSpeed?: number;
   scrollEase?: number;
+  autoScroll?: boolean;
+  autoScrollSpeed?: number;
   onSelect?: (index: number) => void;
   onCenterUpdate?: (index: number) => void;
 }
@@ -814,6 +827,8 @@ export default function CircularGallery({
   font = '900 40px "Roboto Condensed"',
   scrollSpeed = 3,
   scrollEase = 0.23,
+  autoScroll = false,
+  autoScrollSpeed = 1,
   onSelect,
   onCenterUpdate
 }: CircularGalleryProps) {
@@ -837,6 +852,8 @@ export default function CircularGallery({
       font,
       scrollSpeed,
       scrollEase,
+      autoScroll,
+      autoScrollSpeed,
       onSelect,
       onCenterUpdate
     });
