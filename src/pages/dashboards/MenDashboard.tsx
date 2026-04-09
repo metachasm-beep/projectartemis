@@ -139,43 +139,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const progressToNext = ((profile?.rank_score || 0) - currentLevel.min) / (nextLevel.min - currentLevel.min) * 100;
 
   return (
-    <div className="space-y-16 pb-32">
-      {/* Header Section */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-12 border-b border-mat-rose/20">
-        <div className="space-y-4">
-          <Badge variant="outline" className="px-5 py-1.5 border-mat-gold/30 text-mat-gold text-[10px] font-black uppercase tracking-[0.5em] rounded-full bg-mat-gold/5">Sanctuary // Status</Badge>
-          <h1 className="text-7xl md:text-9xl mat-text-display-pro text-mat-wine italic leading-none shrink-0 ">Your <br /><span className="text-mat-rose/30">Standing.</span></h1>
-        </div>
-        
-        <div className="flex flex-col gap-6 w-full md:w-auto">
-            <div className="flex gap-px bg-mat-gold/10 p-px w-full overflow-hidden rounded-[2.5rem] mat-glass border border-mat-gold/20 shadow-mat-gold/5">
-                <div className="bg-mat-ivory/80 px-10 py-6 flex flex-col justify-center min-w-[180px]">
-                    <span className="text-[9px] font-bold uppercase tracking-[0.4em] text-mat-slate/60">Aura Balance</span>
-                    <span className="text-3xl font-black text-mat-wine">₹{profile?.tokens || 0}</span>
-                </div>
-                <button 
-                  onClick={() => {
-                      const amount = window.prompt("Enter token amount to augment (₹1 = 1 Token):", "500");
-                      if (amount) {
-                          turso.execute({
-                              sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
-                              args: [Number(amount), profile.user_id]
-                          }).then(() => refreshProfile());
-                      }
-                  }}
-                  className="bg-mat-wine text-white px-10 py-6 text-[11px] font-bold uppercase tracking-[0.5em] hover:bg-mat-wine-soft transition-all flex items-center justify-center gap-3 group"
-                >
-                    Augment <Zap size={16} className="text-mat-gold group-hover:scale-125 transition-transform" />
-                </button>
-            </div>
-            
-            {/* Prominent Rank Display for Mobile/Small screens header integration (Optional, but good for UX) */}
-            <div className="flex items-center justify-between px-8 py-4 bg-mat-rose/5 rounded-3xl border border-mat-rose/10 md:hidden">
-                <span className="text-[10px] font-black uppercase tracking-widest text-mat-rose">Global Standing</span>
-                <span className="text-2xl font-black text-mat-wine">#{absRank || '--'}</span>
-            </div>
-        </div>
-      </div>
+    <div className="space-y-16 pb-32 pt-8">
+      {/* Dynamic Hero Integration: Trump Card Visual Anchor */}
 
       {!profile?.is_verified && (
         <div className="mat-glass-deep p-12 rounded-[4rem] border-mat-rose/10 shadow-mat-rose/5">
@@ -191,7 +156,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 {/* TrumpCard Focal Point - UPSIZED */}
                 <div className="lg:col-span-5 bg-mat-ivory/40 p-10 lg:p-16 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-mat-rose/10 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/5 to-transparent pointer-events-none" />
-                    <div className="w-full max-w-[420px] transform hover:scale-[1.02] transition-transform duration-700">
+                    <div className="w-full max-w-[480px] lg:max-w-[420px] transform hover:scale-[1.02] transition-transform duration-700">
                       <TrumpCard 
                         profile={{
                           id: profile.user_id,
@@ -208,19 +173,40 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           is_verified: profile.is_verified
                         }}
                       />
-                      
-                      {/* Integrated Rank Number Overlay for Mobile Impact */}
-                      <div className="absolute top-12 left-12 lg:hidden">
-                         <div className="bg-mat-wine text-mat-cream px-6 py-3 rounded-2xl shadow-mat-premium border border-mat-gold/30 flex flex-col items-center">
-                            <span className="text-[8px] font-black uppercase tracking-widest text-mat-gold/60">Rank</span>
-                            <span className="text-2xl font-black">#{absRank || '--'}</span>
-                         </div>
-                      </div>
                     </div>
                </div>
 
-                <div className="lg:col-span-7 p-10 lg:p-16 flex flex-col justify-between space-y-12">
+                <div className="lg:col-span-7 p-10 lg:p-16 flex flex-col justify-between space-y-12 bg-white/5 backdrop-blur-sm">
                   <div className="space-y-16">
+                     {/* Integrated Status Center: Balance & Standing */}
+                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 pb-12 border-b border-mat-rose/10">
+                        <div className="flex flex-col gap-2">
+                            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/40">Sanctuary Standing</span>
+                            <h2 className="text-5xl lg:text-7xl font-bold text-mat-wine italic leading-none tracking-tight">#{absRank || '--'}</h2>
+                        </div>
+                        
+                        <div className="flex gap-px bg-mat-gold/10 p-px w-full md:w-auto overflow-hidden rounded-3xl mat-glass border border-mat-gold/20 shadow-mat-gold/5 shrink-0">
+                            <div className="bg-mat-ivory/80 px-8 py-4 flex flex-col justify-center min-w-[140px]">
+                                <span className="text-[8px] font-bold uppercase tracking-[0.3em] text-mat-slate/60">Aura</span>
+                                <span className="text-2xl font-black text-mat-wine">₹{profile?.tokens || 0}</span>
+                            </div>
+                            <button 
+                              onClick={() => {
+                                  const amount = window.prompt("Enter token amount to augment (₹1 = 1 Token):", "500");
+                                  if (amount) {
+                                      turso.execute({
+                                          sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
+                                          args: [Number(amount), profile.user_id]
+                                      }).then(() => refreshProfile());
+                                  }
+                              }}
+                              className="bg-mat-wine text-white px-8 py-4 text-[10px] font-bold uppercase tracking-[0.4em] hover:bg-mat-wine-soft transition-all flex items-center justify-center gap-3 group"
+                            >
+                                Augment <Zap size={14} className="text-mat-gold group-hover:scale-125 transition-transform" />
+                            </button>
+                        </div>
+                     </div>
+
                      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
                         <div className="space-y-6">
                             <div className="flex items-center gap-4">
@@ -337,7 +323,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   scrollSpeed={1.2}
                   scrollEase={0.2}
                   autoScroll={true}
-                  autoScrollSpeed={0.3}
+                  autoScrollSpeed={0.15}
                   onCenterUpdate={setActiveGazeIndex}
                 />
                 

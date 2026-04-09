@@ -57,12 +57,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[420px] aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_100px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group"
+      className="relative w-full max-w-[500px] aspect-[2/3.2] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_100px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
       {/* 🏆 WRESTLING CARD HEADER */}
-      <div className="absolute top-0 left-0 w-full h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl">
+      <div className="absolute top-2 left-2 right-2 h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl">
         <div className="flex flex-col">
            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-mat-obsidian/60 italic leading-none">Matriarch League</span>
            <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Series 01 // Aspirant</span>
@@ -81,7 +81,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 🖼️ HERO PORTRAIT */}
-      <div className="relative h-[42%] mt-16 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700">
+      <div className="relative h-[42%] mt-14 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem]">
         <img 
           src={profile.img} 
           className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
@@ -245,7 +245,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* DECORATIVE CROSSHAIR */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
          <Crosshair size={200} strokeWidth={0.3} />
       </div>
     </motion.div>
