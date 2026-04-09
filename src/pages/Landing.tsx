@@ -27,14 +27,14 @@ import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
-    "/assets/slideshow/desi_dating_1_cafe_1775523638878.webp",
-    "/assets/slideshow/desi_dating_2_rooftop_1775523660443.webp",
-    "/assets/slideshow/desi_dating_3_neon_1775523754700.webp",
-    "/assets/slideshow/desi_dating_4_lounge_1775523860665.webp",
-    "/assets/slideshow/desi_dating_5_gallery_1775523883488.webp",
-    "/assets/slideshow/desi_dating_6_park_1775523903138.webp",
-    "/assets/slideshow/desi_dating_7_drive_1775523924633.webp",
-    "/assets/slideshow/desi_dating_8_event_1775523945442.webp"
+    "/assets/slideshow-v2/hero_1.png",
+    "/assets/slideshow-v2/hero_2.png",
+    "/assets/slideshow-v2/hero_3.png",
+    "/assets/slideshow-v2/hero_4.png",
+    "/assets/slideshow-v2/hero_5.jpeg",
+    "/assets/slideshow-v2/hero_6.jpeg",
+    "/assets/slideshow-v2/hero_7.jpeg",
+    "/assets/slideshow-v2/hero_8.jpeg"
   ];
   const [index, setIndex] = React.useState(0);
 
@@ -219,16 +219,19 @@ const LandingPage: React.FC = () => {
                 </span>
               </div>
               
-              <h1 style={{fontFamily:'"Playfair Display",Georgia,serif'}} className="text-6xl sm:text-7xl lg:text-8xl font-bold italic leading-tight text-mat-wine py-2">
+              <h1 style={{fontFamily:'"Playfair Display",Georgia,serif'}} className="text-5xl sm:text-7xl lg:text-8xl font-bold italic leading-tight text-mat-wine py-2">
                 Where love <br />
                 <span className="text-mat-rose/40">finds its way</span>
-                <span className="block text-4xl sm:text-5xl lg:text-6xl mt-4 text-mat-gold/80">
-                  — beautifully.
+                <span className="block text-3xl sm:text-5xl lg:text-6xl mt-4 text-mat-gold/80">
+                  — beautifully
                 </span>
               </h1>
               
-              <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-lg lg:text-xl text-mat-slate/70 font-medium leading-relaxed max-w-xl">
-                Matriarch is a curated sanctuary for meaningful connection — where her choice leads and every story matters.
+              <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-base sm:text-lg lg:text-xl text-mat-slate/70 font-medium leading-relaxed max-w-xl">
+                Matriarch is a curated sanctuary for meaningful connection — where her choice leads and every story matters
+              </p>
+              <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-black uppercase tracking-[0.2em] text-mat-wine/40 max-w-sm">
+                Matriarch is a private architectural dynamic for connection<br />By merit only
               </p>
               
               <div className="flex flex-col sm:flex-row justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-0">
@@ -277,28 +280,32 @@ const LandingPage: React.FC = () => {
         {/* 3. HOW IT WORKS */}
         <section id="how-it-works" className="mat-section border-b border-black/5">
           <div className="mat-container">
-            <div className="mb-24 space-y-6">
+            <div className="mb-16 lg:mb-24 space-y-6">
               <Badge variant="outline" className="px-4 py-1 border-black/10 uppercase tracking-[0.4em] font-black text-[9px] bg-black/5 rounded-none">The Architecture</Badge>
-              <h2 className="text-6xl lg:text-8xl mat-text-display-pro text-black uppercase leading-[0.9] py-2">
+              <h2 className="text-4xl sm:text-6xl lg:text-8xl mat-text-display-pro text-black uppercase leading-[0.9] py-2">
                 Engineering <br />
-                <span className="text-black/20">Connection.</span>
+                <span className="text-black/20">Connection</span>
               </h2>
-              <p className="text-xl text-black/60 max-w-2xl font-medium">A sanctuary for intentional engagement, designed for hearts that value depth over noise.</p>
+              <p className="text-lg sm:text-xl text-black/60 max-w-2xl font-medium">A sanctuary for intentional engagement, designed for hearts that value depth over noise</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-px bg-black/5 border border-black/5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
               {[
-                { title: "Her Choice", label: "Observe. Decide.", desc: "Browse profiles of men who share your values. Connect only when you feel a genuine spark.", icon: Eye },
-                { title: "The Seeker", label: "Grow. Be Found.", desc: "No chasing. Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart.", icon: UserCheck },
-                { title: "Grace", label: "Her Terms. Always.", desc: "Connection begins only how and when she defines. Once a match is made, she chooses the way you both talk.", icon: MessageSquare }
+                { title: "Her Choice", label: <>Observe<br/>Decide</>, desc: "Browse profiles of men who share your values Connect only when you feel a genuine spark", icon: Eye },
+                { title: "The Seeker", label: <>Grow<br/>Be found</>, desc: "No chasing Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart", icon: UserCheck },
+                { title: "Grace", label: <>Her Terms<br/>Always</>, desc: "Connection begins only how and when she defines Once a match is made, she chooses the way you both talk", icon: MessageSquare }
               ].map((step, i) => (
-                <div key={i} className="bg-white p-12 lg:p-16 group hover:bg-black/5 transition-all duration-500">
-                  <div className="mb-12 p-6 border border-black/10 w-fit group-hover:bg-black group-hover:text-white transition-all duration-500">
-                    <step.icon className="w-8 h-8" strokeWidth={1} />
+                <div key={i} className="bg-white mat-glass-deep border-black/5 p-10 lg:p-12 group hover:bg-black/5 transition-all duration-500 flex flex-col justify-between min-h-[380px] lg:min-h-[420px]">
+                  <div className="space-y-8">
+                    <div className="w-14 h-14 bg-black/5 rounded-2xl flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500 border border-black/5">
+                      <step.icon className="w-7 h-7" strokeWidth={1} />
+                    </div>
+                    <div>
+                      <h3 className="text-[9px] font-black uppercase tracking-[0.4em] mb-3 text-black/30 italic">{step.title}</h3>
+                      <h4 className="text-4xl lg:text-5xl mat-text-display-pro text-black leading-tight uppercase tracking-tighter">{step.label}</h4>
+                    </div>
                   </div>
-                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-black/40">{step.title}</h3>
-                  <h4 className="text-4xl mat-text-display-pro text-black mb-6 uppercase leading-tight">{step.label}</h4>
-                  <p className="text-[14px] text-black/60 leading-relaxed font-medium">
+                  <p className="text-[13px] text-black/50 leading-relaxed font-medium mt-8 border-t border-black/5 pt-8">
                     {step.desc}
                   </p>
                 </div>
@@ -307,37 +314,37 @@ const LandingPage: React.FC = () => {
           </div>
         </section>
 
-        {/* 4. PROBLEM / SOLUTION */}
-        <section className="mat-section bg-black text-white px-4 lg:px-8">
+        <section className="mat-section bg-black text-white px-4 lg:px-8 border-y border-white/5">
           <div className="mat-container">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
-              <div className="space-y-12">
-                <div className="flex items-center gap-6">
-                   <ZapOff className="text-white/20 w-8 h-8" strokeWidth={1} />
-                   <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-white/40">The Landscape</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-0 border border-white/10">
+              {/* Pain vs Solution Header */}
+              <div className="p-10 lg:p-16 border-b lg:border-b-0 lg:border-r border-white/10 space-y-8 bg-neutral-900/50">
+                <div className="flex items-center gap-4">
+                  <ZapOff className="text-white/20 w-6 h-6" strokeWidth={1} />
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">The Landscape</h3>
                 </div>
-                <h2 className="text-5xl lg:text-7xl mat-text-display-pro text-white uppercase leading-[0.9]">Noise is <br /><span className="text-white/20">The Default.</span></h2>
-                <div className="space-y-8">
+                <h2 className="text-4xl lg:text-6xl mat-text-display-pro text-white uppercase leading-[0.9]">Noise is <br /><span className="text-white/20">The Default</span></h2>
+                <div className="space-y-6 pt-8">
                   {["Endless swiping loops", "Low-intent matches", "Chaotic inboxes", "Fake data scarcity", "No real feminine control"].map(item => (
-                    <div key={item} className="flex items-center gap-6 text-white/40 border-l border-white/10 pl-6">
-                      <X className="w-4 h-4" />
-                      <span className="text-xl font-medium uppercase tracking-widest">{item}</span>
+                    <div key={item} className="flex items-center gap-4 text-white/30 italic">
+                      <X className="w-3 h-3 shrink-0" />
+                      <span className="text-sm font-bold uppercase tracking-widest">{item}</span>
                     </div>
                   ))}
                 </div>
               </div>
               
-              <div className="space-y-12 border-l border-white/5 lg:pl-24">
-                <div className="flex items-center gap-6">
-                  <Crown className="text-white w-8 h-8" strokeWidth={1} />
-                  <h3 className="text-[11px] font-black uppercase tracking-[0.5em] text-white">The Matriarch Protocol</h3>
+              <div className="p-10 lg:p-16 space-y-8 bg-white/5">
+                <div className="flex items-center gap-4">
+                  <Crown className="text-mat-gold w-6 h-6" strokeWidth={1} />
+                  <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-white">The Protocol</h3>
                 </div>
-                <h2 className="text-5xl lg:text-7xl mat-text-display-pro text-white uppercase leading-[0.9]">Quality is <br /><span className="underline decoration-4 underline-offset-8">Engineered.</span></h2>
-                <div className="space-y-8">
+                <h2 className="text-4xl lg:text-6xl mat-text-display-pro text-white uppercase leading-[0.9]">Quality is <br /><span className="text-mat-gold">Engineered</span></h2>
+                <div className="space-y-6 pt-8">
                   {["Female-controlled matching", "Curated male visibility", "Deliberate discovery", "Structured communication", "Premium trust and safety"].map(item => (
-                    <div key={item} className="flex items-center gap-6 text-white group">
-                      <div className="w-2 h-2 bg-white shrink-0" />
-                      <span className="text-xl font-black uppercase tracking-widest">{item}</span>
+                    <div key={item} className="flex items-center gap-4 text-white group">
+                      <div className="w-2 h-2 bg-mat-gold shrink-0 shadow-[0_0_8px_rgba(191,160,106,0.6)]" />
+                      <span className="text-sm font-black uppercase tracking-widest">{item}</span>
                     </div>
                   ))}
                 </div>
@@ -349,27 +356,27 @@ const LandingPage: React.FC = () => {
         {/* 5. FEATURES */}
         <section className="mat-section border-b border-black/5">
           <div className="mat-container">
-            <div className="mb-24 space-y-6">
-              <h2 className="text-7xl mat-text-display-pro text-black uppercase leading-[0.85]">
-                System <br /> <span className="text-black/20">Integrity.</span>
+            <div className="mb-16 lg:mb-24 space-y-6">
+              <h2 className="text-4xl sm:text-7xl mat-text-display-pro text-black uppercase leading-[0.85]">
+                System <br /> <span className="text-black/20">Integrity</span>
               </h2>
-              <p className="text-xl text-black/60 font-medium max-w-xl">Designed for women who value their time and selective attention.</p>
+              <p className="text-lg sm:text-xl text-black/60 font-medium max-w-xl">Designed for women who value their time and selective attention</p>
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
               {[
-                { title: "Women-first matching", desc: "Men do not browse women. Women decide who gets access to their time.", icon: UserCheck },
-                { title: "Curated Discovery", desc: "Profiles are accessed through a smart system based on quality and relevance.", icon: Zap },
-                { title: "Communication Modes", desc: "After matching, the woman selects exactly how the interaction starts.", icon: Shield },
-                { title: "High-trust profiles", desc: "Verification and elite referrals are built into the core experience.", icon: Star },
-                { title: "Intentional Standing", desc: "Men improve visibility through substance, not swiping volume.", icon: Crown },
-                { title: "Private Architecture", desc: "Designed like a private salon, not a public attention feed.", icon: Lock },
+                { title: "Women-first matching", desc: "Men do not browse women Women decide who gets access to their time", icon: UserCheck },
+                { title: "Curated Discovery", desc: "Profiles are accessed through a smart system based on quality and relevance", icon: Zap },
+                { title: "Communication Modes", desc: "After matching, the woman selects exactly how the interaction starts", icon: Shield },
+                { title: "High-trust profiles", desc: "Verification and elite referrals are built into the core experience", icon: Star },
+                { title: "Intentional Standing", desc: "Men improve visibility through substance, not swiping volume", icon: Crown },
+                { title: "Private Architecture", desc: "Designed like a private salon, not a public attention feed", icon: Lock },
               ].map((f, i) => (
-                <div key={i} className="space-y-8 group">
-                  <f.icon className="w-10 h-10 text-black/20 group-hover:text-black transition-all duration-500" strokeWidth={1} />
-                  <div>
-                    <h3 className="text-[11px] font-black uppercase tracking-[0.4em] mb-4 text-black">{f.title}</h3>
-                    <p className="text-[14px] text-black/50 leading-relaxed font-medium">{f.desc}</p>
+                <div key={i} className="flex gap-6 group">
+                  <f.icon className="w-8 h-8 text-black/20 group-hover:text-black transition-all duration-500 shrink-0 mt-1" strokeWidth={1} />
+                  <div className="space-y-2">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-black leading-tight">{f.title}</h3>
+                    <p className="text-[12px] text-black/50 leading-relaxed font-medium">{f.desc.replace(/\.$/, "")}</p>
                   </div>
                 </div>
               ))}
@@ -381,53 +388,53 @@ const LandingPage: React.FC = () => {
         <section className="mat-section relative overflow-hidden bg-black text-white px-4 lg:px-8">
            <div className="mat-container">
              <div className="grid lg:grid-cols-2 gap-24 items-start py-24">
-                <div className="space-y-12">
+                <div className="space-y-8 lg:space-y-12">
                    <Badge variant="outline" className="px-5 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-white/20 text-white/60">The Seeker Protocol</Badge>
-                   <h2 className="text-6xl lg:text-8xl mat-text-display-pro text-white uppercase leading-[0.9]">Excellence <br /><span className="text-white/20">of Merit.</span></h2>
-                   <p className="text-xl text-white/60 font-medium">
-                     On Matriarch, visibility is not bought. It is earned through integrity, verification, and absolute standing.
+                   <h2 className="text-4xl sm:text-6xl lg:text-8xl mat-text-display-pro text-white uppercase leading-[0.9]">Excellence <br /><span className="text-white/20">of Merit</span></h2>
+                   <p className="text-lg sm:text-xl text-white/60 font-medium leading-relaxed">
+                     On Matriarch, visibility is not bought It is earned through integrity, verification, and absolute standing
                    </p>
                    
-                   <div className="grid grid-cols-2 gap-12 pt-12 border-t border-white/10">
+                   <div className="grid grid-cols-2 gap-8 pt-8 border-t border-white/10">
                      {[
                        { label: "Integrity", val: "99%" },
                        { label: "Elite Tier", val: "Top 1%" },
                        { label: "Auth Status", val: "Verified" },
                        { label: "Standing", val: "Absolute" }
                      ].map(item => (
-                       <div key={item.label} className="space-y-3">
-                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">{item.label}</span>
-                         <span className="text-4xl mat-text-display-pro text-white block">{item.val}</span>
+                       <div key={item.label} className="space-y-2">
+                         <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 italic">{item.label}</span>
+                         <span className="text-3xl lg:text-4xl mat-text-display-pro text-white block tracking-tighter">{item.val}</span>
                        </div>
                      ))}
                    </div>
                 </div>
 
                 {/* Merit UI Mockup */}
-                <div className="border border-white/10 p-12 lg:p-16 bg-white/5 space-y-12">
+                <div className="mat-glass-deep border-white/10 p-8 lg:p-12 bg-white/5 space-y-10 rounded-[2rem]">
                    <div className="flex justify-between items-center">
-                      <div className="space-y-2">
-                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Merit Status</span>
-                         <h4 className="text-4xl mat-text-display-pro text-white uppercase">Elite Tier</h4>
+                      <div className="space-y-1">
+                         <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 italic">Merit Status</span>
+                         <h4 className="text-3xl lg:text-4xl mat-text-display-pro text-white uppercase tracking-tighter">Elite Tier</h4>
                       </div>
-                      <div className="w-16 h-16 border-2 border-white grid place-items-center">
-                         <Crown className="w-8 h-8 text-white" strokeWidth={1} />
+                      <div className="w-14 h-14 bg-white/10 backdrop-blur-xl border border-white/20 grid place-items-center rounded-2xl">
+                         <Crown className="w-7 h-7 text-mat-gold" strokeWidth={1} />
                       </div>
                    </div>
 
-                   <div className="space-y-6">
+                   <div className="space-y-4">
                       <div className="flex justify-between items-end">
-                         <span className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">Visibility Index</span>
+                         <span className="text-[9px] font-black uppercase tracking-[0.4em] text-white/30 italic">Visibility Index</span>
                          <span className="text-3xl mat-text-display-pro text-white">99.4</span>
                       </div>
-                      <div className="h-6 bg-white/10 relative">
-                         <div className="absolute inset-0 bg-white" style={{ width: '99.4%' }} />
+                      <div className="h-2 bg-white/10 rounded-full overflow-hidden relative">
+                         <div className="absolute inset-y-0 left-0 bg-white" style={{ width: '99.4%' }} />
                       </div>
                    </div>
 
-                   <div className="p-8 border border-white/20 flex items-center justify-between group hover:bg-white hover:text-black transition-all duration-500 cursor-pointer">
-                      <span className="text-[11px] font-black uppercase tracking-[0.5em]">Verification Archive // REQ</span>
-                      <ArrowRight className="w-6 h-6" />
+                   <div className="p-6 border border-white/10 rounded-xl flex items-center justify-between group hover:bg-white hover:text-black transition-all duration-500 cursor-pointer">
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em]">Verification Archive // REQ</span>
+                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                    </div>
                 </div>
              </div>
@@ -437,31 +444,31 @@ const LandingPage: React.FC = () => {
         {/* 6.5 DIVINE ECONOMY (DAILY REWARDS) */}
         <section className="mat-section border-b border-black/5">
            <div className="mat-container flex flex-col items-start pt-24">
-              <div className="mb-24 max-w-2xl space-y-8">
+              <div className="mb-16 lg:mb-24 max-w-2xl space-y-6">
                  <Badge variant="outline" className="px-6 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-black/10 bg-black/5 rounded-none">Devotion</Badge>
-                 <h2 className="text-6xl lg:text-8xl mat-text-display-pro text-black uppercase leading-[0.9]">Consistency <br /><span className="text-black/20">Inherited.</span></h2>
-                 <p className="text-xl text-black/60 font-medium">Daily engagement is recognized and rewarded through token blessings. Presence is prestige.</p>
+                 <h2 className="text-4xl sm:text-6xl lg:text-8xl mat-text-display-pro text-black uppercase leading-[0.9]">Consistency <br /><span className="text-black/20">Inherited</span></h2>
+                 <p className="text-lg sm:text-xl text-black/60 font-medium">Daily engagement is recognized and rewarded through token blessings Presence is prestige</p>
               </div>
 
-              <div className="grid md:grid-cols-3 gap-px bg-black/5 border border-black/5 w-full">
-                 {[
-                   { title: "Daily Entry", reward: "+10", desc: "For every dawn you join the sanctuary.", icon: Zap },
-                   { title: "7 Day Streak", reward: "+100", desc: "A week of dedicated intention.", icon: Star },
-                   { title: "30 Day Devotion", reward: "+1000", desc: "Monthly absolute alignment.", icon: Crown }
-                 ].map((item, i) => (
-                   <div key={i} className="bg-white p-12 lg:p-16 group hover:bg-black/5 transition-all duration-500">
-                      <div className="relative z-10 space-y-12">
-                         <div className="w-16 h-16 border border-black/10 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500">
-                            <item.icon size={28} strokeWidth={1} />
-                         </div>
-                         <div>
-                            <h4 className="text-[10px] font-black uppercase tracking-[0.4em] mb-4 text-black/40">{item.title}</h4>
-                            <div className="text-5xl lg:text-7xl mat-text-display-pro text-black leading-none">{item.reward}</div>
-                         </div>
-                         <p className="text-[12px] text-black/60 font-medium uppercase tracking-widest">{item.desc}</p>
-                      </div>
-                   </div>
-                 ))}
+              <div className="w-full mat-glass-deep p-8 lg:p-12 border-black/5 rounded-[2.5rem] bg-white/50">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                   {[
+                     { title: "Daily Entry", reward: "+10", desc: "For every dawn you join the sanctuary", icon: Zap },
+                     { title: "7 Day Streak", reward: "+100", desc: "A week of dedicated intention", icon: Star },
+                     { title: "30 Day Devotion", reward: "+1000", desc: "Monthly absolute alignment", icon: Crown }
+                   ].map((item, i) => (
+                     <div key={i} className="space-y-6 p-6 border border-black/5 rounded-2xl bg-white hover:bg-black group transition-all duration-500">
+                        <div className="w-12 h-12 border border-black/5 flex items-center justify-center rounded-xl group-hover:bg-white/10 group-hover:text-white transition-all">
+                           <item.icon size={22} strokeWidth={1} className="group-hover:text-mat-gold transition-colors" />
+                        </div>
+                        <div>
+                           <h4 className="text-[9px] font-black uppercase tracking-[0.4em] mb-2 text-black/30 italic group-hover:text-white/40">{item.title}</h4>
+                           <div className="text-4xl lg:text-5xl mat-text-display-pro text-black leading-none group-hover:text-white transition-colors">{item.reward}</div>
+                        </div>
+                        <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest group-hover:text-white/60">{item.desc}</p>
+                     </div>
+                   ))}
+                 </div>
               </div>
            </div>
         </section>
@@ -504,10 +511,10 @@ const LandingPage: React.FC = () => {
                <h2 className="text-[11px] font-black uppercase tracking-[1em] text-black/20">Private // Selective // System</h2>
                <div className="max-w-4xl space-y-12">
                   <p className="text-4xl lg:text-6xl font-medium leading-[1.1] text-black uppercase tracking-tighter">
-                    "Matriarch is for women who are done performing for algorithms. It creates an <span className="text-black/20">elegant dynamic</span> of choice."
+                    "Matriarch is for women who are done performing for algorithms It creates an <span className="text-black/20">elegant dynamic</span> of choice"
                   </p>
                   <div className="w-40 h-px bg-black" />
-                  <div className="text-4xl mat-text-display-pro text-black uppercase tracking-tighter">Matriarch.</div>
+                  <div className="text-4xl mat-text-display-pro text-black uppercase tracking-tighter">Matriarch</div>
                </div>
             </div>
         </section>
@@ -519,7 +526,7 @@ const LandingPage: React.FC = () => {
                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">The Infrastructure</span>
                <h2 className="text-6xl lg:text-8xl mat-text-display-pro text-black leading-[0.9] uppercase tracking-tighter">
                  Selection <br />
-                 <span className="text-black/20">Architecture.</span>
+                 <span className="text-black/20">Architecture</span>
                </h2>
             </div>
             
@@ -531,8 +538,8 @@ const LandingPage: React.FC = () => {
                         <ShieldCheck className="w-7 h-7" strokeWidth={1.5} />
                      </div>
                      <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Identity <br />Verification.</h3>
-                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity.</p>
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Identity <br />Verification</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity</p>
                      </div>
                   </div>
                   <div className="flex gap-2">
@@ -549,8 +556,8 @@ const LandingPage: React.FC = () => {
                         <Zap className="w-7 h-7" strokeWidth={1.5} />
                      </div>
                      <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Instant <br />Synchronicity.</h3>
-                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Real-time matching based on intent, standing, and presence score. No algorithms, just alignment.</p>
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Instant <br />Synchronicity</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Real-time matching based on intent, standing, and presence score. No algorithms, just alignment</p>
                      </div>
                   </div>
                   <div className="space-y-3">
@@ -575,8 +582,8 @@ const LandingPage: React.FC = () => {
                         <Heart className="w-7 h-7" strokeWidth={1.5} />
                      </div>
                      <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Safe <br />Haven.</h3>
-                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">A private sanctuary designed for high-value dialogue and long-term meaningful connection.</p>
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Safe <br />Haven</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">A private sanctuary designed for high-value dialogue and long-term meaningful connection</p>
                      </div>
                   </div>
                   <div className="pt-6 border-t border-mat-wine/5 flex items-center justify-between">
@@ -592,8 +599,8 @@ const LandingPage: React.FC = () => {
                         <Activity className="w-7 h-7" strokeWidth={1} />
                      </div>
                      <div className="space-y-4">
-                        <h4 className="text-3xl font-black text-white uppercase tracking-tighter italic leading-none">Standing <br />Hierarchy.</h4>
-                        <p className="text-white/40 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Earn your standing through verified presence, absolute integrity, and community contribution.</p>
+                        <h4 className="text-3xl font-black text-white uppercase tracking-tighter italic leading-none">Standing <br />Hierarchy</h4>
+                        <p className="text-white/40 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Earn your standing through verified presence, absolute integrity, and community contribution</p>
                      </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -609,8 +616,8 @@ const LandingPage: React.FC = () => {
                         <Crown className="w-7 h-7" strokeWidth={1.5} />
                      </div>
                      <div className="space-y-4">
-                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Discovery <br />Indexing.</h3>
-                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Sophisticated indexing that honors your preferences, selective attention, and temporal status.</p>
+                        <h3 className="text-3xl font-black text-mat-wine uppercase tracking-tighter leading-none italic">Discovery <br />Indexing</h3>
+                        <p className="text-mat-slate/60 font-body text-[11px] leading-relaxed max-w-xs uppercase font-bold tracking-wider">Sophisticated indexing that honors your preferences, selective attention, and temporal status</p>
                      </div>
                   </div>
                   <div className="flex items-center -space-x-3">
@@ -630,7 +637,7 @@ const LandingPage: React.FC = () => {
                      <MatriarchLogo className="scale-125 mb-8 opacity-20 group-hover:opacity-100 transition-opacity duration-1000" />
                   </div>
                   <h4 className="text-[11px] font-black uppercase tracking-[0.6em] text-mat-wine/40">Established MMXXIV</h4>
-                  <p className="text-[10px] font-serif italic text-mat-slate/40 mt-4">“Where love finds its way — beautifully.”</p>
+                  <p className="text-[10px] font-serif italic text-mat-slate/40 mt-4">“Where love finds its way — beautifully”</p>
                </div>
             </div>
           </div>
@@ -638,45 +645,45 @@ const LandingPage: React.FC = () => {
 
         {/* 8.5 ACCESS MATRIX (Refactored Pricing) */}
         <section className="mat-section relative bg-neutral-50/30" id="access">
-          <div className="mat-container space-y-24">
-            <div className="text-center space-y-6">
+          <div className="mat-container space-y-16 lg:space-y-24">
+            <div className="text-center space-y-4">
                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-black/20">The Covenant</span>
-               <h2 className="text-6xl lg:text-9xl mat-text-display-pro text-black leading-[0.85] uppercase tracking-tighter">
+               <h2 className="text-4xl lg:text-9xl mat-text-display-pro text-black leading-[0.85] uppercase tracking-tighter">
                  Tiered <br />
-                 <span className="text-black/20">Access.</span>
+                 <span className="text-black/20">Access</span>
                </h2>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-black/5 border border-black/5">
               {[
-                { name: 'Observer', price: 'Free', role: 'Basic access for verified searchers.', items: ['Limited discovery', 'Standard profile', 'Base ranking'], cta: 'Begin Journey' },
-                { name: 'Initiate', price: '₹2,499', role: 'Advanced presence for seekers.', items: ['Extended discovery', 'Verified seal', 'Priority synchronicity', 'Token yield'], premium: true },
-                { name: 'Sovereign', price: '₹9,999', role: 'Absolute authority within sanctuary.', items: ['Infinite discovery', 'Direct intervention', 'Architect status', 'Elite standing'], cta: 'Ascend Status' },
+                { name: 'Observer', price: 'Free', role: 'Basic access for verified searchers', items: ['Limited discovery', 'Standard profile', 'Base ranking'], cta: 'Begin Journey' },
+                { name: 'Initiate', price: '₹2,499', role: 'Advanced presence for seekers', items: ['Extended discovery', 'Verified seal', 'Priority synchronicity', 'Token yield'], premium: true },
+                { name: 'Sovereign', price: '₹9,999', role: 'Absolute authority within sanctuary', items: ['Infinite discovery', 'Direct intervention', 'Architect status', 'Elite standing'], cta: 'Ascend Status' },
               ].map((tier, i) => (
-                <div key={i} className={`p-16 space-y-16 flex flex-col justify-between transition-all group ${tier.premium ? 'bg-black text-white' : 'bg-white text-black hover:bg-neutral-50'}`}>
-                   <div className="space-y-12">
+                <div key={i} className={`p-10 lg:p-16 space-y-12 flex flex-col justify-between transition-all group ${tier.premium ? 'bg-black text-white' : 'bg-white text-black hover:bg-neutral-200'}`}>
+                   <div className="space-y-8">
                       <div className="flex justify-between items-start">
-                         <h3 className="text-4xl font-black italic uppercase italic tracking-tighter leading-none">{tier.name}<br /><span className="opacity-10 text-2xl">Access.</span></h3>
-                         {tier.premium && <Crown className="text-mat-gold w-6 h-6" />}
+                         <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">{tier.name}<br /><span className="opacity-10 text-xl">Access</span></h3>
+                         {tier.premium && <Crown className="text-mat-gold w-5 h-5" />}
                       </div>
                       
-                      <div className="space-y-4">
-                         <span className="text-5xl font-black tracking-tighter">{tier.price}</span>
-                         <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-40">{tier.role}</p>
+                      <div className="space-y-2">
+                         <span className="text-4xl font-black tracking-tighter">{tier.price}</span>
+                         <p className="text-[9px] font-black uppercase tracking-[0.3em] opacity-40">{tier.role}</p>
                       </div>
 
-                      <ul className="space-y-4 pt-12 border-t border-current opacity-10">
+                      <ul className="space-y-3 pt-8 border-t border-current opacity-10">
                          {tier.items.map(item => (
-                           <li key={item} className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest transition-all group-hover:translate-x-1">
-                              <ShieldCheck className="w-4 h-4 opacity-40" />
+                           <li key={item} className="flex items-center gap-3 text-[9px] font-black uppercase tracking-widest transition-all group-hover:translate-x-1">
+                              <ShieldCheck className="w-3.5 h-3.5 opacity-40" />
                               {item}
                            </li>
                          ))}
                       </ul>
                    </div>
 
-                   <button className={`w-full h-20 text-[10px] font-black uppercase tracking-[0.5em] transition-all border-2 ${
-                     tier.premium ? 'bg-white text-black border-white hover:bg-neutral-200' : 'bg-black text-white border-black hover:bg-neutral-800'
+                   <button className={`w-full h-16 text-[9px] font-black uppercase tracking-[0.5em] transition-all border-2 ${
+                     tier.premium ? 'bg-white text-black border-white hover:bg-neutral-100' : 'bg-black text-white border-black hover:bg-neutral-800'
                    }`}>
                       {tier.cta || 'Initiate Access'}
                    </button>
@@ -685,31 +692,9 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
         </section>
-
-        {/* 9. FINAL CTA */}
-        <section className="mat-section py-40">
-          <div className="mat-container">
-             <div className="text-left space-y-16">
-                <h2 className="text-8xl lg:text-[12rem] mat-text-display-pro text-black leading-[0.8] uppercase tracking-tighter">
-                   Your <br />
-                   <span className="text-black/20">Legacy</span> 
-                   <br />Begins.
-                </h2>
-                
-                <div className="flex flex-col sm:flex-row gap-8 items-start">
-                    <button className="h-32 px-16 bg-black text-white text-2xl font-black uppercase tracking-[0.2em] transition-all hover:bg-neutral-800" onClick={() => setShowSignIn(true)}>
-                       Enter Portal
-                    </button>
-                    <p className="text-xl text-black/40 font-medium max-w-sm italic">
-                       Matriarch is a private architectural dynamic for connection. By merit only.
-                    </p>
-                </div>
-             </div>
-          </div>
-        </section>
       </main>
 
-        <div className="mat-container mb-40 text-center">
+        <div className="mat-container mb-24 lg:mb-40 text-center">
            <AdUnit 
              slot="1234567890" 
              className="max-w-5xl mx-auto bg-transparent border-mat-wine/10" 
@@ -719,50 +704,32 @@ const LandingPage: React.FC = () => {
         </div>
 
       {/* Footer */}
-      <footer className="bg-black text-white py-40">
+      <footer className="bg-black text-white py-24 lg:py-40">
         <div className="mat-container">
-           <div className="grid lg:grid-cols-4 gap-24 mb-40">
-              <div className="space-y-12">
-                 <MatriarchLogo className="invert brightness-0" />
-                 <p className="text-[13px] text-white/40 leading-relaxed font-medium max-w-xs">
-                   Private ecosystem built for selective intention. Swiss precision dating architecture.
+           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 mb-20 lg:mb-40 items-start">
+              <div className="space-y-8">
+                 <MatriarchLogo className="invert brightness-0 scale-75 origin-left" />
+                 <p className="text-[12px] text-white/40 leading-relaxed font-medium max-w-xs">
+                   Private ecosystem built for selective intention Swiss precision dating architecture
                  </p>
               </div>
               
-              <div className="space-y-8">
-                 <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Archive</h5>
-                 <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
-                    <li onClick={() => setActiveOverlay('protocol')} className="hover:text-white transition-all cursor-pointer">Community Guidelines</li>
+              <div className="grid grid-cols-2 gap-8">
+                 <ul className="space-y-4 text-[11px] font-black uppercase tracking-widest text-white/60">
+                    <li onClick={() => setActiveOverlay('protocol')} className="hover:text-white transition-all cursor-pointer">Guidelines</li>
                     <li onClick={() => setActiveOverlay('philosophy')} className="hover:text-white transition-all cursor-pointer">Philosophy</li>
-                    <li onClick={() => setActiveOverlay('case-studies')} className="hover:text-white transition-all cursor-pointer">Grievance Redressal Policy</li>
+                    <li onClick={() => setActiveOverlay('case-studies')} className="hover:text-white transition-all cursor-pointer">Grievance</li>
                  </ul>
-              </div>
-
-              <div className="space-y-8">
-                 <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Legal</h5>
-                 <ul className="space-y-4 text-[12px] font-black uppercase tracking-widest text-white/60">
-                    <li onClick={() => setActiveOverlay('privacy-pact')} className="hover:text-white transition-all cursor-pointer">Privacy Policy</li>
-                    <li onClick={() => setActiveOverlay('terms-of-merit')} className="hover:text-white transition-all cursor-pointer">Terms of Service</li>
-                    <li onClick={() => setActiveOverlay('refund-policy')} className="hover:text-white transition-all cursor-pointer">Refund & Cancellation Policy</li>
+                 <ul className="space-y-4 text-[11px] font-black uppercase tracking-widest text-white/60 text-right">
+                    <li onClick={() => setActiveOverlay('privacy-pact')} className="hover:text-white transition-all cursor-pointer">Privacy</li>
+                    <li onClick={() => setActiveOverlay('terms-of-merit')} className="hover:text-white transition-all cursor-pointer">Terms</li>
+                    <li onClick={() => setActiveOverlay('refund-policy')} className="hover:text-white transition-all cursor-pointer">Refunds</li>
                  </ul>
-              </div>
-
-              <div className="space-y-8">
-                 <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">System Status</h5>
-                 <div className="p-8 border border-white/10 space-y-6">
-                    <div className="flex justify-between items-center text-[11px] font-black uppercase tracking-widest">
-                       <span>Nodes Active</span>
-                       <span className="text-white">99.9%</span>
-                    </div>
-                    <div className="h-1 bg-white/20 relative">
-                       <div className="absolute inset-0 bg-white" style={{ width: '99%' }} />
-                    </div>
-                 </div>
               </div>
            </div>
            
-           <div className="pt-24 border-t border-white/10 text-center">
-              <p className="text-[14px] font-black tracking-[1em] text-white/10 uppercase select-none">
+           <div className="pt-16 border-t border-white/10 text-center">
+              <p className="text-[12px] font-black tracking-[0.8em] text-white/10 uppercase select-none">
                 MATRIARCH // SINCE 2024
               </p>
            </div>
@@ -851,7 +818,7 @@ const LandingPage: React.FC = () => {
                        {agreedToTerms && <ShieldCheck className="w-3 h-3 text-white" />}
                     </div>
                     <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/50 leading-relaxed font-medium">
-                      I explicitly agree to the <span className="text-mat-wine font-bold underline" onClick={(e) => { e.stopPropagation(); setActiveOverlay('terms-of-merit'); }}>Terms of Service</span> and <span className="text-mat-wine font-bold underline" onClick={(e) => { e.stopPropagation(); setActiveOverlay('privacy-pact'); }}>Privacy Policy</span>.
+                      I explicitly agree to the <span className="text-mat-wine font-bold underline" onClick={(e) => { e.stopPropagation(); setActiveOverlay('terms-of-merit'); }}>Terms of Service</span> and <span className="text-mat-wine font-bold underline" onClick={(e) => { e.stopPropagation(); setActiveOverlay('privacy-pact'); }}>Privacy Policy</span>
                     </p>
                   </div>
                 </div>
@@ -875,7 +842,7 @@ const LandingPage: React.FC = () => {
                 </label>
 
                 <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] text-mat-slate/30 text-center leading-relaxed">
-                  By signing in you agree to our Terms and Privacy Policy.
+                  By signing in you agree to our Terms and Privacy Policy
                 </p>
               </div>
             </motion.div>
