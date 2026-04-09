@@ -132,7 +132,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
         onboarding_status: onboarding_status as any,
         is_verified: false,
         rank_boost_count: 0,
-        consecutive_days: 1,
+        consecutive_days: 0,
         last_login_at: updated_at,
         created_at: updated_at,
         updated_at: updated_at

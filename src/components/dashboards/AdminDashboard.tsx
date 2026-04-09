@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Users, Verified, MessageSquare, Search, Trash2, ShieldAlert, BadgeCheck } from 'lucide-react';
 import { AdminService } from '@/services/admin';

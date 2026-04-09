@@ -38,7 +38,7 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
               hobbies: tursoHelpers.deserialize(raw.hobbies as string) || [],
               is_verified: !!raw.is_verified,
               rank_boost_count: Number(raw.rank_boost_count || 0),
-              consecutive_days: Number(raw.consecutive_days || 0)
+              consecutive_days: Number((raw as any).consecutive_days || 0)
             });
           }
           setDevLoading(false);
