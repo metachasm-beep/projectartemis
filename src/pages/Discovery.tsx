@@ -89,7 +89,8 @@ export const Discovery: React.FC = () => {
         <CircularGallery 
           items={GALLERY_ITEMS} 
           bend={0} 
-          scrollSpeed={0.2}
+          scrollSpeed={0.6}
+          scrollEase={0.2}
           textColor="#D4AF37" 
           onSelect={handleSelect}
           onCenterUpdate={setActiveGazeIndex}

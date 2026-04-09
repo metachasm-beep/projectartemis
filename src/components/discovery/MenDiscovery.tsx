@@ -111,8 +111,8 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
             items={filteredItems}
             bend={0}
             borderRadius={0.23}
-            scrollSpeed={0.2}
-            scrollEase={0.11}
+            scrollSpeed={0.6}
+            scrollEase={0.44}
           />
         )}
         

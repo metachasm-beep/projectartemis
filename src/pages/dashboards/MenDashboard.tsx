@@ -334,8 +334,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 <CircularGallery 
                   items={gazeProfiles}
                   bend={0}
-                  scrollSpeed={0.4}
-                  scrollEase={0.05}
+                  scrollSpeed={1.2}
+                  scrollEase={0.2}
                   onCenterUpdate={setActiveGazeIndex}
                 />
                 
