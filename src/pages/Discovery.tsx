@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import CircularGallery from '@/components/animations/CircularGallery';
 import { turso } from '@/lib/turso';
@@ -59,7 +59,7 @@ export const Discovery: React.FC = () => {
       }
     };
     fetchAspirants();
-  }, []);
+  }, [profile?.role]);
 
   // Memoize Gallery Items
   const GALLERY_ITEMS = useMemo(() => 
@@ -68,18 +68,18 @@ export const Discovery: React.FC = () => {
       text: m.name.toString().toUpperCase() 
     })), [aspirants]);
 
-  const handleSelect = (index: number) => {
+  const handleSelect = useCallback((index: number) => {
     if (aspirants.length > 0) {
       setSelectedProfile(aspirants[index % aspirants.length]);
     }
-  };
+  }, [aspirants]);
 
-  const handleAction = (type: string, profile: any) => {
+  const handleAction = useCallback((type: string, profile: any) => {
      if (type === 'ping' && !profile.is_verified) {
         alert("Sovereign resonance requires identity verification. Please seal your identity in the Sanctuary.");
         return;
      }
-  };
+  }, []);
 
   return (
     <div className="relative w-full h-screen bg-mat-obsidian overflow-hidden">

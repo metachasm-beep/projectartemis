@@ -598,6 +598,12 @@ class App {
     this.addEventListeners();
   }
 
+  // 🥂 Live Link: Update callbacks without heart-surgery on the WebGL instance
+  updateCallbacks(onSelect?: (index: number) => void, onCenterUpdate?: (index: number) => void) {
+    this.onSelect = onSelect;
+    this.onCenterUpdate = onCenterUpdate;
+  }
+
   createRenderer() {
     this.renderer = new Renderer({
       alpha: true,
@@ -812,6 +818,14 @@ export default function CircularGallery({
   onCenterUpdate
 }: CircularGalleryProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const appRef = useRef<App | null>(null);
+
+  // 🛡️ Callback Hardening: Ensure callbacks are always fresh without resetting the engine
+  useEffect(() => {
+    if (appRef.current) {
+       appRef.current.updateCallbacks(onSelect, onCenterUpdate);
+    }
+  }, [onSelect, onCenterUpdate]);
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -826,10 +840,13 @@ export default function CircularGallery({
       onSelect,
       onCenterUpdate
     });
+    appRef.current = app;
+
     return () => {
       app.destroy();
+      appRef.current = null;
     };
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase, onSelect, onCenterUpdate]);
+  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
 
   return <div className="absolute inset-0 overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
 }

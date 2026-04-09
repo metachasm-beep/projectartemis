@@ -59,11 +59,13 @@ const MenDiscovery: React.FC<MenDiscoveryProps> = ({ onClose }) => {
   }, [fetchAspirants]);
 
   // Filter items based on search
-  const filteredItems = items.filter(item => {
-    const raw = (item as any);
-    return raw.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-           raw.city.toLowerCase().includes(searchQuery.toLowerCase());
-  });
+  const filteredItems = useMemo(() => {
+    return items.filter(item => {
+      const raw = (item as any);
+      return raw.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+             raw.city.toLowerCase().includes(searchQuery.toLowerCase());
+    });
+  }, [items, searchQuery]);
 
   return (
     <div className="fixed inset-0 z-[100] bg-mat-obsidian overflow-hidden flex flex-col animate-in fade-in duration-700">
