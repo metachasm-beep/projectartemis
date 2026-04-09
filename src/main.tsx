@@ -43,6 +43,8 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+import { AuthProvider } from './contexts/AuthContext.tsx'
+
 const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = createRoot(rootElement);
@@ -50,7 +52,9 @@ if (rootElement) {
   root.render(
     <StrictMode>
       <ErrorBoundary>
-        <App />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
       </ErrorBoundary>
     </StrictMode>,
   );

@@ -109,8 +109,8 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
 
   // 🛡️ Phase 2: Identity Incomplete — The Ritual of Refinement
   // We only gate if the profile is explicitly NOT 'COMPLETED'.
-  // If fetchingProfile is true and we HAVE no local profile, we wait.
-  // BUT if we HAVE a profile (optimistic or cached), we let it through.
+  // We DO NOT unmount the dashboard if fetching is in progress but we already have a profile.
+  // This prevents the flickering re-mount storm that triggers 50 RPS network spikes.
   if (fetchingProfile && !profile) {
       return (
         <div className="h-screen w-screen flex flex-col items-center justify-center bg-mat-cream">
@@ -122,9 +122,13 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
       );
   }
 
-  const isIncomplete = !profile || profile.onboarding_status !== 'COMPLETED';
+  // If we have a profile, we check if it is incomplete
+  const isIncomplete = profile?.onboarding_status !== 'COMPLETED';
 
-  if (isIncomplete) {
+  // If we have no profile at all and are NOT fetching, then we are incomplete
+  const shouldShowOnboarding = isIncomplete && !fetchingProfile;
+
+  if (shouldShowOnboarding && !profile) {
     return (
       <AnimatePresence mode="wait">
         <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full">

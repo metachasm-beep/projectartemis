@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { AuthGate } from '@/components/auth/AuthGate';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuthContext } from '@/contexts/AuthContext';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 
 // Lazy load Delhi dating routes
@@ -12,7 +12,7 @@ const Gurgaon = React.lazy(() => import('./routes/delhi-dating/Gurgaon'));
 const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
 
 const App: React.FC = () => {
-  const { loading } = useAuth();
+  const { loading } = useAuthContext();
 
   useEffect(() => {
     if (!loading) {
@@ -26,12 +26,13 @@ const App: React.FC = () => {
         <BrowserRouter>
           <SEOProvider 
             title="MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating" 
-            schema={defaultSchema} 
+            description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
+            schema={defaultSchema}
           />
           <Routes>
-            <Route path="/delhi-dating/south-delhi" element={<React.Suspense fallback={<div>Loading...</div>}><SouthDelhi /></React.Suspense>} />
-            <Route path="/delhi-dating/gurgaon" element={<React.Suspense fallback={<div>Loading...</div>}><Gurgaon /></React.Suspense>} />
-            <Route path="/delhi-dating/north-delhi" element={<React.Suspense fallback={<div>Loading...</div>}><NorthDelhi /></React.Suspense>} />
+            <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
+            <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
+            <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
             <Route path="*" element={
               <AuthGate>
                 <DashboardLayout />
@@ -45,4 +46,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

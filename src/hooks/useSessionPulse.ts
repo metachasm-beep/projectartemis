@@ -4,6 +4,7 @@ import { SanctuaryService } from '@/services/sanctuary';
 /**
  * 💓 Session Pulse: Quantifying resonance through presence.
  * Increments the user's total session time in the sanctuary.
+ * 🛡️ Hardened against the network storm: Aggressive unmount pulse removed.
  */
 export const useSessionPulse = (userId: string | undefined) => {
   const lastPulse = useRef<number>(Date.now());
@@ -23,16 +24,11 @@ export const useSessionPulse = (userId: string | undefined) => {
       }
     }, 60000); // Check every minute
 
-    // Final pulse on unmount to capture the remaining time
+    // 🛡️ STORM SUPPRESSION: We no longer pulse on unmount.
+    // In a high-flicker environment, unmount pulses create massive network saturation.
+    // Periodic pulses are sufficient for the Sanctum's records.
     return () => {
       clearInterval(interval);
-      if (userId) {
-        const now = Date.now();
-        const deltaSeconds = Math.floor((now - lastPulse.current) / 1000);
-        if (deltaSeconds > 5) {
-          SanctuaryService.trackSessionTime(userId, deltaSeconds).catch(() => {});
-        }
-      }
     };
   }, [userId]);
 };

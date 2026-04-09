@@ -1,11 +1,59 @@
 import { turso } from '@/lib/turso';
 import type { MatriarchProfile } from '@/types';
 
+// 🛡️ THE CACHING SHIELD: Defensive state management to prevent network saturation.
+const TTL = 5000; 
+let metricsCache: { data: any, timestamp: number } | null = null;
+let rosterCache: { data: MatriarchProfile[], timestamp: number } | null = null;
+
+/**
+ * 🛠️ DEEP NORMALIZATION LAYER:
+ * Standardizes raw Turso rows into valid MatriarchProfile objects.
+ * Defensive against double-stringified JSON and legacy field mapping.
+ */
+const normalizeProfile = (row: any): MatriarchProfile => {
+  let photos: string[] = [];
+  
+  if (row.photos) {
+    try {
+      // Defensive: Handle potentially double-stringified JSON from mixed client imports
+      let parsed = row.photos;
+      while (typeof parsed === 'string' && (parsed.startsWith('[') || parsed.startsWith('"'))) {
+        parsed = JSON.parse(parsed);
+      }
+      photos = Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+      photos = [row.photos]; // Fallback for raw string URLs
+    }
+  } else if (row.image_url) {
+    photos = [row.image_url as string];
+  }
+
+  // Clean empty values and protocol fragments
+  photos = photos.filter(Boolean).map(url => {
+    if (typeof url !== 'string') return url;
+    let u = url.trim();
+    if (u.startsWith('//')) u = 'https:' + u;
+    return u;
+  });
+
+  return {
+    ...row,
+    photos: photos.length > 0 ? photos : [],
+    is_verified: row.is_verified === 1 || row.is_verified === true,
+  } as unknown as MatriarchProfile;
+};
+
 export const AdminService = {
   /**
    * 📊 Absolute System Pulse: Board-level aggregates.
    */
   getSystemMetrics: async () => {
+    const now = Date.now();
+    if (metricsCache && (now - metricsCache.timestamp < TTL)) {
+      return metricsCache.data;
+    }
+
     try {
       const [menQ, womenQ, verifiedQ, topicsQ] = await Promise.all([
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
@@ -14,12 +62,15 @@ export const AdminService = {
         turso.execute("SELECT COUNT(*) as count FROM forum_topics")
       ]);
 
-      return {
+      const data = {
         totalMen: Number(menQ.rows[0]?.count || 0),
         totalWomen: Number(womenQ.rows[0]?.count || 0),
         verifiedProfiles: Number(verifiedQ.rows[0]?.count || 0),
         totalForumTopics: Number(topicsQ.rows[0]?.count || 0)
       };
+
+      metricsCache = { data, timestamp: now };
+      return data;
     } catch (err) {
       console.error("ADMIN_METRICS_ERROR:", err);
       return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 };
@@ -35,7 +86,6 @@ export const AdminService = {
       let args: any[] = [];
 
       if (queryText && queryText.trim() !== '') {
-        // Simple fuzzy search against name or city
         sql += " WHERE full_name LIKE ? OR city LIKE ? OR user_id LIKE ?";
         const wildcard = `%${queryText}%`;
         args = [wildcard, wildcard, wildcard];
@@ -45,7 +95,7 @@ export const AdminService = {
       args.push(limit);
 
       const r = await turso.execute({ sql, args });
-      return r.rows as unknown as MatriarchProfile[];
+      return r.rows.map(normalizeProfile);
     } catch (err) {
       console.error("ADMIN_SEARCH_ERROR:", err);
       return [];
@@ -53,72 +103,47 @@ export const AdminService = {
   },
 
   /**
-   * 🛡️ Data Manipulation: Override profile properties manually.
-   */
-  updateProfileStatus: async (userId: string, updates: Partial<MatriarchProfile>) => {
-    try {
-      const setClauses: string[] = [];
-      const args: any[] = [];
-      
-      Object.entries(updates).forEach(([key, value]) => {
-        setClauses.push(`${key} = ?`);
-        args.push(value);
-      });
-
-      if (setClauses.length === 0) return false;
-
-      const sql = `UPDATE profiles SET ${setClauses.join(', ')} WHERE user_id = ?`;
-      args.push(userId);
-
-      await turso.execute({ sql, args });
-      return true;
-    } catch (err) {
-      console.error("ADMIN_UPDATE_PROFILE_ERROR:", err);
-      return false;
-    }
-  },
-
-  /**
    * 🧪 Absolute Excision: Removes a user from the db fully.
+   * Clear all caches to ensure immediate consistency across views.
    */
   deleteUserRecord: async (userId: string) => {
+    if (!userId) return false;
     try {
       await turso.batch([
         { sql: "DELETE FROM forum_replies WHERE user_id = ?", args: [userId] },
         { sql: "DELETE FROM forum_topics_likes WHERE user_id = ?", args: [userId] },
         { sql: "DELETE FROM forum_topics_saves WHERE user_id = ?", args: [userId] },
         { sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] }
-      ], "write");
+      ]);
+      
+      // Nuclear cache invalidation
+      metricsCache = null;
+      rosterCache = null;
       return true;
     } catch (err) {
-      console.error("ADMIN_DELETE_ERROR:", err);
+      console.error("ADMIN_DELETE_ERROR (userId: " + userId + "):", err);
       return false;
     }
   },
 
   /**
    * 🎨 Visual Curation Index: Fetch all profile identifying data.
-   * Optimized with a schema-resilient normalization layer.
    */
   getAllCurationProfiles: async (): Promise<MatriarchProfile[]> => {
+    const now = Date.now();
+    // Use a slightly shorter TTL or check freshness
+    if (rosterCache && (now - rosterCache.timestamp < 2000)) { 
+      return rosterCache.data;
+    }
+
     try {
       const r = await turso.execute("SELECT * FROM profiles ORDER BY created_at DESC");
-      
-      return r.rows.map(row => {
-        // Normalization Layer: Bridge between 'photos' (JSON) and 'image_url' (String)
-        let photos: string[] = [];
-        
-        if (row.photos) {
-          photos = typeof row.photos === 'string' ? JSON.parse(row.photos) : row.photos;
-        } else if (row.image_url) {
-          photos = [row.image_url as string];
-        }
-
-        return {
-          ...row,
-          photos
-        } as unknown as MatriarchProfile;
-      });
+      if (r.rows.length === 0) {
+         console.warn("ADMIN_CURATION: Registry returned 0 rows.");
+      }
+      const data = r.rows.map(normalizeProfile);
+      rosterCache = { data, timestamp: now };
+      return data;
     } catch (err) {
       console.error("ADMIN_CURATION_FETCH_ERROR:", err);
       return [];
@@ -131,42 +156,30 @@ export const AdminService = {
   performBulkDedupe: async () => {
     try {
       const r = await turso.execute("SELECT * FROM profiles");
-      const rows = r.rows as unknown as any[];
-      const profiles = rows.map(row => {
-        let photos: string[] = [];
-        if (row.photos) {
-          photos = typeof row.photos === 'string' ? JSON.parse(row.photos) : row.photos;
-        } else if (row.image_url) {
-          photos = [row.image_url as string];
-        }
-        return { ...row, photos };
-      });
-
+      const profiles = r.rows.map(normalizeProfile);
+      
       const photoMap = new Map<string, { user_id: string, created_at: string }>();
       const toDelete: string[] = [];
 
       profiles.forEach(p => {
-        const photoUrl = (p.photos as string[])?.[0];
+        const photoUrl = p.photos?.[0];
         if (!photoUrl) return;
 
         if (photoMap.has(photoUrl)) {
           const existing = photoMap.get(photoUrl)!;
           if (p.created_at < existing.created_at) {
-            // New one is older
             toDelete.push(existing.user_id);
-            photoMap.set(photoUrl, { user_id: p.user_id as string, created_at: p.created_at as string });
+            photoMap.set(photoUrl, { user_id: p.user_id, created_at: p.created_at as string });
           } else {
-            // Existing is older
-            toDelete.push(p.user_id as string);
+            toDelete.push(p.user_id);
           }
         } else {
-          photoMap.set(photoUrl, { user_id: p.user_id as string, created_at: p.created_at as string });
+          photoMap.set(photoUrl, { user_id: p.user_id, created_at: p.created_at as string });
         }
       });
 
       if (toDelete.length === 0) return { deletedCount: 0 };
 
-      // Chunk deletes to avoid hitting transaction limits if huge
       const chunks = [];
       for (let i = 0; i < toDelete.length; i += 20) {
         chunks.push(toDelete.slice(i, i + 20));
@@ -177,8 +190,11 @@ export const AdminService = {
           { sql: "DELETE FROM forum_replies WHERE user_id = ?", args: [id] },
           { sql: "DELETE FROM profiles WHERE user_id = ?", args: [id] }
         ]);
-        await turso.batch(batch, "write");
+        await turso.batch(batch);
       }
+
+      metricsCache = null;
+      rosterCache = null;
 
       return { deletedCount: toDelete.length };
     } catch (err) {
@@ -187,9 +203,6 @@ export const AdminService = {
     }
   },
 
-  /**
-   * 🔥 Forum Purge: Nuke abusive or rogue forum topics instantly.
-   */
   purgeForumTopic: async (topicId: string) => {
     try {
       await turso.batch([
@@ -197,7 +210,8 @@ export const AdminService = {
         { sql: "DELETE FROM forum_topics_likes WHERE topic_id = ?", args: [topicId] },
         { sql: "DELETE FROM forum_topics_saves WHERE topic_id = ?", args: [topicId] },
         { sql: "DELETE FROM forum_topics WHERE id = ?", args: [topicId] }
-      ], "write");
+      ]);
+      metricsCache = null;
       return true;
     } catch (err) {
       console.error("ADMIN_PURGE_FORUM_ERROR:", err);
