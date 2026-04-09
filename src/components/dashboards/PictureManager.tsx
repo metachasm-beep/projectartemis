@@ -154,6 +154,7 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
             <header className="flex justify-between items-end mb-12">
                 <div className="space-y-2">
                     <button 
+                        type="button"
                         onClick={() => onBack?.()}
                         className="flex items-center gap-2 text-[10px] font-black tracking-widest text-matriarch-gold hover:text-white transition-colors uppercase mb-4"
                     >
@@ -204,12 +205,14 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
             <div className="flex justify-between items-center bg-white/[0.02] p-4 rounded-2xl border border-white/5 mb-8">
                 <div className="flex gap-4">
                     <button 
+                        type="button"
                         onClick={() => setViewMode('grid')}
                         className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all ${viewMode === 'grid' ? 'bg-matriarch-gold text-black' : 'text-white/40 hover:text-white'}`}
                     >
                         <Grid className="w-3 h-3" /> Grid View
                     </button>
                     <button 
+                        type="button"
                         onClick={() => setViewMode('dedupe')}
                         className={`px-4 py-2 rounded-xl text-[10px] font-black tracking-widest uppercase flex items-center gap-2 transition-all ${viewMode === 'dedupe' ? 'bg-matriarch-gold text-black' : 'text-white/40 hover:text-white'}`}
                     >
@@ -237,6 +240,7 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
                                     <div className="text-[10px] font-black text-matriarch-gold uppercase tracking-tighter truncate">{p.full_name}</div>
                                     <div className="text-[8px] text-white/60 mb-2 uppercase">{p.role === 'woman' ? 'MATRIARCH' : 'SEEKER'}</div>
                                     <button 
+                                        type="button"
                                         onClick={() => setItemToDelete(p.user_id)}
                                         className="w-full py-2 bg-red-500 text-white rounded-lg text-[8px] font-black tracking-widest uppercase flex items-center justify-center gap-1 hover:bg-red-400"
                                     >
@@ -270,6 +274,7 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
                                                         </div>
                                                         {idx !== (items.length - 1) && (
                                                             <button 
+                                                                type="button"
                                                                 onClick={() => setItemToDelete(it.user_id)}
                                                                 className="p-2 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-all"
                                                                 title="Evict clone"
