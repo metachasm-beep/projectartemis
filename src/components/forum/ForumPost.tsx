@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Sparkles, X } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Sparkles, X, Shield } from 'lucide-react';
 import { Button } from '@heroui/react';
 import { ForumService } from '@/lib/forumService';
 import { formatDistanceToNow } from 'date-fns';
@@ -19,6 +19,7 @@ export interface PostProps {
   real_likes: number;
   real_replies: number;
   total_aura_earned: number;
+  author_role?: string;
 }
 
 export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => void }> = ({ post, onReply }) => {
@@ -54,14 +55,33 @@ export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => voi
     }
   };
 
+  const isAdminAuthor = post.author_role === 'admin';
+
   return (
-    <div className="bg-[#1a1a1a] border border-white/5 rounded-3xl p-5 shadow-2xl break-inside-avoid mb-6 flex flex-col gap-4 group hover:border-mat-gold/20 transition-all">
+    <div className={cn(
+      "bg-[#1a1a1a] border rounded-3xl p-5 shadow-2xl break-inside-avoid mb-6 flex flex-col gap-4 group transition-all",
+      isAdminAuthor 
+        ? "border-mat-gold/50 shadow-[0_0_30px_rgba(212,175,55,0.15)] bg-[#1e1c14]" 
+        : "border-white/5 hover:border-mat-gold/20"
+    )}>
        
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
-             <img src={post.author_avatar} alt={post.author_name} className="w-8 h-8 rounded-full object-cover ring-2 ring-mat-gold/20" />
+             <div className="relative">
+                <img src={post.author_avatar} alt={post.author_name} className={cn("w-8 h-8 rounded-full object-cover ring-2", isAdminAuthor ? "ring-mat-gold" : "ring-mat-gold/20")} />
+                {isAdminAuthor && (
+                   <div className="absolute -top-1 -right-1 bg-mat-gold rounded-full p-0.5 shadow-sm">
+                      <Shield size={8} fill="black" className="text-black" />
+                   </div>
+                )}
+             </div>
              <div>
-                <p className="text-[11px] font-black uppercase tracking-widest text-mat-cream">{post.author_name}</p>
+                <div className="flex items-center gap-2">
+                   <p className={cn("text-[11px] font-black uppercase tracking-widest", isAdminAuthor ? "text-mat-gold" : "text-mat-cream")}>{post.author_name}</p>
+                   {isAdminAuthor && (
+                      <Badge variant="gold" className="text-[6px] h-3 px-1.5 font-black uppercase tracking-tighter">Architect</Badge>
+                   )}
+                </div>
                 <p className="text-[9px] text-white/40 font-medium">
                    {formatDistanceToNow(new Date(post.created_at), { addSuffix: true })}
                 </p>

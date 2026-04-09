@@ -17,8 +17,8 @@ async function verifyFemaleAuthorization(): Promise<MatriarchProfile> {
     .eq('user_id', user.id)
     .single();
 
-  if (profileError || !profile || profile.role !== 'woman') {
-    throw new Error("Unauthorized: Access restricted to Sovereign (Female) protocol.");
+  if (profileError || !profile || (profile.role !== 'woman' && profile.role !== 'admin')) {
+    throw new Error("Unauthorized: Access restricted to Sovereign (Female) or Administrative protocol.");
   }
 
   return profile as MatriarchProfile;
@@ -31,10 +31,12 @@ export const ForumService = {
     
     let query = `
       SELECT t.*, 
+             p.role as author_role,
              (SELECT COUNT(*) FROM forum_topics_likes WHERE topic_id = t.id) as real_likes,
              (SELECT COUNT(*) FROM forum_replies WHERE topic_id = t.id) as real_replies,
              t.total_aura_earned
       FROM forum_topics t
+      JOIN profiles p ON t.author_id = p.user_id
       WHERE t.is_flagged = FALSE
     `;
     const args: any[] = [];
@@ -81,7 +83,11 @@ export const ForumService = {
   async getReplies(topicId: string) {
     await verifyFemaleAuthorization();
     const { rows } = await turso.execute({
-       sql: `SELECT * FROM forum_replies WHERE topic_id = ? ORDER BY created_at ASC`,
+       sql: `SELECT r.*, p.role as author_role 
+             FROM forum_replies r 
+             JOIN profiles p ON r.author_id = p.user_id 
+             WHERE r.topic_id = ? 
+             ORDER BY r.created_at ASC`,
        args: [topicId]
     });
     return rows;

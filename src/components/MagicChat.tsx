@@ -28,11 +28,12 @@ import { cn } from '@/lib/utils';
 interface ChatProps {
   match: MessagingMatch & { otherUser: any };
   currentUserId: string;
-  userRole: 'woman' | 'man';
+  userRole: 'woman' | 'man' | 'admin';
   onBack: () => void;
+  isAdminMonitor?: boolean;
 }
 
-export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole, onBack }) => {
+export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole, onBack, isAdminMonitor }) => {
   const [messages, setMessages] = useState<MatriarchMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(true);
@@ -67,7 +68,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
 
         // 🏵️ Bloom Ceremony check
         const bloomKey = `mat_bloom_${match.id}`;
-        if (!localStorage.getItem(bloomKey)) {
+        if (!localStorage.getItem(bloomKey) && !isAdminMonitor) {
            setShowBloom(true);
            localStorage.setItem(bloomKey, 'true');
         }
@@ -117,9 +118,10 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
   const isRevoked = commMode === 'REVOKED';
   const isTimeLocked = commMode === 'DELAYED_TEXT' && match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date() && !isWoman;
   const isPromptLocked = commMode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed;
-  const canSend = !isHold && !isRevoked && !isTimeLocked && !isPromptLocked;
+  const canSend = !isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isAdminMonitor;
 
   const getStatusLabel = () => {
+    if (isAdminMonitor) return { l: "Sovereign Gaze Active", s: "Watching resonant dialogue in surveillance mode.", i: Eye };
     if (isHold) return { l: "Sanctuary in Recess", s: "The connection is being held for reflection.", i: Pause };
     if (isRevoked) return { l: "Connection Terminated", s: "The Matriarch has revoked this sanctuary resonance.", i: Lock };
     if (isTimeLocked) return { l: "Temporal Lock Active", s: "Resonance will be granted when the time is right.", i: Clock };
@@ -194,13 +196,16 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
 
       {/* ─── Messages View ─── */}
       <div ref={scrollRef} className="flex-1 p-10 overflow-y-auto space-y-12 custom-scrollbar bg-mat-cream-deep/20">
-         {messages.map((msg, i) => {
-            const isMe = msg.sender_user_id === currentUserId;
+          {messages.map((msg, i) => {
+            const isMe = !isAdminMonitor && msg.sender_user_id === currentUserId;
+            // For admins, let's show woman on right, man on left for consistency
+            const alignRight = isAdminMonitor ? msg.sender_user_id === match.woman_user_id : isMe;
+            
             return (
-              <motion.div key={msg.id} initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className={cn("flex w-full", isMe ? "justify-end" : "justify-start")}>
-                 <div className={cn("max-w-[70%] p-8 rounded-[2.5rem] text-[15px] leading-relaxed shadow-sm", isMe ? "bg-mat-wine text-mat-cream rounded-tr-none shadow-mat-rose/20" : "bg-white border border-mat-rose/5 text-mat-wine rounded-tl-none")}>
+              <motion.div key={msg.id} initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className={cn("flex w-full", alignRight ? "justify-end" : "justify-start")}>
+                 <div className={cn("max-w-[70%] p-8 rounded-[2.5rem] text-[15px] leading-relaxed shadow-sm", alignRight ? "bg-mat-wine text-mat-cream rounded-tr-none shadow-mat-rose/20" : "bg-white border border-mat-rose/5 text-mat-wine rounded-tl-none")}>
                     {msg.body}
-                    <p className={cn("text-[7px] mt-4 uppercase tracking-widest opacity-20 font-black italic", isMe ? "text-right" : "text-left")}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    <p className={cn("text-[7px] mt-4 uppercase tracking-widest opacity-20 font-black italic", alignRight ? "text-right" : "text-left")}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                  </div>
               </motion.div>
             );

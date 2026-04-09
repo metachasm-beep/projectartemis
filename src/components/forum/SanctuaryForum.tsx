@@ -79,10 +79,12 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
   const [composerCategory, setComposerCategory] = useState("Safety");
 
   const isWoman = profile.role === 'woman';
+  const isAdmin = profile.role === 'admin';
   const isVerifiedWoman = isWoman && profile.is_verified;
+  const canContribute = isVerifiedWoman || isAdmin;
 
   const loadTopics = async () => {
-     if (!isWoman) return;
+     if (!isWoman && !isAdmin) return;
      setLoading(true);
      try {
         const data = await ForumService.getTopics();
@@ -96,11 +98,11 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
 
   useEffect(() => {
      loadTopics();
-     if (isWoman) {
+     if (isWoman || isAdmin) {
         const pollId = setInterval(loadTopics, 15000);
         return () => clearInterval(pollId);
      }
-  }, [isWoman]);
+  }, [isWoman, isAdmin]);
 
   const handleComposeSubmit = async (content: string) => {
      try {
@@ -114,7 +116,7 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
   };
 
   // 🛡️ Access Gating Logic
-  if (!isWoman) {
+  if (!isWoman && !isAdmin) {
      return (
        <div className={isInline ? "relative w-full min-h-[400px]" : ""}>
          <ProtocolDeniedOverlay onClose={onClose} isUnverified={false} />
@@ -129,21 +131,21 @@ export const SanctuaryForum: React.FC<{ profile: MatriarchProfile; onClose: () =
           <div className="flex flex-col">
              <div className="flex items-center gap-2 text-mat-gold">
                 <Sparkles size={16} className="animate-pulse" />
-                <h2 className="text-xl font-black italic tracking-widest uppercase font-['Impact']">The Coven</h2>
+                <h2 className="text-xl font-black italic tracking-widest uppercase font-['Impact']">{isAdmin ? "Architect Overlook" : "The Coven"}</h2>
              </div>
-             <p className="text-[9px] uppercase tracking-[0.4em] text-white/40">Exclusive Sovereign Forum</p>
+             <p className="text-[9px] uppercase tracking-[0.4em] text-white/40">{isAdmin ? "Administrative Access Portal" : "Exclusive Sovereign Forum"}</p>
           </div>
           <div className="flex items-center gap-4">
              <Button 
                 onPress={() => {
-                  if (isVerifiedWoman) setIsComposing(true);
+                  if (canContribute) setIsComposing(true);
                   else alert("IDENTITY SYNC REQUIRED: You must seal your truth (verify) to contribute to the Coven. Observation is currently read-only.");
                 }} 
-                className={`${isVerifiedWoman ? 'bg-mat-rose' : 'bg-mat-rose/20 text-white/40 cursor-not-allowed'} text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30 flex items-center justify-center gap-1`}
+                className={`${canContribute ? 'bg-mat-rose' : 'bg-mat-rose/20 text-white/40 cursor-not-allowed'} text-white font-black uppercase tracking-widest text-[9px] h-9 px-4 rounded-full shadow-lg hover:shadow-mat-rose/30 flex items-center justify-center gap-1`}
              >
-                {!isVerifiedWoman && <Lock size={12} className="mr-1" />}
+                {!canContribute && <Lock size={12} className="mr-1" />}
                 <PenTool size={14} className="mr-1"/>
-                <span className="hidden xs:inline">Draft</span> Protocol
+                <span className="hidden xs:inline">{isAdmin ? 'Publish' : 'Draft'}</span> Protocol
              </Button>
              {!isInline && (
                 <Button isIconOnly variant="ghost" onPress={onClose} className="text-white/40 hover:text-white rounded-full">

@@ -329,5 +329,50 @@ export const AdminService = {
       console.error("ADMIN_PURGE_FORUM_ERROR:", err);
       return false;
     }
+  },
+
+  /**
+   * 👁️ Sovereign Eyes: Global communication surveillance logic.
+   */
+  getGlobalCommunications: async () => {
+     try {
+        const sql = `
+          SELECT 
+            m.*, 
+            pw.full_name as woman_name, 
+            pw.photos as woman_photos,
+            pm.full_name as man_name, 
+            pm.photos as man_photos,
+            (SELECT body FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
+            (SELECT created_at FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_at
+          FROM matches m
+          JOIN profiles pw ON m.woman_user_id = pw.user_id
+          JOIN profiles pm ON m.man_user_id = pm.user_id
+          JOIN conversations c ON c.match_id = m.id
+          ORDER BY last_message_at DESC NULLS LAST
+        `;
+        const res = await turso.execute(sql);
+        return res.rows;
+     } catch (err) {
+        console.error("ADMIN_GLOBAL_COMM_ERROR:", err);
+        return [];
+     }
+  },
+
+  getMatchMessages: async (matchId: string) => {
+     try {
+        const sql = `
+          SELECT msg.* 
+          FROM messages msg
+          JOIN conversations c ON msg.conversation_id = c.id
+          WHERE c.match_id = ?
+          ORDER BY msg.created_at ASC
+        `;
+        const res = await turso.execute({ sql, args: [matchId] });
+        return res.rows;
+     } catch (err) {
+        console.error("ADMIN_MATCH_MSG_ERROR:", err);
+        return [];
+     }
   }
 };
