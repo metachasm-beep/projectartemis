@@ -801,8 +801,6 @@ class App {
     this.container.removeEventListener('touchstart', this.boundOnTouchDown);
     this.container.removeEventListener('touchmove', this.boundOnTouchMove);
     this.container.removeEventListener('touchend', this.boundOnTouchUp);
-  }
-    window.removeEventListener('touchend', this.boundOnTouchUp);
     if (this.renderer && this.renderer.gl && this.renderer.gl.canvas.parentNode) {
       this.renderer.gl.canvas.parentNode.removeChild(this.renderer.gl.canvas as HTMLCanvasElement);
     }
