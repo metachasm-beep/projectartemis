@@ -156,7 +156,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 {/* TrumpCard Focal Point - UPSIZED */}
                 <div className="lg:col-span-5 bg-mat-ivory/40 p-10 lg:p-16 flex items-center justify-center border-b lg:border-b-0 lg:border-r border-mat-rose/10 relative overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/5 to-transparent pointer-events-none" />
-                    <div className="w-full max-w-[480px] lg:max-w-[420px] transform hover:scale-[1.02] transition-transform duration-700">
+                    <div className="w-full max-w-full lg:max-w-[420px] transform hover:scale-[1.02] transition-transform duration-700">
                       <TrumpCard 
                         profile={{
                           id: profile.user_id,
@@ -170,7 +170,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
                           vocation: profile.occupation || 'Aspirant',
                           tier: status?.rank_tier || 'Aspirant',
-                          is_verified: profile.is_verified
+                          is_verified: profile.is_verified,
+                          absolute_rank: absRank,
+                          rank_tier: status?.rank_tier
                         }}
                       />
                     </div>

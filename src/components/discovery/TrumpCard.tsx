@@ -32,6 +32,8 @@ interface TrumpCardProps {
     vocation: string;
     tier: string;
     is_verified?: boolean;
+    absolute_rank?: number | null;
+    rank_tier?: string;
   };
   onClose?: () => void;
   onAction?: (type: string) => void;
@@ -57,15 +59,15 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[500px] aspect-[2/3.2] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_100px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
+      className="relative w-full max-w-[550px] aspect-[2/3.1] md:aspect-[2/3.6] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
-      {/* 🏆 WRESTLING CARD HEADER */}
-      <div className="absolute top-2 left-2 right-2 h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl">
+      {/* 🏆 TRUMP CARD HEADER */}
+      <div className="absolute top-2 left-2 right-2 h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl overflow-hidden rounded-t-[1.5rem]">
         <div className="flex flex-col">
-           <span className="text-[8px] font-black uppercase tracking-[0.3em] text-mat-obsidian/60 italic leading-none">Matriarch League</span>
-           <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Series 01 // Aspirant</span>
+           <span className="text-[8px] font-black uppercase tracking-[0.3em] text-mat-obsidian/60 italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
+           <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
@@ -80,16 +82,33 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
       </div>
 
-      {/* 🖼️ HERO PORTRAIT */}
-      <div className="relative h-[42%] mt-14 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem]">
-        <img 
-          src={profile.img} 
-          className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
-          alt={profile.name}
-        />
+      {/* 🖼️ HERO PORTRAIT AREA */}
+      <div className="relative h-[44%] mt-14 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] p-0.5">
+        <div className="w-full h-full relative overflow-hidden rounded-t-[1.2rem]">
+          <img 
+            src={profile.img} 
+            className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
+            alt={profile.name}
+          />
+        </div>
+
+        {/* 🏅 COLLECTIBLE RANK BADGE - TOP LEFT TUCKED */}
+        <div className="absolute top-4 left-4 z-30">
+           <div className="w-16 h-16 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border-4 border-mat-gold shadow-2xl scale-75 md:scale-100 -rotate-6 group-hover:rotate-0 transition-transform duration-500">
+              <span className="text-[8px] font-black text-mat-gold uppercase tracking-tighter">Rank</span>
+              <span className="text-2xl font-black text-white italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
+           </div>
+        </div>
         
+        {/* 🔘 CHARACTER THUMBNAIL - BOTTOM RIGHT TUCKED */}
+        <div className="absolute bottom-4 right-4 z-30 hidden md:block">
+           <div className="w-14 h-14 rounded-full border-4 border-mat-gold overflow-hidden shadow-2xl bg-mat-obsidian animate-pulse group-hover:animate-none">
+              <img src={profile.img} className="w-full h-full object-cover grayscale opacity-50" alt="thumb" />
+           </div>
+        </div>
+
         {/* Status Badge */}
-        <div className="absolute top-6 left-6 z-20">
+        <div className="absolute top-6 right-6 z-20">
            <div className="px-4 py-1.5 bg-mat-gold text-mat-obsidian rounded-full flex items-center gap-2 shadow-2xl border-2 border-mat-obsidian/10">
               <Crown size={12} fill="currentColor" />
               <span className="text-[9px] font-black uppercase tracking-widest">{profile.status}</span>
@@ -110,7 +129,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 📜 CONSOLIDATED INTEL */}
-      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative">
+      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative rounded-b-[2rem]">
         
         {/* Bio Inlay */}
         <div className="mb-6">
