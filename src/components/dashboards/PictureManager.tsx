@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   Trash2, 
   Layers, 
@@ -13,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { AdminService } from '@/services/admin';
+import { useAuth } from '@/hooks/useAuth';
 import type { MatriarchProfile } from '@/types';
 
 interface PictureManagerProps {
@@ -20,6 +22,7 @@ interface PictureManagerProps {
 }
 
 const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
+    const { user: currentUser } = useAuth();
     const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -60,18 +63,29 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
 
     const confirmDelete = async () => {
         if (!itemToDelete) return;
+        
+        // 🛡️ ANTI-GENOCIDE PROTOCOL: Prevent the Admin from accidentally purging their own existence.
+        if (currentUser?.id === itemToDelete) {
+            alert("EVICTION ABORTED: You cannot excise your own identity from the registry while active. Command discarded.");
+            setItemToDelete(null);
+            return;
+        }
+
         try {
+            console.log(`PICTURE_MANAGER: Initializing absolute excision for identity: ${itemToDelete}`);
             const success = await AdminService.deleteUserRecord(itemToDelete);
             if (success) {
+                console.log("PICTURE_MANAGER: Identity successfully excised from registry.");
                 setProfiles(prev => prev.filter(p => p.user_id !== itemToDelete));
                 // Update stats locally
                 setStats(prev => ({ ...prev, total: prev.total - 1 }));
             } else {
+                console.error("PICTURE_MANAGER: Turso rejected the purge request.");
                 alert("EVICTION FAILED: The Sanctuary remains occupied. Turso rejected the purge.");
             }
         } catch (err) {
-            console.error("PICTURE_MANAGER_EVICT_ERROR:", err);
-            alert("SYSTEM ERROR: Failed to isolate and purge the identity.");
+            console.error("PICTURE_MANAGER_EVICT_CRITICAL_ERROR:", err);
+            alert("SYSTEM ERROR: A critical failure occurred during identity isolation. Check console for vault logs.");
         } finally {
             setItemToDelete(null);
         }
@@ -100,16 +114,18 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
     }, {} as Record<string, MatriarchProfile[]>);
 
     const filteredProfiles = profiles.filter(p => 
-        p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        p.role?.toLowerCase().includes(searchTerm.toLowerCase())
+        p && (
+            p.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            p.role?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
     );
 
     return (
         <div className="min-h-screen bg-matriarch-bg p-8 pt-24 space-y-12 pb-32">
-            {/* 🛡️ STATE-MANAGED CONFIRMATION */}
-            {itemToDelete && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl animate-in fade-in duration-300">
-                    <div className="mat-glass-premium p-10 rounded-[3rem] max-w-md w-full border-2 border-matriarch-gold/20 shadow-[0_0_100px_rgba(191,160,106,0.1)] text-center animate-in zoom-in-95 duration-300">
+            {/* 🛡️ PORTAL-MANAGED CONFIRMATION */}
+            {itemToDelete && createPortal(
+                <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-matriarch-bg/60 backdrop-blur-xl animate-in fade-in duration-300">
+                    <div className="mat-glass-premium p-10 rounded-[3rem] max-w-md w-full border-2 border-matriarch-gold/20 shadow-[0_0_100px_rgba(191,160,106,0.1)] text-center animate-in zoom-in-95 duration-300 bg-matriarch-bg/95">
                         <AlertTriangle className="w-16 h-16 text-matriarch-gold mx-auto mb-6" />
                         <h2 className="text-3xl font-display font-black text-white italic uppercase tracking-tighter mb-4">Obliterate Identity?</h2>
                         <p className="text-white/60 mb-10 text-xs font-medium leading-relaxed tracking-wide">
@@ -117,20 +133,23 @@ const PictureManager: React.FC<PictureManagerProps> = ({ onBack }) => {
                         </p>
                         <div className="flex gap-4">
                             <button 
+                                type="button"
                                 onClick={() => setItemToDelete(null)}
-                                className="flex-1 py-4 px-6 rounded-2xl font-black text-[10px] tracking-widest uppercase bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all"
+                                className="flex-1 py-4 px-6 rounded-2xl font-black text-[10px] tracking-widest uppercase bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all font-sans"
                             >
                                 Retreat
                             </button>
                             <button 
+                                type="button"
                                 onClick={confirmDelete}
-                                className="flex-1 py-4 px-6 rounded-2xl font-black text-[10px] tracking-widest uppercase bg-red-600 text-white hover:bg-red-500 transition-all shadow-[0_10px_30px_rgba(220,38,38,0.3)]"
+                                className="flex-1 py-4 px-6 rounded-2xl font-black text-[10px] tracking-widest uppercase bg-red-600 text-white hover:bg-red-500 transition-all shadow-[0_10px_30px_rgba(220,38,38,0.3)] font-sans"
                             >
                                 Obliterate
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>,
+                document.body
             )}
             <header className="flex justify-between items-end mb-12">
                 <div className="space-y-2">

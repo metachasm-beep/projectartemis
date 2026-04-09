@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Shield, Users, Verified, MessageSquare, Search, Trash2, ShieldAlert, BadgeCheck } from 'lucide-react';
 import { AdminService } from '@/services/admin';
+import { useAuth } from '@/hooks/useAuth';
 import type { MatriarchProfile } from '@/types';
 import { Input } from '@/components/ui/input';
 
@@ -13,6 +15,7 @@ interface AdminDashboardProps {
 }
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureManager }) => {
+  const { user: currentUser } = useAuth();
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -72,18 +75,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
 
   const confirmDelete = async () => {
     if (!itemToDelete) return;
+    
+    // 🛡️ ANTI-GENOCIDE PROTOCOL: Prevent the Admin from accidentally purging their own existence.
+    if (currentUser?.id === itemToDelete) {
+        alert("EVICTION ABORTED: You cannot excise your own identity from the registry while active. Command discarded.");
+        setItemToDelete(null);
+        return;
+    }
+
     try {
+      console.log(`ADMIN_DASHBOARD: Initializing absolute excision for identity: ${itemToDelete}`);
       const success = await AdminService.deleteUserRecord(itemToDelete);
       if (success) {
+        console.log("ADMIN_DASHBOARD: Identity successfully excised from registry.");
         setProfiles(prev => prev.filter(x => x.user_id !== itemToDelete));
         // Refresh metrics to reflect the void
         const m = await AdminService.getSystemMetrics();
         setMetrics(m as any);
       } else {
+        console.error("ADMIN_DASHBOARD: Turso rejected the purge request.");
         alert("EVICTION FAILED: The Turso uplink rejected the excision request.");
       }
     } catch (err) {
-      console.error("CRITICAL_EVICTION_ERROR:", err);
+      console.error("ADMIN_DASHBOARD_CRITICAL_EVICTION_ERROR:", err);
       alert("CRITICAL ERROR: A system fault occurred during the excision protocol.");
     } finally {
       setItemToDelete(null);
@@ -93,8 +107,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
   return (
     <div className="space-y-12 pb-24">
       {/* 🛡️ SOVEREIGN CONFIRMATION MODAL */}
-      {itemToDelete && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-mat-wine/40 backdrop-blur-md animate-in fade-in duration-300">
+      {itemToDelete && createPortal(
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-mat-wine/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white p-8 rounded-[2rem] max-w-md w-full border-2 border-mat-wine/20 shadow-2xl animate-in zoom-in-95 duration-300">
             <ShieldAlert className="w-12 h-12 text-mat-wine mb-4" />
             <h2 className="text-2xl font-bold text-mat-wine mb-2">Absolute Excision?</h2>
@@ -103,20 +117,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
             </p>
             <div className="flex gap-4">
               <button 
+                type="button"
                 onClick={() => setItemToDelete(null)}
-                className="flex-1 py-3 px-6 rounded-xl font-bold text-xs tracking-widest uppercase bg-mat-rose/10 text-mat-wine hover:bg-mat-rose/20 transition-all"
+                className="flex-1 py-3 px-6 rounded-xl font-bold text-xs tracking-widest uppercase bg-mat-rose/10 text-mat-wine hover:bg-mat-rose/20 transition-all font-sans"
               >
                 Retreat
               </button>
               <button 
+                type="button"
                 onClick={confirmDelete}
-                className="flex-1 py-3 px-6 rounded-xl font-bold text-xs tracking-widest uppercase bg-mat-wine text-white hover:bg-black transition-all shadow-lg"
+                className="flex-1 py-3 px-6 rounded-xl font-bold text-xs tracking-widest uppercase bg-mat-wine text-white hover:bg-black transition-all shadow-lg font-sans"
               >
                 Obliterate
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* 🚀 Header */}
