@@ -4,6 +4,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Heart, MessageCircle, Bookmark, Share2, MoreHorizontal, Sparkles, X, Shield } from 'lucide-react';
 import { Button } from '@heroui/react';
+import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { ForumService } from '@/lib/forumService';
 import { formatDistanceToNow } from 'date-fns';
 

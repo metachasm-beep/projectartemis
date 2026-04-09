@@ -200,87 +200,85 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
 
       {dashboardTab === 'ROSTER' ? (
         <>
-          {/* 📋 Master Roster */}
+          {/* 📋 Master Roster Filters */}
           <div className="space-y-6">
-              <div className="flex flex-col space-y-4 px-4 md:px-0">
-                <div className="flex flex-col md:flex-row justify-between items-end gap-4">
-                   <h2 className="text-2xl font-light text-mat-wine self-start">Master <span className="italic text-mat-rose/50">Roster</span></h2>
-                   <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
-                      {/* Role Filter */}
-                      <select 
-                        value={filters.role}
-                        onChange={e => setFilters(prev => ({ ...prev, role: e.target.value as any }))}
-                        className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-mat-rose/50 transition-all"
-                      >
-                        <option value="all">ALL ROLES</option>
-                        <option value="man">MEN</option>
-                        <option value="woman">WOMEN</option>
-                        <option value="admin">ADMINS</option>
-                      </select>
+            <div className="flex flex-col space-y-4 px-4 md:px-0">
+              <div className="flex flex-col md:flex-row justify-between items-end gap-4">
+                 <h2 className="text-2xl font-light text-mat-wine self-start">Master <span className="italic text-mat-rose/50">Roster</span></h2>
+                 <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                    {/* Role Filter */}
+                    <select 
+                      value={filters.role}
+                      onChange={e => setFilters(prev => ({ ...prev, role: e.target.value as any }))}
+                      className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-mat-rose/50 transition-all"
+                    >
+                      <option value="all">ALL ROLES</option>
+                      <option value="man">MEN</option>
+                      <option value="woman">WOMEN</option>
+                      <option value="admin">ADMINS</option>
+                    </select>
 
-                      {/* Verification Filter */}
-                      <select 
-                        value={filters.isVerified}
-                        onChange={e => setFilters(prev => ({ ...prev, isVerified: e.target.value === 'all' ? 'all' : e.target.value === 'true' }))}
-                        className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-mat-rose/50 transition-all"
-                      >
-                        <option value="all">ALL VERIFICATION</option>
-                        <option value="true">VERIFIED ONLY</option>
-                        <option value="false">NOT VERIFIED</option>
-                      </select>
+                    {/* Verification Filter */}
+                    <select 
+                      value={filters.isVerified}
+                      onChange={e => setFilters(prev => ({ ...prev, isVerified: e.target.value === 'all' ? 'all' : e.target.value === 'true' }))}
+                      className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase focus:outline-none focus:ring-2 focus:ring-mat-rose/50 transition-all"
+                    >
+                      <option value="all">ALL VERIFICATION</option>
+                      <option value="true">VERIFIED ONLY</option>
+                      <option value="false">NOT VERIFIED</option>
+                    </select>
 
-                      {/* Date Sort */}
-                      <button 
-                        onClick={() => setFilters(prev => ({ ...prev, dateSort: prev.dateSort === 'newest' ? 'oldest' : 'newest' }))}
-                        className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase hover:bg-mat-rose/5 transition-all flex items-center gap-2"
-                      >
-                        Sorted by: {filters.dateSort}
-                      </button>
-                   </div>
-                </div>
-
-                <div className="flex flex-col md:flex-row gap-4">
-                   {/* Global Search */}
-                   <div className="relative flex-1">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mat-slate/40" />
-                      <Input 
-                        placeholder="Search by name or ID..." 
-                        className="pl-12 bg-white/50 border-mat-rose/20 rounded-xl h-11"
-                        value={searchQuery}
-                        onChange={e => setSearchQuery(e.target.value)}
-                      />
-                   </div>
-                   
-                   {/* City Search */}
-                   <div className="relative w-full md:w-64">
-                      <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mat-slate/40" />
-                      <Input 
-                        placeholder="Filter by City..." 
-                        className="pl-12 bg-white/50 border-mat-rose/20 rounded-xl h-11"
-                        value={filters.city}
-                        onChange={e => setFilters(prev => ({ ...prev, city: e.target.value }))}
-                      />
-                   </div>
-
-                   {/* Token Filter */}
-                   <div className="relative w-full md:w-48 flex items-center">
-                      <span className="absolute left-4 text-[10px] font-black text-mat-wine/40 uppercase">Min Aura</span>
-                      <Input 
-                        type="number"
-                        placeholder="Min Aura..." 
-                        className="pl-20 bg-white/50 border-mat-rose/20 rounded-xl h-11"
-                        value={filters.minTokens || ''}
-                        onChange={e => setFilters(prev => ({ ...prev, minTokens: parseInt(e.target.value) || 0 }))}
-                      />
-                   </div>
-                </div>
+                    {/* Date Sort */}
+                    <button 
+                      onClick={() => setFilters(prev => ({ ...prev, dateSort: prev.dateSort === 'newest' ? 'oldest' : 'newest' }))}
+                      className="bg-white/50 border border-mat-rose/20 rounded-xl px-4 py-2 text-[10px] font-black tracking-widest uppercase hover:bg-mat-rose/5 transition-all flex items-center gap-2"
+                    >
+                      Sorted by: {filters.dateSort}
+                    </button>
+                 </div>
               </div>
-        </>
-      ) : (
-        <AdminCommunicationsHub />
-      )}
 
-         <div className="bg-white/50 backdrop-blur-xl border border-mat-rose/10 rounded-3xl overflow-hidden mx-4 md:mx-0">
+              <div className="flex flex-col md:flex-row gap-4">
+                 {/* Global Search */}
+                 <div className="relative flex-1">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mat-slate/40" />
+                    <Input 
+                      placeholder="Search by name or ID..." 
+                      className="pl-12 bg-white/50 border-mat-rose/20 rounded-xl h-11"
+                      value={searchQuery}
+                      onChange={e => setSearchQuery(e.target.value)}
+                    />
+                 </div>
+                 
+                 {/* City Search */}
+                 <div className="relative w-full md:w-64">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-mat-slate/40" />
+                    <Input 
+                      placeholder="Filter by City..." 
+                      className="pl-12 bg-white/50 border-mat-rose/20 rounded-xl h-11"
+                      value={filters.city}
+                      onChange={e => setFilters(prev => ({ ...prev, city: e.target.value }))}
+                    />
+                 </div>
+
+                 {/* Token Filter */}
+                 <div className="relative w-full md:w-48 flex items-center">
+                    <span className="absolute left-4 text-[10px] font-black text-mat-wine/40 uppercase">Min Aura</span>
+                    <Input 
+                      type="number"
+                      placeholder="Min Aura..." 
+                      className="pl-20 bg-white/50 border-mat-rose/20 rounded-xl h-11"
+                      value={filters.minTokens || ''}
+                      onChange={e => setFilters(prev => ({ ...prev, minTokens: parseInt(e.target.value) || 0 }))}
+                    />
+                 </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 📋 Master Roster Table */}
+          <div className="bg-white/50 backdrop-blur-xl border border-mat-rose/10 rounded-3xl overflow-hidden mx-4 md:mx-0">
             <div className="h-[60vh] w-full overflow-y-auto">
                <table className="w-full text-left text-sm whitespace-nowrap">
                   <thead className="bg-mat-rose/5 border-b border-mat-rose/10 sticky top-0 z-10 backdrop-blur-md">
@@ -358,8 +356,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                   </tbody>
                </table>
             </div>
-         </div>
-      </div>
+          </div>
+        </>
+      ) : (
+        <AdminCommunicationsHub />
+      )}
     </div>
   );
 };

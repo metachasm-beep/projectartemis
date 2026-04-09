@@ -16,7 +16,8 @@ import {
   Clock,
   Unlock,
   ShieldCheck,
-  Heart
+  Heart,
+  Eye
 } from 'lucide-react';
 import { turso } from '@/lib/turso';
 import { supabase } from '@/lib/supabase';
