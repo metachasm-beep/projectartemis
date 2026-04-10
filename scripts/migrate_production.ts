@@ -1,4 +1,22 @@
-import { turso } from './turso';
+import { createClient } from '@libsql/client';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load .env
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+
+const url = process.env.VITE_TURSO_DATABASE_URL;
+const authToken = process.env.VITE_TURSO_AUTH_TOKEN;
+
+if (!url || !authToken) {
+  console.error("Missing Turso credentials in .env");
+  process.exit(1);
+}
+
+const turso = createClient({
+  url,
+  authToken,
+});
 
 const schema = `
 CREATE TABLE IF NOT EXISTS matches (
@@ -120,17 +138,22 @@ CREATE INDEX IF NOT EXISTS idx_matches_woman ON matches(woman_user_id);
 CREATE INDEX IF NOT EXISTS idx_matches_man ON matches(man_user_id);
 `;
 
-async function setup() {
-  console.log("MATRIARCH: Provisioning Messaging Sanctuary Schema...");
+async function run() {
+  console.log("🚀 MIGRATION: Provisioning Production Messaging Sanctuary...");
   const statements = schema.split(';').filter(s => s.trim() !== '');
   for (const statement of statements) {
     try {
       await turso.execute(statement);
-    } catch (e) {
-      console.error("Statement failed:", statement.substring(0, 50), e);
+      console.log(`✅ EXECUTED: ${statement.substring(0, 50)}...`);
+    } catch (e: any) {
+      if (e.message?.includes("already exists")) {
+        console.log(`ℹ️ SKIPPED (Exists): ${statement.substring(0, 50)}...`);
+      } else {
+        console.error(`❌ FAILED: ${statement.substring(0, 50)}...`, e.message);
+      }
     }
   }
-  console.log("MATRIARCH: Sanctuary Provisioned.");
+  console.log("🏁 MIGRATION COMPLETE.");
 }
 
-setup();
+run();
