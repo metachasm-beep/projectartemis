@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 
 import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
+import { DirectMessageModal } from './DirectMessageModal';
 
 interface AdminDashboardProps {
   onOpenPictureManager?: () => void;
@@ -21,6 +22,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
+  const [messageTarget, setMessageTarget] = useState<{ id: string, name: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const fetchingRef = useRef(false);
 
@@ -148,6 +150,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
         </div>,
         document.body
       )}
+
+      {/* 🛡️ SOVEREIGN TRANSMISSION MODAL */}
+      <AnimatePresence>
+        {messageTarget && (
+          <DirectMessageModal 
+            userId={messageTarget.id}
+            userName={messageTarget.name}
+            onClose={() => setMessageTarget(null)}
+            onSuccess={() => {
+              // Sovereign transmission success.
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* 🚀 Header */}
       <div className="text-center space-y-4">
@@ -331,7 +347,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                               <td className="px-6 py-4 text-mat-wine font-semibold">{p.tokens || 0} AURA</td>
                               <td className="px-6 py-4 text-right">
                                  <div className="flex justify-end gap-2">
-                                    <button onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} className="px-3 py-1 bg-white border border-mat-rose/20 rounded-lg text-xs hover:bg-mat-rose/10 transition-colors flex items-center">
+                                    <button 
+                                      onClick={() => setMessageTarget({ id: p.user_id, name: p.full_name })} 
+                                      className="px-3 py-1 bg-mat-wine text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-mat-rose transition-all flex items-center gap-1 shadow-sm"
+                                    >
+                                       <MessageSquare className="w-3 h-3" /> Message
+                                    </button>
+                                    <button 
+                                      onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} 
+                                      className={`px-3 py-1 border rounded-lg text-xs transition-colors flex items-center ${p.is_verified ? 'bg-blue-500/10 border-blue-500/20 text-blue-600 hover:bg-red-50' : 'bg-white border-mat-rose/20 hover:bg-mat-rose/10'}`}
+                                    >
                                        <Shield className="w-3 h-3 mr-1" /> {p.is_verified ? 'Revoke' : 'Verify'}
                                     </button>
                                     <button onClick={() => handleRoleChange(p.user_id, 'admin')} className="px-3 py-1 bg-white border border-mat-rose/20 rounded-lg text-xs hover:bg-mat-rose/10 transition-colors flex items-center">
@@ -339,7 +364,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                     </button>
                                     <button 
                                       onClick={() => setItemToDelete(p.user_id)}
-                                      className="flex-1 py-1.5 px-3 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1"
+                                      className="px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1"
                                     >
                                       <Trash2 className="w-3 h-3" /> Obliterate
                                     </button>

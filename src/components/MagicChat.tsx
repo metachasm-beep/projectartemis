@@ -119,7 +119,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
   const isRevoked = commMode === 'REVOKED';
   const isTimeLocked = commMode === 'DELAYED_TEXT' && match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date() && !isWoman;
   const isPromptLocked = commMode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed;
-  const canSend = !isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isAdminMonitor;
+  const canSend = (userRole === 'admin') || (!isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isAdminMonitor);
 
   const getStatusLabel = () => {
     if (isAdminMonitor) return { l: "Sovereign Gaze Active", s: "Watching resonant dialogue in surveillance mode.", i: Eye };

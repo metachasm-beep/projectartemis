@@ -338,21 +338,37 @@ export const AdminService = {
      try {
         const sql = `
           SELECT 
-            m.*, 
+            c.id as conv_id,
+            m.id as id,
+            m.current_comm_mode,
             pw.full_name as woman_name, 
             pw.photos as woman_photos,
             pm.full_name as man_name, 
             pm.photos as man_photos,
             (SELECT body FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
             (SELECT created_at FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_at
-          FROM matches m
-          JOIN profiles pw ON m.woman_user_id = pw.user_id
-          JOIN profiles pm ON m.man_user_id = pm.user_id
-          JOIN conversations c ON c.match_id = m.id
+          FROM conversations c
+          LEFT JOIN matches m ON c.match_id = m.id
+          LEFT JOIN profiles pw ON m.woman_user_id = pw.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pw.user_id AND pw.role = 'woman')
+          LEFT JOIN profiles pm ON m.man_user_id = pm.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pm.user_id AND pm.role = 'man')
+          WHERE last_message IS NOT NULL
           ORDER BY last_message_at DESC NULLS LAST
         `;
         const res = await turso.execute(sql);
-        return res.rows;
+        
+        // Post-process to handle Admin specific labels
+        return res.rows.map(row => {
+          if (!row.id && row.conv_id.startsWith('admin_conv_')) {
+             return {
+                ...row,
+                id: row.conv_id, // Use conv_id as pseudo match id for selectedMatch logic
+                current_comm_mode: 'SOVEREIGN_TRANSMISSION',
+                woman_name: row.woman_name || 'The Matriarch',
+                man_name: row.man_name || 'Sanctuary Aspirant'
+             };
+          }
+          return row;
+        });
      } catch (err) {
         console.error("ADMIN_GLOBAL_COMM_ERROR:", err);
         return [];
@@ -374,5 +390,84 @@ export const AdminService = {
         console.error("ADMIN_MATCH_MSG_ERROR:", err);
         return [];
      }
+  },
+
+  /**
+   * 🛠️ Sovereign Profile Mutation: 
+   * Directly updates verification, roles, and aura tokens.
+   */
+  updateProfileStatus: async (userId: string, data: Partial<MatriarchProfile>) => {
+    try {
+      const allowedFields = ['is_verified', 'role', 'tokens'];
+      const setClause: string[] = [];
+      const args: any[] = [];
+
+      for (const field of allowedFields) {
+        if (data[field as keyof MatriarchProfile] !== undefined) {
+          let val = data[field as keyof MatriarchProfile];
+          if (field === 'is_verified') val = val ? 1 : 0;
+          setClause.push(`${field} = ?`);
+          args.push(val);
+        }
+      }
+
+      if (setClause.length === 0) return true;
+
+      const sql = `UPDATE profiles SET ${setClause.join(', ')} WHERE user_id = ?`;
+      args.push(userId);
+      
+      await turso.execute({ sql, args });
+      // Reset caches
+      metricsCache = null;
+      rosterCache = null;
+      return true;
+    } catch (err) {
+      console.error("ADMIN_UPDATE_STATUS_ERROR:", err);
+      return false;
+    }
+  },
+
+  /**
+   * 🛡️ Sovereign Transmission:
+   * Delivers a direct administrative message to a user.
+   * Creates an "ADMIN_CONV" with match_id = NULL if it doesn't exist.
+   */
+  sendDirectAdminMessage: async (userId: string, body: string) => {
+    if (!userId || !body.trim()) return false;
+
+    try {
+      // 1. Locate or Invoke Admin Conversation
+      // We look for a conversation with match_id NULL that involves this user and 'ADMIN'
+      // Wait, matches table usually defines the pair. For Admin sessions, we'll use a special match.
+      // Or simply: Look for a conversation where ID starts with 'admin_conv_' + userId
+      const convId = `admin_conv_${userId}`;
+      
+      // Check if conversation exists (idempotent check)
+      const checkRes = await turso.execute({
+        sql: "SELECT id FROM conversations WHERE id = ?",
+        args: [convId]
+      });
+
+      if (checkRes.rows.length === 0) {
+        console.log(`ADMIN_SERVICE: Invoking new Sovereign Bridge for user: ${userId}`);
+        await turso.execute({
+          sql: "INSERT INTO conversations (id, match_id) VALUES (?, NULL)",
+          args: [convId]
+        });
+      }
+
+      // 2. Transmit Message
+      const msgId = `msg_sys_${Date.now()}`;
+      const now = new Date().toISOString();
+      await turso.execute({
+        sql: "INSERT INTO messages (id, conversation_id, sender_user_id, body, created_at) VALUES (?, ?, 'ADMIN', ?, ?)",
+        args: [msgId, convId, body, now]
+      });
+
+      return true;
+    } catch (err) {
+      console.error("ADMIN_DIRECT_MSG_ERROR:", err);
+      return false;
+    }
   }
 };

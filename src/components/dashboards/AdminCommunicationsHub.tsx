@@ -24,6 +24,10 @@ export const AdminCommunicationsHub: React.FC = () => {
   }, []);
 
   if (selectedMatch) {
+    const safeParse = (json: string) => {
+      try { return JSON.parse(json || '[]'); } catch { return []; }
+    };
+
     // 👁️ Monitor Mode: Reusing MagicChat with a specialized monitor bridge
     return (
       <div className="space-y-6">
@@ -39,7 +43,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                ...selectedMatch,
                otherUser: {
                  full_name: selectedMatch.woman_name,
-                 avatar: JSON.parse(selectedMatch.woman_photos || '[]')[0]
+                 avatar: safeParse(selectedMatch.woman_photos)[0] || "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"
                }
              } as any}
              currentUserId="ADMIN" 
@@ -90,8 +94,8 @@ export const AdminCommunicationsHub: React.FC = () => {
                      {/* Identity Collision View */}
                      <div className="flex -space-x-8">
                         {[
-                          { img: JSON.parse(c.woman_photos || '[]')[0], name: c.woman_name },
-                          { img: JSON.parse(c.man_photos || '[]')[0], name: c.man_name }
+                          { img: (function(){ try { return JSON.parse(c.woman_photos || '[]')[0]; } catch { return "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"; }})(), name: c.woman_name },
+                          { img: (function(){ try { return JSON.parse(c.man_photos || '[]')[0]; } catch { return "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200"; }})(), name: c.man_name }
                         ].map((user, idx) => (
                            <div key={idx} className="w-16 h-16 rounded-[1.25rem] border-4 border-mat-cream overflow-hidden shadow-mat-premium group-hover:scale-105 transition-transform duration-500">
                               <img src={user.img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
