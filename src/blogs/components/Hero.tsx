@@ -1,5 +1,4 @@
-import React, { Suspense } from 'react';
-import Spline from '@splinetool/react-spline';
+import SafeSpline from './SafeSpline';
 import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
@@ -7,14 +6,12 @@ import { motion } from 'framer-motion';
 const Hero: React.FC = () => {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
-      {/* Spline Background */}
+      {/* Spline Background with Stability Shield */}
       <div className="absolute inset-0 z-0">
-        <Suspense fallback={<div className="w-full h-full bg-[#030303] animate-pulse" />}>
-          <Spline 
-            scene="https://prod.spline.design/kZ9s743P9q771s7N/scene.splinecode" 
-            className="w-full h-full"
-          />
-        </Suspense>
+        <SafeSpline 
+          scene="https://prod.spline.design/ATIn-3hS-fP-kK-x/scene.splinecode" 
+          className="w-full h-full"
+        />
       </div>
 
       {/* Overlay Gradient */}
