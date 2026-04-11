@@ -4,6 +4,7 @@ import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
 import PerfectTextWrapper from './PerfectTextWrapper';
+import ElectricBorder from '../../components/bits/ElectricBorder';
 
 const Hero: React.FC = () => {
   return (
@@ -51,7 +52,7 @@ const Hero: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 1 }}
-          className="mt-12"
+          className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-6"
         >
           <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-white/80 text-sm font-semibold hover:bg-white/10 transition-all cursor-pointer group">
             Scroll to Explore
@@ -63,6 +64,19 @@ const Hero: React.FC = () => {
               ↓
             </motion.span>
           </div>
+
+          <a href="https://matriarchindia.com">
+            <ElectricBorder
+              color="#F0A3EA"
+              speed={1}
+              chaos={0.12}
+              borderRadius={999}
+            >
+              <button className="px-8 py-3 rounded-full text-white font-bold uppercase tracking-widest text-[10px] bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all">
+                Back to Sanctuary
+              </button>
+            </ElectricBorder>
+          </a>
         </motion.div>
       </div>
 
