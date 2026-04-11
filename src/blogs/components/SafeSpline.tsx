@@ -74,6 +74,8 @@ const SafeSpline: React.FC<Props> = ({ scene, className }) => {
             window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
           }}
           onError={() => {
+             // Ensure the system handshake happens even in Spline error context
+             window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
              // Force fallback on error if Spline's internal handler doesn't throw
              window.dispatchEvent(new ErrorEvent('error', { error: new Error('Spline Load Failure') }));
           }}

@@ -9,7 +9,7 @@ const Hero: React.FC = () => {
       {/* Spline Background with Stability Shield */}
       <div className="absolute inset-0 z-0">
         <SafeSpline 
-          scene="https://prod.spline.design/ATIn-3hS-fP-kK-x/scene.splinecode" 
+          scene="https://prod.spline.design/JreN0v1oY3Z9vD27/scene.splinecode" 
           className="w-full h-full"
         />
       </div>
