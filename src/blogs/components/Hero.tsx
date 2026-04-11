@@ -10,7 +10,7 @@ const Hero: React.FC = () => {
     <div className="relative h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden bg-[#030303]">
       <div className="absolute inset-0 opacity-60">
         <LightRays 
-          raysColor="#E11D48" // Rose 600
+          raysColor="#FFFFFF" // Pure White (RGB 255, 255, 255)
           raysSpeed={0.5}
           lightSpread={1.2}
           rayLength={1.5}
