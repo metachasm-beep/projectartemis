@@ -7,7 +7,7 @@ import { CameraCapture } from './CameraCapture';
 import { compressImage } from '@/lib/image-utils';
 import { turso, tursoHelpers } from '@/lib/turso';
 import { uploadToCloudinary } from '@/lib/cloudinary';
-import { MatriarchProfile } from '@/types';
+import type { MatriarchProfile } from '@/types';
 
 export interface OnboardingProps {
   userId: string;

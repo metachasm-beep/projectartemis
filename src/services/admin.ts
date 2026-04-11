@@ -398,7 +398,7 @@ export const AdminService = {
    */
   updateProfileStatus: async (userId: string, data: Partial<MatriarchProfile>) => {
     try {
-      const allowedFields = ['is_verified', 'role', 'tokens'];
+      const allowedFields = ['is_verified', 'role', 'tokens', 'payment_utr', 'payment_status'];
       const setClause: string[] = [];
       const args: any[] = [];
 

@@ -21,7 +21,7 @@ import {
 } from 'lucide-react';
 import { turso } from '@/lib/turso';
 import { supabase } from '@/lib/supabase';
-import { MessagingService, MessagingMatch, CommMode, MatriarchMessage } from '@/lib/messaging';
+import { MessagingService, type MessagingMatch, type CommMode, type MatriarchMessage } from '@/lib/messaging';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';

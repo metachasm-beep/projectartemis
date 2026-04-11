@@ -7,6 +7,7 @@ import { SanctuaryService } from '@/services/sanctuary';
 import { turso } from '@/lib/turso';
 import { Leaderboard } from '@/components/leaderboard/Leaderboard';
 import AdUnit from '@/components/common/AdUnit';
+import { SEO_COPY } from '@/content/copy';
 
 function cn(...classes: (string | boolean | undefined)[]) {
   return classes.filter(Boolean).join(' ');
@@ -172,7 +173,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                     </h2>
                  </div>
                  <p className="text-xs text-white/40 leading-relaxed mt-4">
-                   Your absolute position in the sanctuary. Lower rank equals priority placement during Sovereign Browsing.
+                    {SEO_COPY.men.dossier.rank.desc}
                  </p>
               </div>
 
@@ -260,8 +261,8 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                  <div className="absolute top-0 right-0 w-64 h-64 bg-mat-gold/5 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
                  
                  <div className="space-y-2 relative z-10 mb-12">
-                    <h3 className="text-3xl md:text-4xl font-bold italic text-white leading-tight">The <span className="text-mat-gold/60">Treasury.</span></h3>
-                    <p className="text-xs text-white/50 max-w-sm leading-relaxed">Exchange offerings for AURA to guarantee visibility in the primary selection protocol.</p>
+                    <h3 className="text-3xl md:text-4xl font-bold italic text-white leading-tight">{SEO_COPY.men.dossier.treasury.title_pre} <span className="text-mat-gold/60">{SEO_COPY.men.dossier.treasury.title_highlight}</span></h3>
+                    <p className="text-xs text-white/50 max-w-sm leading-relaxed">{SEO_COPY.men.dossier.treasury.desc}</p>
                  </div>
                  
                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 relative z-10">
@@ -314,7 +315,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
               </div>
               <div className="space-y-4">
                  {[
-                   { label: 'Aadhaar Verification', done: !!profile.is_verified, act: handleVerify },
+                   { label: 'Get Verified', done: !!profile.is_verified, act: handleVerify },
                    { label: 'Narrative Portrait', done: (profile.photos?.length || 0) > 0, act: () => setIsEditing(true) },
                    { label: 'Foundation Details', done: !!profile.education && !!profile.city, act: () => setIsEditing(true) }
                  ].map((task, i) => (
@@ -342,9 +343,9 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                        <Gem size={28} />
                     </div>
                     <div>
-                       <h3 className="text-2xl md:text-3xl font-bold italic text-white leading-tight mb-3">Concierge Review & <br/><span className="text-mat-gold">Seal of Excellence</span></h3>
+                       <h3 className="text-2xl md:text-3xl font-bold italic text-white leading-tight mb-3">{SEO_COPY.men.dossier.concierge.title_pre} <br/><span className="text-mat-gold">{SEO_COPY.men.dossier.concierge.title_highlight}</span></h3>
                        <p className="text-sm text-white/60 leading-relaxed text-justify">
-                         A rigorous manual audit of your entire dossier by the Matriarch Council. Profiles that earn the Seal of Excellence bypass the standard protocol, organically ranking higher than all non-sealed aspirants indefinitely.
+                         {SEO_COPY.men.dossier.concierge.desc}
                        </p>
                     </div>
                  </div>

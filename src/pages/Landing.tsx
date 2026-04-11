@@ -24,6 +24,7 @@ import { supabase } from "@/lib/supabase";
 import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 import AdUnit from "@/components/common/AdUnit";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
+import { SEO_COPY } from "@/content/copy";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
@@ -215,23 +216,24 @@ const LandingPage: React.FC = () => {
             <div className="fade-up space-y-8 lg:space-y-12 text-left">
               <div className="flex justify-start">
                 <span style={{fontFamily:'Helvetica,sans-serif', background:'rgba(201,160,154,0.12)', border:'1px solid rgba(201,160,154,0.25)', borderRadius:'999px'}} className="py-1.5 px-5 text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose italic">
-                  Real Connections, by Intention
+                  {SEO_COPY.landing.hero.eyebrow}
                 </span>
               </div>
               
-              <h1 style={{fontFamily:'"Playfair Display",Georgia,serif'}} className="text-5xl sm:text-7xl lg:text-8xl font-bold italic leading-tight text-mat-wine py-2">
+              <h1 className="sr-only">Matriarch: Premium Matchmaking & Exclusive Dating Sanctuary in Delhi</h1>
+              <div style={{fontFamily:'"Playfair Display",Georgia,serif'}} className="text-5xl sm:text-7xl lg:text-8xl font-bold italic leading-tight text-mat-wine py-2">
                 Where love <br />
                 <span className="text-mat-rose/40">finds its way</span>
                 <span className="block text-3xl sm:text-5xl lg:text-6xl mt-4 text-mat-gold/80">
                   — beautifully
                 </span>
-              </h1>
+              </div>
               
               <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-base sm:text-lg lg:text-xl text-mat-slate/70 font-medium leading-relaxed max-w-xl">
-                Matriarch is a curated sanctuary for meaningful connection — where her choice leads and every story matters
+                {SEO_COPY.landing.hero.subtitle}
               </p>
               <p style={{fontFamily:'Helvetica,sans-serif'}} className="text-[10px] font-black uppercase tracking-[0.2em] text-mat-wine/40 max-w-sm">
-                Matriarch is a private architectural dynamic for connection<br />By merit only
+                {SEO_COPY.landing.hero.merit_badge}
               </p>
               
               <div className="flex flex-col sm:flex-row justify-start gap-4 lg:gap-6 mt-8 lg:mt-12 px-0">
@@ -283,22 +285,19 @@ const LandingPage: React.FC = () => {
             <div className="mb-16 lg:mb-24 space-y-6">
               <Badge variant="outline" className="px-4 py-1 border-black/10 uppercase tracking-[0.4em] font-black text-[9px] bg-black/5 rounded-none">The Architecture</Badge>
               <h2 className="text-4xl sm:text-6xl lg:text-8xl mat-text-display-pro text-black uppercase leading-[0.9] py-2">
-                Engineering <br />
-                <span className="text-black/20">Connection</span>
+                {SEO_COPY.landing.how_it_works.title.split(' ')[0]} <br />
+                <span className="text-black/20">{SEO_COPY.landing.how_it_works.title.split(' ')[1]}</span>
               </h2>
-              <p className="text-lg sm:text-xl text-black/60 max-w-2xl font-medium">A sanctuary for intentional engagement, designed for hearts that value depth over noise</p>
+              <p className="text-lg sm:text-xl text-black/60 max-w-2xl font-medium">{SEO_COPY.landing.how_it_works.subtitle}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-              {[
-                { title: "Her Choice", label: <>Observe<br/>Decide</>, desc: "Browse profiles of men who share your values Connect only when you feel a genuine spark", icon: Eye },
-                { title: "The Seeker", label: <>Grow<br/>Be found</>, desc: "No chasing Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart", icon: UserCheck },
-                { title: "Grace", label: <>Her Terms<br/>Always</>, desc: "Connection begins only how and when she defines Once a match is made, she chooses the way you both talk", icon: MessageSquare }
-              ].map((step, i) => (
+              {SEO_COPY.landing.how_it_works.steps.map((step, i) => (
                 <div key={i} className="bg-white mat-glass-deep border-black/5 p-10 lg:p-12 group hover:bg-black/5 transition-all duration-500 flex flex-col justify-between min-h-[380px] lg:min-h-[420px]">
                   <div className="space-y-8">
                     <div className="w-14 h-14 bg-black/5 rounded-2xl flex items-center justify-center group-hover:bg-black group-hover:text-white transition-all duration-500 border border-black/5">
-                      <step.icon className="w-7 h-7" strokeWidth={1} />
+                      {/* Using dynamic icons or fixed mapping can be done here */}
+                      <Heart className="w-7 h-7" strokeWidth={1} />
                     </div>
                     <div>
                       <h3 className="text-[9px] font-black uppercase tracking-[0.4em] mb-3 text-black/30 italic">{step.title}</h3>

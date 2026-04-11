@@ -123,11 +123,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
         {/* Command Header */}
         <section className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-12 pb-12 border-b border-mat-rose/20">
            <div className="space-y-6">
+              <h1 className="sr-only">Admin Matrix Control: Resident Management & Oversight</h1>
               <Badge variant="outline" className="px-4 py-1 uppercase tracking-[0.4em] font-bold text-[9px] border-mat-gold/20 text-mat-gold rounded-full">Nobility // Oversight</Badge>
-              <h1 className="text-6xl lg:text-8xl mat-text-display-pro text-mat-wine leading-[0.9] italic">
+              <div className="text-6xl lg:text-8xl mat-text-display-pro text-mat-wine leading-[0.9] italic">
                 Matrix <br />
                 <span className="text-mat-rose/20">Control.</span>
-              </h1>
+              </div>
            </div>
            
            <div className="flex items-center gap-px bg-mat-gold/10 border border-mat-gold/20 p-px w-full lg:w-auto rounded-3xl overflow-hidden shadow-mat-premium">

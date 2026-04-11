@@ -19,6 +19,7 @@ import type { MatriarchProfile } from '@/types';
 import TrumpCard from '@/components/discovery/TrumpCard';
 import CircularGallery from '@/components/animations/CircularGallery';
 import { sanitizeBio } from '@/utils/trumpData';
+import { SEO_COPY } from '@/content/copy';
 
 interface MenDashboardProps {
   profile: MatriarchProfile;
@@ -140,6 +141,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   return (
     <div className="space-y-16 pb-32 pt-8">
+      <h1 className="sr-only">Matriarch Dossier: Personal Standing & Identity Resonance</h1>
       {/* Dynamic Hero Integration: Trump Card Visual Anchor */}
       {!profile?.is_verified && (
         <div className="mat-glass-deep p-12 rounded-[4rem] border-mat-rose/10 shadow-mat-rose/5">

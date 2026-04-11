@@ -33,6 +33,8 @@ export interface MatriarchProfile {
   last_login_at?: string;
   consecutive_days?: number;
   longest_streak?: number;
+  payment_utr?: string;
+  payment_status?: 'NONE' | 'PENDING' | 'APPROVED' | 'REJECTED';
   data_processing_consent?: {
     analytics_accepted: boolean;
     ads_accepted: boolean;

@@ -1,14 +1,18 @@
-import React, { useState } from 'react';
-import { Camera, ShieldCheck, Clock, Crown, Lock, Heart, MessageSquarePlus } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
-import type { MatriarchProfile } from '@/types';
-import { Button, Card, CardContent, CardHeader, Chip } from "@heroui/react";
-import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
+import { X, ShieldCheck, Camera, Crown, MessageSquarePlus, Heart, Clock, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Chip } from '@heroui/react';
 import { Leaderboard } from '@/components/leaderboard/Leaderboard';
+import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
 import AdUnit from '@/components/common/AdUnit';
-import { VerificationModal } from '@/components/verification/VerificationModal';
-import { SanctuaryService } from '@/services/sanctuary';
+import { SEO_COPY } from '@/content/copy';
+import type { MatriarchProfile } from '@/types';
+import React, { useState } from 'react';
+import { AadhaarVerification } from '@/components/AadhaarVerification';
+import { useAuth } from '@/hooks/useAuth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -20,6 +24,8 @@ interface WomenSanctuaryProps {
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
   const forumRef = React.useRef<HTMLDivElement>(null);
   const [showVerification, setShowVerification] = useState(false);
+  const { refreshProfile } = useAuth();
+  
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
   const scrollToForum = () => {
@@ -41,20 +47,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
              <Tooltip>
                 <TooltipTrigger asChild>
                    <Button 
-                      onPress={() => setShowVerification(true)}
+                      onPress={() => !profile.is_verified && setShowVerification(true)}
                       className={`h-10 px-6 rounded-full font-black uppercase tracking-widest text-[9px] border transition-all ${profile.is_verified ? 'bg-green-500/10 border-green-500/30 text-green-500 cursor-default' : 'bg-mat-gold text-black border-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-[1.05]'}`}
                    >
                       {profile.is_verified ? (
                         <div className="flex items-center gap-2">
-                          <ShieldCheck size={12} /> Sync Established
+                           <ShieldCheck size={12} /> Sync Established
                         </div>
                       ) : (
-                        "Secure Identity"
+                        "Get Verified"
                       )}
                    </Button>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                   Establish biometric synchronization to seal your sanctuary presence.
+                   {profile.is_verified ? "Your sanctuary presence is sealed." : "Establish biometric synchronization to seal your sanctuary presence."}
                 </TooltipContent>
              </Tooltip>
           </div>
@@ -247,16 +253,35 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics
       {/* Verification Modal Global */}
       <AnimatePresence>
         {showVerification && (
-          <VerificationModal 
-            onClose={() => setShowVerification(false)}
-            onSuccess={async () => {
-              // Seal the audit trail before updating profile status
-              await SanctuaryService.uploadVerificationEvidence(profile.user_id, "BIOMETRIC_SCAN_SUCCESS");
-              await SanctuaryService.verifyProfile(profile.user_id);
-              setShowVerification(false);
-              // Profile refresh handled by parent via Sanctuary data cycle
-            }}
-          />
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-6">
+             <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setShowVerification(false)}
+                className="absolute inset-0 bg-black/95 backdrop-blur-3xl"
+             />
+             <motion.div 
+                initial={{ scale: 0.9, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.9, y: 20 }}
+                className="relative w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-[3.5rem] border border-mat-gold/30 bg-[#0A0A0B] shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
+             >
+                <button 
+                  onClick={() => setShowVerification(false)}
+                  className="absolute top-8 right-8 text-white/20 hover:text-white transition-colors p-2 z-20"
+                >
+                  <X size={24} />
+                </button>
+                <AadhaarVerification 
+                  userId={profile.user_id} 
+                  onVerified={async () => {
+                     await refreshProfile();
+                     setShowVerification(false);
+                  }} 
+                />
+             </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </div>

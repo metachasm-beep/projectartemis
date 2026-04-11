@@ -83,12 +83,13 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 🖼️ HERO PORTRAIT AREA - OPTIMIZED FOR VISIBILITY */}
-      <div className="relative h-[48%] mt-12 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.2rem]">
-        <div className="w-full h-full relative overflow-hidden rounded-t-[1.2rem]">
+      <div className="relative flex-[0_0_48%] min-h-0 mt-12 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.2rem] z-10 flex flex-col">
+        <div className="w-full h-full relative overflow-hidden flex-1 bg-mat-obsidian">
           <img 
             src={profile.img} 
             className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
             alt={profile.name}
+            loading="eager"
           />
         </div>
 
@@ -129,10 +130,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 📜 CONSOLIDATED INTEL */}
-      <div className="flex-1 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative rounded-b-[2rem]">
+      <div className="flex-1 min-h-0 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar">
         
         {/* Bio Inlay */}
-        <div className="mb-6">
+        <div className="mb-6 flex-shrink-0">
            <p className="text-mat-cream/80 text-[11px] leading-relaxed font-light line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>

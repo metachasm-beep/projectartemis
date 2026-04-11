@@ -47,11 +47,25 @@ export const api = {
     }
   },
 
-  verifyIdentity: async (userId: string, aadhaarNumber: string) => {
+  requestAadhaarOtp: async (userId: string, aadhaarNumber: string) => {
     try {
-      const response = await apiClient.post('/verification/aadhaar', {
+      const response = await apiClient.post('/verification/otp/request', {
         user_id: userId,
         aadhaar_number: aadhaarNumber
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error requesting Aadhaar OTP:', error);
+      return { success: false, message: 'OTP Request failed' };
+    }
+  },
+
+  verifyIdentity: async (userId: string, aadhaarNumber: string, otp: string) => {
+    try {
+      const response = await apiClient.post('/verification/verify', {
+        user_id: userId,
+        aadhaar_number: aadhaarNumber,
+        otp: otp
       });
       return response.data;
     } catch (error) {

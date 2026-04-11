@@ -81,6 +81,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
     }
   };
 
+  const handlePaymentApprove = async (userId: string) => {
+    const ok = await AdminService.updateProfileStatus(userId, { payment_status: 'APPROVED' });
+    if (ok) {
+      setProfiles(p => p.map(x => x.user_id === userId ? { ...x, payment_status: 'APPROVED' } : x));
+    }
+  };
+
+  const handlePaymentReject = async (userId: string) => {
+    const ok = await AdminService.updateProfileStatus(userId, { payment_status: 'REJECTED' });
+    if (ok) {
+      setProfiles(p => p.map(x => x.user_id === userId ? { ...x, payment_status: 'REJECTED' } : x));
+    }
+  };
+
   const handleRoleChange = async (userId: string, newRole: 'man' | 'woman' | 'admin') => {
     const ok = await AdminService.updateProfileStatus(userId, { role: newRole });
     if (ok) {
@@ -301,7 +315,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                      <tr>
                         <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase">Identity</th>
                         <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase">Role</th>
-                        <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase">City</th>
+                        <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase">Payment</th>
                         <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase">Tokens</th>
                         <th className="px-6 py-4 text-xs tracking-widest text-mat-slate/60 font-bold uppercase text-right">Actions</th>
                      </tr>
@@ -333,9 +347,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                        <BadgeCheck className="w-4 h-4 text-blue-500 absolute -bottom-1 -right-1 bg-white rounded-full border border-mat-rose/10" />
                                     )}
                                  </div>
-                                 <div>
-                                   <div className="font-semibold text-mat-wine">{p.full_name}</div>
-                                   <div className="text-[10px] text-mat-slate/50 font-mono">{p.user_id}</div>
+                                 <div className="max-w-[120px] overflow-hidden">
+                                   <div className="font-semibold text-mat-wine truncate">{p.full_name}</div>
+                                   <div className="text-[9px] text-mat-slate/50 font-mono truncate">{p.city || 'NO_CITY'}</div>
                                  </div>
                               </td>
                               <td className="px-6 py-4">
@@ -343,30 +357,60 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                     {p.role}
                                  </Badge>
                               </td>
-                              <td className="px-6 py-4 text-mat-slate">{p.city || '—'}</td>
+                              <td className="px-6 py-4">
+                                 <div className="space-y-1">
+                                    <Badge 
+                                      variant="secondary" 
+                                      className={`text-[8px] font-black tracking-widest uppercase ${
+                                        p.payment_status === 'APPROVED' ? 'bg-green-500/10 text-green-600' : 
+                                        p.payment_status === 'PENDING' ? 'bg-mat-gold/10 text-mat-gold animate-pulse' : 
+                                        p.payment_status === 'REJECTED' ? 'bg-red-500/10 text-red-500' : 
+                                        'bg-mat-slate/5 text-mat-slate/40'
+                                      }`}
+                                    >
+                                       {p.payment_status || 'NONE'}
+                                    </Badge>
+                                    {p.payment_utr && (
+                                      <div className="text-[10px] font-mono text-mat-wine/60 font-bold select-all">{p.payment_utr}</div>
+                                    )}
+                                 </div>
+                              </td>
                               <td className="px-6 py-4 text-mat-wine font-semibold">{p.tokens || 0} AURA</td>
                               <td className="px-6 py-4 text-right">
                                  <div className="flex justify-end gap-2">
+                                    {p.payment_status === 'PENDING' && (
+                                      <>
+                                         <button 
+                                           onClick={() => handlePaymentApprove(p.user_id)} 
+                                           className="px-3 py-1 bg-green-500 text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-green-600 transition-all shadow-sm"
+                                         >
+                                            Approve
+                                         </button>
+                                         <button 
+                                           onClick={() => handlePaymentReject(p.user_id)} 
+                                           className="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all shadow-sm"
+                                         >
+                                            Reject
+                                         </button>
+                                      </>
+                                    )}
                                     <button 
                                       onClick={() => setMessageTarget({ id: p.user_id, name: p.full_name })} 
                                       className="px-3 py-1 bg-mat-wine text-white rounded-lg text-[9px] font-black uppercase tracking-widest hover:bg-mat-rose transition-all flex items-center gap-1 shadow-sm"
                                     >
-                                       <MessageSquare className="w-3 h-3" /> Message
+                                       <MessageSquare className="w-3 h-3" />
                                     </button>
                                     <button 
                                       onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} 
                                       className={`px-3 py-1 border rounded-lg text-xs transition-colors flex items-center ${p.is_verified ? 'bg-blue-500/10 border-blue-500/20 text-blue-600 hover:bg-red-50' : 'bg-white border-mat-rose/20 hover:bg-mat-rose/10'}`}
                                     >
-                                       <Shield className="w-3 h-3 mr-1" /> {p.is_verified ? 'Revoke' : 'Verify'}
-                                    </button>
-                                    <button onClick={() => handleRoleChange(p.user_id, 'admin')} className="px-3 py-1 bg-white border border-mat-rose/20 rounded-lg text-xs hover:bg-mat-rose/10 transition-colors flex items-center">
-                                       <ShieldAlert className="w-3 h-3 mr-1" /> Admin
+                                       <Shield className="w-3 h-3" />
                                     </button>
                                     <button 
                                       onClick={() => setItemToDelete(p.user_id)}
-                                      className="px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center justify-center gap-1"
+                                      className="px-3 py-1.5 bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20 rounded-xl text-[10px] font-black tracking-widest uppercase transition-all flex items-center justify-center"
                                     >
-                                      <Trash2 className="w-3 h-3" /> Obliterate
+                                      <Trash2 className="w-3 h-3" />
                                     </button>
                                  </div>
                               </td>

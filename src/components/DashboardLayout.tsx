@@ -9,6 +9,7 @@ import { SovereignBrowsing } from '@/components/SovereignBrowsing';
 import { PaymentScreen } from '@/components/payments/PaymentScreen';
 import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
 import PictureManager from '@/components/dashboards/PictureManager';
+import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { Leaderboard } from '@/components/discovery/Leaderboard';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
@@ -49,13 +50,23 @@ export const DashboardLayout: React.FC = () => {
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
             <motion.div key="discovery" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <Discovery />
+              {profile?.role === 'man' && !profile?.is_verified ? (
+                <AadhaarVerification userId={profile?.user_id || ''} onVerified={() => realAuth.refreshProfile()} />
+              ) : (
+                <Discovery />
+              )}
             </motion.div>
           )}
 
           {activeTab === 'sovereign_browse' && (
             <motion.div key="sovereign" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-               <SovereignBrowsing onStop={() => setActiveTab('profile')} />
+               {profile?.role === 'man' && !profile?.is_verified ? (
+                 <div className="pt-20">
+                   <AadhaarVerification userId={profile?.user_id || ''} onVerified={() => realAuth.refreshProfile()} />
+                 </div>
+               ) : (
+                 <SovereignBrowsing onStop={() => setActiveTab('profile')} />
+               )}
             </motion.div>
           )}
           

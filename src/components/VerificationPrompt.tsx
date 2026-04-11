@@ -57,7 +57,7 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
               : 'bg-matriarch-violetBright text-white hover:bg-matriarch-violetBright/90 shadow-[0_0_30px_rgba(138,99,255,0.3)]'
           }`}
         >
-          Reveal Your Truth <ArrowRight size={14} className="ml-3" />
+          Get Verified <ArrowRight size={14} className="ml-3" />
         </Button>
       </motion.div>
 

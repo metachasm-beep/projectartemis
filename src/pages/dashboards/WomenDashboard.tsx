@@ -16,6 +16,7 @@ import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { FAQ } from '@/components/FAQ';
 import { motion } from 'framer-motion';
 import { sanitizeBio } from '@/utils/trumpData';
+import { SEO_COPY } from '@/content/copy';
 
 interface WomenDashboardProps {
   profile: any;
@@ -34,8 +35,9 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
       {/* Dynamic Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 pb-12 border-b border-mat-rose/20">
         <div className="space-y-4">
+          <h1 className="sr-only">The Inner Sanctuary: Sovereign Dashboard | Matriarch</h1>
           <Badge variant="outline" className="px-4 py-1 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full">The Inner Sanctuary</Badge>
-          <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">Your <br /><span className="text-mat-rose/30">Grace.</span></h1>
+          <div className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-none">Your <br /><span className="text-mat-rose/30">Grace.</span></div>
         </div>
         
         <div className="flex gap-px bg-mat-rose/10 p-px w-full md:w-auto overflow-hidden rounded-[2rem] mat-glass border border-mat-rose/20">

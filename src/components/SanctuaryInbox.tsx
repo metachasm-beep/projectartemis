@@ -10,7 +10,7 @@ import {
   Zap
 } from 'lucide-react';
 import { turso } from '@/lib/turso';
-import { MessagingService, MessagingMatch } from '@/lib/messaging';
+import { MessagingService, type MessagingMatch } from '@/lib/messaging';
 import { Badge } from './ui/badge';
 
 interface InboxProps {

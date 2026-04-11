@@ -5,14 +5,20 @@ import { AuthGate } from '@/components/auth/AuthGate';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
+import { MigrationService } from "./services/MigrationService";
 
 // Lazy load Delhi dating routes
 const SouthDelhi = React.lazy(() => import('./routes/delhi-dating/SouthDelhi'));
 const Gurgaon = React.lazy(() => import('./routes/delhi-dating/Gurgaon'));
 const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
+const VerifyCallback = React.lazy(() => import('./pages/VerifyCallback'));
 
 const App: React.FC = () => {
   const { loading } = useAuthContext();
+
+  useEffect(() => {
+    MigrationService.migratePaymentSchema();
+  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -33,6 +39,11 @@ const App: React.FC = () => {
             <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
             <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
             <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+            <Route path="/verify/callback" element={
+              <React.Suspense fallback={null}>
+                <VerifyCallback />
+              </React.Suspense>
+            } />
             <Route path="*" element={
               <AuthGate>
                 <DashboardLayout />
