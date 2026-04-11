@@ -40,30 +40,36 @@ const App: React.FC = () => {
 
   return (
     <HelmetProvider>
-      <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
-        <BrowserRouter>
-          <SEOProvider 
-            title="MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating" 
-            description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
-            schema={defaultSchema}
-          />
-          <Routes>
-            <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
-            <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
-            <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
-            <Route path="/verify/callback" element={
-              <React.Suspense fallback={null}>
-                <VerifyCallback />
-              </React.Suspense>
-            } />
-            <Route path="*" element={
-              <AuthGate>
-                <DashboardLayout />
-              </AuthGate>
-            } />
-          </Routes>
-        </BrowserRouter>
-      </div>
+      <BrowserRouter>
+        {isBlogSubdomain ? (
+          <React.Suspense fallback={null}>
+            <BlogApp />
+          </React.Suspense>
+        ) : (
+          <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
+            <SEOProvider 
+              title="MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating" 
+              description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
+              schema={defaultSchema}
+            />
+            <Routes>
+              <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
+              <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
+              <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+              <Route path="/verify/callback" element={
+                <React.Suspense fallback={null}>
+                  <VerifyCallback />
+                </React.Suspense>
+              } />
+              <Route path="*" element={
+                <AuthGate>
+                  <DashboardLayout />
+                </AuthGate>
+              } />
+            </Routes>
+          </div>
+        )}
+      </BrowserRouter>
     </HelmetProvider>
   );
 };

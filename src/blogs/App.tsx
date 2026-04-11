@@ -57,7 +57,7 @@ const App: React.FC = () => {
 
   useEffect(() => {
     // Notify window that blog app is ready to remove loader
-    window.postMessage('MATRIARCH_JOURNAL_READY', window.location.origin);
+    window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
   }, []);
 
   return (
