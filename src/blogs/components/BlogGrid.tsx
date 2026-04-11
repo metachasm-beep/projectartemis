@@ -6,7 +6,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const CATEGORIES = ['All', 'Love', 'Relationships', 'Sex', 'Dating'];
 
-const BlogGrid: React.FC = () => {
+interface BlogGridProps {
+  onSelect: (postId: string) => void;
+}
+
+const BlogGrid: React.FC<BlogGridProps> = ({ onSelect }) => {
   const [activeCategory, setActiveCategory] = useState('All');
 
   const filteredPosts = activeCategory === 'All' 
@@ -57,7 +61,7 @@ const BlogGrid: React.FC = () => {
         >
           <AnimatePresence mode='popLayout'>
             {filteredPosts.map((post, index) => (
-              <BlogCard key={post.id} post={post} index={index} />
+              <BlogCard key={post.id} post={post} index={index} onSelect={onSelect} />
             ))}
           </AnimatePresence>
         </motion.div>

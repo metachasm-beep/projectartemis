@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Hero from './components/Hero';
 import BlogGrid from './components/BlogGrid';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import BlogPostView from './components/BlogPostView';
+import { BLOG_POSTS } from './data/posts';
+import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
 
-const Navbar: React.FC = () => (
+const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => (
   <nav className="fixed top-0 w-full z-50 px-6 py-8 flex items-center justify-between pointer-events-none">
     <div className="pointer-events-auto">
-      <a href="/" className="text-white text-xl font-black tracking-tighter hover:text-rose-500 transition-colors">
+      <button onClick={onArchiveClick} className="text-white text-xl font-black tracking-tighter hover:text-rose-500 transition-colors">
         MATRIARCH<span className="text-rose-500">.</span>
-      </a>
+      </button>
     </div>
     <div className="pointer-events-auto hidden md:flex items-center gap-8">
       {['Archive', 'Protocol', 'Identity'].map(item => (
@@ -48,6 +50,12 @@ const Footer: React.FC = () => (
 );
 
 const App: React.FC = () => {
+  const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
+  
+  const selectedPost = useMemo(() => {
+    return BLOG_POSTS.find(p => p.id === selectedPostId);
+  }, [selectedPostId]);
+
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
@@ -60,22 +68,44 @@ const App: React.FC = () => {
     window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
   }, []);
 
+  // Scroll to top when post changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [selectedPostId]);
+
   return (
     <div className="min-h-screen bg-[#030303] selection:bg-rose-500 selection:text-white">
       {/* Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-rose-500 z-[60] origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-rose-500 z-[200] origin-left"
         style={{ scaleX }}
       />
 
-      <Navbar />
+      <Navbar onArchiveClick={() => setSelectedPostId(null)} />
       
       <main>
-        <Hero />
-        <BlogGrid />
+        <AnimatePresence mode="wait">
+          {selectedPost ? (
+            <BlogPostView 
+              key="post"
+              post={selectedPost} 
+              onBack={() => setSelectedPostId(null)} 
+            />
+          ) : (
+            <motion.div
+              key="grid"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Hero />
+              <BlogGrid onSelect={(id) => setSelectedPostId(id)} />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
-      <Footer />
+      {!selectedPost && <Footer />}
 
       {/* Subtle Grain Overlay */}
       <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.03] mix-blend-overlay">

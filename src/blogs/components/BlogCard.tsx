@@ -6,16 +6,18 @@ import PerfectTextWrapper from './PerfectTextWrapper';
 interface BlogCardProps {
   post: Post;
   index: number;
+  onSelect: (postId: string) => void;
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({ post, index }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ post, index, onSelect }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative flex flex-col bg-[#0A0A0A] border border-white/5 rounded-3xl overflow-hidden hover:border-rose-500/30 transition-all hover:shadow-[0_0_40px_rgba(225,29,72,0.1)]"
+      className="group relative flex flex-col bg-[#0A0A0A] border border-white/5 rounded-3xl overflow-hidden hover:border-rose-500/30 transition-all hover:shadow-[0_0_40px_rgba(225,29,72,0.1)] cursor-pointer"
+      onClick={() => onSelect(post.id)}
     >
       {/* Image Section */}
       <div className="relative h-64 overflow-hidden">
@@ -63,10 +65,16 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, index }) => {
         </div>
 
         <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-          <span className="text-xs font-bold text-white uppercase tracking-widest group-hover:translate-x-1 transition-transform inline-flex items-center gap-2">
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelect(post.id);
+            }}
+            className="text-xs font-bold text-white uppercase tracking-widest group-hover:translate-x-1 transition-transform inline-flex items-center gap-2"
+          >
             Read Entry
             <span className="text-rose-500">→</span>
-          </span>
+          </button>
         </div>
       </div>
     </motion.div>

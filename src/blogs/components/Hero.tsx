@@ -1,4 +1,4 @@
-import SafeSpline from './SafeSpline';
+import HeartPulse from './HeartPulse';
 import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
@@ -6,12 +6,9 @@ import { motion } from 'framer-motion';
 const Hero: React.FC = () => {
   return (
     <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
-      {/* Spline Background with Stability Shield */}
+      {/* Local Three.js Heart (Zero 403 Risk) */}
       <div className="absolute inset-0 z-0">
-        <SafeSpline 
-          scene="https://prod.spline.design/JreN0v1oY3Z9vD27/scene.splinecode" 
-          className="w-full h-full"
-        />
+        <HeartPulse />
       </div>
 
       {/* Overlay Gradient */}
