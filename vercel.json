@@ -1,19 +1,6 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "redirects": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "matriarchindia.com"
-        }
-      ],
-      "destination": "https://www.matriarchindia.com/$1",
-      "permanent": true
-    }
-  ],
   "rewrites": [
     {
       "source": "/(.*)",
@@ -26,15 +13,21 @@
       "destination": "/blogs.html"
     },
     {
-      "source": "/blogs/(.*)",
-      "destination": "/blogs.html"
-    },
-    {
       "source": "/((?!assets/|models/|favicon.svg|vite.svg|icons.svg|llms.txt|robots.txt|sitemap.xml|blogs.html).*)",
       "destination": "/index.html"
     }
-
+  ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "matriarchindia.com"
+        }
+      ],
+      "destination": "https://www.matriarchindia.com/$1",
+      "permanent": true
+    }
   ]
 }
-
-
