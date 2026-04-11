@@ -1,5 +1,5 @@
 import React from 'react';
-import Galaxy from './bits/Galaxy';
+import LightRays from './bits/LightRays';
 import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
@@ -8,12 +8,13 @@ import PerfectTextWrapper from './PerfectTextWrapper';
 const Hero: React.FC = () => {
   return (
     <div className="relative h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden bg-[#030303]">
-      <div className="absolute inset-0 opacity-40">
-        <Galaxy 
-          hueShift={330} // Rose/Crimson tones
-          density={1.2}
-          speed={0.8}
-          glowIntensity={0.5}
+      <div className="absolute inset-0 opacity-60">
+        <LightRays 
+          raysColor="#E11D48" // Rose 600
+          raysSpeed={0.5}
+          lightSpread={1.2}
+          rayLength={1.5}
+          mouseInfluence={0.05}
         />
       </div>
 
