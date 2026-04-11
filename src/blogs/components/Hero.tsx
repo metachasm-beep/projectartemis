@@ -1,14 +1,20 @@
-import HeartPulse from './HeartPulse';
+import React from 'react';
+import Galaxy from './bits/Galaxy';
 import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
+import PerfectTextWrapper from './PerfectTextWrapper';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#030303]">
-      {/* Local Three.js Heart (Zero 403 Risk) */}
-      <div className="absolute inset-0 z-0">
-        <HeartPulse />
+    <div className="relative h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden bg-[#030303]">
+      <div className="absolute inset-0 opacity-40">
+        <Galaxy 
+          hueShift={330} // Rose/Crimson tones
+          density={1.2}
+          speed={0.8}
+          glowIntensity={0.5}
+        />
       </div>
 
       {/* Overlay Gradient */}
@@ -66,7 +72,7 @@ const Hero: React.FC = () => {
           <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Established 2026</p>
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
