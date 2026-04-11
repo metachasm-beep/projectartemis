@@ -8,6 +8,7 @@
 !/package.json
 !/package-lock.json
 !/index.html
+!/blogs.html
 !/vite.config.ts
 !/tsconfig.json
 !/tsconfig.app.json
