@@ -4,6 +4,7 @@ import BlogGrid from './components/BlogGrid';
 import BlogPostView from './components/BlogPostView';
 import { BLOG_POSTS } from './data/posts';
 import { motion, useScroll, useSpring, AnimatePresence } from 'framer-motion';
+import SplashCursor from './components/bits/SplashCursor';
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => (
   <nav className="fixed top-0 w-full z-50 px-6 py-8 flex items-center justify-between pointer-events-none">
@@ -75,6 +76,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#030303] selection:bg-rose-500 selection:text-white">
+      <SplashCursor />
       {/* Progress Bar */}
       <motion.div
         className="fixed top-0 left-0 right-0 h-1 bg-rose-500 z-[200] origin-left"
