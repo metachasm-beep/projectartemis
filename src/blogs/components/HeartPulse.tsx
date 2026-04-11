@@ -1,58 +1,84 @@
 import React, { useRef, useMemo } from 'react';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, MeshDistortMaterial, Sphere, MeshGradientMaterial } from '@react-three/drei';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 
 const HeartShape: React.FC = () => {
   const meshRef = useRef<THREE.Mesh>(null);
+  const outerGlowRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<any>(null);
   
-  // Custom shader uniforms for that "Luxury" feel
-  const uniforms = useMemo(() => ({
-    uTime: { value: 0 },
-    uColor: { value: new THREE.Color('#E11D48') }, // Matriarch Rose
-    uGlowColor: { value: new THREE.Color('#FB7185') },
-  }), []);
+  const { mouse } = useThree();
+  
+  // Smooth mouse movement (lerping)
+  const targetRotation = useRef({ x: 0, y: 0 });
 
-  useFrame((state) => {
-    if (meshRef.current) {
+  useFrame((state, delta) => {
+    if (meshRef.current && outerGlowRef.current) {
       const t = state.clock.getElapsedTime();
-      meshRef.current.rotation.y = t * 0.2;
-      meshRef.current.position.y = Math.sin(t * 1.5) * 0.1;
       
-      // Update uniforms if we were using a custom shader material
-      // uniforms.uTime.value = t;
+      // 💓 Biologically-accurate "Lub-Dub" Heartbeat Formula
+      // Two quick pulses followed by a pause
+      const bpm = 60;
+      const bps = bpm / 60;
+      const cycleTime = t * bps * Math.PI * 2;
+      
+      // The "Lub" (first beat) and "Dub" (second beat)
+      const lub = Math.pow(Math.sin(cycleTime), 10) * 0.15;
+      const dub = Math.pow(Math.sin(cycleTime - 0.5), 10) * 0.1;
+      const heartbeat = lub + dub;
+      
+      const baseScale = 1.2;
+      const currentScale = baseScale + heartbeat;
+      
+      meshRef.current.scale.set(currentScale, currentScale, currentScale);
+      outerGlowRef.current.scale.set(currentScale * 1.05, currentScale * 1.05, currentScale * 1.05);
+
+      // ✨ Dynamic Glow Intensity sync with heartbeat
+      if (materialRef.current) {
+        materialRef.current.emissiveIntensity = 1.0 + heartbeat * 8;
+      }
+
+      // 🖱️ Mouse Reactive Tilt (Lerped)
+      targetRotation.current.y = THREE.MathUtils.lerp(targetRotation.current.y, mouse.x * 0.4, delta * 4);
+      targetRotation.current.x = THREE.MathUtils.lerp(targetRotation.current.x, -mouse.y * 0.4, delta * 4);
+      
+      meshRef.current.rotation.y = targetRotation.current.y + t * 0.1; // Add subtle constant spin
+      meshRef.current.rotation.x = targetRotation.current.x;
     }
   });
 
   return (
     <Float
-      speed={2} 
-      rotationIntensity={0.5} 
-      floatIntensity={0.5}
+      speed={1.5} 
+      rotationIntensity={0.2} 
+      floatIntensity={0.4}
     >
       <mesh ref={meshRef}>
-        {/* We use a distorted sphere to create an organic, morphing "heart-like" core */}
-        <Sphere args={[1.2, 64, 64]}>
+        <Sphere args={[1, 128, 128]}>
           <MeshDistortMaterial
-            color="#000000"
+            ref={materialRef}
+            color="#050505"
             emissive="#E11D48"
-            emissiveIntensity={1.5}
-            distort={0.4}
+            emissiveIntensity={1.2}
+            distort={0.35}
             speed={2}
-            roughness={0.1}
-            metalness={0.8}
+            roughness={0.05}
+            metalness={0.9}
           />
         </Sphere>
         
-        {/* Outer Glow / Aura */}
-        <Sphere args={[1.3, 32, 32]}>
-          <meshBasicMaterial 
-            color="#E11D48" 
-            transparent 
-            opacity={0.1} 
-            wireframe
-          />
-        </Sphere>
+        {/* Outer Aura Glow */}
+        <mesh ref={outerGlowRef}>
+          <Sphere args={[1, 32, 32]}>
+            <meshBasicMaterial 
+              color="#E11D48" 
+              transparent 
+              opacity={0.08} 
+              wireframe
+            />
+          </Sphere>
+        </mesh>
       </mesh>
     </Float>
   );
@@ -61,15 +87,14 @@ const HeartShape: React.FC = () => {
 const HeartPulse: React.FC = () => {
   return (
     <div className="w-full h-full bg-[#030303]">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} intensity={1} color="#E11D48" />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#FB7185" />
+      <Canvas camera={{ position: [0, 0, 4], fov: 45 }}>
+        <ambientLight intensity={0.4} />
+        <pointLight position={[10, 10, 10]} intensity={2} color="#E11D48" />
+        <pointLight position={[-10, -10, -10]} intensity={1} color="#FB7185" />
         
         <HeartShape />
         
-        {/* Post-processing-like glow using standard Three.js fog and lights */}
-        <fog attach="fog" args={['#030303', 5, 15]} />
+        <fog attach="fog" args={['#030303', 4, 12]} />
       </Canvas>
       
       {/* Handshake: Notify system that the local 3D app is ready */}

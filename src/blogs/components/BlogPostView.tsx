@@ -1,5 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Post } from '../data/posts';
 import { DUMMY_ASPIRANTS } from '../../data/dummyProfiles';
 import PerfectTextWrapper from './PerfectTextWrapper';
@@ -10,16 +12,35 @@ interface BlogPostViewProps {
 }
 
 const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
+  const [markdown, setMarkdown] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(true);
+
   const author = useMemo(() => {
     return DUMMY_ASPIRANTS.find(a => a.id === post.authorId);
   }, [post.authorId]);
+
+  // Fetch the long-form content from the markdown file
+  useEffect(() => {
+    setLoading(true);
+    fetch(post.markdownUrl)
+      .then(res => res.text())
+      .then(text => {
+        setMarkdown(text);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error("Failed to load article content:", err);
+        setMarkdown("Error loading content. Please return to the archive.");
+        setLoading(false);
+      });
+  }, [post.markdownUrl]);
 
   return (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] bg-[#030303] overflow-y-auto pt-20 pb-20"
+      className="fixed inset-0 z-[100] bg-[#030303] overflow-y-auto pt-20 pb-20 scroll-smooth"
     >
       {/* Top Navigation Bar */}
       <div className="fixed top-0 left-0 right-0 z-[110] p-6 flex justify-between items-center bg-gradient-to-b from-[#030303] to-transparent pointer-events-none">
@@ -70,28 +91,32 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
           <img 
             src={post.image} 
             alt={post.title} 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover grayscale brightness-50 contrast-125"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent opacity-60" />
         </div>
 
         {/* Article Body */}
-        <article className="prose prose-invert prose-rose max-w-none">
-          <div className="text-white/80 text-lg md:text-xl leading-relaxed font-light space-y-8">
-            {post.content.split('\n\n').map((paragraph, i) => (
-              <p key={i}>
-                {paragraph}
-              </p>
-            ))}
+        {loading ? (
+          <div className="space-y-4">
+            <div className="h-4 bg-white/5 rounded w-3/4 animate-pulse" />
+            <div className="h-4 bg-white/5 rounded w-1/2 animate-pulse" />
+            <div className="h-4 bg-white/5 rounded w-5/6 animate-pulse" />
           </div>
-        </article>
+        ) : (
+          <article className="prose prose-invert prose-rose max-w-none prose-p:text-white/70 prose-p:leading-relaxed prose-p:text-lg prose-headings:text-white prose-headings:font-black prose-headings:tracking-tighter prose-strong:text-white prose-blockquote:border-rose-500 prose-blockquote:bg-rose-500/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {markdown}
+            </ReactMarkdown>
+          </article>
+        )}
 
         {/* Footer Navigation */}
         <footer className="mt-24 pt-12 border-t border-white/5 text-center">
           <p className="text-white/20 text-xs uppercase tracking-[0.4em] mb-8">End of Entry</p>
           <button 
             onClick={onBack}
-            className="px-12 py-4 rounded-full border border-white/10 bg-white/5 text-white/60 text-sm font-black uppercase tracking-widest hover:text-white hover:bg-rose-500 hover:border-rose-500 transition-all"
+            className="px-12 py-4 rounded-full border border-white/10 bg-white/5 text-white/60 text-sm font-black uppercase tracking-widest hover:text-white hover:bg-rose-500 hover:border-rose-500 transition-all shadow-[0_0_20px_rgba(225,29,72,0)] hover:shadow-[0_0_20px_rgba(225,29,72,0.3)]"
           >
             Return to Sanctuary
           </button>
