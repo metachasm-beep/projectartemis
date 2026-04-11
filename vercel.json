@@ -1,22 +1,6 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "blogs.matriarchindia.com"
-        }
-      ],
-      "destination": "/blogs.html"
-    },
-    {
-      "source": "/((?!assets/|models/|favicon.svg|vite.svg|icons.svg|llms.txt|robots.txt|sitemap.xml|blogs.html).*)",
-      "destination": "/index.html"
-    }
-  ],
   "redirects": [
     {
       "source": "/(.*)",
@@ -28,6 +12,12 @@
       ],
       "destination": "https://www.matriarchindia.com/$1",
       "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }

@@ -12,19 +12,31 @@ const SouthDelhi = React.lazy(() => import('./routes/delhi-dating/SouthDelhi'));
 const Gurgaon = React.lazy(() => import('./routes/delhi-dating/Gurgaon'));
 const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
 const VerifyCallback = React.lazy(() => import('./pages/VerifyCallback'));
+const BlogApp = React.lazy(() => import('./blogs/App'));
 
 const App: React.FC = () => {
   const { loading } = useAuthContext();
+  const hostname = window.location.hostname;
+  const isBlogSubdomain = hostname.startsWith('blogs.');
 
   useEffect(() => {
     MigrationService.migratePaymentSchema();
   }, []);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && !isBlogSubdomain) {
       window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
     }
-  }, [loading]);
+  }, [loading, isBlogSubdomain]);
+
+  // 🌹 Branching Logic: Serve the Blog subdomain or the Main PWA
+  if (isBlogSubdomain) {
+    return (
+      <React.Suspense fallback={null}>
+        <BlogApp />
+      </React.Suspense>
+    );
+  }
 
   return (
     <HelmetProvider>
