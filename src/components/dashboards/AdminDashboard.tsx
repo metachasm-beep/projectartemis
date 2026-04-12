@@ -333,17 +333,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                            >
                               <td className="px-6 py-4 flex items-center space-x-4">
                                  <div className="relative">
-                                     <div className="w-10 h-10 border border-mat-rose/20 rounded-full overflow-hidden flex items-center justify-center bg-mat-cream text-mat-wine font-bold">
-                                        {p.photos?.[0] ? (
-                                           <img 
-                                             src={p.photos[0]} 
-                                             referrerPolicy="no-referrer"
-                                             className="w-full h-full object-cover" 
-                                             onError={(e) => {
-                                                e.currentTarget.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}`;
-                                             }}
-                                           />
-                                         ) : (p.full_name?.[0] || '?')}
+                                     <div className="w-10 h-10 border border-mat-rose/20 rounded-full overflow-hidden flex items-center justify-center bg-mat-cream text-mat-wine font-bold group/avatar">
+                                         {p.photos?.length ? (
+                                            <img 
+                                              src={p.photos[0]} 
+                                              referrerPolicy="no-referrer"
+                                              crossOrigin="anonymous"
+                                              className="w-full h-full object-cover" 
+                                              onError={(e) => {
+                                                 const target = e.currentTarget;
+                                                 // Try the second photo if it exists and hasn't been tried yet
+                                                 if (p.photos && p.photos[1] && target.src !== p.photos[1]) {
+                                                   target.src = p.photos[1];
+                                                 } else {
+                                                   target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}`;
+                                                 }
+                                              }}
+                                            />
+                                          ) : (p.full_name?.[0] || '?')}
                                      </div>
                                     {p.is_verified && (
                                        <BadgeCheck className="w-4 h-4 text-blue-500 absolute -bottom-1 -right-1 bg-white rounded-full border border-mat-rose/10" />

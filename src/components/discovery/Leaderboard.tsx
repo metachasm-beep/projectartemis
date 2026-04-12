@@ -218,6 +218,7 @@ export const Leaderboard: React.FC = () => {
                                    <img 
                                      src={user.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.user_id}`} 
                                      referrerPolicy="no-referrer"
+                                     crossOrigin="anonymous"
                                      className="w-full h-full object-cover" 
                                      alt="Thumb" 
                                    />

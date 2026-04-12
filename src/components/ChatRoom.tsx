@@ -143,6 +143,7 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ otherUserId, onBack }) => {
                <img 
                  src={JSON.parse(otherUser?.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`} 
                  referrerPolicy="no-referrer"
+                 crossOrigin="anonymous"
                  alt="" 
                  className="w-full h-full object-cover" 
                />

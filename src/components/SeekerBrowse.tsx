@@ -204,6 +204,7 @@ export const SeekerBrowse: React.FC = () => {
                       <img 
                         src={JSON.parse(selectedProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} 
                         referrerPolicy="no-referrer"
+                        crossOrigin="anonymous"
                         alt="" 
                         className="w-full h-full object-cover grayscale brightness-105" 
                       />

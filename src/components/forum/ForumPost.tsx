@@ -73,6 +73,7 @@ export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => voi
                 <img 
                   src={post.author_avatar} 
                   referrerPolicy="no-referrer"
+                  crossOrigin="anonymous"
                   alt={post.author_name} 
                   className={cn("w-8 h-8 rounded-full object-cover ring-2", isAdminAuthor ? "ring-mat-gold" : "ring-mat-gold/20")} 
                 />
