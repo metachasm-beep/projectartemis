@@ -114,7 +114,7 @@ const HeroFold: React.FC = () => {
             </StarBorder>
           </button>
           
-          <button onClick={() => window.location.href = '/blogs'}>
+          <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')}>
             <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
               READ JOURNALS
             </StarBorder>

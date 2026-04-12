@@ -2,18 +2,17 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Fold from './Fold';
 import { ShieldCheck, MessageSquare, Lock, EyeOff, ChevronRight } from 'lucide-react';
-import { Threads } from '@/components/bits/Threads';
+import DotGrid from '@/components/bits/DotGrid';
 
 const SystemIntegrityFold: React.FC = () => {
   return (
     <Fold id="integrity" className="bg-mat-obsidian border-b border-white/5 overflow-hidden relative min-h-[100dvh] flex items-center justify-center">
-      {/* Background Layer: Subtle Threads Animation */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <Threads 
-          color={[0.75, 0.63, 0.42]} // Subtle Matriarch Gold ([191, 160, 106] / 255)
-          amplitude={1.2}
-          distance={0.3}
-          enableMouseInteraction={false}
+      {/* Background Layer: Lightweight CSS dot pattern — no WebGL */}
+      <div className="absolute inset-0 opacity-[0.12] pointer-events-none">
+        <DotGrid
+          dotSize={3}
+          gap={28}
+          baseColor="#BFA06A"
         />
       </div>
 
