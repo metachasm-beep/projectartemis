@@ -109,14 +109,27 @@ export const AdminCommunicationsHub: React.FC = () => {
                                     src={user.img} 
                                     referrerPolicy="no-referrer" 
                                     crossOrigin="anonymous"
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all"
+                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all font-bold"
                                     onError={(e) => {
                                       const target = e.currentTarget;
+                                      const currentSrc = target.src || '';
+                                      
+                                      // STAGE 1: Google Re-format
+                                      if (currentSrc.includes('googleusercontent.com') && !currentSrc.includes('sz=300')) {
+                                        const base = currentSrc.split('=')[0];
+                                        target.src = `${base}=s300`;
+                                        return;
+                                      }
+
+                                      // STAGE 2: Photo Array Fallback
                                       if (photos.length > 1 && target.src !== photos[1]) {
                                         target.src = photos[1];
-                                      } else {
-                                        target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}`;
+                                        return;
                                       }
+
+                                      // STAGE 3: Premium DiceBear
+                                      target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}&backgroundColor=ffdfbf,ffd5dc,d1d4f9`;
+                                      target.removeAttribute('crossorigin');
                                     }}
                                   />
                                </div>

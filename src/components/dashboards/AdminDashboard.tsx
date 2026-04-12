@@ -342,12 +342,26 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                               className="w-full h-full object-cover" 
                                               onError={(e) => {
                                                  const target = e.currentTarget;
-                                                 // Try the second photo if it exists and hasn't been tried yet
-                                                 if (p.photos && p.photos[1] && target.src !== p.photos[1]) {
-                                                   target.src = p.photos[1];
-                                                 } else {
-                                                   target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}`;
+                                                 const currentSrc = target.src || '';
+                                                 
+                                                 // STAGE 1: Check for Google URL and attempt re-format
+                                                 if (currentSrc.includes('googleusercontent.com') && !currentSrc.includes('sz=300')) {
+                                                   // Remove standard size parameters (=s96-c etc) and try high-res sz=300
+                                                   const base = currentSrc.split('=')[0];
+                                                   target.src = `${base}=s300`;
+                                                   return;
                                                  }
+
+                                                 // STAGE 2: Try second photo if it exists
+                                                 if (p.photos && p.photos[1] && currentSrc !== p.photos[1]) {
+                                                   target.src = p.photos[1];
+                                                   return;
+                                                 }
+
+                                                 // STAGE 3: Final generated fallback
+                                                 target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}&backgroundColor=ffdfbf,ffd5dc,d1d4f9&eyes=default,happy,surprised&mouth=default,smile,twinkle`;
+                                                 // Disable crossOrigin for the final fallback to prevent any further blocking
+                                                 target.removeAttribute('crossorigin');
                                               }}
                                             />
                                           ) : (p.full_name?.[0] || '?')}
