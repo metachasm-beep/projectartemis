@@ -13,6 +13,7 @@ interface ParticleCardProps {
   clickEffect?: boolean;
   enableMagnetism?: boolean;
   disableAnimations?: boolean;
+  onClick?: () => void;
 }
 
 export interface MagicBentoProps {
@@ -77,6 +78,7 @@ const ParticleCard: React.FC<ParticleCardProps> = ({
   clickEffect = true,
   enableMagnetism = false,
   disableAnimations = false,
+  onClick,
 }) => {
   const ref = useRef<HTMLDivElement>(null);
   const particlesRef = useRef<HTMLDivElement[]>([]);
@@ -169,7 +171,12 @@ const ParticleCard: React.FC<ParticleCardProps> = ({
   }, [spawnParticles, clearParticles, disableAnimations, enableTilt, enableMagnetism, clickEffect, glowColor]);
 
   return (
-    <div ref={ref} className={`${className} relative overflow-hidden`} style={{ ...style, position: 'relative', overflow: 'hidden' }}>
+    <div
+      ref={ref}
+      className={`${className} relative overflow-hidden`}
+      style={{ ...style, position: 'relative', overflow: 'hidden' }}
+      onClick={onClick}
+    >
       {children}
     </div>
   );
@@ -321,11 +328,9 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                   disableAnimations={shouldDisable}
                   onClick={card.onClick}
                 >
-                  {/* inner click target for firing onClick */}
-                  <div className="absolute inset-0 z-10" onClick={card.onClick} />
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-400/60 relative z-20">{card.label}</span>
-                  {card.content && <div className="relative z-20 flex-1">{card.content}</div>}
-                  <div className="relative z-20">
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-400/60">{card.label}</span>
+                  {card.content && <div className="flex-1">{card.content}</div>}
+                  <div>
                     <h3 className="text-lg font-black tracking-tight text-white mb-2 leading-tight">{card.title}</h3>
                     <p className="text-xs text-white/40 leading-relaxed line-clamp-3">{card.description}</p>
                   </div>
