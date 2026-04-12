@@ -1,123 +1,115 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-import uuid
-from app.supabase import supabase_client
+from app.db.turso import turso_client
+from datetime import datetime
+import json
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
 class BanRequest(BaseModel):
-    user_id: uuid.UUID
+    user_id: str
     reason: str
 
 class TakedownRequest(BaseModel):
-    user_id: uuid.UUID
+    user_id: str
     content_type: str # 'photos', 'bio', 'all'
     reason: str
 
 @router.post("/ban-user")
 async def ban_user(request: BanRequest):
     """
-    Matriarch Council: Permanent ban. 
-    Disables the user in public.users and shadowbans in rank profiles.
+    Matriarch Council: Permanent ban on the Registry.
     """
-    # 1. Disable User record
-    supabase_client.table("users").update({
-        "is_active": False,
-        "is_banned": True
-    }).eq("id", str(request.user_id)).execute()
+    # 1. Disable Profile and reset ranking
+    await turso_client.execute(
+        "UPDATE profiles SET onboarding_status = 'BANNED', rank_score = 0, points = 0 WHERE user_id = ?",
+        [request.user_id]
+    )
 
-    # 2. Shadowban in male_rank_profiles (if exists)
-    supabase_client.table("male_rank_profiles").update({
-        "is_shadowbanned": True,
-        "is_visible": False
-    }).eq("user_id", str(request.user_id)).execute()
+    # 2. Update specific male rank profile visibility
+    await turso_client.execute(
+        "UPDATE male_rank_profiles SET rank_score = 0 WHERE user_id = ?",
+        [request.user_id]
+    )
 
-    # 3. Log the action for regulatory audit
-    supabase_client.table("reports").insert({
-        "reported_id": str(request.user_id),
-        "reason": f"ADMIN_BAN: {request.reason}",
-        "status": "resolved"
-    }).execute()
+    # 3. Log the audit event
+    report_id = f"ban_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO reports (id, reported_id, reason, status) VALUES (?, ?, ?, 'resolved')",
+        [report_id, request.user_id, f"ADMIN_BAN: {request.reason}"]
+    )
 
     return {"status": "banned", "user_id": request.user_id}
 
 @router.post("/takedown")
 async def takedown_content(request: TakedownRequest):
     """
-    Matriarch Council: Forced content removal.
+    Council Judgment: Forceful content scrub.
     """
-    update_data = {}
+    sql = "UPDATE profiles SET updated_at = CURRENT_TIMESTAMP"
+    params = []
+    
     if request.content_type == 'photos':
-        update_data = {"photos": []}
+        sql += ", photos = '[]'"
     elif request.content_type == 'bio':
-        update_data = {"bio": "[CONTENT REMOVED BY MODERATION]"}
+        sql += ", bio = '[CONTENT REMOVED BY MODERATION]'"
     elif request.content_type == 'all':
-        update_data = {"photos": [], "bio": "[ACCOUNT SUSPENDED]"}
+        sql += ", photos = '[]', bio = '[ACCOUNT SUSPENDED]'"
 
-    if update_data:
-        supabase_client.table("profiles").update(update_data).eq("user_id", str(request.user_id)).execute()
+    sql += " WHERE user_id = ?"
+    params.append(request.user_id)
+
+    await turso_client.execute(sql, params)
 
     # Log forensic event
-    supabase_client.table("reports").insert({
-        "reported_id": str(request.user_id),
-        "reason": f"ADMIN_TAKEDOWN ({request.content_type}): {request.reason}",
-        "status": "resolved"
-    }).execute()
+    report_id = f"td_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO reports (id, reported_id, reason, status) VALUES (?, ?, ?, 'resolved')",
+        [report_id, request.user_id, f"TAKEDOWN ({request.content_type}): {request.reason}"]
+    )
 
     return {"status": "takedown_complete"}
 
 @router.get("/profiles")
 async def get_all_profiles():
-    """
-    Steward View: Fetch all profiles for visual curation.
-    """
-    res = supabase_client.table("profiles").select("user_id, full_name, photos, role, created_at").order("created_at", desc=True).execute()
-    return res.data
+    """Steward view of all Registry identities."""
+    res = await turso_client.execute("SELECT user_id, full_name, photos, role, created_at FROM profiles ORDER BY created_at DESC")
+    return res
 
 @router.delete("/user/{user_id}")
-async def hard_delete_user(user_id: uuid.UUID):
-    """
-    Council Judgment: Permanent eviction of an identity.
-    """
-    # 1. Delete from profiles (cascades or manual depending on schema)
-    supabase_client.table("profiles").delete().eq("user_id", str(user_id)).execute()
-    
-    # 2. Delete from users (The root record)
-    supabase_client.table("users").delete().eq("id", str(user_id)).execute()
-
-    # 3. Cleanup specific rank tables if applicable
-    supabase_client.table("male_rank_profiles").delete().eq("user_id", str(user_id)).execute()
-
+async def hard_delete_user(user_id: str):
+    """Permanent eviction from the Registry."""
+    # SQLite/LibSQL with ON DELETE CASCADE will handle resonances/events if foreign keys are set
+    await turso_client.execute("DELETE FROM profiles WHERE user_id = ?", [user_id])
     return {"status": "evicted", "user_id": user_id}
 
 @router.post("/bulk-dedupe")
 async def bulk_dedupe():
-    """
-    Purge Protocol: Automated removal of visual asset clones.
-    Keeps the oldest profile for every unique photo set.
-    """
-    # This is a heavy operation, effectively mirroring the script logic I used earlier.
-    # In a production environment, this would be an background task.
-    profiles = supabase_client.table("profiles").select("user_id, photos, created_at").execute().data
+    """Purge Protocol: Automated removal of visual asset clones."""
+    # Fetch all with photos
+    profiles = await turso_client.execute("SELECT user_id, photos, created_at FROM profiles WHERE role = 'man'")
     
     photo_map = {}
     deleted_count = 0
     
     for p in profiles:
-        photo_url = p['photos'][0] if p['photos'] and len(p['photos']) > 0 else None
+        try:
+            photos = json.loads(p.get("photos", "[]"))
+            photo_url = photos[0] if photos else None
+        except:
+            photo_url = None
+            
         if not photo_url: continue
         
         if photo_url in photo_map:
-            # Duplicate found. Check which one is older.
             existing = photo_map[photo_url]
+            # Keep the oldest
             if p['created_at'] < existing['created_at']:
-                # New one is older? Keep this and delete the other.
-                await hard_delete_user(uuid.UUID(existing['user_id']))
+                await hard_delete_user(existing['user_id'])
                 photo_map[photo_url] = p
                 deleted_count += 1
             else:
-                # Existing is older. Delete current.
-                await hard_delete_user(uuid.UUID(p['user_id']))
+                await hard_delete_user(p['user_id'])
                 deleted_count += 1
         else:
             photo_map[photo_url] = p

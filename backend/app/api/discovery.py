@@ -1,16 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
 from pydantic import BaseModel
-from app.supabase import supabase_client
-from app.models.user import UserRole, Profile
-from datetime import datetime, date, timezone
-import uuid
+from app.db.turso import turso_client
+from app.core.ranking import ranking_engine
+from datetime import datetime, date
+import json
 
 router = APIRouter(prefix="/discovery", tags=["discovery"])
 
 class DiscoveryResponse(BaseModel):
-    id: uuid.UUID
-    user_id: uuid.UUID
+    user_id: str
+    id: str # profile id
     full_name: Optional[str]
     bio: Optional[str]
     avatar_url: Optional[str]
@@ -18,193 +18,134 @@ class DiscoveryResponse(BaseModel):
     city: Optional[str]
     aadhaar_verified: bool
     rank_score: float
+    rank_tier_name: str
     is_new: bool = False
-    trust_score: int = 0
-    last_audited: Optional[str] = None
 
 class SelectionRequest(BaseModel):
-    man_id: uuid.UUID
+    man_id: str
     action: str # 'match', 'skip', 'save'
 
 class UnlockFilterRequest(BaseModel):
-    user_id: uuid.UUID
-    unlock_type: str # 'session' (10 pts) or 'day' (50 pts)
+    user_id: str
+    unlock_type: str # 'session' or 'day'
 
 @router.get("/potential-matches", response_model=List[DiscoveryResponse])
 async def get_potential_matches(
-    user_id: uuid.UUID, 
+    user_id: str, 
     limit: int = 20, 
     offset: int = 0,
-    min_rank: Optional[float] = None,
     verified_only: bool = False
 ):
     """
-    Discovery Engine 2.0:
-    Step 1: Eligibility Filter (blocked, matched, skipped)
-    Step 2: Rank Ordering
-    Step 3: Feed Balancing (Freshness)
-    Step 4: Delivery (Pagination)
+    Discovery Engine 3.0 (Turso Powered):
+    Fetches top-ranked aspirants not yet matched or skipped.
     """
     # 1. Verify User Role
-    user_res = supabase_client.table("users").select("role").eq("id", str(user_id)).execute()
-    if not user_res.data:
+    user_res = await turso_client.execute("SELECT role FROM profiles WHERE user_id = ?", [user_id])
+    if not user_res:
         raise HTTPException(status_code=404, detail="Matriarch user not found")
     
-    role = user_res.data[0]["role"]
-    if role != UserRole.woman:
-        return [] 
+    if user_res[0].get("role") != "woman":
+         return []
 
-    # 2. Get Step 1 Filters (IDs to exclude)
-    # Exclude matched
-    matches_res = supabase_client.table("matches").select("man_id").eq("woman_id", str(user_id)).execute()
-    matched_ids = {item["man_id"] for item in matches_res.data}
+    # 2. Get Exclusions (already matched or skipped)
+    matches = await turso_client.execute("SELECT man_id FROM resonances WHERE woman_id = ?", [user_id])
+    skips = await turso_client.execute("SELECT man_id FROM selection_events WHERE woman_id = ? AND action = 'skip'", [user_id])
     
-    # Exclude skipped
-    skips_res = supabase_client.table("selection_events").select("man_id").eq("woman_id", str(user_id)).eq("action", "skip").execute()
-    skipped_ids = {item["man_id"] for item in skips_res.data}
-    
-    # Exclude blocks
-    blocks_res = supabase_client.table("blocks").select("blocked_id").eq("blocker_id", str(user_id)).execute()
-    blocked_ids = {item["blocked_id"] for item in blocks_res.data}
-    
-    # Exclude self (though filter by role does this, good for safety)
-    exclude_ids = matched_ids.union(skipped_ids).union(blocked_ids)
+    exclude_ids = [m.get("man_id") for m in matches] + [s.get("man_id") for s in skips]
 
-    if min_rank is not None:
-        query = query.gte("rank_score", min_rank)
+    # 3. Primary Query for Men
+    sql = "SELECT * FROM profiles WHERE role = 'man'"
+    params = []
     
-    response = query.execute()
+    if verified_only:
+        sql += " AND aadhaar_verified = 1"
     
-    # 4. Filter and Apply Step 3: Feed Balancing (Freshness)
+    if exclude_ids:
+        placeholders = ",".join(["?"] * len(exclude_ids))
+        sql += f" AND user_id NOT IN ({placeholders})"
+        params.extend(exclude_ids)
+
+    sql += " ORDER BY rank_score DESC LIMIT ? OFFSET ?"
+    params.extend([limit, offset])
+
+    results = await turso_client.execute(sql, params)
+    
     potential_matches = []
-    now = datetime.now(timezone.utc)
+    today = date.today()
     
-    for item in response.data:
-        p_user_id = item["user_id"]
-        if p_user_id in exclude_ids:
-            continue
-            
-        profile = item["profiles"]
-        
-        # 3.5 Verified Only Filter
-        if verified_only and not profile.get("aadhaar_verified"):
-            continue
-        
-        # Freshness Check
-        created_at_str = profile.get("created_at")
-        is_new = False
-        if created_at_str:
-            created_at = datetime.fromisoformat(created_at_str.replace('Z', '+00:00'))
-            is_new = (now - created_at).days < 7
-        
+    for p in results:
         # Calculate Age
-        age = None
-        if profile.get("date_of_birth"):
-            dob = date.fromisoformat(profile["date_of_birth"])
-            today = date.today()
-            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-
-        # Step 3: Matriarch Rank Boost (Freshness + Trust)
-        trust_val = profile.get("trust_score", 0)
-        boosted_rank = item["rank_score"] + (10.0 if is_new else 0.0) + (trust_val / 5.0)
-
+        p_age = None
+        dob_str = p.get("date_of_birth")
+        if dob_str:
+            try:
+                dob = date.fromisoformat(dob_str)
+                p_age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+            except:
+                pass
+        
+        tier = ranking_engine.get_tier_by_score(p.get("rank_score", 0.0))
+        
         potential_matches.append(DiscoveryResponse(
-            id=profile["id"],
-            user_id=p_user_id,
-            full_name=profile["full_name"],
-            bio=profile["bio"],
-            avatar_url=profile["avatar_url"],
-            age=age,
-            city=profile["city"],
-            aadhaar_verified=profile["aadhaar_verified"],
-            rank_score=boosted_rank,
-            is_new=is_new,
-            trust_score=trust_val,
-            last_audited=profile.get("last_audited")
+            user_id=p["user_id"],
+            id=p["user_id"], # In Turso schema, user_id is the primary identifier for profile
+            full_name=p.get("full_name"),
+            bio=p.get("bio"),
+            avatar_url=p.get("photos", "[]"), # Note: frontend expect string or array
+            age=p_age,
+            city=p.get("city"),
+            aadhaar_verified=bool(p.get("aadhaar_verified")),
+            rank_score=p.get("rank_score", 0.0),
+            rank_tier_name=tier.name
         ))
 
-    # Re-sort after freshness boost
-    potential_matches.sort(key=lambda x: x.rank_score, reverse=True)
-
-    # Step 4: Final Feed Delivery (Pagination)
-    return potential_matches[offset : offset + limit]
+    return potential_matches
 
 @router.post("/select")
-async def select_petitioner(request: SelectionRequest, woman_id: uuid.UUID):
-    """
-    Matriarch selects, skips, or saves a Petitioner.
-    If 'match', an active match is created in 'none' communication mode.
-    """
-    # 1. Verify Role
-    user_res = supabase_client.table("users").select("role").eq("id", str(woman_id)).execute()
-    if not user_res.data or user_res.data[0]["role"] != UserRole.woman:
-        raise HTTPException(status_code=403, detail="Only Matriarchs can initiate selections")
+async def select_petitioner(request: SelectionRequest, woman_id: str):
+    """Refined selection logic using Turso ledger."""
+    
+    # 1. Record Event
+    event_id = f"sel_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO selection_events (id, woman_id, man_id, action) VALUES (?, ?, ?, ?)",
+        [event_id, woman_id, request.man_id, request.action]
+    )
 
-    # 2. Record Discovery Action (replaces/augments selection_events)
-    # This feeds into the Step 1 filtering logic.
-    supabase_client.table("discovery_actions").insert({
-        "woman_id": str(woman_id),
-        "man_id": str(request.man_id),
-        "action_type": request.action
-    }).execute()
-
-    # 3. Create Match if 'match' action
+    # 2. Handle Match
     if request.action == "match":
-        # Check if match already exists to avoid conflict
-        match_exists = supabase_client.table("matches") \
-            .select("*") \
-            .eq("woman_id", str(woman_id)) \
-            .eq("man_id", str(request.man_id)) \
-            .execute()
-        
-        if not match_exists.data:
-             # Create match in 'none' mode first
-            match_res = supabase_client.table("matches").insert({
-                "woman_id": str(woman_id),
-                "man_id": str(request.man_id),
-                "status": "active",
-                "comm_mode": "none"
-            }).execute()
-            
-            # Create conversation for the match
-            if match_res.data:
-                match_id = match_res.data[0]["id"]
-                supabase_client.table("conversations").insert({
-                    "match_id": match_id
-                }).execute()
-            
-            return {"status": "matched", "message": "Connection established. Choose communication mode next."}
+        res_id = f"res_{int(datetime.now().timestamp())}"
+        await turso_client.execute(
+            "INSERT INTO resonances (id, woman_id, man_id) VALUES (?, ?, ?)",
+            [res_id, woman_id, request.man_id]
+        )
+        return {"status": "matched", "message": "Connection established in the Registry."}
 
     return {"status": "recorded", "action": request.action}
 
 @router.post("/unlock-filter")
 async def unlock_advanced_filter(request: UnlockFilterRequest):
-    """
-    Spends points to unlock advanced discovery controls for a Matriarch.
-    """
-    # 1. Verify Role
-    user_res = supabase_client.table("users").select("role").eq("id", str(request.user_id)).execute()
-    if not user_res.data or user_res.data[0]["role"] != UserRole.woman:
-        raise HTTPException(status_code=403, detail="Discovery filters are managed by Matriarchs.")
-
-    # 2. Check points
+    """Spends Matriarch points to unlock discovery controls."""
     cost = 50 if request.unlock_type == 'day' else 10
-    profile_res = supabase_client.table("profiles").select("points").eq("user_id", str(request.user_id)).execute()
-    points = profile_res.data[0].get("points") or 0
     
+    # 1. Check points
+    res = await turso_client.execute("SELECT points FROM profiles WHERE user_id = ?", [request.user_id])
+    if not res:
+        raise HTTPException(status_code=404, detail="Matriarch not found.")
+    
+    points = res[0].get("points", 0)
     if points < cost:
-        raise HTTPException(status_code=400, detail="Insufficient points to unlock advanced filters.")
+        raise HTTPException(status_code=400, detail="Insufficient Sanctuary points.")
 
-    # 3. Deduct Points
+    # 2. Deduct and Log
     new_points = points - cost
-    supabase_client.table("profiles").update({"points": new_points}).eq("user_id", str(request.user_id)).execute()
+    await turso_client.execute("UPDATE profiles SET points = ? WHERE user_id = ?", [new_points, request.user_id])
+    
+    tx_id = f"tx_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO point_transactions (id, user_id, delta, transaction_type, notes) VALUES (?, ?, ?, ?, ?)",
+        [tx_id, request.user_id, -cost, "filter_unlock", f"Unlocked {request.unlock_type} filters"]
+    )
 
-    # 4. Record Transaction
-    supabase_client.table("point_transactions").insert({
-        "user_id": str(request.user_id),
-        "delta": -cost,
-        "transaction_type": "filter_unlock",
-        "notes": f"Unlocked filters ({request.unlock_type})"
-    }).execute()
-
-    return {"status": "success", "new_points": new_points, "unlock_type": request.unlock_type}
+    return {"status": "success", "new_points": new_points}

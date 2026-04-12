@@ -1,87 +1,63 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
 from pydantic import BaseModel
-from app.supabase import supabase_client
-import uuid
+from app.db.turso import turso_client
+from datetime import datetime
 
 router = APIRouter(prefix="/safety", tags=["safety"])
 
 class ReportRequest(BaseModel):
-    reported_id: uuid.UUID
+    reported_id: str
     reason: str
     evidence_url: Optional[str] = None
 
 class BlockRequest(BaseModel):
-    blocked_id: uuid.UUID
+    blocked_id: str
 
 @router.post("/report")
-async def submit_report(request: ReportRequest, reporter_id: uuid.UUID):
-    """
-    Submits a report against a user. 
-    Recorded in public.reports and updates victim's safety profile risk score.
-    """
+async def submit_report(request: ReportRequest, reporter_id: str):
+    """Submits a report against a Registry identity."""
     # 1. Record the report
-    report_data = {
-        "reporter_id": str(reporter_id),
-        "reported_id": str(request.reported_id),
-        "reason": request.reason,
-        "evidence_url": request.evidence_url,
-        "status": "open"
-    }
-    report_res = supabase_client.table("reports").insert(report_data).execute()
+    report_id = f"rpt_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO reports (id, reporter_id, reported_id, reason, evidence_url) VALUES (?, ?, ?, ?, ?)",
+        [report_id, reporter_id, request.reported_id, request.reason, request.evidence_url]
+    )
 
-    # 2. Update reported user's safety profile (Increment report count)
-    # Using the correct table name from schema: user_safety_profiles
-    supabase_client.rpc("increment_report_count", {"target_user_id": str(request.reported_id)}).execute()
+    # 2. Check and Auto-Block if necessary
+    await _check_and_auto_block(request.reported_id)
+
+    return {"status": "submitted", "report_id": report_id}
+
+async def _check_and_auto_block(target_id: str):
+    """Automatically shadowbans users with high report frequency."""
+    # Count reports in Turso
+    res = await turso_client.execute("SELECT COUNT(*) as count FROM reports WHERE reported_id = ?", [target_id])
+    report_count = res[0].get("count", 0) if res else 0
     
-    # 3. Check and Auto-Block if necessary
-    await _check_and_auto_block(str(request.reported_id))
-
-    return {"status": "submitted", "report_id": report_res.data[0]["id"] if report_res.data else None}
-
-async def _check_and_auto_block(target_user_id: str):
-    """
-    Matriarch Guard: Automatically shadowbans users with >= 3 reports.
-    """
-    # 1. Get current report count from user_safety_profiles
-    count_res = supabase_client.table("user_safety_profiles").select("report_count").eq("user_id", target_user_id).execute()
-    if count_res.data:
-        report_count = count_res.data[0]["report_count"]
-        if report_count >= 3:
-            # AUTO-BLOCK: Shadowban the user in male_rank_profiles
-            supabase_client.table("male_rank_profiles").update({
-                "is_shadowbanned": True, 
-                "is_visible": False,
-                "moderation_penalty": 50.0 # Heavy rank penalty
-            }).eq("user_id", target_user_id).execute()
-            
-            # Record in user_safety_profiles audit
-            supabase_client.table("user_safety_profiles").update({
-                "risk_score": 100.0,
-                "last_reviewed": "now()"
-            }).eq("user_id", target_user_id).execute()
+    if report_count >= 3:
+        # Heavily penalize rank score and mark status
+        await turso_client.execute(
+            "UPDATE profiles SET rank_score = rank_score * 0.5, onboarding_status = 'UNDER_REVIEW' WHERE user_id = ?",
+            [target_id]
+        )
+        # Note: In a real system, we might set visibility = 0
 
 @router.post("/block")
-async def block_user(request: BlockRequest, blocker_id: uuid.UUID):
-    """
-    Blocks a user. Prevents future discovery in Step 1 filtering.
-    """
-    supabase_client.table("blocks").insert({
-        "blocker_id": str(blocker_id),
-        "blocked_id": str(request.blocked_id)
-    }).execute()
-
+async def block_user(request: BlockRequest, blocker_id: str):
+    """Mutually blocks discovery between two identities."""
+    await turso_client.execute(
+        "INSERT OR IGNORE INTO blocks (blocker_id, blocked_id) VALUES (?, ?)",
+        [blocker_id, request.blocked_id]
+    )
     return {"status": "blocked"}
 
 @router.post("/grievance")
-async def submit_grievance(subject: str, description: str, user_id: uuid.UUID):
-    """
-    Submits a legal/protocol grievance for admin review.
-    """
-    supabase_client.table("grievance_tickets").insert({
-        "user_id": str(user_id),
-        "subject": subject,
-        "description": description
-    }).execute()
-
+async def submit_grievance(subject: str, description: str, user_id: str):
+    """Submits a formal protocol grievance."""
+    report_id = f"grv_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO reports (id, reporter_id, reported_id, reason, status) VALUES (?, ?, ?, ?, 'grievance')",
+        [report_id, user_id, "SYSTEM_ADMIN", f"{subject}: {description}"]
+    )
     return {"status": "submitted"}

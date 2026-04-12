@@ -1,9 +1,10 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from typing import Optional, List
-from app.core.ranking import ranking_engine, RankInput
-from app.db.supabase import supabase_client
-from datetime import datetime, timezone
+from typing import Optional, List, Dict
+from app.core.ranking import ranking_engine
+from app.db.turso import turso_client
+from datetime import datetime
+import json
 
 router = APIRouter()
 
@@ -11,124 +12,93 @@ class RankStatusResponse(BaseModel):
     user_id: str
     rank_score: float
     rank_tier: str
+    rank_tier_name: str
     profile_completeness_pct: int
     is_aadhaar_verified: bool
-    is_elite: bool
+    points_to_next_tier: Optional[int] = None
+    next_tier_name: Optional[str] = None
     tips: List[str]
-    points: int = 0
 
 class BoostRequest(BaseModel):
     user_id: str
-    points_to_spend: int = 100 # Default boost cost
+    points_to_spend: int = 100
 
 @router.get("/{user_id}/status", response_model=RankStatusResponse)
 async def get_rank_status(user_id: str):
     """
-    Returns a user's current status and protocol standing.
+    Returns a user's current status from the Turso Registry.
     """
-    # 1. Fetch User Role
-    user_res = supabase_client.table("users").select("role").eq("id", user_id).execute()
-    if not user_res.data:
+    # 1. Fetch Profile from Turso
+    res = await turso_client.execute("SELECT * FROM profiles WHERE user_id = ?", [user_id])
+    if not res:
         raise HTTPException(status_code=404, detail="Matriarch user not found.")
     
-    role = user_res.data[0]["role"]
+    profile = res[0]
+    score = profile.get("rank_score", 0.0)
     
-    profile_res = supabase_client.table("profiles").select("*").eq("user_id", user_id).execute()
-    profile = profile_res.data[0] if profile_res.data else {}
+    # 2. Get Tier Info from Engine (Single Source of Truth)
+    tier = ranking_engine.get_tier_by_score(score)
+    next_info = ranking_engine.get_next_tier_info(score)
+    
+    # 3. Dynamic Tips
+    tips = []
+    if not profile.get("aadhaar_verified"):
+        tips.append("Verify your identity with Aadhaar to gain 500 status points.")
+    if profile.get("profile_completeness", 0) < 80:
+        tips.append("Complete your dossier details to improve your standing.")
 
-    if role == "man":
-        # Petitioner logic
-        rank_res = supabase_client.table("male_rank_profiles").select("*").eq("user_id", user_id).execute()
-        rank_data = rank_res.data[0] if rank_res.data else {"rank_score": 0}
-        score = rank_data.get("rank_score", 0)
-        tier = "elite" if score > 80 else "high" if score > 50 else "standard"
-        
-        # Calculate dynamic tips
-        tips = []
-        is_verified = profile.get("aadhaar_verified", False)
-        completeness = profile.get("completeness_score", 0)
-        
-        if not is_verified:
-            tips.append("⚠️ Verify Aadhaar to unlock +20 Matriarchty Points")
-        else:
-            tips.append("✅ Aadhaar identity confirmed")
-            
-        if completeness < 100:
-            tips.append(f"📝 Complete profile ({completeness}%) to reach Priority visibility")
-        
-        if score < 50:
-            tips.append("👥 Refer highly-vetted friends to gain Referral Credits")
-            
-        return {
-            "user_id": user_id,
-            "rank_score": score,
-            "rank_tier": tier,
-            "profile_completeness_pct": completeness,
-            "is_aadhaar_verified": is_verified,
-            "is_elite": score > 90,
-            "tips": tips,
-            "points": profile.get("points") or 0
-        }
-    else:
-        # Matriarch logic
-        selection_count = supabase_client.table("selection_events").select("id", count="exact").eq("woman_id", user_id).execute()
-        return {
-            "user_id": user_id,
-            "rank_score": float(selection_count.count or 0),
-            "rank_tier": "matriarch",
-            "profile_completeness_pct": 100,
-            "is_aadhaar_verified": True,
-            "is_elite": True,
-            "tips": ["Observation Protocol Active — Select to connect."],
-            "points": profile.get("points") or 0
-        }
+    return RankStatusResponse(
+        user_id=user_id,
+        rank_score=score,
+        rank_tier=tier.id,
+        rank_tier_name=tier.name,
+        profile_completeness_pct=int(profile.get("profile_completeness", 0)),
+        is_aadhaar_verified=bool(profile.get("aadhaar_verified")),
+        points_to_next_tier=next_info["points_needed"] if next_info else None,
+        next_tier_name=next_info["next_tier_name"] if next_info else None,
+        tips=tips
+    )
 
 @router.post("/boost")
-async def apply_rank_boost(request: BoostRequest):
+async def apply_rank_boost(req: BoostRequest):
     """
-    Spends points to increase a Petitioner's rank score.
+    Spends tokens/points to augment a user's ranking score.
+    Uses the RankingEngine to calculate the delta shift.
     """
-    # 1. Fetch Profile & Rank Data
-    profile_res = supabase_client.table("profiles").select("points, user_role").eq("user_id", request.user_id).execute()
-    if not profile_res.data:
-        raise HTTPException(status_code=404, detail="User not found")
+    # 1. Fetch current score
+    res = await turso_client.execute("SELECT rank_score, tokens FROM profiles WHERE user_id = ?", [req.user_id])
+    if not res:
+        raise HTTPException(status_code=404, detail="User not found.")
     
-    profile = profile_res.data[0]
-    points = profile.get("points") or 0
+    current_score = res[0].get("rank_score", 0.0)
+    current_tokens = res[0].get("tokens", 0)
 
-    # Enforce Petitioner role for rank boosts
-    user_role_res = supabase_client.table("users").select("role").eq("id", request.user_id).execute()
-    if not user_role_res.data or user_role_res.data[0]["role"] != "man":
-        raise HTTPException(status_code=403, detail="Rank boosts are only available for Petitioners.")
+    if current_tokens < req.points_to_spend:
+        raise HTTPException(status_code=400, detail="Insufficient tokens for status augmentation.")
 
-    # 2. Check points
-    if points < request.points_to_spend:
-        raise HTTPException(status_code=400, detail="Insufficient points for a rank boost. Refer others to earn more.")
+    # 2. Calculate New Score via Engine
+    new_score = ranking_engine.apply_boost(current_score, req.points_to_spend)
+    new_tokens = current_tokens - req.points_to_spend
 
-    # 3. Calculate Reward
-    # 100 points = +5 rank_score
-    rank_delta = (request.points_to_spend / 20.0)
+    # 3. Atomic Update in Turso
+    try:
+        await turso_client.execute(
+            "UPDATE profiles SET rank_score = ?, tokens = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?",
+            [new_score, new_tokens, req.user_id]
+        )
+        # Also log transaction
+        await turso_client.execute(
+            "INSERT INTO point_transactions (id, user_id, delta, transaction_type, notes) VALUES (?, ?, ?, ?, ?)",
+            [f"boost_{int(datetime.now().timestamp())}", req.user_id, -req.points_to_spend, "boost", "Manual rank boost"]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database update failed: {str(e)}")
 
-    # 4. Perform Update (Atomic-ish)
-    # Deduct points
-    new_points = points - request.points_to_spend
-    supabase_client.table("profiles").update({"points": new_points}).eq("user_id", request.user_id).execute()
-
-    # Increase rank
-    rank_res = supabase_client.table("male_rank_profiles").select("rank_score").eq("user_id", request.user_id).execute()
-    if rank_res.data:
-        current_rank = rank_res.data[0].get("rank_score") or 0
-        supabase_client.table("male_rank_profiles").update({
-            "rank_score": current_rank + rank_delta,
-            "updated_at": datetime.now(timezone.utc).isoformat()
-        }).eq("user_id", request.user_id).execute()
-
-    # 5. Record Transaction
-    supabase_client.table("point_transactions").insert({
-        "user_id": request.user_id,
-        "delta": -request.points_to_spend,
-        "transaction_type": "rank_boost",
-        "notes": f"Purchased visibility boost (+{rank_delta} score)"
-    }).execute()
-
-    return {"status": "success", "new_points": new_points, "rank_added": rank_delta}
+    tier = ranking_engine.get_tier_by_score(new_score)
+    
+    return {
+        "status": "success",
+        "new_score": new_score,
+        "new_tier": tier.name,
+        "tokens_remaining": new_tokens
+    }

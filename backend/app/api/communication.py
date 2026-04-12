@@ -1,82 +1,77 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import List, Optional
 from pydantic import BaseModel
-from app.supabase import supabase_client
-from app.models.user import UserRole
-import uuid
-from datetime import datetime, timezone
+from app.db.turso import turso_client
+from datetime import datetime
+import json
 
 router = APIRouter(prefix="/comm", tags=["communication"])
 
 class CommModeRequest(BaseModel):
-    mode: str # 'none', 'chat', 'voice_request', 'video_request', 'delayed_unlock', 'qa_mode', 'prompt_intro'
+    mode: str # 'none', 'chat', 'voice_request', etc.
 
 class MessageRequest(BaseModel):
     content: str
-    message_type: str = "text" # 'text', 'voice', 'intro_response'
+    message_type: str = "text"
 
-@router.post("/matches/{match_id}/mode")
-async def set_communication_mode(match_id: uuid.UUID, request: CommModeRequest, user_id: uuid.UUID):
-    """
-    Sets the communication mode for a match. Only the Matriarch can do this.
-    """
-    # 1. Verify match and Matriarch role
-    match_res = supabase_client.table("matches").select("*").eq("id", str(match_id)).execute()
-    if not match_res.data:
-        raise HTTPException(status_code=404, detail="Match not found")
+@router.post("/resonances/{resonance_id}/mode")
+async def set_communication_mode(resonance_id: str, request: CommModeRequest, user_id: str):
+    """Sets the communication mode. Only the Matriarch (woman) can do this."""
     
-    match = match_res.data[0]
-    if str(match["woman_id"]) != str(user_id):
-        raise HTTPException(status_code=403, detail="Only the Matriarch can set communication modes")
+    # 1. Verify resonance and woman_id
+    res = await turso_client.execute("SELECT * FROM resonances WHERE id = ?", [resonance_id])
+    if not res:
+        raise HTTPException(status_code=404, detail="Resonance connection not found")
+    
+    resonance = res[0]
+    if resonance["woman_id"] != user_id:
+        raise HTTPException(status_code=403, detail="Only the Matriarch can govern communication modes")
 
-    # 2. Update match mode
-    supabase_client.table("matches").update({
-        "comm_mode": request.mode,
-        "comm_mode_set_at": datetime.now(timezone.utc).isoformat(),
-        "comm_mode_unlocked": True if request.mode != 'none' else False
-    }).eq("id", str(match_id)).execute()
+    # 2. Update Registry
+    await turso_client.execute(
+        "UPDATE resonances SET comm_mode = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        [request.mode, resonance_id]
+    )
 
     return {"status": "success", "mode": request.mode}
 
-@router.post("/conversations/{conversation_id}/messages")
-async def send_message(conversation_id: uuid.UUID, request: MessageRequest, sender_id: uuid.UUID):
-    """
-    Sends a message in a conversation, enforcing the Matriarch's chosen communication mode.
-    """
-    # 1. Fetch conversation and associated match
-    conv_res = supabase_client.table("conversations").select("*, matches(*)").eq("id", str(conversation_id)).execute()
-    if not conv_res.data:
-        raise HTTPException(status_code=404, detail="Conversation not found")
+@router.post("/resonances/{resonance_id}/messages")
+async def send_message(resonance_id: str, request: MessageRequest, sender_id: str):
+    """Sends a message, enforcing Matriarchal protocols."""
     
-    conversation = conv_res.data[0]
-    match = conversation["matches"]
-    comm_mode = match["comm_mode"]
+    # 1. Fetch resonance state
+    res = await turso_client.execute("SELECT * FROM resonances WHERE id = ?", [resonance_id])
+    if not res:
+        raise HTTPException(status_code=404, detail="Resonance connection not found")
     
-    # 2. Verify sender is part of the match
-    if str(sender_id) not in [str(match["woman_id"]), str(match["man_id"])]:
-        raise HTTPException(status_code=403, detail="Not authorized to send messages in this conversation")
-
-    # 3. Enforce Communication Mode
-    is_woman = str(sender_id) == str(match["woman_id"])
+    resonance = res[0]
+    comm_mode = resonance["comm_mode"]
     
-    if not is_woman: # Petitioner (Man) enforcement
-        if comm_mode == "none":
-            raise HTTPException(status_code=403, detail="Communication is currently on HOLD by the Matriarch")
-        
-        if comm_mode == "prompt_intro" and request.message_type != "intro_response":
-             raise HTTPException(status_code=403, detail="Matriarch requires a directed intro response first")
+    # 2. Protocol Enforcement
+    is_woman = (sender_id == resonance["woman_id"])
+    if not is_woman and comm_mode == "none":
+        raise HTTPException(status_code=403, detail="Communication is currently on HOLD by the Matriarch")
 
-    # 4. Insert message
-    message_res = supabase_client.table("messages").insert({
-        "conversation_id": str(conversation_id),
-        "sender_id": str(sender_id),
-        "content": request.content,
-        "message_type": request.message_type
-    }).execute()
+    # 3. Insert into Registry
+    msg_id = f"msg_{int(datetime.now().timestamp())}"
+    await turso_client.execute(
+        "INSERT INTO messages (id, resonance_id, sender_id, content, message_type) VALUES (?, ?, ?, ?, ?)",
+        [msg_id, resonance_id, sender_id, request.content, request.message_type]
+    )
 
-    # 5. Update conversation timestamp
-    supabase_client.table("conversations").update({
-        "last_message_at": datetime.now(timezone.utc).isoformat()
-    }).eq("id", str(conversation_id)).execute()
+    # 4. Update Heartbeat
+    await turso_client.execute(
+        "UPDATE resonances SET updated_at = CURRENT_TIMESTAMP WHERE id = ?",
+        [resonance_id]
+    )
 
-    return {"status": "sent", "message_id": message_res.data[0]["id"] if message_res.data else None}
+    return {"status": "sent", "message_id": msg_id}
+
+@router.get("/resonances/{resonance_id}/history")
+async def get_message_history(resonance_id: str):
+    """Fetches full dialogue history for a resonance."""
+    messages = await turso_client.execute(
+        "SELECT * FROM messages WHERE resonance_id = ? ORDER BY created_at ASC",
+        [resonance_id]
+    )
+    return messages

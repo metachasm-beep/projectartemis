@@ -3,13 +3,30 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin
 from app.core.config import settings
 from app.services.backfill_service import backfill_service
+from app.db.turso import turso_client
 from fastapi import BackgroundTasks
+import os
 
 from contextlib import asynccontextmanager
 import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # --- 1. Automated Turso Schema Migration ---
+    try:
+        schema_path = os.path.join(os.path.dirname(__file__), "db", "turso_schema.sql")
+        if os.path.exists(schema_path):
+            with open(schema_path, "r") as f:
+                schema_sql = f.read()
+            # Split by semicolon to execute individual statements
+            # Note: This is a simple parser, might need improvement for complex SQL
+            statements = [s.strip() for s in schema_sql.split(";") if s.strip()]
+            for statement in statements:
+                await turso_client.execute(statement)
+            print("🛠️ MATRIARCH_INIT: Turso Registry Schema verified/migrated.")
+    except Exception as e:
+        print(f"❌ MATRIARCH_INIT: Migration failure - {e}")
+
     # Start backfill service in the background
     asyncio.create_task(backfill_service.start_service())
     yield
