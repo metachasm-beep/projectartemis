@@ -10,7 +10,8 @@ import {
   RefreshCw,
   LogOut
 } from 'lucide-react';
-import { turso, tursoHelpers } from '@/lib/turso';
+import { tursoHelpers } from '@/lib/turso';
+import { AdminService } from '@/services/admin';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 
@@ -346,7 +347,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
                              <div className="flex items-center gap-6">
                                 <div className="w-16 h-16 bg-mat-rose/5 border border-mat-rose/10 overflow-hidden rounded-2xl">
                                    {u.photos?.[0] ? (
-                                     <img src={u.photos[0]} alt="" className="w-full h-full object-cover grayscale sepia-[0.2] hover:sepia-0 transition-all duration-700" />
+                                     <img 
+                                       src={u.photos[0]} 
+                                       alt="" 
+                                       referrerPolicy="no-referrer"
+                                       className="w-full h-full object-cover grayscale sepia-[0.2] hover:sepia-0 transition-all duration-700" 
+                                     />
                                    ) : (
                                      <div className="w-full h-full flex items-center justify-center text-mat-rose/20">
                                         <Users size={24} />
@@ -391,10 +397,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
                                      <p className="text-[9px] font-bold text-mat-slate/40 uppercase tracking-[0.4em]">Protocols</p>
                                   </div>
                                   <button 
-                                    onClick={() => updateUserProfile(u.user_id, { is_active: !u.is_active })}
+                                    onClick={() => {
+                                      const msg = window.prompt(`Send direct message to ${u.full_name}:`);
+                                      if(msg) AdminService.sendDirectAdminMessage(u.user_id, msg);
+                                    }}
                                     className="w-full text-left px-4 py-3 text-[10px] font-bold uppercase tracking-widest hover:bg-mat-wine hover:text-mat-cream rounded-xl transition-all"
                                   >
-                                     {u.is_active === false ? 'Restore access' : 'Sever access'}
+                                     Send message
                                   </button>
                                   <button 
                                     onClick={() => toggleVerification(u.user_id, u.is_verified)}
