@@ -47,9 +47,9 @@ const HeroFold: React.FC = () => {
       {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
       <motion.div 
         style={{ opacity: logoOpacity }}
-        className="fixed top-8 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
+        className="fixed top-6 md:top-8 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
       >
-        <MatriarchLogo className="scale-125 md:scale-150" />
+        <MatriarchLogo className="scale-100 md:scale-150" />
       </motion.div>
 
       {/* 2. Parallax Background Slideshow */}
@@ -87,7 +87,7 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="text-5xl md:text-8xl font-display text-mat-cream mb-8 leading-tight max-w-4xl"
+          className="text-4xl md:text-8xl font-display text-mat-cream mb-6 md:mb-8 leading-tight max-w-4xl px-4"
         >
           Curating the <br/>
           <span className="text-mat-gold italic font-serif">Exceptional.</span>
@@ -106,16 +106,16 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
-          className="flex flex-col sm:flex-row gap-4"
+          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
-          <button onClick={() => window.location.href = '/signin'}>
-            <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
+          <button onClick={() => window.location.href = '/signin'} className="w-full sm:w-auto">
+            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
               ENTER SANCTUARY
             </StarBorder>
           </button>
           
-          <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')}>
-            <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
+          <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
+            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
               READ JOURNALS
             </StarBorder>
           </button>

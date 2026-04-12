@@ -18,15 +18,15 @@ const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
   return (
-    <nav className="fixed top-0 w-full z-[200] px-8 py-8 flex items-center justify-between pointer-events-none">
+    <nav className="fixed top-0 w-full z-[200] px-4 md:px-8 py-4 md:py-8 flex items-center justify-between pointer-events-none">
       <div className="pointer-events-auto">
         <motion.button
           whileHover={{ scale: 1.05 }}
           onClick={onArchiveClick}
-          className="text-white text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
+          className="text-white text-xl md:text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
         >
           MATRIARCH<span className="text-rose-500">.</span>
-          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden md:block italic">Journal Archive</span>
+          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden lg:block italic">Journal Archive</span>
         </motion.button>
       </div>
       <div className="pointer-events-auto hidden md:flex items-center gap-12">
@@ -57,7 +57,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10 no-underline"
+          className="px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[9px] md:text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10 no-underline"
         >
           Join Sanctuary
         </motion.a>

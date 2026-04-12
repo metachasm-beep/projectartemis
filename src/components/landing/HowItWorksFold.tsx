@@ -39,18 +39,18 @@ const HowItWorksFold: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-white/5 backdrop-blur-sm border border-white/5 p-8 group hover:border-mat-gold/30 transition-all duration-700 flex flex-col justify-between min-h-[300px]"
+                className="bg-white/5 backdrop-blur-sm border border-white/5 p-6 md:p-8 group hover:border-mat-gold/30 transition-all duration-700 flex flex-col justify-between min-h-[auto] md:min-h-[300px]"
               >
-                <div className="space-y-6">
-                  <div className="text-mat-rose font-black text-2xl group-hover:text-mat-gold transition-colors">
+                <div className="space-y-4 md:space-y-6">
+                  <div className="text-mat-rose font-black text-xl md:text-2xl group-hover:text-mat-gold transition-colors">
                     0{i + 1}
                   </div>
                   <div>
-                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] mb-2 text-mat-rose/40 italic">{step.title}</h3>
-                    <h4 className="text-2xl md:text-3xl font-display text-mat-cream leading-tight uppercase tracking-tight">{step.label}</h4>
+                    <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] mb-2 text-mat-rose/40 italic">{step.title}</h3>
+                    <h4 className="text-xl md:text-3xl font-display text-mat-cream leading-tight uppercase tracking-tight">{step.label}</h4>
                   </div>
                 </div>
-                <p className="text-[12px] text-mat-cream/40 leading-relaxed font-light mt-6 border-t border-white/5 pt-6 uppercase tracking-wider">
+                <p className="text-[11px] md:text-[12px] text-mat-cream/40 leading-relaxed font-light mt-4 md:mt-6 border-t border-white/5 pt-4 md:pt-6 uppercase tracking-wider">
                   {step.desc}
                 </p>
               </motion.div>

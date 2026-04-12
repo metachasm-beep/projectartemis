@@ -33,8 +33,8 @@ const Hero: React.FC = () => {
             maxIterations={20}
             animateOn="view"
             revealDirection="center"
-            className="text-6xl md:text-9xl font-black tracking-tighter text-white select-none whitespace-nowrap"
-            parentClassName="mb-6"
+            className="text-2xl sm:text-5xl md:text-9xl font-black tracking-tighter text-white select-none leading-none"
+            parentClassName="mb-4 md:mb-6 px-4 w-full block"
           />
         </motion.div>
 
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
             delay={30}
             animateBy="words"
             direction="bottom"
-            className="text-xl md:text-3xl text-white/50 font-light max-w-3xl mx-auto leading-tight italic"
+            className="text-base md:text-3xl text-white/50 font-light max-w-2xl mx-auto leading-tight italic px-4"
           />
         </motion.div>
 

@@ -12,7 +12,7 @@ const Fold: React.FC<FoldProps> = ({ children, id, className = '', isHero = fals
   return (
     <section
       id={id}
-      className={`relative h-[100dvh] w-full flex flex-col items-center justify-center snap-start snap-always overflow-hidden ${
+      className={`relative min-h-[100dvh] md:h-[100dvh] w-full flex flex-col items-center justify-center snap-start snap-always ${
         isHero ? 'bg-transparent' : (className.includes('bg-') ? className : `bg-mat-obsidian ${className}`)
       }`}
     >

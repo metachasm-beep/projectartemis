@@ -16,7 +16,7 @@ const SystemIntegrityFold: React.FC = () => {
         />
       </div>
 
-      <div className="w-full max-w-7xl mx-auto px-6 py-20 relative z-10 flex flex-col justify-center space-y-16">
+      <div className="w-full max-w-7xl mx-auto px-6 py-12 md:py-20 relative z-10 flex flex-col justify-center space-y-12 md:space-y-16">
         {/* Header */}
         <div className="space-y-6 text-center md:text-left">
           <motion.div
@@ -27,7 +27,7 @@ const SystemIntegrityFold: React.FC = () => {
           >
             Security Manifest
           </motion.div>
-          <h2 className="text-5xl md:text-8xl font-display text-mat-cream uppercase leading-[0.85] tracking-tighter">
+          <h2 className="text-4xl md:text-8xl font-display text-mat-cream uppercase leading-[0.85] tracking-tighter">
             System <br /> <span className="text-white/10 italic font-serif lowercase tracking-normal">Integrity</span>
           </h2>
           <p className="text-md text-mat-cream/40 font-light max-w-lg uppercase tracking-widest text-[10px] mx-auto md:mx-0">
@@ -43,13 +43,13 @@ const SystemIntegrityFold: React.FC = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="col-span-12 md:col-span-8 bg-white/[0.02] border border-white/10 backdrop-blur-xl p-10 flex flex-col justify-between relative overflow-hidden group min-h-[300px]"
+            className="col-span-12 md:col-span-8 bg-white/[0.02] border border-white/10 backdrop-blur-xl p-8 md:p-10 flex flex-col justify-between relative overflow-hidden group min-h-[auto] md:min-h-[300px]"
           >
             <div className="absolute -top-10 -right-10 p-4 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity">
               <MessageSquare className="w-64 h-64 rotate-12" />
             </div>
-            <div className="space-y-6 relative z-10">
-              <h3 className="text-3xl font-display text-mat-cream uppercase tracking-tight">Isolated <br/><span className="italic font-serif opacity-30">Channels</span></h3>
+            <div className="space-y-4 md:space-y-6 relative z-10">
+              <h3 className="text-2xl md:text-3xl font-display text-mat-cream uppercase tracking-tight">Isolated <br/><span className="italic font-serif opacity-30">Channels</span></h3>
               <p className="text-sm text-mat-cream/30 max-w-sm uppercase tracking-wide leading-relaxed">
                 Direct access is physically impossible. Every packet of intent is resolved through multi-signature verified mediation.
               </p>
@@ -64,7 +64,7 @@ const SystemIntegrityFold: React.FC = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="col-span-12 md:col-span-4 bg-mat-gold/5 text-mat-cream p-10 flex flex-col justify-between border border-mat-gold/20 shadow-2xl min-h-[300px]"
+            className="col-span-12 md:col-span-4 bg-mat-gold/5 text-mat-cream p-8 md:p-10 flex flex-col justify-between border border-mat-gold/20 shadow-2xl min-h-[auto] md:min-h-[300px]"
           >
             <ShieldCheck className="w-10 h-10 text-mat-gold mb-8" />
             <div className="space-y-4">
@@ -80,7 +80,7 @@ const SystemIntegrityFold: React.FC = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="col-span-12 md:col-span-4 bg-white/[0.02] p-10 border border-white/5 backdrop-blur-md space-y-6"
+            className="col-span-12 md:col-span-4 bg-white/[0.02] p-8 md:p-10 border border-white/5 backdrop-blur-md space-y-4 md:space-y-6"
           >
             <Lock className="w-6 h-6 text-mat-gold/20" />
             <h3 className="text-xl font-display uppercase text-mat-cream">Zero-Knowledge <br/> Vault</h3>
