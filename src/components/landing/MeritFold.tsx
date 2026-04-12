@@ -6,18 +6,18 @@ import { Badge } from '@/components/ui/badge';
 
 const MeritFold: React.FC = () => {
   return (
-    <Fold id="merit" className="bg-mat-obsidian py-32 border-b border-white/5">
-      <div className="grid lg:grid-cols-2 gap-24 items-start pt-12">
+    <Fold id="merit" className="bg-mat-obsidian py-16 lg:py-24 border-b border-white/5">
+      <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
         {/* Left: Copy and Stats */}
-        <div className="space-y-12">
-          <div className="space-y-6">
+        <div className="space-y-8 lg:space-y-12">
+          <div className="space-y-4">
             <Badge variant="outline" className="px-5 py-1 uppercase tracking-[0.4em] font-black text-[9px] border-mat-gold/20 text-mat-gold/60 bg-mat-gold/5 rounded-none">
               The Seeker Protocol
             </Badge>
-            <h2 className="text-5xl md:text-8xl font-display text-mat-cream uppercase leading-[0.9]">
+            <h2 className="text-4xl md:text-7xl font-display text-mat-cream uppercase leading-[0.9]">
               Excellence <br /><span className="text-white/20 italic">of Merit</span>
             </h2>
-            <p className="text-xl text-mat-cream/60 font-light leading-relaxed max-w-xl">
+            <p className="text-lg text-mat-cream/60 font-light leading-relaxed max-w-xl">
               On Matriarch, visibility is not bought. It is earned through integrity, verification, and absolute standing.
             </p>
           </div>

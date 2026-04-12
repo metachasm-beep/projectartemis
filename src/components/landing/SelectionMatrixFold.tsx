@@ -41,12 +41,12 @@ const BENTO_ITEMS = [
 
 const SelectionMatrixFold: React.FC = () => {
   return (
-    <Fold id="matrix" className="bg-mat-obsidian py-32">
-      <div className="space-y-24">
+    <Fold id="matrix" className="bg-mat-obsidian py-16 lg:py-24">
+      <div className="space-y-12 lg:space-y-16">
         {/* Header */}
-        <div className="text-left space-y-6 max-w-2xl">
+        <div className="text-left space-y-4 max-w-2xl">
           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-rose/40">The Infrastructure</span>
-          <h2 className="text-6xl md:text-8xl font-display text-mat-cream leading-[0.9] uppercase tracking-tighter">
+          <h2 className="text-5xl md:text-7xl font-display text-mat-cream leading-[0.9] uppercase tracking-tighter">
             Selection <br />
             <span className="text-white/20 italic">Architecture</span>
           </h2>
@@ -61,7 +61,7 @@ const SelectionMatrixFold: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.8 }}
-              className={`group relative p-8 md:p-12 flex flex-col justify-between min-h-[360px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
+              className={`group relative p-8 lg:p-10 flex flex-col justify-between min-h-[300px] lg:min-h-[320px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
             >
               <div className="space-y-8 relative z-10">
                 <div className={`w-14 h-14 flex items-center justify-center rounded-2xl bg-${item.color}/10 border border-${item.color}/20 text-white shadow-lg`}>

@@ -14,20 +14,20 @@ const FEATURES = [
 
 const SystemIntegrityFold: React.FC = () => {
   return (
-    <Fold id="integrity" className="bg-mat-cream py-32 border-b border-black/5">
-      <div className="space-y-24">
+    <Fold id="integrity" className="bg-mat-cream py-16 lg:py-24 border-b border-black/5">
+      <div className="space-y-12 lg:space-y-16">
         {/* Header */}
-        <div className="mb-16 lg:mb-24 space-y-6">
-          <h2 className="text-4xl md:text-8xl font-display text-mat-obsidian uppercase leading-[0.85]">
-            System <br /> <span className="text-black/20 italic font-serif lowercase tracking-normal">Integrity</span>
+        <div className="mb-8 lg:mb-12 space-y-4">
+          <h2 className="text-3xl md:text-7xl font-display text-mat-obsidian uppercase leading-[0.85]">
+            System <br /> <span className="text-black/10 italic font-serif lowercase tracking-normal">Integrity</span>
           </h2>
-          <p className="text-xl text-mat-obsidian/60 font-light max-w-xl">
+          <p className="text-lg text-mat-obsidian/60 font-light max-w-xl">
             Designed for women who value their time and selective attention.
           </p>
         </div>
 
         {/* Feature Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-20">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-12 lg:gap-y-16">
           {FEATURES.map((f, i) => (
             <motion.div 
               key={i}
