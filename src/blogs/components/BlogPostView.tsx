@@ -42,9 +42,9 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] bg-[#030303] overflow-y-auto pt-20 pb-20 scroll-smooth"
     >
-      {/* Top Navigation Bar */}
-      <div className="fixed top-0 left-0 right-0 z-[110] p-6 flex justify-between items-center bg-gradient-to-b from-[#030303] to-transparent pointer-events-none">
-        <button 
+      {/* Top Navigation Bar — offset below Navbar (py-8 ~72px) */}
+      <div className="fixed top-0 left-0 right-0 z-[110] pt-24 pb-4 px-8 flex justify-start items-end bg-gradient-to-b from-[#030303] via-[#030303]/80 to-transparent pointer-events-none">
+        <button
           onClick={onBack}
           className="pointer-events-auto px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl text-white/60 text-xs font-bold uppercase tracking-widest hover:text-white hover:border-white/20 transition-all flex items-center gap-2 group"
         >
@@ -74,27 +74,31 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
           </h1>
 
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/5 max-w-fit">
-            <img 
-              src={author?.img} 
-              alt={author?.name} 
+            <img
+              src={author?.img}
+              alt={author?.name}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               className="w-12 h-12 rounded-full object-cover border border-white/10"
             />
             <div>
-              <p className="text-white font-bold text-sm tracking-tight">{author?.name}</p>
+              <p className="text-white font-bold text-sm tracking-tight">{author?.name ?? 'Matriarch Editorial'}</p>
               <p className="text-white/40 text-[10px] uppercase tracking-widest">{author?.vocation} • {author?.city}</p>
             </div>
           </div>
         </header>
 
         {/* Hero Image */}
-        <div className="relative aspect-[21/9] rounded-3xl overflow-hidden mb-16 border border-white/5">
-          <img 
-            src={post.image} 
-            alt={post.title} 
-            className="w-full h-full object-cover grayscale brightness-50 contrast-125"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent opacity-60" />
-        </div>
+        {post.image && (
+          <div className="relative aspect-[21/9] rounded-3xl overflow-hidden mb-16 border border-white/5">
+            <img
+              src={post.image}
+              alt={post.title}
+              onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+              className="w-full h-full object-cover grayscale brightness-50 contrast-125"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent opacity-60" />
+          </div>
+        )}
 
         {/* Article Body */}
         {loading ? (

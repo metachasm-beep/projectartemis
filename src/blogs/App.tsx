@@ -44,20 +44,20 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
 // Reduced by 90%: py-32 → py-3, all large elements stripped to a single bar
 
 const Footer: React.FC = () => (
-  <footer className="py-3 px-8 border-t border-white/5 bg-[#030303]">
+  <footer className="py-3 px-8 border-t border-black/10 bg-white">
     <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-      <span className="text-[8px] font-medium text-white/15 tracking-[0.35em] uppercase">
+      <span className="text-[8px] font-medium text-black/30 tracking-[0.35em] uppercase">
         © 2026 Matriarch Protocol · Secretum Meum Mihi
       </span>
       <div className="flex gap-3">
         {['Archive', 'Manifesto', 'Instagram'].map(item => (
-          <span key={item} className="text-[8px] font-black uppercase tracking-widest text-white/15 hover:text-white/40 transition-colors cursor-pointer">
+          <span key={item} className="text-[8px] font-black uppercase tracking-widest text-black/25 hover:text-black/60 transition-colors cursor-pointer">
             {item}
           </span>
         ))}
       </div>
       <div className="flex gap-2">
-        {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 bg-rose-500/20 rounded-full" />)}
+        {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 bg-rose-400/40 rounded-full" />)}
       </div>
     </div>
   </footer>

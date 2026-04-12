@@ -21,7 +21,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Relationships',
     date: 'April 10, 2026',
     readTime: '8 min read',
-    image: '/assets/blogs/modern_intimacy.png',
+    image: 'https://images.unsplash.com/photo-1516589091380-5d8e87df6999?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm1' // Vikram Singh
   },
   {
@@ -33,7 +33,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Dating',
     date: 'April 08, 2026',
     readTime: '6 min read',
-    image: '/assets/blogs/choice_paradox.png',
+    image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm2' // Arjun Mehra
   },
   {
@@ -45,7 +45,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Love',
     date: 'April 05, 2026',
     readTime: '3 min read',
-    image: '/assets/blogs/semantic_seduction.png',
+    image: 'https://images.unsplash.com/photo-1474552226712-ac0f0961a954?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm3' // Kabir Varma
   },
   {
@@ -57,7 +57,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Sex',
     date: 'April 02, 2026',
     readTime: '10 min read',
-    image: '/assets/blogs/ethics_desire.png',
+    image: 'https://images.unsplash.com/photo-1550399105-c4db5fb85c18?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm5' // Dev Advani
   },
   {
@@ -69,7 +69,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Relationships',
     date: 'March 28, 2026',
     readTime: '7 min read',
-    image: '/assets/blogs/long_term_bonds.png',
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm13' // Aditya Rao
   },
   {
@@ -81,7 +81,7 @@ export const BLOG_POSTS: Post[] = [
     category: 'Dating',
     date: 'March 25, 2026',
     readTime: '5 min read',
-    image: '/assets/blogs/delhi_excellence.png',
+    image: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=1287&auto=format&fit=crop',
     authorId: 'm7' // Aryan Goel
   },
   {
