@@ -52,7 +52,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           )
         ))}
         <motion.a
-          href="https://matriarchindia.com/onboarding"
+          href="https://matriarchindia.com"
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
