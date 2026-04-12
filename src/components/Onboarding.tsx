@@ -49,7 +49,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
     diet: 'VEG',
     smoking: false,
     drinking: false,
-    photos: metadata?.avatar_url ? [metadata.avatar_url] : metadata?.picture ? [metadata.picture] : [] as string[],
+    photos: (metadata?.avatar_url || metadata?.picture || metadata?.avatar) ? [metadata.avatar_url || metadata.picture || metadata.avatar] : [] as string[],
     trump_stats: {
       charisma: 50,
       stamina: 50,
@@ -64,6 +64,40 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
   const currentSteps = formData.role === 'man' ? MAN_STEPS : BASE_STEPS;
 
+  // ☁️ GLOBAL ASSET STABILIZATION: Auto-proxy social avatars to Cloudinary
+  useEffect(() => {
+    const stabilizeSocialAvatars = async () => {
+       const externalUrl = formData.photos.find(p => 
+          (p.includes('googleusercontent.com') || p.includes('abs.twimg.com') || p.includes('fbcdn.net')) && 
+          !p.includes('res.cloudinary.com')
+       );
+
+       if (externalUrl) {
+          console.log("IDENTITY_HUB: External avatar detected. Initiating Sanctuary Ingestion...");
+          setLoading(true);
+          try {
+             const res = await fetch(externalUrl);
+             if (!res.ok) throw new Error("Sync failed");
+             const blob = await res.blob();
+             const secureUrl = await uploadToCloudinary(blob);
+             
+             setFormData(prev => ({
+                ...prev,
+                photos: prev.photos.map(p => p === externalUrl ? secureUrl : p)
+             }));
+             console.log("IDENTITY_HUB: External asset successfully proxied to Sanctuary storage.");
+          } catch (e) {
+             console.warn("IDENTITY_HUB: Asset ingestion failed. Falling back to external reference.", e);
+          } finally {
+             setLoading(false);
+          }
+       }
+    };
+    
+    if (formData.photos.length > 0) {
+      stabilizeSocialAvatars();
+    }
+  }, []); // Only on mount
 
   useEffect(() => {
     let s = 10;
@@ -161,6 +195,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       setLoading(false);
     }
   };
+
 
   const next = () => {
     const idx = currentSteps.indexOf(step);
