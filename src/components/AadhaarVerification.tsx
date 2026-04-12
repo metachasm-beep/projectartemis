@@ -17,6 +17,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { supabase } from '@/lib/supabase';
 import { api } from '@/services/api';
+import { diditService } from '@/services/diditService';
 import { faceVerificationService } from '@/services/FaceVerificationService';
 import { cn } from '@/lib/utils';
 
@@ -280,7 +281,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         <span className="text-[8px] font-black uppercase tracking-[0.4em]">Sovereign Protocol v2.4.7</span>
         <span className="text-[8px] font-black uppercase tracking-[0.4em]">Zero-Knowledge Handshake</span>
       </div>
-      </div>
     </div>
+
   );
 };
