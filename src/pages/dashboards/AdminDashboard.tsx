@@ -37,36 +37,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'man' | 'woman' | 'verified' | 'audits'>('all');
+  const [filter, setFilter] = useState<'all' | 'man' | 'woman' | 'verified' | 'audits' | 'tithes'>('all');
   const [audits, setAudits] = useState<any[]>([]);
+  const [tithes, setTithes] = useState<any[]>([]);
+  const [census, setCensus] = useState<any[]>([]);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
     try {
-      const result = await turso.execute("SELECT * FROM profiles ORDER BY created_at DESC");
-      const profiles = result.rows.map(r => ({
-        ...(r as any),
-        photos: tursoHelpers.deserialize(r.photos as string) || [],
-        hobbies: tursoHelpers.deserialize(r.hobbies as string) || [],
-        is_verified: !!r.is_verified,
-        is_active: !!r.is_active
-      }));
+      // 1. Scalable SQL Aggregations Layer
+      const metrics = await AdminService.getSystemMetrics();
+      setStats({
+        totalUsers: metrics.totalMen + metrics.totalWomen,
+        totalMen: metrics.totalMen,
+        totalWomen: metrics.totalWomen,
+        verifiedUsers: metrics.verifiedProfiles,
+        totalTokens: metrics.totalTokens || 0
+      });
 
+      // 2. High-Capacity Paginated Profile Roster
+      const profiles = await AdminService.searchProfiles({ limit: 200 });
       setUsers(profiles);
-      const statsData: AdminStats = {
-        totalUsers: profiles.length,
-        totalMen: profiles.filter(p => p.role === 'man').length,
-        totalWomen: profiles.filter(p => p.role === 'woman').length,
-        verifiedUsers: profiles.filter(p => p.is_verified).length,
-        totalTokens: profiles.reduce((acc, p) => acc + (p.tokens || 0), 0)
-      };
-      setStats(statsData);
 
       const pendingAudits = await AdminService.getPendingAudits();
       setAudits(pendingAudits);
+
+      const financialAudits = await AdminService.getFinancialAudits();
+      setTithes(financialAudits);
+
+      const cityCensusData = await AdminService.getCityCensus();
+      setCensus(cityCensusData);
     } catch (err) {
-      console.error("MATRIARCH: Admin data fetch failed (Turso):", err);
+      console.error("MATRIARCH: Admin data fetch failed:", err);
     } finally {
       setLoading(false);
     }
@@ -99,23 +102,53 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   };
 
   const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm("ARE YOU CERTAIN? This record will be purged.")) return;
+    if (!window.confirm("ARE YOU CERTAIN? This record will be permanently purged along with all associated messages and history.")) return;
     try {
-       await turso.execute("DELETE FROM profiles WHERE user_id = ?", [userId]);
+       await AdminService.deleteUserRecord(userId);
        setUsers(users.filter(u => u.user_id !== userId));
        setActiveMenuUserId(null);
+       fetchData(); // Sync metrics
     } catch (err) {
-       console.error("Purge failed (Turso):", err);
+       console.error("Purge failed (Turso/AdminService):", err);
     }
   };
 
   const toggleVerification = async (userId: string, currentStatus: any) => {
     const targetStatus = !currentStatus;
     await updateUserProfile(userId, { is_verified: targetStatus });
+    await import('@/services/sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
   };
 
   const adjustTokens = async (userId: string, currentTokens: number, amount: number) => {
     await updateUserProfile(userId, { tokens: Math.max(0, currentTokens + amount) });
+    await import('@/services/sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
+  };
+
+  const handleCulling = async () => {
+    if (!window.confirm("INITIATE CULLING? This permanently purges men inactive for over 30 days and reflows global ranks. This is absolute.")) return;
+    try {
+        setLoading(true);
+        const res = await AdminService.executeGlobalCulling();
+        window.alert(`Culling Complete\n\n${res.purged} stagnant souls evicted.\nAbsolute Rank Matrix reflowed.`);
+        fetchData();
+    } catch(err) {
+        console.error(err);
+        setLoading(false);
+    }
+  };
+
+  const handleBroadcast = async () => {
+    const title = window.prompt("Enter Broadcast Notice Title (e.g. ULTIMATUM)");
+    if(!title) return;
+    const body = window.prompt("Enter the manifesto or message body to broadcast to ALL men:");
+    if(!body) return;
+    
+    if(!window.confirm(`BROADCAST CONFIRMATION\n\nYou are about to send:\n[${title}]\n${body}\n\nTo ALL active male profiles. Proceed?`)) return;
+    
+    setLoading(true);
+    const res = await AdminService.sendSovereignBroadcast(title, body);
+    window.alert(`Sovereign Broadcast successful to ${res.count} channels.`);
+    setLoading(false);
   };
 
   const filteredUsers = users.filter(u => {
@@ -141,16 +174,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
               </div>
            </div>
            
-           <div className="flex items-center gap-px bg-mat-gold/10 border border-mat-gold/20 p-px w-full lg:w-auto rounded-3xl overflow-hidden shadow-mat-premium">
+           <div className="flex flex-wrap items-center gap-px bg-mat-gold/10 border border-mat-gold/20 p-px w-full lg:w-auto rounded-3xl overflow-hidden shadow-mat-premium">
               <button 
-                className="bg-mat-cream text-mat-wine px-12 py-8 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-white transition-all h-full flex items-center gap-4"
+                className="bg-mat-cream text-mat-wine px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-white transition-all flexitems-center gap-3"
                 onClick={fetchData}
               >
                 <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
                 Synchronize
               </button>
               <button 
-                className="bg-mat-wine text-mat-cream px-12 py-8 text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-mat-wine-soft transition-all h-full flex items-center gap-4 shadow-mat-premium"
+                className="bg-mat-cream text-mat-wine px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-mat-rose hover:text-white transition-all flex items-center gap-3"
+                onClick={handleBroadcast}
+              >
+                Sovereign Broadcast
+              </button>
+              <button 
+                className="bg-mat-cream text-mat-wine px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-mat-rose hover:text-white transition-all flex items-center gap-3"
+                onClick={handleCulling}
+              >
+                <Activity size={14} />
+                The Culling
+              </button>
+              <button 
+                className="bg-mat-wine text-mat-cream px-8 py-6 text-[10px] font-bold uppercase tracking-[0.3em] hover:bg-mat-wine-soft transition-all flex items-center gap-3 shadow-mat-premium"
                 onClick={handleLogout}
               >
                 <LogOut size={14} />
@@ -182,17 +228,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
            ))}
         </div>
 
+        {/* Demographic Census */}
+        {census.length > 0 && (
+          <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-none">
+            {census.map(c => (
+              <div key={c.city} className="flex-shrink-0 flex items-center gap-3 bg-mat-cream/80 backdrop-blur-md border border-mat-rose/10 px-6 py-3 rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-widest text-mat-wine/60">{c.city}</span>
+                <Badge variant="outline" className="text-[9px] font-black">{c.count}</Badge>
+              </div>
+            ))}
+          </div>
+        )}
+
         {/* Soul matrix visualization */}
         <div className="space-y-12">
            <div className="flex flex-col lg:flex-row gap-12 justify-between items-start lg:items-end px-4">
-              <div className="space-y-6">
+              <div className="space-y-6 flex-1 overflow-x-auto">
                  <h3 className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose">Active Soul Matrix</h3>
-                 <div className="flex bg-mat-rose/10 border border-mat-rose/10 p-px h-12 rounded-full overflow-hidden">
-                   {(['all', 'man', 'woman', 'verified'] as const).map(f => (
+                 <div className="flex bg-mat-rose/10 border border-mat-rose/10 p-px h-12 rounded-full overflow-x-auto">
+                   {(['all', 'man', 'woman', 'verified', 'audits', 'tithes'] as const).map(f => (
                      <button
                        key={f}
                        onClick={() => setFilter(f)}
-                       className={`px-8 h-full text-[9px] font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-mat-wine text-mat-cream' : 'bg-mat-cream text-mat-slate/40 hover:text-mat-wine hover:bg-mat-rose/5'}`}
+                       className={`px-8 h-full flex-shrink-0 text-[10px] font-bold uppercase tracking-widest transition-all ${filter === f ? 'bg-mat-wine text-mat-cream rounded-full shadow-lg' : 'bg-transparent text-mat-slate/40 hover:text-mat-wine hover:bg-mat-cream/50 rounded-full'}`}
                      >
                        {f}
                      </button>
@@ -255,6 +313,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
                               </div>
                            </td>
                            <td className="px-12 py-8 text-right italic text-[10px] opacity-20">Audit Record</td>
+                         </tr>
+                       ))
+                     ) : filter === 'tithes' ? (
+                       tithes.length === 0 ? (
+                         <tr><td colSpan={5} className="py-24 text-center opacity-40">No Financial Audits</td></tr>
+                       ) : tithes.map((t) => (
+                         <tr key={t.id} className="hover:bg-mat-rose/[0.03] transition-colors">
+                           <td className="px-12 py-8">
+                              <p className="text-sm font-bold text-mat-wine italic">{t.user_name || t.user_id.slice(0, 8)}</p>
+                              <p className="text-[9px] font-black uppercase text-mat-slate/40">{t.action}</p>
+                           </td>
+                           <td className="px-12 py-8"><Badge variant="outline" className="text-[8px] tracking-widest uppercase">{t.status || 'LOGGED'}</Badge></td>
+                           <td className="px-12 py-8 text-[9px] font-mono text-mat-wine/40">
+                             {t.metadata ? (
+                               <div className="max-w-[200px] truncate">{t.metadata}</div>
+                             ) : 'No details'}
+                           </td>
+                           <td className="px-12 py-8 text-[9px] font-mono text-mat-wine/60">{new Date(t.created_at).toLocaleString()}</td>
+                           <td className="px-12 py-8 text-right italic text-[10px] opacity-20">Tithe Ledger</td>
                          </tr>
                        ))
                      ) : filteredUsers.length === 0 ? (

@@ -93,25 +93,47 @@ export const AdminService = {
     }
 
     try {
-      const [menQ, womenQ, verifiedQ, topicsQ] = await Promise.all([
+      const [menQ, womenQ, verifiedQ, topicsQ, tokensQ] = await Promise.all([
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
-        turso.execute("SELECT COUNT(*) as count FROM forum_topics")
+        turso.execute("SELECT COUNT(*) as count FROM forum_topics"),
+        turso.execute("SELECT SUM(tokens) as total FROM profiles")
       ]);
 
       const data = {
         totalMen: Number(menQ.rows[0]?.count || 0),
         totalWomen: Number(womenQ.rows[0]?.count || 0),
         verifiedProfiles: Number(verifiedQ.rows[0]?.count || 0),
-        totalForumTopics: Number(topicsQ.rows[0]?.count || 0)
+        totalForumTopics: Number(topicsQ.rows[0]?.count || 0),
+        totalTokens: Number(tokensQ.rows[0]?.total || 0)
       };
 
       metricsCache = { data, timestamp: now };
       return data;
     } catch (err) {
       console.error("ADMIN_METRICS_ERROR:", err);
-      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 };
+      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0, totalTokens: 0 };
+    }
+  },
+
+  /**
+   * 🗺️ Geographic Census: Extracts top 10 city populations for targeted campaigns.
+   */
+  getCityCensus: async () => {
+    try {
+      const res = await turso.execute(`
+        SELECT city, COUNT(*) as count 
+        FROM profiles 
+        WHERE city IS NOT NULL AND city != '' 
+        GROUP BY city 
+        ORDER BY count DESC 
+        LIMIT 10
+      `);
+      return res.rows.map(r => ({ city: String(r.city), count: Number(r.count) }));
+    } catch(e) {
+      console.error("ADMIN_CENSUS_ERROR:", e);
+      return [];
     }
   },
 
@@ -257,6 +279,38 @@ export const AdminService = {
     } catch (err) {
       console.error("ADMIN_CURATION_FETCH_ERROR:", err);
       return [];
+    }
+  },
+
+  /**
+   * ⚔️ The Culling: Sweeps inactive 'man' profiles and reflows ranks.
+   */
+  executeGlobalCulling: async () => {
+    console.log("ADMIN_SERVICE: Commencing The Culling Sequence.");
+    try {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const res = await turso.execute({
+            sql: "SELECT user_id FROM profiles WHERE role = 'man' AND updated_at < ?",
+            args: [thirtyDaysAgo.toISOString()]
+        });
+        
+        const toDelete = res.rows.map(r => r.user_id as string);
+        let purgedCount = 0;
+        
+        for (const id of toDelete) {
+            const success = await AdminService.deleteUserRecord(id);
+            if(success) purgedCount++;
+        }
+        
+        // Final Rank Polish
+        await import('./sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
+        
+        return { success: true, purged: purgedCount };
+    } catch(err) {
+        console.error("ADMIN_CULLING_ERROR:", err);
+        return { success: false, purged: 0 };
     }
   },
 
@@ -468,6 +522,49 @@ export const AdminService = {
     } catch (err) {
       console.error("ADMIN_DIRECT_MSG_ERROR:", err);
       return false;
+    }
+  },
+
+  /**
+   * 📢 Sovereign Broadcast: Force-involves the Admin direct-message system to push a manifesto or ultimatum to ALL men.
+   */
+  sendSovereignBroadcast: async (title: string, body: string) => {
+    try {
+        console.log(`ADMIN_SERVICE: Initiating Sovereign Broadcast: ${title}`);
+        const res = await turso.execute("SELECT user_id FROM profiles WHERE role = 'man'");
+        const maleIds = res.rows.map(r => String(r.user_id));
+        
+        const fullMessage = `[SOVEREIGN_BROADCAST]: ${title}\n\n${body}`;
+        let successCount = 0;
+        
+        for (const userId of maleIds) {
+            const success = await AdminService.sendDirectAdminMessage(userId, fullMessage);
+            if(success) successCount++;
+        }
+        
+        return { success: true, count: successCount };
+    } catch(err) {
+        console.error("ADMIN_BROADCAST_ERROR:", err);
+        return { success: false, count: 0 };
+    }
+  },
+
+  /**
+   * 🏦 Tithe Ledger: Retrieve all financial and transaction audit logs.
+   */
+  getFinancialAudits: async () => {
+    try {
+      const result = await turso.execute(`
+        SELECT p.*, prof.full_name as user_name 
+        FROM protocol_audits p
+        LEFT JOIN profiles prof ON p.user_id = prof.user_id
+        WHERE p.action LIKE 'MONETIZATION%' OR p.action = 'PAYMENT_CLAIM'
+        ORDER BY p.created_at DESC LIMIT 500
+      `);
+      return result.rows;
+    } catch (err) {
+      console.error("ADMIN_FINANCIAL_AUDITS_ERROR:", err);
+      return [];
     }
   },
 
