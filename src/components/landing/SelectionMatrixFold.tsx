@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Fold from './Fold';
-import { ShieldCheck, Zap, Heart, Activity, Crown, ArrowUpRight } from 'lucide-react';
+import { ShieldCheck, Zap, Heart, Activity, Crown, ArrowUpRight, MessageSquare, Lock, EyeOff, ChevronRight } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 const BENTO_ITEMS = [
@@ -61,7 +61,7 @@ const SelectionMatrixFold: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.8 }}
-              className={`group relative p-8 lg:p-10 flex flex-col justify-between min-h-[300px] lg:min-h-[320px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
+              className={`group relative p-6 lg:p-8 flex flex-col justify-between min-h-[250px] lg:min-h-[280px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
             >
               <div className="space-y-8 relative z-10">
                 <div className={`w-14 h-14 flex items-center justify-center rounded-2xl bg-${item.color}/10 border border-${item.color}/20 text-white shadow-lg`}>

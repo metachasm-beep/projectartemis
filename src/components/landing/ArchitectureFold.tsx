@@ -15,8 +15,8 @@ const ArchitectureFold: React.FC = () => {
   const titleX = useTransform(scrollYProgress, [0, 1], [-100, 100]);
 
   return (
-    <Fold id="architecture" className="py-12 bg-mat-obsidian border-t border-mat-rose/10">
-      <div ref={containerRef} className="space-y-16 lg:space-y-24">
+    <Fold id="architecture" className="bg-mat-obsidian border-t border-mat-rose/10 py-0 overflow-hidden">
+      <div ref={containerRef} className="h-full flex flex-col justify-center space-y-8 lg:space-y-12 py-12">
         {/* Section 1: The Steps */}
         <div className="space-y-12">
           <div className="space-y-4">

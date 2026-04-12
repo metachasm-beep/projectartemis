@@ -22,8 +22,8 @@ const HeroFold: React.FC = () => {
     offset: ["start start", "end start"]
   });
 
-  // Parallax transforms
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  // Parallax transforms: Zoomed out by ~50% (starting from 0.7x instead of 1x)
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [0.7, 0.9]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   

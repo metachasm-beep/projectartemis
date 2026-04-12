@@ -9,6 +9,7 @@ import MeritFold from "@/components/landing/MeritFold";
 import SystemIntegrityFold from "@/components/landing/SystemIntegrityFold";
 import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
 import SecurityFold from "@/components/landing/SecurityFold";
+import Footer from "@/components/landing/Footer";
 
 const LandingPage: React.FC = () => {
   const [showOnboarding, setShowOnboarding] = useState(false);
@@ -105,16 +106,7 @@ const LandingPage: React.FC = () => {
           <SelectionMatrixFold />
           <SecurityFold />
           
-          {/* Minimalist Footer */}
-          <footer className="bg-mat-obsidian py-20 px-8 border-t border-white/5 flex flex-col items-center gap-12 text-center snap-start">
-            <div className="text-4xl font-display text-mat-cream tracking-[0.2em] opacity-40">MATRIARCH</div>
-            <div className="flex gap-8 text-[10px] font-black uppercase tracking-widest text-mat-cream/30">
-              <span className="hover:text-mat-gold cursor-pointer transition-colors">Sanctuary Code</span>
-              <span className="hover:text-mat-gold cursor-pointer transition-colors">Integrity Archive</span>
-              <span className="hover:text-mat-gold cursor-pointer transition-colors">Sovereign Contact</span>
-            </div>
-            <p className="text-[9px] text-white/10 tracking-[0.4em] uppercase">© 2026 Matriarch Protocol. All Standing Reserved.</p>
-          </footer>
+          <Footer />
         </div>
       </div>
 
