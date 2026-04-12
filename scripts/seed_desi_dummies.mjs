@@ -79,6 +79,8 @@ const DESI_IDS_FEMALE = [
 async function uploadToCloudinary(imageUrl, name) {
   try {
     const res = await fetch(imageUrl);
+    if (!res.ok) throw new Error(`Source fetch failed: ${res.status}`);
+    
     const blob = await res.blob();
     const formData = new FormData();
     formData.append('file', blob);
@@ -91,9 +93,14 @@ async function uploadToCloudinary(imageUrl, name) {
     });
     
     const data = await cloudRes.json();
+    if (!data.secure_url) {
+       console.warn(`Cloudinary upload failed for ${name}:`, data);
+       throw new Error("Missing secure_url");
+    }
     return data.secure_url;
   } catch (e) {
-    console.error(`Upload error for ${name}:`, e);
+    console.error(`Upload error for ${name}:`, e.message);
+    // Return original Unsplash URL as fallback instead of null
     return imageUrl; 
   }
 }
