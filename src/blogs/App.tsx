@@ -11,57 +11,96 @@ import { ManifestoService } from '@/services/manifestoService';
 
 // ---------- Nav ---------------------------------------------------------------
 
-const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => (
-  <nav className="fixed top-0 w-full z-[100] px-8 py-8 flex items-center justify-between pointer-events-none">
-    <div className="pointer-events-auto">
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        onClick={onArchiveClick}
-        className="text-white text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
-      >
-        MATRIARCH<span className="text-rose-500">.</span>
-        <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden md:block italic">Journal Archive</span>
-      </motion.button>
-    </div>
-    <div className="pointer-events-auto hidden md:flex items-center gap-12">
-      {['Archive', 'Protocol', 'Identity'].map(item => (
-        <a key={item} href={`/${item.toLowerCase()}`} className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em]">
-          {item}
-        </a>
-      ))}
-      <motion.div
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10"
-      >
-        Join Sanctuary
-      </motion.div>
-    </div>
-  </nav>
-);
+const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
+  { label: 'Archive', scroll: 'archive-fold' },
+  { label: 'Protocol', href: 'https://matriarchindia.com' },
+  { label: 'Identity', href: 'https://matriarchindia.com/signin' },
+];
+
+const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
+  const handleNav = (link: typeof NAV_LINKS[0]) => {
+    if (link.scroll) {
+      document.getElementById(link.scroll)?.scrollIntoView({ behavior: 'smooth' });
+    } else if (link.href) {
+      window.open(link.href, '_blank');
+    }
+  };
+
+  return (
+    <nav className="fixed top-0 w-full z-[100] px-8 py-8 flex items-center justify-between pointer-events-none">
+      <div className="pointer-events-auto">
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          onClick={onArchiveClick}
+          className="text-white text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
+        >
+          MATRIARCH<span className="text-rose-500">.</span>
+          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden md:block italic">Journal Archive</span>
+        </motion.button>
+      </div>
+      <div className="pointer-events-auto hidden md:flex items-center gap-12">
+        {NAV_LINKS.map(link => (
+          <button
+            key={link.label}
+            onClick={() => handleNav(link)}
+            className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] bg-transparent border-0 cursor-pointer"
+          >
+            {link.label}
+          </button>
+        ))}
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={() => window.open('https://matriarchindia.com/signin', '_blank')}
+          className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10"
+        >
+          Join Sanctuary
+        </motion.button>
+      </div>
+    </nav>
+  );
+};
 
 // ---------- Slim Footer -------------------------------------------------------
 // Reduced by 90%: py-32 → py-3, all large elements stripped to a single bar
 
-const Footer: React.FC = () => (
-  <footer className="py-3 px-8 border-t border-black/10 bg-white">
-    <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-      <span className="text-[8px] font-medium text-black/30 tracking-[0.35em] uppercase">
-        © 2026 Matriarch Protocol · Secretum Meum Mihi
-      </span>
-      <div className="flex gap-3">
-        {['Archive', 'Manifesto', 'Instagram'].map(item => (
-          <span key={item} className="text-[8px] font-black uppercase tracking-widest text-black/25 hover:text-black/60 transition-colors cursor-pointer">
-            {item}
-          </span>
-        ))}
+const INSTAGRAM_URL = 'https://www.instagram.com/matriarchindia?igsh=MXE0dTlrZGswejBlYQ==';
+
+const Footer: React.FC<{ onManifestoClick: () => void }> = ({ onManifestoClick }) => {
+  const handleFooterLink = (item: string) => {
+    if (item === 'Archive') {
+      document.getElementById('archive-fold')?.scrollIntoView({ behavior: 'smooth' });
+    } else if (item === 'Manifesto') {
+      onManifestoClick();
+    } else if (item === 'Instagram') {
+      window.open(INSTAGRAM_URL, '_blank');
+    }
+  };
+
+  return (
+    <footer className="py-3 px-8 border-t border-black/10 bg-white">
+      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
+        <span className="text-[8px] font-medium text-black/30 tracking-[0.35em] uppercase">
+          © 2026 Matriarch Protocol · Secretum Meum Mihi
+        </span>
+        <div className="flex gap-3">
+          {['Archive', 'Manifesto', 'Instagram'].map(item => (
+            <button
+              key={item}
+              onClick={() => handleFooterLink(item)}
+              className="text-[8px] font-black uppercase tracking-widest text-black/25 hover:text-black/60 transition-colors cursor-pointer bg-transparent border-0"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
+        <div className="flex gap-2">
+          {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 bg-rose-400/40 rounded-full" />)}
+        </div>
       </div>
-      <div className="flex gap-2">
-        {[1, 2, 3].map(i => <div key={i} className="w-1 h-1 bg-rose-400/40 rounded-full" />)}
-      </div>
-    </div>
-  </footer>
-);
+    </footer>
+  );
+};
 
 
 // ---------- Main App ----------------------------------------------------------
@@ -226,6 +265,7 @@ const App: React.FC = () => {
 
               {/* ── FOLD 3: Archive (MagicBento) ─────────────────────────── */}
               <section
+                id="archive-fold"
                 ref={archiveRef}
                 className="relative min-h-screen w-full py-16 px-6 overflow-hidden"
               >
@@ -244,7 +284,7 @@ const App: React.FC = () => {
         </AnimatePresence>
       </main>
 
-      {!selectedPost && <Footer />}
+      {!selectedPost && <Footer onManifestoClick={() => setIsEditorOpen(true)} />}
 
       {/* Film grain overlay */}
       <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.035] mix-blend-overlay">
