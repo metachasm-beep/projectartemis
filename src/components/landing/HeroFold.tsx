@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import MatriarchLogo from "@/components/MatriarchLogo";
 import StarBorder from "@/components/bits/StarBorder";
 import { ArrowDown } from "lucide-react";
+import { supabase } from "@/lib/supabase";
 
 const IMAGES = [
   "/assets/slideshow/h_1.png",
@@ -108,7 +109,13 @@ const HeroFold: React.FC = () => {
           transition={{ delay: 1.2 }}
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
-          <button onClick={() => window.location.href = '/signin'} className="w-full sm:w-auto">
+          <button 
+            onClick={() => supabase.auth.signInWithOAuth({ 
+              provider: 'google', 
+              options: { redirectTo: window.location.origin } 
+            })} 
+            className="w-full sm:w-auto"
+          >
             <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
               ENTER SANCTUARY
             </StarBorder>

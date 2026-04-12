@@ -51,6 +51,7 @@ const App: React.FC = () => {
             <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
             <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
             <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+            <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
             <Route path="/verify/callback" element={
               <React.Suspense fallback={null}>
                 <VerifyCallback />
