@@ -14,7 +14,6 @@ import { ManifestoService } from '@/services/manifestoService';
 const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
   { label: 'Archive', scroll: 'archive-fold' },
   { label: 'Protocol', href: 'https://matriarchindia.com' },
-  { label: 'Identity', href: 'https://matriarchindia.com/signin' },
 ];
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
@@ -53,7 +52,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           )
         ))}
         <motion.a
-          href="https://matriarchindia.com/signin"
+          href="https://matriarchindia.com/onboarding"
           target="_blank"
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
