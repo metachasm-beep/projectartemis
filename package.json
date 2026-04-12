@@ -45,6 +45,7 @@
     "lucide-react": "^1.7.0",
     "ogl": "^1.0.11",
     "postcss": "^8.5.8",
+    "postprocessing": "^6.39.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-helmet-async": "^3.0.0",

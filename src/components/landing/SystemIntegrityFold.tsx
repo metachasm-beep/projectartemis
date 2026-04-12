@@ -2,12 +2,24 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Fold from './Fold';
 import { ShieldCheck, MessageSquare, Lock, EyeOff, ChevronRight } from 'lucide-react';
-import Radar from '@/components/bits/Radar';
+import { GridScan } from '@/components/bits/GridScan';
 
 const SystemIntegrityFold: React.FC = () => {
   return (
-    <Fold id="integrity" className="bg-mat-cream py-12 lg:py-16 border-b border-black/5 overflow-hidden">
-      <div className="h-full flex flex-col justify-center space-y-10">
+    <Fold id="integrity" className="bg-mat-cream py-12 lg:py-16 border-b border-black/5 overflow-hidden relative">
+      {/* Background Layer: Holographic Grid Scan */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none">
+        <GridScan 
+          linesColor="#1A1A1A"
+          scanColor="#BFA06A"
+          gridScale={0.08}
+          scanDuration={3}
+          scanDelay={1}
+          lineThickness={0.5}
+        />
+      </div>
+
+      <div className="h-full flex flex-col justify-center space-y-10 relative z-10">
         {/* Header */}
         <div className="space-y-4">
           <h2 className="text-4xl md:text-7xl font-display text-mat-obsidian uppercase leading-[0.85] tracking-tighter">
@@ -23,7 +35,7 @@ const SystemIntegrityFold: React.FC = () => {
           {/* Card 1: Communication */}
           <motion.div 
             whileHover={{ scale: 0.99 }}
-            className="col-span-12 md:col-span-8 bg-black/[0.03] border border-black/5 p-8 flex flex-col justify-between relative overflow-hidden group"
+            className="col-span-12 md:col-span-8 bg-black/[0.03] border border-black/5 backdrop-blur-sm p-8 flex flex-col justify-between relative overflow-hidden group"
           >
             <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
               <MessageSquare className="w-32 h-32 rotate-12" />
@@ -62,32 +74,11 @@ const SystemIntegrityFold: React.FC = () => {
           {/* Card 4: Discovery */}
           <motion.div 
             whileHover={{ scale: 0.99 }}
-            className="col-span-12 md:col-span-5 bg-mat-gold/[0.05] border border-mat-gold/20 p-8 flex flex-col justify-center gap-4 group"
+            className="col-span-12 md:col-span-8 bg-mat-gold/[0.05] border border-mat-gold/20 p-8 flex flex-col justify-center gap-4 group min-h-[120px]"
           >
             <EyeOff className="w-6 h-6 text-mat-gold group-hover:scale-110 transition-transform" />
             <h3 className="text-xl font-display uppercase text-mat-obsidian">Selective <br/>Discovery</h3>
             <div className="w-12 h-0.5 bg-mat-gold/30" />
-          </motion.div>
-
-          {/* Card 5: Visual Integrity Pulse */}
-          <motion.div 
-            whileHover={{ scale: 0.99 }}
-            className="col-span-12 md:col-span-3 bg-mat-obsidian border border-black/5 p-4 flex flex-col items-center justify-center relative overflow-hidden group min-h-[200px]"
-          >
-            <div className="absolute inset-0 opacity-40">
-              <Radar 
-                speed={0.5} 
-                scale={1.2} 
-                ringCount={6} 
-                color="#BFA06A" 
-                backgroundColor="#1A1A1A"
-                brightness={0.8}
-              />
-            </div>
-            <div className="relative z-10 text-center space-y-2">
-               <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-gold/60">Integrity Scan</h3>
-               <p className="text-[8px] text-mat-cream/20 uppercase tracking-widest font-mono">Status: Secure</p>
-            </div>
           </motion.div>
         </div>
       </div>

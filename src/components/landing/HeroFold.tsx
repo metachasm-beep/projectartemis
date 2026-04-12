@@ -22,8 +22,8 @@ const HeroFold: React.FC = () => {
     offset: ["start start", "end start"]
   });
 
-  // Parallax transforms: Keep scale at 1.0 to fit screen as requested
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.05]);
+  // Parallax transforms: minimal scale to prevent aggressive cropping
+  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   
@@ -42,7 +42,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-mat-obsidian"
     >
       {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
       <motion.div 
@@ -106,10 +106,19 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.2 }}
+          className="flex flex-col sm:flex-row gap-4"
         >
-          <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
-            ENTER SANCTUARY
-          </StarBorder>
+          <button onClick={() => window.location.href = '/signin'}>
+            <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
+              ENTER SANCTUARY
+            </StarBorder>
+          </button>
+          
+          <button onClick={() => window.location.href = '/blogs'}>
+            <StarBorder className="px-10 py-4 text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
+              READ JOURNALS
+            </StarBorder>
+          </button>
         </motion.div>
 
         {/* Scroll Indicator */}
