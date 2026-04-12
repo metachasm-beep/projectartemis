@@ -75,11 +75,21 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         LIMIT 100
       `, []);
 
-      const mapped = result.rows.map(r => {
+      const mapped = result.rows.map((r, i) => {
         const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
-        const photos = typeof r.photos === 'string' ? JSON.parse(r.photos as string)?.[0] : (r.photos || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`);
+        
+        let photo = `https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800&sig=${i}`;
+        if (typeof r.photos === 'string' && r.photos.startsWith('[')) {
+          try {
+            const parsed = JSON.parse(r.photos);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              photo = parsed[0];
+            }
+          } catch(e) {}
+        }
+
         return {
-          image: photos,
+          image: photo,
           text: r.full_name?.toString().split(' ')[0] || 'Sanctuary Identity',
           subText: `${age} • ${r.city || 'Undisclosed'}`,
           originalName: r.full_name,
@@ -198,7 +208,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <div className="relative w-full h-full scale-110">
                 <CircularGallery 
                   items={gazeProfiles}
-                  bend={-0.3}
+                  bend={0}
                   scrollSpeed={0.5}
                   autoScroll={true}
                   autoScrollSpeed={0.05}
