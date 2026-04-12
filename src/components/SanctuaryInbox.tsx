@@ -90,7 +90,7 @@ export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, 
           >
              <div className="relative">
                 <div className="w-20 h-20 rounded-[1.75rem] overflow-hidden border-2 border-mat-rose/10 group-hover:border-mat-rose/40 transition-colors">
-                   <img src={match.otherUser.avatar} alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
+                   <img src={match.otherUser.avatar} referrerPolicy="no-referrer" alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                 </div>
                 {match.current_comm_mode === 'TEXT' && (
                   <div className="absolute -top-1 -right-1 w-5 h-5 bg-mat-gold rounded-full flex items-center justify-center border-2 border-mat-cream shadow-sm">

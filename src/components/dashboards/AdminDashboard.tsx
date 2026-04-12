@@ -337,6 +337,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                         {p.photos?.[0] ? (
                                            <img 
                                              src={p.photos[0]} 
+                                             referrerPolicy="no-referrer"
                                              className="w-full h-full object-cover" 
                                              onError={(e) => {
                                                 e.currentTarget.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}`;

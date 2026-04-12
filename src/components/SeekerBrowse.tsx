@@ -201,7 +201,12 @@ export const SeekerBrowse: React.FC = () => {
                    <button onClick={() => setSelectedProfile(null)} className="absolute top-12 right-12 z-[110] p-6 rounded-full bg-mat-wine text-mat-cream shadow-2xl hover:scale-110 active:scale-90 transition-all font-black"><X size={28} /></button>
                    
                    <div className="w-full md:w-[50%] h-[40vh] md:h-full relative overflow-hidden bg-mat-wine/5">
-                      <img src={JSON.parse(selectedProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} alt="" className="w-full h-full object-cover grayscale brightness-105" />
+                      <img 
+                        src={JSON.parse(selectedProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} 
+                        referrerPolicy="no-referrer"
+                        alt="" 
+                        className="w-full h-full object-cover grayscale brightness-105" 
+                      />
                       <div className="absolute inset-x-0 bottom-0 h-96 bg-gradient-to-t from-mat-cream via-mat-cream/80 to-transparent" />
                    </div>
 

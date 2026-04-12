@@ -153,7 +153,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
             <button onClick={onBack} className="p-4 rounded-2xl hover:bg-mat-wine/5 text-mat-rose transition-all"><ChevronLeft size={24} /></button>
             <div className="flex items-center gap-5">
                <div className="w-14 h-14 rounded-2xl overflow-hidden border border-mat-rose/10 shadow-sm transition-transform hover:scale-105">
-                  <img src={match.otherUser.avatar} alt="" className="w-full h-full object-cover grayscale brightness-110" />
+                  <img src={match.otherUser.avatar} referrerPolicy="no-referrer" alt="" className="w-full h-full object-cover grayscale brightness-110" />
                </div>
                <div>
                   <h3 className="text-xl font-bold text-mat-wine italic leading-none">{match.otherUser.full_name}</h3>

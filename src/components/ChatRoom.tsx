@@ -140,7 +140,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ otherUserId, onBack }) => {
               </button>
             )}
             <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-mat-rose/10 shadow-sm">
-               <img src={JSON.parse(otherUser?.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`} alt="" className="w-full h-full object-cover" />
+               <img 
+                 src={JSON.parse(otherUser?.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${otherUserId}`} 
+                 referrerPolicy="no-referrer"
+                 alt="" 
+                 className="w-full h-full object-cover" 
+               />
             </div>
             <div>
                <h3 className="font-bold text-mat-wine italic">{otherUser?.full_name}</h3>

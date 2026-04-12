@@ -167,6 +167,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                        <img 
                          src={photo}
                          alt=""
+                         referrerPolicy="no-referrer"
                          className="w-full h-full object-cover saturate-[1.2] brightness-90 group-hover:brightness-105 group-hover:scale-105 transition-all duration-1000"
                        />
                      </div>
@@ -258,6 +259,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                      <img 
                        src={(() => { try { return JSON.parse(engagementProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${engagementProfile.user_id}`; } catch { return `https://api.dicebear.com/7.x/avataaars/svg?seed=${engagementProfile.user_id}`; } })()} 
                        alt="" 
+                       referrerPolicy="no-referrer"
                        className="w-20 h-20 rounded-full object-cover border-2 border-mat-gold/30 shadow-[0_0_20px_rgba(212,175,55,0.2)]" 
                      />
                      {engagementProfile.is_verified && (

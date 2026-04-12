@@ -70,7 +70,12 @@ export const ForumPost: React.FC<{ post: PostProps, onReply: (id: string) => voi
        <div className="flex justify-between items-start">
           <div className="flex items-center gap-3">
              <div className="relative">
-                <img src={post.author_avatar} alt={post.author_name} className={cn("w-8 h-8 rounded-full object-cover ring-2", isAdminAuthor ? "ring-mat-gold" : "ring-mat-gold/20")} />
+                <img 
+                  src={post.author_avatar} 
+                  referrerPolicy="no-referrer"
+                  alt={post.author_name} 
+                  className={cn("w-8 h-8 rounded-full object-cover ring-2", isAdminAuthor ? "ring-mat-gold" : "ring-mat-gold/20")} 
+                />
                 {isAdminAuthor && (
                    <div className="absolute -top-1 -right-1 bg-mat-gold rounded-full p-0.5 shadow-sm">
                       <Shield size={8} fill="black" className="text-black" />

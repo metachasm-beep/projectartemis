@@ -217,6 +217,7 @@ export const Leaderboard: React.FC = () => {
                                 <div className="w-12 h-12 rounded-2xl overflow-hidden border border-mat-rose/20 grayscale group-hover:grayscale-0 transition-all">
                                    <img 
                                      src={user.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.user_id}`} 
+                                     referrerPolicy="no-referrer"
                                      className="w-full h-full object-cover" 
                                      alt="Thumb" 
                                    />

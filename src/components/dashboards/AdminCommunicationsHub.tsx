@@ -98,7 +98,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                           { img: (function(){ try { return JSON.parse(c.man_photos || '[]')[0]; } catch { return "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200"; }})(), name: c.man_name }
                         ].map((user, idx) => (
                            <div key={idx} className="w-16 h-16 rounded-[1.25rem] border-4 border-mat-cream overflow-hidden shadow-mat-premium group-hover:scale-105 transition-transform duration-500">
-                              <img src={user.img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                              <img src={user.img} referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
                            </div>
                         ))}
                      </div>
