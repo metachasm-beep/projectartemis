@@ -17,7 +17,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { supabase } from '@/lib/supabase';
 import { api } from '@/services/api';
-import { diditService } from '@/services/diditService';
+import { diditService } from '@/services/DiditService';
 import { faceVerificationService } from '@/services/FaceVerificationService';
 import { cn } from '@/lib/utils';
 
