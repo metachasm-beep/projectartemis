@@ -25,7 +25,7 @@ import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 import AdUnit from "@/components/common/AdUnit";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 import { SEO_COPY } from "@/content/copy";
-import ElectricBorder from "@/components/bits/ElectricBorder";
+import StarBorder from "@/components/bits/StarBorder";
 
 const HeroSlideshow: React.FC<{ opacity?: number, className?: string }> = ({ opacity = 1, className = "" }) => {
   const images = [
@@ -257,16 +257,16 @@ const LandingPage: React.FC = () => {
                   href="https://blogs.matriarchindia.com"
                   className="inline-block"
                 >
-                  <ElectricBorder
+                  <StarBorder
+                    as="div"
                     color="#F0A3EA"
-                    speed={1}
-                    chaos={0.12}
-                    borderRadius={999}
+                    speed="3s"
+                    className="rounded-full"
                   >
                     <button className="h-14 px-10 rounded-full font-bold uppercase tracking-[0.3em] text-[11px] text-white bg-black/80 hover:bg-black transition-colors" style={{fontFamily:'Helvetica,sans-serif'}}>
                       Explore Journal
                     </button>
-                  </ElectricBorder>
+                  </StarBorder>
                 </a>
               </div>
 

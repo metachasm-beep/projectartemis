@@ -7,74 +7,74 @@ interface BlogCardProps {
   post: Post;
   index: number;
   onSelect: (postId: string) => void;
+  isFeatured?: boolean;
 }
 
-const BlogCard: React.FC<BlogCardProps> = ({ post, index, onSelect }) => {
+const BlogCard: React.FC<BlogCardProps> = ({ post, index, onSelect, isFeatured = false }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      className="group relative flex flex-col bg-[#0A0A0A] border border-white/5 rounded-3xl overflow-hidden hover:border-rose-500/30 transition-all hover:shadow-[0_0_40px_rgba(225,29,72,0.1)] cursor-pointer"
       onClick={() => onSelect(post.id)}
+      className={`group relative flex flex-col bg-[#0A0A0A] border border-white/5 rounded-[2rem] overflow-hidden hover:border-rose-500/30 transition-all duration-500 hover:shadow-[0_0_80px_rgba(225,29,72,0.05)] cursor-pointer h-full ${
+        isFeatured ? "md:flex-row" : "flex-col"
+      }`}
     >
+      {/* Background Glow Effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-rose-500/0 via-transparent to-rose-500/0 group-hover:from-rose-500/[0.02] group-hover:to-rose-500/[0.02] transition-colors duration-700" />
+
       {/* Image Section */}
-      <div className="relative h-64 overflow-hidden">
+      <div className={`relative h-full overflow-hidden shrink-0 ${
+        isFeatured ? "md:w-1/2" : "h-72 w-full"
+      }`}>
         <motion.img
           src={post.image}
           alt={post.title}
-          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700"
+          className="w-full h-full object-cover grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-[1.5s] ease-[cubic-bezier(0.22,1,0.36,1)]"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent opacity-60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/20 to-transparent opacity-80" />
         
         {/* Category Badge */}
-        <div className="absolute top-6 left-6 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 backdrop-blur-md">
-          <span className="text-[10px] font-black tracking-widest text-rose-500 uppercase">{post.category}</span>
+        <div className="absolute top-8 left-8">
+           <div className="px-5 py-2 rounded-full bg-black/40 border border-white/10 backdrop-blur-2xl shadow-2xl">
+              <span className="text-[9px] font-black tracking-[0.3em] text-rose-500 uppercase">{post.category}</span>
+           </div>
         </div>
       </div>
 
       {/* Content Section */}
-      <div className="p-8 flex flex-col flex-grow">
-        <div className="flex items-center gap-3 mb-4 text-[11px] font-medium text-white/40 tracking-widest uppercase">
-          <span>{post.date}</span>
-          <span className="w-1 h-1 rounded-full bg-white/20" />
-          <span>{post.readTime}</span>
+      <div className={`relative p-10 flex flex-col justify-center ${
+        isFeatured ? "md:w-1/2" : "w-full flex-grow"
+      }`}>
+        <div className="flex items-center gap-4 mb-8">
+          <span className="text-[10px] font-black text-white/20 tracking-[0.4em] uppercase">{post.date}</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-rose-500/40" />
+          <span className="text-[10px] font-black text-white/20 tracking-[0.4em] uppercase">{post.readTime}</span>
         </div>
 
-        <div className="mb-4">
-          <PerfectTextWrapper 
-            text={post.title}
-            font="600 24px 'Playfair Display'"
-            maxWidth={320}
-            lineHeight={32}
-            className="text-white group-hover:text-rose-200 transition-colors"
-            as="h3"
-          />
+        <div className="mb-6">
+           <h3 className={`text-white font-black tracking-tighter leading-[1.1] transition-colors group-hover:text-rose-100 ${
+              isFeatured ? "text-4xl md:text-5xl" : "text-2xl"
+           }`}>
+              {post.title}
+           </h3>
         </div>
 
-        <div className="mb-8 flex-grow">
-          <PerfectTextWrapper 
-            text={post.excerpt}
-            font="400 15px 'Inter'"
-            maxWidth={300}
-            lineHeight={24}
-            className="text-white/50"
-            as="p"
-          />
+        <div className="mb-10">
+           <p className={`text-white/40 font-light leading-relaxed italic ${
+              isFeatured ? "text-lg" : "text-sm"
+           }`}>
+              {post.excerpt}
+           </p>
         </div>
 
-        <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-          <button 
-            onClick={(e) => {
-              e.stopPropagation();
-              onSelect(post.id);
-            }}
-            className="text-xs font-bold text-white uppercase tracking-widest group-hover:translate-x-1 transition-transform inline-flex items-center gap-2"
+        <div className="mt-auto flex items-center justify-between">
+          <div className="h-[1px] w-12 bg-white/10 group-hover:w-20 group-hover:bg-rose-500 transition-all duration-700" />
+          <motion.div 
+            whileHover={{ x: 5 }}
+            className="text-[10px] font-black text-white uppercase tracking-[0.3em] group-hover:text-rose-500 transition-colors flex items-center gap-3"
           >
-            Read Entry
-            <span className="text-rose-500">→</span>
-          </button>
+            Deep Dive
+            <span className="text-lg leading-none">→</span>
+          </motion.div>
         </div>
       </div>
     </motion.div>
@@ -82,3 +82,4 @@ const BlogCard: React.FC<BlogCardProps> = ({ post, index, onSelect }) => {
 };
 
 export default BlogCard;
+

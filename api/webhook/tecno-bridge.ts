@@ -1,4 +1,4 @@
-import { turso } from '../_lib/turso';
+import { turso } from '../_lib/turso.js';
 
 // MacroDroid webhook POST endpoint
 export default async function handler(req: any, res: any) {

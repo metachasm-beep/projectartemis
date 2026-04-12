@@ -1,4 +1,4 @@
-import { turso } from '../_lib/turso';
+import { turso } from '../_lib/turso.js';
 import { v4 as uuidv4 } from 'uuid';
 
 export default async function handler(req: any, res: any) {

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 
 import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
+import { AdminBlogModeration } from './AdminBlogModeration';
 import { DirectMessageModal } from './DirectMessageModal';
 
 interface AdminDashboardProps {
@@ -17,7 +18,7 @@ interface AdminDashboardProps {
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureManager }) => {
   const { user: currentUser } = useAuth();
-  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'COMMUNICATIONS'>('ROSTER');
+  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -217,7 +218,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
 
       {/* 🏛️ Dashboard Navigation */}
       <div className="flex justify-center border-b border-mat-rose/10 pb-4 gap-8">
-         {['ROSTER', 'COMMUNICATIONS'].map(t => (
+         {['ROSTER', 'COMMUNICATIONS', 'JOURNAL'].map(t => (
             <button 
               key={t}
               onClick={() => setDashboardTab(t as any)}
@@ -427,8 +428,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
             </div>
           </div>
         </>
-      ) : (
+      ) : dashboardTab === 'COMMUNICATIONS' ? (
         <AdminCommunicationsHub />
+      ) : (
+        <AdminBlogModeration />
       )}
     </div>
   );

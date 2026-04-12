@@ -83,5 +83,77 @@ export const BLOG_POSTS: Post[] = [
     readTime: '5 min read',
     image: '/assets/blogs/delhi_excellence.png',
     authorId: 'm7' // Aryan Goel
+  },
+  {
+    id: '7',
+    title: 'The Luxury of No: Selectivity as Sovereign Power',
+    excerpt: 'On the power of deliberate refusal and the architecture of the feminine sanctuary.',
+    content: `To say 'No' is not an act of rejection, but an act of self-architecture. We explore why selectivity is the defining line of the Matriarch.`,
+    markdownUrl: '/content/blogs/the-luxury-of-no.md',
+    category: 'Dating',
+    date: 'April 11, 2026',
+    readTime: '12 min read',
+    image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w1' // Ananya Iyer
+  },
+  {
+    id: '8',
+    title: 'Architecting Emotional Safety: Beyond the Shield',
+    excerpt: 'Deep-dive into the psychological infrastructure required for genuine resonance.',
+    content: `Safety is not just the absence of threat; it is the presence of structure. We examine how the Matriarch Protocol protects intellectual vulnerability.`,
+    markdownUrl: '/content/blogs/architecting-emotional-safety.md',
+    category: 'Relationships',
+    date: 'April 11, 2026',
+    readTime: '10 min read',
+    image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w2' // Meera Kapoor
+  },
+  {
+    id: '9',
+    title: 'The Digital Gaze: Intimacy in the Matrix',
+    excerpt: 'Reclaiming the power of perception through the Infinite Gaze protocol.',
+    content: `In the sanctuary, the way we 'see' each other is fundamentally different. We explore the transition from predatory looking to sovereign recognition.`,
+    markdownUrl: '/content/blogs/the-digital-gaze.md',
+    category: 'Love',
+    date: 'April 10, 2026',
+    readTime: '9 min read',
+    image: 'https://images.unsplash.com/photo-1531123897727-8f129e16fd3c?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w3' // Sanya Malhotra
+  },
+  {
+    id: '10',
+    title: 'Currency of Time: The Asset of Patience',
+    excerpt: 'Why slowing down the connection process is the ultimate high-value signifier.',
+    content: `Speed is the enemy of quality. We analyze why high-value individuals trade time for resonance in a culture of instant disposable intimacy.`,
+    markdownUrl: '/content/blogs/currency-of-time.md',
+    category: 'Relationships',
+    date: 'April 09, 2026',
+    readTime: '11 min read',
+    image: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w4' // Isha Verma
+  },
+  {
+    id: '11',
+    title: 'Sanctuary Ethics: The Code of the Matriarch',
+    excerpt: 'The moral and social framework that protects the dignity of our members.',
+    content: `The Matriarch Protocol is more than a platform; it is a philosophy. We outline the ethics of discretion, transparency, and intent.`,
+    markdownUrl: '/content/blogs/sanctuary-ethics.md',
+    category: 'Sex',
+    date: 'April 07, 2026',
+    readTime: '8 min read',
+    image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w5' // Riya Sen
+  },
+  {
+    id: '12',
+    title: 'Beyond the Swipe: The Art of Intellectual Seduction',
+    excerpt: 'Relearning the patient art of mind-to-mind connection in a post-swipe world.',
+    content: `The swipe is a reflex; seduction is an art. We explore why the mind is the most powerful sovereign organ in the sanctuary.`,
+    markdownUrl: '/content/blogs/beyond-the-swipe.md',
+    category: 'Love',
+    date: 'April 05, 2026',
+    readTime: '10 min read',
+    image: 'https://images.unsplash.com/photo-1506863530036-1efeddceb993?q=80&w=1287&auto=format&fit=crop',
+    authorId: 'w6' // Tara Khanna
   }
 ];

@@ -15,12 +15,24 @@ export const VerifyCallback: React.FC = () => {
     const handleCallback = async () => {
       const sessionId = searchParams.get('verificationSessionId');
       const verificationStatus = searchParams.get('status');
+      const isEmbedded = window.self !== window.top;
 
-      console.log('Didit Callback Received:', { sessionId, verificationStatus });
+      console.log('Didit Callback Received:', { sessionId, verificationStatus, isEmbedded });
 
       if (verificationStatus === 'Approved') {
         try {
-          // Get the current user
+          // Send signal to parent if embedded in iframe
+          if (isEmbedded) {
+            window.parent.postMessage({ 
+              type: 'DIDIT_COMPLETE', 
+              status: 'Approved',
+              sessionId 
+            }, '*');
+            setStatus('SUCCESS');
+            return; // Stay on page to hold the message state
+          }
+
+          // Get the current user for top-level navigation
           const { data: { user } } = await supabase.auth.getUser();
           
           if (!user) {
@@ -44,17 +56,27 @@ export const VerifyCallback: React.FC = () => {
 
           setStatus('SUCCESS');
           
-          // Auto-redirect after 3 seconds
+          // Auto-redirect after 3 seconds for top-level
           setTimeout(() => {
             navigate('/discovery');
           }, 3000);
 
         } catch (err: any) {
           console.error('Callback sync error:', err);
+          if (isEmbedded) {
+             window.parent.postMessage({ type: 'DIDIT_COMPLETE', status: 'Error', message: 'Handshake Sync Failed' }, '*');
+          }
           setErrorMessage("The Sanctuary failed to sync your truth. Please contact the Matriarch.");
           setStatus('ERROR');
         }
       } else {
+        if (isEmbedded) {
+           window.parent.postMessage({ 
+             type: 'DIDIT_COMPLETE', 
+             status: 'Error', 
+             message: verificationStatus === 'Declined' ? 'Identity Match Failed' : 'Handshake Interrupted' 
+           }, '*');
+        }
         setStatus('ERROR');
         setErrorMessage(
           verificationStatus === 'Declined' 
