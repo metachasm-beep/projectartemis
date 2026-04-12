@@ -109,17 +109,15 @@ const HeroFold: React.FC = () => {
           transition={{ delay: 1.2 }}
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
-          <button 
+          <StarBorder 
             onClick={() => supabase.auth.signInWithOAuth({ 
               provider: 'google', 
               options: { redirectTo: window.location.origin } 
             })} 
-            className="w-full sm:w-auto"
+            className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30"
           >
-            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30">
-              ENTER SANCTUARY
-            </StarBorder>
-          </button>
+            ENTER SANCTUARY
+          </StarBorder>
           
           <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
             <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
