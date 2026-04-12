@@ -11,12 +11,12 @@ const LandscapeProtocolFold: React.FC = () => {
     offset: ["start end", "end start"]
   });
 
-  const titleX = useTransform(scrollYProgress, [0, 1], [50, -50]);
+  const titleX = useTransform(scrollYProgress, [0, 1], [15, -15]);
 
   return (
     <Fold id="landscape-protocol" className="bg-mat-cream border-t border-black/5 py-0 overflow-hidden">
       <div ref={containerRef} className="h-full flex flex-col justify-center space-y-8 lg:space-y-12 py-12">
-        <div className="space-y-4">
+        <div className="space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
           <motion.span 
             className="px-4 py-1 border border-black/10 uppercase tracking-[0.4em] font-black text-[9px] bg-black/5 text-mat-obsidian rounded-none inline-block"
           >

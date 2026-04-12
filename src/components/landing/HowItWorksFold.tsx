@@ -11,13 +11,13 @@ const HowItWorksFold: React.FC = () => {
     offset: ["start end", "end start"]
   });
 
-  const titleX = useTransform(scrollYProgress, [0, 1], [-50, 50]);
+  const titleX = useTransform(scrollYProgress, [0, 1], [-15, 15]);
 
   return (
     <Fold id="how-it-works" className="bg-mat-obsidian border-t border-mat-rose/10 py-0 overflow-hidden">
       <div ref={containerRef} className="h-full flex flex-col justify-center space-y-8 lg:space-y-12 py-12">
         <div className="space-y-12">
-          <div className="space-y-4">
+          <div className="space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
             <motion.span 
               className="px-4 py-1 border border-mat-rose/20 uppercase tracking-[0.4em] font-black text-[9px] bg-mat-rose/5 text-mat-rose rounded-none inline-block"
             >
