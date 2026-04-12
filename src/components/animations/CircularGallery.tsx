@@ -424,7 +424,7 @@ class Media {
       ];
       const deterministicIndex = Math.abs(this.index) % fallbacks.length;
       const fallbackId = fallbacks[deterministicIndex];
-      img.src = `https://images.unsplash.com/${fallbackId}?auto=format&fit=crop&q=80&w=800&sig=${this.index}`;
+      img.src = `https://images.unsplash.com/${fallbackId}?auto=format&fit=crop&q=80&w=800`;
     };
   }
 

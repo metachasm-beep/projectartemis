@@ -78,7 +78,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       const mapped = result.rows.map((r, i) => {
         const age = r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25;
         
-        let photo = `https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800&sig=${i}`;
+        let photo = `https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800`;
         if (typeof r.photos === 'string' && r.photos.startsWith('[')) {
           try {
             const parsed = JSON.parse(r.photos);
