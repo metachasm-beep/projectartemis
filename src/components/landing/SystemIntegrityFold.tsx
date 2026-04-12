@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import Fold from './Fold';
 import { ShieldCheck, MessageSquare, Lock, EyeOff, ChevronRight } from 'lucide-react';
+import Radar from '@/components/bits/Radar';
 
 const SystemIntegrityFold: React.FC = () => {
   return (
@@ -68,13 +69,25 @@ const SystemIntegrityFold: React.FC = () => {
             <div className="w-12 h-0.5 bg-mat-gold/30" />
           </motion.div>
 
-          {/* Card 5: Moderation */}
+          {/* Card 5: Visual Integrity Pulse */}
           <motion.div 
             whileHover={{ scale: 0.99 }}
-            className="col-span-12 md:col-span-3 bg-black/[0.02] border border-black/5 p-8 flex items-end justify-between"
+            className="col-span-12 md:col-span-3 bg-mat-obsidian border border-black/5 p-4 flex flex-col items-center justify-center relative overflow-hidden group min-h-[200px]"
           >
-            <h3 className="text-sm font-black uppercase tracking-[0.3em] text-mat-obsidian/40 vertical-text rotate-180">Moderated</h3>
-            <ChevronRight className="w-6 h-6 text-black/10" />
+            <div className="absolute inset-0 opacity-40">
+              <Radar 
+                speed={0.5} 
+                scale={1.2} 
+                ringCount={6} 
+                color="#BFA06A" 
+                backgroundColor="#1A1A1A"
+                brightness={0.8}
+              />
+            </div>
+            <div className="relative z-10 text-center space-y-2">
+               <h3 className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-gold/60">Integrity Scan</h3>
+               <p className="text-[8px] text-mat-cream/20 uppercase tracking-widest font-mono">Status: Secure</p>
+            </div>
           </motion.div>
         </div>
       </div>

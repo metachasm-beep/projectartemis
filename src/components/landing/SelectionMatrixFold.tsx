@@ -61,25 +61,25 @@ const SelectionMatrixFold: React.FC = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.8 }}
-              className={`group relative p-6 lg:p-8 flex flex-col justify-between min-h-[250px] lg:min-h-[280px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
+              className={`group relative p-5 lg:p-6 flex flex-col justify-between min-h-[220px] lg:min-h-[240px] border border-white/5 backdrop-blur-md overflow-hidden ${item.bg}`}
             >
-              <div className="space-y-8 relative z-10">
-                <div className={`w-14 h-14 flex items-center justify-center rounded-2xl bg-${item.color}/10 border border-${item.color}/20 text-white shadow-lg`}>
-                  <item.icon className="w-7 h-7" strokeWidth={1} />
+              <div className="space-y-4 relative z-10">
+                <div className={`w-10 h-10 flex items-center justify-center rounded-xl bg-${item.color}/10 border border-${item.color}/20 text-white shadow-lg`}>
+                  <item.icon className="w-5 h-5" strokeWidth={1} />
                 </div>
-                <div className="space-y-4">
-                  <h3 className="text-3xl font-display text-mat-cream uppercase leading-none tracking-tight">
+                <div className="space-y-2">
+                  <h3 className="text-2xl font-display text-mat-cream uppercase leading-none tracking-tight">
                     {item.title.split(' ')[0]} <br/>
                     <span className={`text-${item.color} italic font-serif`}>{item.title.split(' ')[1]}</span>
                   </h3>
-                  <p className="text-mat-cream/40 font-light text-sm leading-relaxed max-w-xs uppercase tracking-wide">
+                  <p className="text-mat-cream/40 font-light text-[11px] leading-relaxed max-w-xs uppercase tracking-wide">
                     {item.desc}
                   </p>
                 </div>
               </div>
 
               {/* Unique Bottom Elements */}
-              <div className="relative z-10 w-full pt-8 border-t border-white/5 mt-8">
+              <div className="relative z-10 w-full pt-4 border-t border-white/5 mt-4">
                 {item.badges && (
                   <div className="flex gap-2">
                     {item.badges.map(b => (

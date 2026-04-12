@@ -4,7 +4,8 @@ import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 import GrainOverlay from "@/components/landing/GrainOverlay";
 import HeroFold from "@/components/landing/HeroFold";
-import ArchitectureFold from "@/components/landing/ArchitectureFold";
+import HowItWorksFold from "@/components/landing/HowItWorksFold";
+import LandscapeProtocolFold from "@/components/landing/LandscapeProtocolFold";
 import MeritFold from "@/components/landing/MeritFold";
 import SystemIntegrityFold from "@/components/landing/SystemIntegrityFold";
 import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
@@ -100,7 +101,8 @@ const LandingPage: React.FC = () => {
         
         {/* Subsequent Folds scroll over the Hero layer */}
         <div className="relative z-20">
-          <ArchitectureFold />
+          <HowItWorksFold />
+          <LandscapeProtocolFold />
           <SystemIntegrityFold />
           <MeritFold />
           <SelectionMatrixFold />
