@@ -411,20 +411,8 @@ class Media {
       texture.image = img;
       texture.needsUpdate = true;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
-    };
     img.onerror = () => {
       console.error('Failed to load image for sanctuary gaze:', this.image);
-      // Diversify fallback to prevent identical profile pictures
-      const fallbacks = [
-        'photo-1494790108377-be9c29b29330', // Verified Female Anchor Portrait
-        'photo-1531746020798-e6953c6e8e04', // Professional Portrait
-        'photo-1544005313-94ddf0286df2', // Aesthetic Portrait
-        'photo-1580489944761-15a19d654956', // Modern Portrait
-        'photo-1438761681033-6461ffad8d80'  // Diverse Representation
-      ];
-      const deterministicIndex = Math.abs(this.index) % fallbacks.length;
-      const fallbackId = fallbacks[deterministicIndex];
-      img.src = `https://images.unsplash.com/${fallbackId}?auto=format&fit=crop&q=80&w=800`;
     };
   }
 
