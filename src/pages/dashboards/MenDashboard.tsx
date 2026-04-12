@@ -70,9 +70,11 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       const result = await turso.execute(`
         SELECT full_name, photos, city, date_of_birth 
         FROM profiles 
-        WHERE role = 'woman' 
-        ORDER BY created_at DESC 
-        LIMIT 100
+        WHERE role = 'woman'
+        AND photos IS NOT NULL
+        AND photos != '[]'
+        ORDER BY RANDOM()
+        LIMIT 200
       `, []);
 
       const mapped = result.rows.map((r, i) => {
@@ -97,7 +99,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         };
       });
 
-      setGazeProfiles(mapped);
+      // Only show profiles that actually have a valid photo URL
+      const withImages = mapped.filter(p => p.image && p.image.startsWith('http'));
+      setGazeProfiles(withImages);
     } catch (err) {
       console.error("Gaze sync failed:", err);
     }
