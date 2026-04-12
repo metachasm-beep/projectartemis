@@ -199,10 +199,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
             <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
             
-            <div className="absolute top-12 left-12 space-y-2 z-20">
-               <h3 className="text-5xl font-bold italic text-mat-wine leading-none mix-blend-difference">The Gaze.</h3>
-               <p className="mat-text-label-pro tracking-[0.6em] text-white/40">Real-time awareness feed</p>
-            </div>
+
 
             {gazeProfiles.length > 0 && (
               <div className="relative w-full h-full scale-110">

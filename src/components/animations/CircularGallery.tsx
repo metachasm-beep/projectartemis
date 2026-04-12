@@ -409,6 +409,7 @@ class Media {
     img.src = this.image;
     img.onload = () => {
       texture.image = img;
+      texture.needsUpdate = true;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
     };
     img.onerror = () => {
