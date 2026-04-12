@@ -61,23 +61,58 @@ export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, 
   );
 
   if (matches.length === 0) return (
-    <div className="flex flex-col items-center justify-center py-40 px-12 text-center space-y-8 mat-glass rounded-[3rem] border-dashed border-mat-rose/20">
-       <div className="p-8 rounded-[2rem] bg-mat-wine/5 text-mat-wine/20">
-          <Heart size={48} strokeWidth={0.5} />
-       </div>
-       <div className="space-y-4">
-          <h3 className="text-2xl font-bold italic text-mat-wine">No Active Sanctuary Resonances</h3>
-          <p className="text-mat-slate/40 text-[10px] uppercase tracking-widest max-w-xs mx-auto leading-relaxed">
-            {userRole === 'woman' 
-              ? "Discover seekers in the Home tab and initiate your first sanctuary connection." 
-              : "Connection begins when a woman initiates resonance. Your story is being shared."}
-          </p>
-       </div>
+    <div className="space-y-12">
+      <div className="space-y-2">
+         <h2 className="text-3xl font-black text-mat-wine tracking-tighter">
+           <DecryptedText 
+             text="SANCTUARY CONNECTIONS" 
+             speed={100}
+             sequential={true}
+             animateOn="view"
+             className="text-mat-wine"
+             encryptedClassName="text-mat-rose/30"
+           />
+         </h2>
+         <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40 flex items-center gap-2">
+            <ShieldCheck size={10} className="text-mat-rose" /> Quantum Encrypted Sanctuary Links
+         </p>
+      </div>
+      
+      <div className="flex flex-col items-center justify-center py-40 px-12 text-center space-y-8 mat-glass rounded-[3rem] border-dashed border-mat-rose/20">
+         <div className="p-8 rounded-[2rem] bg-mat-wine/5 text-mat-wine/20">
+            <Heart size={48} strokeWidth={0.5} />
+         </div>
+         <div className="space-y-4">
+            <h3 className="text-2xl font-bold italic text-mat-wine">No Active Sanctuary Resonances</h3>
+            <p className="text-mat-slate/40 text-[10px] uppercase tracking-widest max-w-xs mx-auto leading-relaxed">
+              {userRole === 'woman' 
+                ? "Discover seekers in the Home tab and initiate your first sanctuary connection." 
+                : "Connection begins when a woman initiates resonance. Your story is being shared."}
+            </p>
+         </div>
+      </div>
     </div>
   );
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <div className="space-y-12">
+      <div className="space-y-2">
+         <h2 className="text-3xl font-black text-mat-wine tracking-tighter">
+           <DecryptedText 
+             text="SANCTUARY CONNECTIONS" 
+             speed={100}
+             sequential={true}
+             animateOn="view"
+             className="text-mat-wine"
+             encryptedClassName="text-mat-rose/30"
+           />
+         </h2>
+         <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40 flex items-center gap-2">
+            <ShieldCheck size={10} className="text-mat-rose" /> Quantum Encrypted Sanctuary Links
+         </p>
+      </div>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <AnimatePresence>
         {matches.map((match, idx) => (
           <motion.div

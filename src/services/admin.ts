@@ -526,6 +526,22 @@ export const AdminService = {
   },
 
   /**
+   * 💎 Aura Token Allocation: Atomic Adjustment
+   */
+  updateUserTokens: async (userId: string, amount: number) => {
+    try {
+      const res = await turso.execute({
+        sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
+        args: [amount, userId]
+      });
+      return res.rowsAffected > 0;
+    } catch (err) {
+      console.error("ADMIN_TOKEN_UPDATE_ERROR:", err);
+      return false;
+    }
+  },
+
+  /**
    * 📢 Sovereign Broadcast: Force-involves the Admin direct-message system to push a manifesto or ultimatum to ALL men.
    */
   sendSovereignBroadcast: async (title: string, body: string) => {

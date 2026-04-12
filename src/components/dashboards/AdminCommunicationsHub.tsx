@@ -1,9 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Shield, Users, ArrowRight, Eye, RefreshCw, Zap, Clock } from 'lucide-react';
-import { AdminService } from '@/services/admin';
-import { MagicChat } from '@/components/MagicChat';
-import { Badge } from '@/components/ui/badge';
+import DecryptedText from '../ui/cyber/DecryptedText';
 
 export const AdminCommunicationsHub: React.FC = () => {
   const [comms, setComms] = useState<any[]>([]);
@@ -60,9 +55,18 @@ export const AdminCommunicationsHub: React.FC = () => {
     <div className="space-y-8">
       <div className="flex justify-between items-end">
          <div className="space-y-2">
-            <h2 className="text-3xl font-light text-mat-wine italic">Sovereign <span className="text-mat-rose/50">Eyes</span></h2>
+            <h2 className="text-3xl font-black text-mat-wine tracking-tighter">
+              <DecryptedText 
+                text="SOVEREIGN EYES" 
+                speed={100}
+                sequential={true}
+                animateOn="view"
+                className="text-mat-wine"
+                encryptedClassName="text-mat-rose/30"
+              />
+            </h2>
             <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40 flex items-center gap-2">
-               <Shield size={10} /> Administrative Monitoring Conduit
+               <Shield size={10} className="text-mat-rose" /> Administrative Monitoring Conduit
             </p>
          </div>
          <button onClick={loadComms} className="p-3 bg-mat-wine/5 text-mat-wine rounded-full hover:bg-mat-wine/10 transition-all">

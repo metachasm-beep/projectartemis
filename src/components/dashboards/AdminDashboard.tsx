@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, Users, Verified, MessageSquare, Search, Trash2, ShieldAlert, BadgeCheck } from 'lucide-react';
+import { Shield, Users, Verified, MessageSquare, Search, Trash2, ShieldAlert, BadgeCheck, Zap, Cpu } from 'lucide-react';
 import { AdminService } from '@/services/admin';
 import { useAuth } from '@/hooks/useAuth';
 import type { MatriarchProfile } from '@/types';
 import { Input } from '@/components/ui/input';
+import DecryptedText from '@/components/ui/cyber/DecryptedText';
 
 import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
@@ -103,6 +104,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
     }
   };
 
+  const handleUpdateTokens = async (userId: string, amount: number) => {
+    // 乐观更新 (Optimistic Update)
+    setProfiles(p => p.map(x => x.user_id === userId ? { ...x, tokens: (x.tokens || 0) + amount } : x));
+    
+    const ok = await AdminService.updateUserTokens(userId, amount);
+    if (!ok) {
+      // 回滚 (Rollback on failure)
+      setProfiles(p => p.map(x => x.user_id === userId ? { ...x, tokens: (x.tokens || 0) - amount } : x));
+      alert("TOKEN UPDATE FAILED: Registry connection error.");
+    }
+  };
+
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     
@@ -133,6 +146,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
       setItemToDelete(null);
     }
   };
+
+import SpotlightCard from '../ui/cyber/SpotlightCard';
+import CountUp from '../ui/cyber/CountUp';
+import ShinyText from '../ui/cyber/ShinyText';
+
+// ... rest of state stays same ...
 
   return (
     <div className="space-y-12 pb-24">
@@ -180,41 +199,80 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
         )}
       </AnimatePresence>
 
-      {/* 🚀 Header */}
-      <div className="text-center space-y-4">
-         <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-rose/5">The Architect</Badge>
-         <h1 className="text-5xl md:text-7xl mat-text-display-pro text-mat-wine italic">Sovereign <br /><span className="text-mat-rose/20">Control Panel.</span></h1>
-         <div className="flex justify-center gap-4">
+      {/* 🚀 SOVEREIGN COMMAND HEADER */}
+      <header className="relative py-12 px-8 overflow-hidden rounded-[3rem] bg-mat-charcoal/90 border border-mat-rose/20 backdrop-blur-xl group">
+        <div className="absolute top-0 right-0 p-8 opacity-[0.03] group-hover:opacity-10 transition-opacity duration-1000">
+          <Cpu className="w-64 h-64 text-mat-rose" />
+        </div>
+        
+        <div className="relative z-10 flex flex-col items-center text-center space-y-4">
+          <Badge variant="outline" className="px-5 py-2 border-mat-rose/30 text-mat-rose text-[9px] font-black uppercase tracking-[0.4em] rounded-full bg-mat-rose/10 shadow-[0_0_20px_rgba(212,18,67,0.1)]">
+            <Zap className="w-3 h-3 mr-2 fill-mat-rose animate-pulse" />
+            Sovereign Operator Output
+          </Badge>
+          
+          <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter leading-tight">
+            <DecryptedText 
+              text="CENTRAL COMMAND" 
+              speed={100}
+              maxIterations={20}
+              sequential={true}
+              animateOn="view"
+              revealDirection="center"
+              parentClassName="block"
+              className="text-white"
+              encryptedClassName="text-mat-rose/30"
+            />
+          </h1>
+          
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-mat-slate/40 text-[11px] font-bold tracking-widest uppercase flex items-center gap-3">
+              <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e] animate-pulse" />
+              Monitoring active matrices and registry integrity.
+            </p>
+            
             <button 
               onClick={onOpenPictureManager}
-              className="px-6 py-2 bg-mat-wine text-white rounded-full text-[10px] font-black tracking-widest uppercase hover:bg-mat-rose transition-all flex items-center gap-2"
+              className="mt-4 px-8 py-3 bg-white text-mat-charcoal rounded-full text-[10px] font-bold tracking-[0.2em] uppercase hover:bg-mat-rose hover:text-white transition-all transform hover:scale-105 shadow-xl flex items-center gap-3 active:scale-95"
             >
-               <Users className="w-3 h-3" /> Manage Identity Assets
+               <Users className="w-4 h-4" /> Identity Assets Manager
             </button>
-         </div>
-      </div>
+          </div>
+        </div>
+      </header>
 
-      {/* 📊 Metrics Ribbon */}
+      {/* 📊 TACTICAL METRICS BENTO */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 px-4 md:px-0">
           {[
-            { label: 'Total Men', val: metrics.totalMen, icon: Shield },
-            { label: 'Total Women', val: metrics.totalWomen, icon: Users },
-            { label: 'Verified Matrix', val: metrics.verifiedProfiles, icon: Verified },
-            { label: 'Active Topics', val: metrics.totalForumTopics, icon: MessageSquare }
+            { label: 'Aspirants', val: metrics.totalMen, icon: Shield, color: 'rgba(212, 18, 67, 0.15)' },
+            { label: 'Gaze Registry', val: metrics.totalWomen, icon: Users, color: 'rgba(212, 18, 67, 0.05)' },
+            { label: 'Verified Nodes', val: metrics.verifiedProfiles, icon: Verified, color: 'rgba(59, 130, 246, 0.1)' },
+            { label: 'Active Topics', val: metrics.totalForumTopics, icon: MessageSquare, color: 'rgba(212, 18, 67, 0.05)' }
           ].map((m, i) => (
-             <motion.div 
+             <SpotlightCard 
                key={m.label}
-               initial={{ opacity: 0, y: 10 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ delay: i * 0.1 }}
-               className="bg-white/50 backdrop-blur-xl border border-mat-rose/10 p-6 rounded-3xl flex flex-col items-center justify-center text-center space-y-2 relative overflow-hidden"
+               spotlightColor={m.color}
+               className="p-8 flex flex-col items-center justify-center text-center space-y-4 border-mat-rose/5"
              >
-                <m.icon className="w-5 h-5 text-mat-rose/60 absolute top-4 right-4" />
-                <span className="text-6xl font-light text-mat-wine">{m.val}</span>
-                <span className="text-xs uppercase tracking-widest text-mat-slate/50 font-bold">{m.label}</span>
-             </motion.div>
+                <div className="p-3 rounded-2xl bg-white/5 border border-white/10 mb-2">
+                  <m.icon className="w-6 h-6 text-mat-rose/80" />
+                </div>
+                <div className="space-y-1">
+                  <div className="text-5xl font-black text-mat-wine tracking-tighter">
+                    <CountUp
+                      to={m.val}
+                      duration={2.5}
+                      separator=","
+                    />
+                  </div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-slate/40">
+                    <ShinyText text={m.label} speed={3} />
+                  </div>
+                </div>
+             </SpotlightCard>
           ))}
       </div>
+
 
       {/* 🏛️ Dashboard Navigation */}
       <div className="flex justify-center border-b border-mat-rose/10 pb-4 gap-8">
@@ -398,7 +456,24 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                     )}
                                  </div>
                               </td>
-                              <td className="px-6 py-4 text-mat-wine font-semibold">{p.tokens || 0} AURA</td>
+                               <td className="px-6 py-4">
+                                  <div className="flex items-center gap-3">
+                                     <button 
+                                       onClick={() => handleUpdateTokens(p.user_id, -10)}
+                                       className="w-6 h-6 flex items-center justify-center rounded-full bg-mat-wine/5 text-mat-wine hover:bg-mat-wine/10 transition-colors"
+                                     >
+                                       -
+                                     </button>
+                                     <span className="text-mat-wine font-bold min-w-[3rem] text-center">{p.tokens || 0}</span>
+                                     <button 
+                                       onClick={() => handleUpdateTokens(p.user_id, 10)}
+                                       className="w-6 h-6 flex items-center justify-center rounded-full bg-mat-wine/5 text-mat-wine hover:bg-mat-wine/10 transition-colors"
+                                     >
+                                       +
+                                     </button>
+                                     <span className="text-[10px] text-mat-rose uppercase font-black">Aura</span>
+                                  </div>
+                               </td>
                               <td className="px-6 py-4 text-right">
                                  <div className="flex justify-end gap-2">
                                     {p.payment_status === 'PENDING' && (
