@@ -12,6 +12,7 @@ import {
 import { turso } from '@/lib/turso';
 import { MessagingService, type MessagingMatch } from '@/lib/messaging';
 import { Badge } from './ui/badge';
+import DecryptedText from './ui/cyber/DecryptedText';
 
 interface InboxProps {
   currentUserId: string;
@@ -113,47 +114,48 @@ export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, 
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <AnimatePresence>
-        {matches.map((match, idx) => (
-          <motion.div
-            key={match.id}
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.05 }}
-            onClick={() => onSelectMatch(match)}
-            className="group cursor-pointer mat-glass hover:bg-white/80 border-mat-rose/10 p-8 rounded-[2.5rem] flex items-center gap-6 transition-all shadow-sm hover:shadow-mat-rose duration-500"
-          >
-             <div className="relative">
-                <div className="w-20 h-20 rounded-[1.75rem] overflow-hidden border-2 border-mat-rose/10 group-hover:border-mat-rose/40 transition-colors">
-                   <img src={match.otherUser.avatar} referrerPolicy="no-referrer" alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
-                </div>
-                {match.current_comm_mode === 'TEXT' && (
-                  <div className="absolute -top-1 -right-1 w-5 h-5 bg-mat-gold rounded-full flex items-center justify-center border-2 border-mat-cream shadow-sm">
-                     <Zap size={10} fill="black" />
+        <AnimatePresence>
+          {matches.map((match, idx) => (
+            <motion.div
+              key={match.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: idx * 0.05 }}
+              onClick={() => onSelectMatch(match)}
+              className="group cursor-pointer mat-glass hover:bg-white/80 border-mat-rose/10 p-8 rounded-[2.5rem] flex items-center gap-6 transition-all shadow-sm hover:shadow-mat-rose duration-500"
+            >
+               <div className="relative">
+                  <div className="w-20 h-20 rounded-[1.75rem] overflow-hidden border-2 border-mat-rose/10 group-hover:border-mat-rose/40 transition-colors">
+                     <img src={match.otherUser.avatar} referrerPolicy="no-referrer" alt="" className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" />
                   </div>
-                )}
-             </div>
+                  {match.current_comm_mode === 'TEXT' && (
+                    <div className="absolute -top-1 -right-1 w-5 h-5 bg-mat-gold rounded-full flex items-center justify-center border-2 border-mat-cream shadow-sm">
+                       <Zap size={10} fill="black" />
+                    </div>
+                  )}
+               </div>
 
-             <div className="flex-1 space-y-2">
-                <div className="flex justify-between items-start">
-                   <h4 className="text-xl font-bold text-mat-wine italic leading-none">{match.otherUser.full_name.split(' ')[0]}</h4>
-                   <ChevronRight size={14} className="text-mat-rose/20 group-hover:text-mat-rose group-hover:translate-x-1 transition-all" />
-                </div>
-                <div className="flex flex-wrap gap-2">
-                   <Badge variant="outline" className="text-[8px] px-2 border-mat-rose/10 text-mat-rose uppercase font-black tracking-widest bg-mat-rose/5">
-                      {match.current_comm_mode.replace('_', ' ')}
-                   </Badge>
-                   {match.prompts_completed && (
-                     <Badge variant="gold" className="text-[7px] px-2 font-black uppercase tracking-widest">PROMPTS SEALED</Badge>
-                   )}
-                </div>
-                <p className="text-[9px] text-mat-slate/40 uppercase tracking-widest font-medium italic mt-2">
-                   {match.current_comm_mode === 'DELAYED_TEXT' ? "Sanctuary Locked..." : "Resonant dialogue active"}
-                </p>
-             </div>
-          </motion.div>
-        ))}
-      </AnimatePresence>
+               <div className="flex-1 space-y-2">
+                  <div className="flex justify-between items-start">
+                     <h4 className="text-xl font-bold text-mat-wine italic leading-none">{match.otherUser.full_name.split(' ')[0]}</h4>
+                     <ChevronRight size={14} className="text-mat-rose/20 group-hover:text-mat-rose group-hover:translate-x-1 transition-all" />
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                     <Badge variant="outline" className="text-[8px] px-2 border-mat-rose/10 text-mat-rose uppercase font-black tracking-widest bg-mat-rose/5">
+                        {match.current_comm_mode.replace('_', ' ')}
+                     </Badge>
+                     {match.prompts_completed && (
+                       <Badge variant="gold" className="text-[7px] px-2 font-black uppercase tracking-widest">PROMPTS SEALED</Badge>
+                     )}
+                  </div>
+                  <p className="text-[9px] text-mat-slate/40 uppercase tracking-widest font-medium italic mt-2">
+                     {match.current_comm_mode === 'DELAYED_TEXT' ? "Sanctuary Locked..." : "Resonant dialogue active"}
+                  </p>
+               </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

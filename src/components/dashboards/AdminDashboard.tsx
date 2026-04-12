@@ -6,7 +6,10 @@ import { AdminService } from '@/services/admin';
 import { useAuth } from '@/hooks/useAuth';
 import type { MatriarchProfile } from '@/types';
 import { Input } from '@/components/ui/input';
-import DecryptedText from '@/components/ui/cyber/DecryptedText';
+import DecryptedText from '../ui/cyber/DecryptedText';
+import SpotlightCard from '../ui/cyber/SpotlightCard';
+import CountUp from '../ui/cyber/CountUp';
+import ShinyText from '../ui/cyber/ShinyText';
 
 import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
@@ -146,12 +149,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
       setItemToDelete(null);
     }
   };
-
-import SpotlightCard from '../ui/cyber/SpotlightCard';
-import CountUp from '../ui/cyber/CountUp';
-import ShinyText from '../ui/cyber/ShinyText';
-
-// ... rest of state stays same ...
 
   return (
     <div className="space-y-12 pb-24">

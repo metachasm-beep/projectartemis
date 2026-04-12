@@ -1,3 +1,9 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MessageSquare, Shield, Users, ArrowRight, Eye, RefreshCw, Clock } from 'lucide-react';
+import { AdminService } from '@/services/admin';
+import { MagicChat } from '@/components/MagicChat';
+import { Badge } from '@/components/ui/badge';
 import DecryptedText from '../ui/cyber/DecryptedText';
 
 export const AdminCommunicationsHub: React.FC = () => {
