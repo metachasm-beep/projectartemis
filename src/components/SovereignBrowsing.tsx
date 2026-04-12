@@ -4,15 +4,18 @@ import {
   Heart, 
   X, 
   Sparkles,
-  ChevronDown
+  ChevronDown,
+  Crown,
+  MapPin
 } from 'lucide-react';
-import { supabase } from '@/lib/supabase';
+import { turso } from '@/lib/turso';
 import { Button } from './ui/button';
 import { MessagingService } from '@/lib/messaging';
 import { SkeletonCard } from './ui/SkeletonCard';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from './ui/card';
 import SafetyActions from './common/SafetyActions';
+import { SanctuaryService } from '@/services/sanctuary';
 
 /**
  * 🍷 SOVEREIGN BROWSING: The Minimalist Discovery Ritual
@@ -23,11 +26,15 @@ import SafetyActions from './common/SafetyActions';
 interface Profile {
   user_id: string;
   full_name: string;
-  age: number;
+  date_of_birth?: string;
+  city?: string;
   photos: string;
-  is_verified: boolean;
-  rank_boost_count: number;
   bio?: string;
+  occupation?: string;
+  height?: number;
+  is_verified: boolean;
+  absolute_rank?: number;
+  rank_score?: number;
 }
 
 export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) => {
@@ -46,28 +53,30 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
     setLoading(true);
     try {
       const targetRole = myProfile?.role === 'woman' ? 'man' : 'woman';
-      
-      // 💎 The Root Ascent: Sorting from Lowest Rank to Highest
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_id, full_name, age, photos, is_verified, rank_boost_count, bio')
-        .eq('role', targetRole)
-        .eq('onboarding_status', 'COMPLETED')
-        .order('rank_boost_count', { ascending: true }) // Lowest to Highest
-        .range(offset, offset + LIMIT - 1);
+      const res = await turso.execute({
+        sql: `SELECT user_id, full_name, date_of_birth, city, photos, bio, occupation, height, is_verified, absolute_rank, rank_score
+              FROM profiles
+              WHERE role = ? AND onboarding_status = 'COMPLETED' AND (is_active IS NULL OR is_active = 1)
+              ORDER BY COALESCE(absolute_rank, 9999) ASC
+              LIMIT ? OFFSET ?`,
+        args: [targetRole, LIMIT, offset]
+      });
 
-      if (error) throw error;
-      if (data) {
-        setProfiles(prev => [...prev, ...data]);
-        setHasMore(data.length === LIMIT);
-      }
+      const parsed = res.rows.map((r: any) => ({
+        ...r,
+        photos: typeof r.photos === 'string' ? r.photos : '[]',
+        is_verified: !!r.is_verified
+      }));
+
+      setProfiles(prev => offset === 0 ? parsed : [...prev, ...parsed]);
+      setHasMore(parsed.length === LIMIT);
     } catch (err) {
-      console.error("Sovereign fetch error:", err);
-      setHasMore(false); // Stop observer loop on error
+      console.error('Sovereign fetch error:', err);
+      setHasMore(false);
     } finally {
       setLoading(false);
     }
-  }, [offset]);
+  }, [offset, myProfile?.role]);
 
   useEffect(() => {
     fetchProfiles();
@@ -118,29 +127,13 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
          {/* ─── Minimalist Discovery Grid ─── */}
          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-14">
             {profiles.map((profile, idx) => {
-              const photos = JSON.parse(profile.photos || '[]');
+              const photos = (() => { try { return JSON.parse(profile.photos || '[]'); } catch { return []; } })();
+              const photo = photos[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`;
               const status = matchingStatus[profile.user_id] || 'idle';
-              
-              let stats = null;
-              try {
-                if (profile.bio) {
-                  const bioObj = typeof profile.bio === 'string' ? JSON.parse(profile.bio) : profile.bio;
-                  stats = bioObj.trump_stats;
-                }
-              } catch(e) {}
-              
-              if (!stats) {
-                stats = {
-                  charisma: Math.floor(Math.random() * 40) + 60, 
-                  stamina: Math.floor(Math.random() * 40) + 60, 
-                  intellect: Math.floor(Math.random() * 40) + 60, 
-                  vibe: Math.floor(Math.random() * 40) + 60, 
-                  social: Math.floor(Math.random() * 40) + 60,
-                  hometown: 'Unknown Origin', 
-                  weight_class: 'Cruiserweight', 
-                  signature_move: 'The Silent Observer'
-                };
-              }
+              const age = profile.date_of_birth 
+                ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() 
+                : null;
+              const tier = SanctuaryService.getTierFromRank(profile.absolute_rank ?? 9999, 1000);
               
               return (
                <motion.div
@@ -152,20 +145,16 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                  onClick={() => setEngagementProfile(profile)}
                  whileTap={{ scale: 0.98 }}
                >
-                 <Card 
-                  className={`
-                    relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden bg-[#111] transition-all duration-700
-                    border-[6px] border-[#222] shadow-[0_10px_30px_rgba(0,0,0,0.5)] 
-                    hover:border-mat-gold/80 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]
-                    before:absolute before:pointer-events-none before:inset-0 before:bg-gradient-to-tr before:from-transparent before:via-white/10 before:to-transparent before:-translate-x-[200%] hover:before:animate-[shimmer_2s_infinite] before:z-40
-                  `}
-                 >
+                 <Card className="relative aspect-[3/5] md:aspect-[3/4.8] rounded-2xl overflow-hidden bg-[#111] transition-all duration-700 border-[6px] border-[#222] shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:border-mat-gold/80 hover:shadow-[0_0_40px_rgba(212,175,55,0.4)]">
                    <CardContent className="p-0 h-full">
-                     {/* TRUMP CARD HEADER */}
+                     {/* Header */}
                      <div className="absolute top-0 left-0 w-full z-30 pt-4 pb-12 px-4 bg-gradient-to-b from-black/90 to-transparent flex justify-between items-start">
-                        <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-mat-cream drop-shadow-[0_4px_4px_rgba(0,0,0,1)] leading-none font-['Impact'] italic" style={{ WebkitTextStroke: '1px rgba(0,0,0,0.5)' }}>
-                          {profile.full_name.split(' ')[0]}
-                        </h3>
+                        <div>
+                          <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-mat-cream drop-shadow-[0_4px_4px_rgba(0,0,0,1)] leading-none font-['Impact'] italic">
+                            {(profile.full_name || 'Aspirant').split(' ')[0]}
+                          </h3>
+                          {age && <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-1">{age}y</p>}
+                        </div>
                         {profile.is_verified && (
                           <div className="p-1.5 bg-mat-gold rounded shadow-mat-gold/50 flex-shrink-0 animate-pulse">
                              <Sparkles size={14} className="text-[#111]" />
@@ -173,45 +162,36 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                         )}
                      </div>
 
-                     <div className="absolute inset-0 pb-32">
+                     {/* Photo */}
+                     <div className="absolute inset-0 pb-28">
                        <img 
-                         src={photos[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} 
+                         src={photo}
                          alt=""
-                         className="w-full h-full object-cover saturate-[1.3] contrast-[1.2] brightness-90 group-hover:brightness-110 group-hover:scale-105 transition-all duration-1000"
+                         className="w-full h-full object-cover saturate-[1.2] brightness-90 group-hover:brightness-105 group-hover:scale-105 transition-all duration-1000"
                        />
                      </div>
 
-                     {/* TRUMP STATS BOX */}
-                     <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/85 backdrop-blur-md border-t-2 border-mat-gold/20 flex flex-col p-4 pt-5">
-                        {/* FLAVOR TEXT */}
-                        <div className="grid grid-cols-2 gap-2 mb-4 text-[9px] uppercase tracking-widest text-mat-cream/60">
-                           <div className="col-span-2 flex items-center gap-2"><span className="text-mat-gold font-bold">Origin:</span> {stats.hometown}</div>
-                           <div className="col-span-2 flex items-center gap-2"><span className="text-mat-gold font-bold">Class:</span> <span className="italic">{stats.weight_class}</span></div>
-                           <div className="col-span-2 flex items-center gap-2 leading-tight border-l-2 border-mat-gold/50 pl-2 mt-1"><span className="text-mat-rose font-bold">Move:</span> {stats.signature_move}</div>
+                     {/* Real-Data Footer */}
+                     <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/85 backdrop-blur-md border-t border-mat-gold/20 p-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className={`text-[10px] font-black uppercase tracking-widest ${tier.color === 'mat-gold-foil' ? 'text-mat-gold' : 'text-mat-rose'}`}>
+                            {tier.name}
+                          </span>
+                          {profile.absolute_rank && (
+                            <span className="text-[8px] font-bold text-white/20 uppercase tracking-widest">#{profile.absolute_rank}</span>
+                          )}
                         </div>
-
-                        {/* QUANTITATIVE STATS */}
-                        <div className="space-y-2.5">
-                          {[
-                            { key: 'charisma', icon: '✨', val: stats.charisma, color: 'bg-mat-gold' },
-                            { key: 'stamina', icon: '🔋', val: stats.stamina, color: 'bg-mat-rose' },
-                            { key: 'intellect', icon: '🧠', val: stats.intellect, color: 'bg-blue-500' },
-                            { key: 'vibe', icon: '🔥', val: stats.vibe, color: 'bg-purple-500' },
-                            { key: 'social', icon: '🍻', val: stats.social, color: 'bg-green-500' },
-                          ].map(s => (
-                             <div key={s.key} className="flex items-center gap-2">
-                                <span className="w-5 text-center text-[10px]">{s.icon}</span>
-                                <div className="flex-1 h-3 bg-white/10 rounded-sm overflow-hidden flex relative shadow-[inset_0_1px_3px_rgba(0,0,0,0.5)] border border-white/5">
-                                   <motion.div initial={{ width: 0 }} whileInView={{ width: `${s.val}%` }} viewport={{ once: true }} transition={{ duration: 1, ease: 'easeOut' }} className={`h-full ${s.color} bg-opacity-90`} />
-                                </div>
-                                <span className="w-6 text-right text-[10px] font-black font-['Impact'] italic tracking-wider text-mat-cream">{s.val}</span>
-                             </div>
-                          ))}
-                        </div>
+                        {profile.city && (
+                          <div className="flex items-center gap-1.5 text-[9px] text-white/40 uppercase tracking-widest">
+                            <MapPin size={9} /> {profile.city}
+                          </div>
+                        )}
+                        {profile.occupation && (
+                          <p className="text-[9px] italic text-white/30 truncate">{profile.occupation}</p>
+                        )}
                      </div>
 
-
-                     {/* 💎 Resonance Action Overlay */}
+                     {/* Resonance Overlay */}
                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <motion.div 
                           initial={false} 
@@ -233,8 +213,6 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                           )}
                         </AnimatePresence>
                      </div>
-
-
                    </CardContent>
                  </Card>
                </motion.div>
@@ -275,9 +253,26 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                onClick={(e) => e.stopPropagation()}
                className="w-full max-w-sm bg-[#111] border border-mat-gold/30 rounded-t-3xl md:rounded-3xl p-6 space-y-6 shadow-[0_0_50px_rgba(212,175,55,0.15)] pb-10 md:pb-6"
              >
-                <div className="text-center space-y-2">
-                   <h3 className="text-2xl font-black italic uppercase tracking-widest text-mat-cream font-['Impact']">Engage Asset</h3>
-                   <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">Target Protocol: {engagementProfile.full_name}</p>
+                <div className="flex flex-col items-center text-center space-y-4">
+                   <div className="relative">
+                     <img 
+                       src={(() => { try { return JSON.parse(engagementProfile.photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${engagementProfile.user_id}`; } catch { return `https://api.dicebear.com/7.x/avataaars/svg?seed=${engagementProfile.user_id}`; } })()} 
+                       alt="" 
+                       className="w-20 h-20 rounded-full object-cover border-2 border-mat-gold/30 shadow-[0_0_20px_rgba(212,175,55,0.2)]" 
+                     />
+                     {engagementProfile.is_verified && (
+                       <div className="absolute -bottom-1 -right-1 p-1 bg-mat-gold rounded-full text-black shadow-mat-gold/50">
+                         <Sparkles size={10} />
+                       </div>
+                     )}
+                   </div>
+                   <div className="space-y-1">
+                     <h3 className="text-2xl font-black italic uppercase tracking-widest text-mat-cream font-['Impact']">{engagementProfile.full_name}</h3>
+                     <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
+                       {SanctuaryService.getTierFromRank(engagementProfile.absolute_rank ?? 9999, 1000).name}
+                       {engagementProfile.city ? ` • ${engagementProfile.city}` : ''}
+                     </p>
+                   </div>
                 </div>
                 
                 <div className="flex flex-col gap-3">

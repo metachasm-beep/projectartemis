@@ -20,7 +20,7 @@ const App: React.FC = () => {
   const isBlogSubdomain = hostname.startsWith('blogs.');
 
   useEffect(() => {
-    MigrationService.migratePaymentSchema();
+    MigrationService.runAll();
   }, []);
 
   useEffect(() => {

@@ -256,6 +256,56 @@ export const SanctuaryService = {
   },
 
   /**
+   * 📉 Resonance Decay Protocol:
+   * Penalizes rank_score for prolonged sanctuary absence.
+   * Logic: -2% per day beyond a 3-day grace period.
+   */
+  applyRankDecay: async (userId: string, totalInactivityDays: number) => {
+    if (totalInactivityDays < 3) return 0;
+    
+    // Calculate penalty (2% compounds per day beyond grace)
+    const penaltyRatio = 0.02 * (totalInactivityDays - 3);
+    const cappedPenalty = Math.min(penaltyRatio, 0.50); // Cap at 50% max loss
+    
+    await turso.execute({
+      sql: "UPDATE profiles SET rank_score = rank_score - (rank_score * ?), updated_at = ? WHERE user_id = ?",
+      args: [cappedPenalty, new Date().toISOString(), userId]
+    });
+    
+    await SanctuaryService.recalculateGlobalRanks();
+    return cappedPenalty;
+  },
+
+  /**
+   * 📑 Dossier Resonance Sync:
+   * Rewards rank_score based on profile integrity/completeness.
+   */
+  syncIntegrityBonus: async (userId: string, integrityScore: number) => {
+    // Logic: Every 10% integrity grants 500 rank points.
+    // We only reward for milestones reached.
+    const bonus = Math.floor(integrityScore / 10) * 500;
+    
+    await SanctuaryService.rewardRank(userId, bonus, `Dossier Calibration Bonus: ${integrityScore}% Integrity`);
+    return bonus;
+  },
+
+  /**
+   * 👑 Tier Brackets (Absolute Population Based):
+   * Maps current absolute_rank to high-status designations.
+   */
+  getTierFromRank: (rank: number, total: number) => {
+    if (rank <= 10) return { id: 'choice', name: 'The Choice', color: 'mat-gold-foil' };
+    
+    const percentile = (rank / total) * 100;
+    
+    if (percentile <= 5) return { id: 'ascendant', name: 'Ascendant', color: 'mat-gold' };
+    if (percentile <= 15) return { id: 'paragon', name: 'Paragon', color: 'mat-wine-soft' };
+    if (percentile <= 30) return { id: 'noble', name: 'Noble', color: 'mat-wine' };
+    if (percentile <= 60) return { id: 'vanguard', name: 'Vanguard', color: 'mat-rose' };
+    return { id: 'aspirant', name: 'Aspirant', color: 'mat-slate' };
+  },
+
+  /**
    * 🛡️ Sovereign Protection: Report, Block, and Filter.
    */
   reportUser: async (actorId: string, targetId: string, reason: string) => {

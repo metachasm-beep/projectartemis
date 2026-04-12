@@ -1,25 +1,68 @@
 import React, { useState } from 'react';
-import { useAuth } from '@/hooks/useAuth'; // Assuming user auth exists based on App.tsx
-import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle2, Copy, IndianRupee, Loader2, ShieldCheck, Wallet } from 'lucide-react';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  ArrowRight, CheckCircle2, Copy, Loader2,
+  Zap, Crown, Sparkles, TrendingUp, ShieldCheck, ChevronRight
+} from 'lucide-react';
+
+// ─── TIER CONFIG ───────────────────────────────────────────────────────────────
+const JUMP_TIERS = [
+  {
+    id: 'nudge',
+    name: 'The Nudge',
+    amount: 49,
+    power: '5% leap',
+    icon: TrendingUp,
+    description: 'Precision lift. Subtle but effective in tight brackets.',
+    color: 'from-mat-rose/20 to-transparent',
+    accent: 'text-mat-rose',
+    border: 'border-mat-rose/20 hover:border-mat-rose/60',
+    badge: 'bg-mat-rose/10 text-mat-rose',
+  },
+  {
+    id: 'surge',
+    name: 'The Surge',
+    amount: 149,
+    power: '15% leap',
+    icon: Zap,
+    description: 'Decisive momentum. The most popular choice.',
+    color: 'from-mat-wine/30 to-transparent',
+    accent: 'text-mat-wine',
+    border: 'border-mat-wine/30 hover:border-mat-wine/80',
+    badge: 'bg-mat-wine/10 text-mat-wine',
+    featured: true,
+  },
+  {
+    id: 'elite',
+    name: 'The Elite',
+    amount: 499,
+    power: '50% leap',
+    icon: Crown,
+    description: 'Sovereign-grade. Vaults past half the registry.',
+    color: 'from-mat-gold/20 to-transparent',
+    accent: 'text-mat-gold',
+    border: 'border-mat-gold/30 hover:border-mat-gold/80',
+    badge: 'bg-mat-gold/10 text-mat-gold',
+  },
+];
+
+type ClaimStatus = 'idle' | 'loading' | 'success' | 'pending' | 'error';
 
 export const PaymentScreen: React.FC = () => {
-  const { user } = useAuth();
-  
-  // State
-  const [topupAmount, setTopupAmount] = useState<number>(500); // Default ₹500
+  const { profile, user } = useAuthContext();
+
+  const [selectedTier, setSelectedTier] = useState<typeof JUMP_TIERS[0]>(JUMP_TIERS[1]);
   const [utr, setUtr] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'pending' | 'error'>('idle');
+  const [status, setStatus] = useState<ClaimStatus>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [copied, setCopied] = useState(false);
+  const [leapResult, setLeapResult] = useState<number | null>(null);
 
-  // Dynamic Intent Link
-  // Fetched via VITE_UPI_ID from env
-  const upiId = import.meta.env.VITE_UPI_ID || 'example@ybl';
-  const userIdSegment = user?.id ? `MATRIARCH_USER_${user.id.substring(0, 8)}` : 'MATRIARCH_GUEST';
-  
-  // Construct pure UPI protocol URL
-  const upiUrl = `upi://pay?pa=${upiId}&pn=Matriarch&am=${topupAmount}&cu=INR&tn=${userIdSegment}`;
+  const upiId = import.meta.env.VITE_UPI_ID || 'matriarch@ybl';
+  const city = profile?.city || 'Delhi';
+  const userRef = user?.id ? `MTRCH_${user.id.substring(0, 8).toUpperCase()}` : 'GUEST';
+  const upiUrl = `upi://pay?pa=${upiId}&pn=Matriarch&am=${selectedTier.amount}&cu=INR&tn=MTRCH_${selectedTier.id.toUpperCase()}_${userRef}`;
 
   const handleCopyUpi = () => {
     navigator.clipboard.writeText(upiId);
@@ -29,12 +72,11 @@ export const PaymentScreen: React.FC = () => {
 
   const handleClaim = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (utr.length !== 12) {
-      setErrorMessage('Please enter a valid 12-digit UTR.');
+    if (utr.length < 12) {
+      setErrorMessage('Please enter a valid 12-digit UTR number.');
       setStatus('error');
       return;
     }
-
     setStatus('loading');
     setErrorMessage('');
 
@@ -43,20 +85,20 @@ export const PaymentScreen: React.FC = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          user_id: user?.id || 'TEST_USER_ID',
-          utr: utr
-        })
+          user_id: user?.id,
+          utr: utr.trim(),
+          jump_type: selectedTier.id,
+          city,
+        }),
       });
 
       const data = await res.json();
 
-      if (!res.ok) {
-        throw new Error(data.error || 'Failed to verify payment.');
-      }
-
+      if (!res.ok) throw new Error(data.error || 'Claim failed.');
       if (res.status === 202) {
         setStatus('pending');
       } else {
+        setLeapResult(data.leap_bonus || null);
         setStatus('success');
       }
     } catch (err: any) {
@@ -65,120 +107,186 @@ export const PaymentScreen: React.FC = () => {
     }
   };
 
+  const bloomVariants = {
+    initial: { opacity: 0, y: 24, filter: 'blur(12px)' },
+    animate: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
-      {/* Dynamic Background Elements */}
-      <div className="fixed inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-[#4B0082]/20 via-black to-black z-0"></div>
+    <motion.div
+      initial="initial"
+      animate="animate"
+      variants={bloomVariants}
+      className="max-w-5xl mx-auto px-6 py-16 space-y-16"
+    >
+      {/* ── Header ── */}
+      <div className="space-y-4">
+        <span className="text-[10px] font-black uppercase tracking-[0.6em] text-mat-rose/50">Aura Store</span>
+        <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic leading-[0.9]">
+          Ascend the<br /><span className="text-mat-rose/30">Registry.</span>
+        </h1>
+        <p className="text-mat-slate/50 max-w-md text-sm leading-relaxed">
+          Purchase a rank jump. Your leap is calculated relative to the live density of your city — the more competitive the bracket, the more powerful the move.
+        </p>
+      </div>
 
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="z-10 w-full max-w-md bg-zinc-900/50 backdrop-blur-xl border border-zinc-800 rounded-3xl p-6 shadow-2xl"
-      >
-        <div className="text-center mb-8">
-          <div className="mx-auto bg-gradient-to-tr from-[#9D4EDD] to-[#4B0082] w-16 h-16 rounded-full flex items-center justify-center shadow-[0_0_30px_rgba(157,78,221,0.3)] mb-4">
-             <Wallet className="w-8 h-8 text-white" />
-          </div>
-          <h1 className="text-2xl font-bold font-heading text-white">Purchase Aura</h1>
-          <p className="text-zinc-400 mt-2 text-sm">Empower your premium selection protocol. 1 Aura = ₹1.</p>
-        </div>
+      {/* ── BENTO GRID: Tier Selection ── */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {JUMP_TIERS.map((tier) => {
+          const Icon = tier.icon;
+          const isActive = selectedTier.id === tier.id;
+          return (
+            <motion.button
+              key={tier.id}
+              onClick={() => setSelectedTier(tier)}
+              whileTap={{ scale: 0.97 }}
+              className={`relative mat-glass-deep p-10 rounded-[3rem] text-left space-y-6 transition-all duration-500 border-2 ${tier.border} ${isActive ? 'shadow-mat-premium scale-[1.02]' : 'opacity-70 hover:opacity-100'}`}
+            >
+              {/* Featured pill */}
+              {tier.featured && (
+                <div className="absolute -top-3 left-8 px-4 py-1 bg-mat-wine text-white text-[8px] font-black uppercase tracking-widest rounded-full">
+                  Most Popular
+                </div>
+              )}
+              {/* Active indicator */}
+              {isActive && (
+                <motion.div
+                  layoutId="tierHalo"
+                  className={`absolute inset-0 rounded-[3rem] bg-gradient-to-br ${tier.color} pointer-events-none`}
+                />
+              )}
 
-        {/* Amount Selector */}
-        <div className="mb-8">
-          <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3 block">Select Amount</label>
-          <div className="grid grid-cols-3 gap-3">
-            {[100, 500, 1000].map(amt => (
-              <button
-                key={amt}
-                onClick={() => setTopupAmount(amt)}
-                className={`py-3 rounded-xl border transition-all duration-300 font-bold flex items-center justify-center gap-1 ${
-                  topupAmount === amt 
-                    ? 'border-[#9D4EDD] bg-[#9D4EDD]/10 text-[#9D4EDD] relative overflow-hidden' 
-                    : 'border-zinc-800 bg-zinc-900/50 text-zinc-400 hover:border-zinc-600'
-                }`}
-              >
-                {topupAmount === amt && (
-                  <motion.div layoutId="activeAmount" className="absolute inset-0 bg-[#9D4EDD]/10" />
-                )}
-                <IndianRupee className="w-4 h-4" /> {amt}
-              </button>
-            ))}
-          </div>
-        </div>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${tier.badge}`}>
+                <Icon size={20} />
+              </div>
 
-        {/* Phase 1: Intent View */}
-        <div className="bg-black/40 rounded-2xl p-5 border border-zinc-800/80 mb-6 relative overflow-hidden group hover:border-[#9D4EDD]/50 transition-colors">
-          <div className="absolute top-0 right-0 p-3 opacity-10 group-hover:opacity-20 transition-opacity">
-            <ShieldCheck className="w-12 h-12 text-[#9D4EDD]" />
+              <div className="space-y-1">
+                <h3 className={`text-2xl font-bold italic ${tier.accent}`}>{tier.name}</h3>
+                <p className="text-[9px] font-black uppercase tracking-widest text-mat-slate/40">{tier.power}</p>
+              </div>
+
+              <p className="text-xs text-mat-slate/60 leading-relaxed">{tier.description}</p>
+
+              <div className="flex items-end justify-between pt-2 border-t border-mat-rose/10">
+                <span className={`text-4xl font-black italic tracking-tighter ${tier.accent}`}>₹{tier.amount}</span>
+                {isActive && <CheckCircle2 size={20} className={tier.accent} />}
+              </div>
+            </motion.button>
+          );
+        })}
+      </div>
+
+      {/* ── BENTO: Pay + Claim ── */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        {/* Left: UPI Payment Cell */}
+        <div className="mat-glass-deep p-10 rounded-[3rem] border border-mat-rose/10 space-y-8">
+          <div className="space-y-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Step 1</span>
+            <h3 className="text-3xl font-bold italic text-mat-wine">Pay via UPI</h3>
           </div>
-          <p className="text-sm text-zinc-400 mb-4 pr-10">
-            Pay directly via your phone's UPI app (Google Pay, PhonePe, Paytm).
-          </p>
-          
+
+          {/* Amount preview */}
+          <div className="flex items-center gap-4 py-6 border-y border-mat-rose/10">
+            <selectedTier.icon className={`w-8 h-8 ${selectedTier.accent}`} />
+            <div>
+              <p className="text-[9px] font-black uppercase tracking-widest text-mat-slate/40">{selectedTier.name} — {selectedTier.power}</p>
+              <p className={`text-4xl font-black italic ${selectedTier.accent}`}>₹{selectedTier.amount}</p>
+            </div>
+          </div>
+
           <a
             href={upiUrl}
-            className="w-full flex items-center gap-3 justify-center bg-white text-black py-4 rounded-xl font-bold hover:bg-zinc-200 transition-transform active:scale-95"
+            className="w-full flex items-center justify-center gap-3 py-5 bg-mat-wine text-white rounded-2xl font-bold hover:bg-mat-wine-soft transition-all shadow-mat-premium group"
           >
-            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4" />
-            Pay via Phone/UPI App
+            <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" alt="UPI" className="h-4 brightness-[10]" />
+            Open UPI App
+            <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
           </a>
 
-          <div className="mt-4 flex items-center justify-between text-xs text-zinc-500 bg-zinc-900 rounded-lg p-3">
-             <span className="truncate mr-2">Or send manually to: <strong className="text-zinc-300">{upiId}</strong></span>
-             <button onClick={handleCopyUpi} className="p-1.5 hover:text-white hover:bg-zinc-800 rounded transition-colors text-[#9D4EDD]">
-                {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-             </button>
+          <div className="flex items-center gap-3 bg-mat-ivory/60 rounded-2xl px-5 py-4 border border-mat-rose/5">
+            <p className="text-xs text-mat-slate/50 flex-1">
+              Or pay manually to <strong className="text-mat-wine">{upiId}</strong>
+            </p>
+            <button onClick={handleCopyUpi} className={`p-2 rounded-xl transition-all ${copied ? 'bg-mat-wine text-white' : 'bg-mat-rose/10 text-mat-rose hover:bg-mat-rose/20'}`}>
+              {copied ? <CheckCircle2 size={14} /> : <Copy size={14} />}
+            </button>
           </div>
         </div>
 
-        {/* Phase 2: Claim View */}
-        <div className="pt-2 border-t border-zinc-800/50">
-          <form onSubmit={handleClaim}>
-            <label className="text-xs font-semibold text-zinc-500 uppercase tracking-widest mb-3 block">Confirm transaction</label>
+        {/* Right: UTR Claim Cell */}
+        <div className="mat-glass-deep p-10 rounded-[3rem] border border-mat-gold/10 space-y-8 flex flex-col">
+          <div className="space-y-2">
+            <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Step 2</span>
+            <h3 className="text-3xl font-bold italic text-mat-wine">Claim Your Leap</h3>
+            <p className="text-xs text-mat-slate/50 leading-relaxed">
+              After payment, paste your 12-digit UTR from the bank/UPI confirmation SMS.
+            </p>
+          </div>
+
+          <form onSubmit={handleClaim} className="flex-1 flex flex-col gap-6">
             <div className="relative">
-              <input 
-                type="text" 
+              <input
+                type="text"
                 maxLength={12}
                 value={utr}
-                onChange={(e) => setUtr(e.target.value.replace(/\D/g, ''))} // only digits
-                placeholder="Enter 12-digit UTR number"
-                className="w-full bg-black/50 border border-zinc-800 focus:border-[#9D4EDD] focus:ring-1 focus:ring-[#9D4EDD] rounded-xl py-3.5 pl-4 pr-12 text-white outline-none transition-all placeholder:text-zinc-600 font-mono tracking-widest"
-                disabled={status ===('loading') || status === ('success')}
+                onChange={(e) => { setUtr(e.target.value.replace(/\D/g, '')); setStatus('idle'); }}
+                placeholder="Enter 12-digit UTR"
+                disabled={status === 'loading' || status === 'success'}
+                className="w-full bg-mat-ivory/60 border-2 border-mat-rose/10 focus:border-mat-wine rounded-2xl py-5 pl-6 pr-16 text-mat-wine text-sm font-mono tracking-[0.3em] placeholder:text-mat-slate/20 placeholder:font-sans placeholder:tracking-normal outline-none transition-all"
               />
-              <button 
+              <button
                 type="submit"
-                disabled={utr.length !== 12 || status === 'loading' || status === 'success'}
-                className="absolute right-2 top-2 bottom-2 bg-[#9D4EDD] hover:bg-[#7b32b3] disabled:bg-zinc-800 disabled:text-zinc-500 text-white w-10 flex items-center justify-center rounded-lg transition-colors"
+                disabled={utr.length < 12 || status === 'loading' || status === 'success'}
+                className="absolute right-3 top-3 bottom-3 px-4 bg-mat-wine text-white rounded-xl disabled:opacity-20 hover:bg-mat-wine-soft transition-all flex items-center"
               >
-                {status === 'loading' ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
               </button>
             </div>
-            
-            {status === 'error' && (
-              <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="mt-3 text-red-400 text-sm flex items-center gap-2">
-                 <ShieldCheck className="w-4 h-4" /> {errorMessage}
-              </motion.p>
-            )}
-            
-            {status === 'pending' && (
-               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 p-4 bg-yellow-500/10 border border-yellow-500/20 rounded-xl text-yellow-500/90 text-sm">
-                 We've logged your request. We're waiting for the bank confirmation to instantly credit your Aura.
-               </motion.div>
-            )}
 
-            {status === 'success' && (
-               <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="mt-4 p-4 bg-emerald-500/10 border border-emerald-500/20 rounded-xl text-emerald-400 text-sm flex items-start gap-3">
-                 <CheckCircle2 className="w-5 h-5 shrink-0 mt-0.5" />
-                 <div>
-                    <h4 className="font-bold mb-1">Top-up Successful!</h4>
-                    <p className="text-emerald-500/80">Your Aura balance has been updated. You can now use premium features.</p>
-                 </div>
-               </motion.div>
-            )}
+            <AnimatePresence>
+              {status === 'error' && (
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-mat-rose text-xs flex gap-2 items-start">
+                  <ShieldCheck size={14} className="shrink-0 mt-0.5" />{errorMessage}
+                </motion.p>
+              )}
 
+              {status === 'pending' && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-600 text-xs leading-relaxed space-y-2">
+                  <p className="font-bold">⏳ Verification Pending</p>
+                  <p>Your UTR has been logged. Once our systems detect the transaction, your rank jump will be activated instantly — no further action required.</p>
+                </motion.div>
+              )}
+
+              {status === 'success' && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-mat-wine/5 border border-mat-wine/20 rounded-2xl space-y-2">
+                  <div className="flex items-center gap-3">
+                    <CheckCircle2 className="text-mat-wine w-5 h-5 shrink-0" />
+                    <div>
+                      <p className="font-bold text-mat-wine text-sm">Leap Activated!</p>
+                      {leapResult && (
+                        <p className="text-[10px] text-mat-slate/50">+{leapResult.toLocaleString()} rank points credited to your standing.</p>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-xs text-mat-slate/50 pl-8">Your new absolute rank will reflect within moments. Refresh your dashboard to see the update.</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <div className="mt-auto flex items-center gap-2 text-[9px] uppercase font-black tracking-widest text-mat-slate/20">
+              <ShieldCheck size={10} /> Secured by the Turso Vault
+            </div>
           </form>
         </div>
-      </motion.div>
-    </div>
+      </div>
+
+      {/* ── Footer Divider ── */}
+      <div className="py-20 text-center">
+        <p className="text-[11px] font-black uppercase tracking-[1.5em] opacity-10 text-mat-wine pointer-events-none select-none">
+          Matriarch // Pay Once, Rise Permanently
+        </p>
+      </div>
+    </motion.div>
   );
 };

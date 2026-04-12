@@ -6,7 +6,7 @@ import { SanctuaryService } from '@/services/sanctuary';
 import { MenDashboard } from '@/pages/dashboards/MenDashboard';
 import { WomenSanctuary } from '@/components/dashboards/WomenSanctuary';
 
-export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ onBeginDiscovery }) => {
+export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void; onNavigateToStore?: () => void }> = ({ onBeginDiscovery, onNavigateToStore }) => {
   const { profile, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [metrics, setMetrics] = useState({ impression: 0, visit: 0, save: 0 });
@@ -56,6 +56,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void }> = ({ 
                status={{ rank_tier: 'Aspirant' }} 
                refreshProfile={refreshProfile}
                setIsEditing={setIsEditing}
+               onNavigateToStore={onNavigateToStore}
                metrics={{ impression: metrics.impression, visit: metrics.visit, save: metrics.save }}
              />
           </motion.div>

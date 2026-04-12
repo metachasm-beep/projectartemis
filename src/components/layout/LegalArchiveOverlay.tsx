@@ -462,39 +462,68 @@ const LegalArchiveOverlay: React.FC<ContentOverlayProps> = ({ slug, onClose }) =
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[300] bg-mat-obsidian/95 backdrop-blur-2xl flex items-center justify-center p-6 md:p-12 overflow-y-auto"
+        className="fixed inset-0 z-[300] bg-mat-obsidian/98 backdrop-blur-3xl flex items-center justify-center p-4 md:p-12 overflow-y-auto"
       >
         <motion.div 
-          initial={{ scale: 0.9, y: 50, opacity: 0 }}
+          initial={{ scale: 0.95, y: 30, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
-          exit={{ scale: 0.9, y: 50, opacity: 0 }}
-          className="max-w-4xl w-full bg-mat-cream rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col"
-          style={{ minHeight: '60vh' }}
+          exit={{ scale: 0.95, y: 30, opacity: 0 }}
+          className="max-w-7xl w-full grid grid-cols-1 md:grid-cols-12 gap-6 relative"
         >
-          {/* Header */}
-          <div className="px-12 py-10 flex justify-between items-center border-b border-mat-rose/10">
-             <div className="flex items-center gap-6">
-                <div className="w-14 h-14 bg-mat-wine text-white rounded-2xl flex items-center justify-center">
-                   {Icon && <Icon size={28} strokeWidth={1.5} />}
+          {/* Bento Cell 1: Metadata & Archive Identity (Span 4) */}
+          <div className="md:col-span-4 mat-glass-deep p-10 rounded-[3.5rem] bg-mat-cream/5 border border-mat-rose/10 flex flex-col justify-between space-y-12">
+             <div className="space-y-8">
+                <div className="w-20 h-20 bg-mat-wine text-white rounded-3xl flex items-center justify-center shadow-mat-premium">
+                   {Icon && <Icon size={40} strokeWidth={1.5} />}
                 </div>
-                <div>
-                   <h2 className="text-3xl font-black text-mat-wine italic">{doc.title}</h2>
-                   <p className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-slate/40 mt-1">Official Matriarch Documentation</p>
+                <div className="space-y-4">
+                   <h2 className="text-5xl font-black text-mat-wine italic leading-tight">{doc.title}</h2>
+                   <div className="flex flex-col gap-1">
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Sanctuary Registry</span>
+                      <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-gold">Protocol // {slug?.toUpperCase()}</span>
+                   </div>
                 </div>
              </div>
-             <button onClick={onClose} className="w-12 h-12 rounded-full bg-mat-wine/5 flex items-center justify-center text-mat-wine hover:bg-mat-wine/10 transition-colors">
-                <X size={24} />
-             </button>
+
+             <div className="p-8 bg-mat-obsidian/40 rounded-3xl border border-mat-rose/10 space-y-4">
+                <div className="flex items-center gap-3 text-mat-gold">
+                   <Award size={16} />
+                   <span className="text-[9px] font-black uppercase tracking-widest">Statutory Compliance</span>
+                </div>
+                <p className="text-[11px] text-white/50 leading-relaxed italic">Verified under Global Asymmetric Governance Standards and DPDP 2023.</p>
+             </div>
           </div>
 
-          {/* Content */}
-          <div className="p-12 md:p-20 flex-1 overflow-y-auto custom-scrollbar text-mat-wine">
-             {doc.content}
+          {/* Bento Cell 2: Primary Archive Content (Span 8) */}
+          <div className="md:col-span-8 mat-glass-deep rounded-[4rem] bg-mat-cream/10 border border-mat-rose/10 overflow-hidden flex flex-col shadow-2xl relative" style={{ height: '70vh' }}>
+             <div className="absolute top-8 right-8 z-50">
+                <button onClick={onClose} className="w-14 h-14 rounded-full bg-mat-wine text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-mat-premium">
+                   <X size={28} />
+                </button>
+             </div>
+             
+             <div className="flex-1 p-10 md:p-16 overflow-y-auto custom-scrollbar text-mat-wine">
+                <div className="max-w-3xl mx-auto">
+                   {doc.content}
+                </div>
+             </div>
+
+             {/* Footer Cell integration */}
+             <div className="px-12 py-8 bg-mat-obsidian/20 text-center border-t border-white/5">
+                <p className="text-[9px] font-black uppercase tracking-[1.2rem] text-mat-gold/40">Imperial Archive Sealed // Registry 0.1</p>
+             </div>
           </div>
 
-          {/* Footer Decoration */}
-          <div className="p-12 text-center border-t border-mat-rose/5">
-             <p className="text-[10px] font-black uppercase tracking-[1em] text-mat-wine/20">Sealed under the Imperial Seal // 2024</p>
+          {/* Bento Cell 3: Support & Grievance (Span 12) Overlay Context */}
+          <div className="md:col-span-12 mat-glass-deep p-8 rounded-[2.5rem] border border-mat-gold/10 bg-mat-gold/5 flex flex-col md:flex-row items-center justify-between gap-8">
+             <div className="flex items-center gap-6">
+                <RefreshCcw size={20} className="text-mat-gold animate-spin-slow" />
+                <p className="text-[10px] font-bold uppercase tracking-widest text-mat-wine/60">Registry state is persistent. Changes to protocols are broadcast via the communications hub.</p>
+             </div>
+             <div className="flex items-center gap-4">
+                <span className="text-[9px] font-black uppercase text-mat-gold">Support Line:</span>
+                <span className="text-[10px] font-bold italic text-mat-wine">legal@matriarchapp.com</span>
+             </div>
           </div>
         </motion.div>
       </motion.div>

@@ -37,7 +37,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   const [users, setUsers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [filter, setFilter] = useState<'all' | 'man' | 'woman' | 'verified'>('all');
+  const [filter, setFilter] = useState<'all' | 'man' | 'woman' | 'verified' | 'audits'>('all');
+  const [audits, setAudits] = useState<any[]>([]);
   const [activeMenuUserId, setActiveMenuUserId] = useState<string | null>(null);
 
   const fetchData = async () => {
@@ -61,6 +62,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
         totalTokens: profiles.reduce((acc, p) => acc + (p.tokens || 0), 0)
       };
       setStats(statsData);
+
+      const pendingAudits = await AdminService.getPendingAudits();
+      setAudits(pendingAudits);
     } catch (err) {
       console.error("MATRIARCH: Admin data fetch failed (Turso):", err);
     } finally {
@@ -71,6 +75,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
   useEffect(() => {
     fetchData();
   }, []);
+
+  const handleResolveAudit = async (auditId: string, userId: string, approved: boolean) => {
+    setLoading(true);
+    await AdminService.resolveAudit(auditId, userId, approved);
+    await fetchData();
+  };
 
   const updateUserProfile = async (userId: string, updates: any) => {
     try {
@@ -220,6 +230,33 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout }) 
                              <p className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-slate/40">Archiving Matrix...</p>
                           </td>
                        </tr>
+                     ) : filter === 'audits' ? (
+                       audits.length === 0 ? (
+                         <tr><td colSpan={5} className="py-24 text-center opacity-40">Repository Pure. No pending audits.</td></tr>
+                       ) : audits.map((a) => (
+                         <tr key={a.id} className="hover:bg-mat-rose/[0.03] transition-colors">
+                           <td className="px-12 py-8">
+                              <div className="flex items-center gap-6">
+                                 <div className="w-16 h-16 bg-mat-rose/5 border border-mat-rose/10 overflow-hidden rounded-2xl">
+                                    <img src={tursoHelpers.deserialize(a.profile_photos || '[]')[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${a.user_id}`} className="w-full h-full object-cover" />
+                                 </div>
+                                 <div>
+                                    <p className="text-sm font-bold text-mat-wine italic">{a.full_name}</p>
+                                    <p className="text-[9px] font-black uppercase text-mat-slate/40">{a.action}</p>
+                                 </div>
+                              </div>
+                           </td>
+                           <td className="px-12 py-8"><Badge variant="outline" className="text-[8px] tracking-widest uppercase">{a.status}</Badge></td>
+                           <td className="px-12 py-8 text-[9px] font-mono text-mat-wine/40">{new Date(a.created_at).toLocaleString()}</td>
+                           <td className="px-12 py-8">
+                              <div className="flex gap-2">
+                                 <button onClick={() => handleResolveAudit(a.id, a.user_id, true)} className="px-3 py-1.5 bg-mat-gold text-mat-wine text-[8px] font-black uppercase rounded-lg hover:bg-mat-gold/80">Seal Identity</button>
+                                 <button onClick={() => handleResolveAudit(a.id, a.user_id, false)} className="px-3 py-1.5 bg-mat-rose/10 text-mat-rose text-[8px] font-black uppercase rounded-lg hover:bg-mat-rose/20">Reject</button>
+                              </div>
+                           </td>
+                           <td className="px-12 py-8 text-right italic text-[10px] opacity-20">Audit Record</td>
+                         </tr>
+                       ))
                      ) : filteredUsers.length === 0 ? (
                        <tr>
                           <td colSpan={5} className="py-24 text-center">

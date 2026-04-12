@@ -329,7 +329,11 @@ class Media {
 
   createShader() {
     const texture = new Texture(this.gl, {
-      generateMipmaps: false // Fix black screen for NPOT Unsplash images
+      generateMipmaps: false, // Fix black screen for NPOT Unsplash images
+      minFilter: this.gl.LINEAR,
+      magFilter: this.gl.LINEAR,
+      wrapS: this.gl.CLAMP_TO_EDGE,
+      wrapT: this.gl.CLAMP_TO_EDGE
     });
     this.program = new Program(this.gl, {
       depthTest: false,

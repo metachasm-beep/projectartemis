@@ -97,7 +97,10 @@ export const DashboardLayout: React.FC = () => {
 
           {activeTab === 'profile' && (
             <motion.div key="profile" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-              <ProfileDashboard onBeginDiscovery={() => setActiveTab('sovereign_browse')} />
+              <ProfileDashboard 
+                onBeginDiscovery={() => setActiveTab('sovereign_browse')}
+                onNavigateToStore={() => setActiveTab('store')}
+              />
             </motion.div>
           )}
 

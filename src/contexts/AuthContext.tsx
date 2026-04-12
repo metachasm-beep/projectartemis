@@ -46,6 +46,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         newStreak = 1;
       } else {
         const diffDays = Math.floor((now.getTime() - lastLogin.getTime()) / (1000 * 3600 * 24));
+        
+        // 📉 RESONANCE DECAY PROTOCOL: Triggered if silence > 3 days
+        if (diffDays >= 3) {
+           console.log(`RESONANCE_DECAY: Identity ${p.user_id} was silent for ${diffDays} days. Applying penalty.`);
+           await SanctuaryService.applyRankDecay(p.user_id, diffDays);
+        }
+
         if (diffDays === 1) newStreak += 1;
         else if (diffDays > 1) newStreak = 1;
       }

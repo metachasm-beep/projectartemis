@@ -57,121 +57,111 @@ const OnboardingOverlay: React.FC<OnboardingOverlayProps> = ({ isOpen, onComplet
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[400] bg-mat-obsidian/95 backdrop-blur-3xl flex items-center justify-center p-6"
+        className="fixed inset-0 z-[400] bg-mat-obsidian/95 backdrop-blur-3xl flex items-center justify-center p-4 md:p-12 overflow-y-auto"
       >
         <motion.div
           initial={{ scale: 0.9, y: 40, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
-          className="max-w-xl w-full bg-mat-cream rounded-[3rem] shadow-2xl relative overflow-hidden flex flex-col border border-mat-rose/10"
-          style={{ minHeight: '70vh' }}
+          className="max-w-5xl w-full grid grid-cols-1 md:grid-cols-12 gap-6 relative"
         >
-          {/* Progress Decoration */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-mat-wine/5">
-             <motion.div 
-               initial={{ width: 0 }}
-               animate={{ width: '40%' }}
-               className="h-full bg-mat-wine"
-             />
-          </div>
+           {/* Cell 1: Welcome Hero (Bento Span 8) */}
+           <div className="md:col-span-8 mat-glass-deep p-10 md:p-16 rounded-[4rem] border border-mat-rose/10 flex flex-col justify-center space-y-8 bg-mat-cream/10">
+              <div className="w-20 h-20 bg-mat-wine rounded-3xl flex items-center justify-center text-white shadow-mat-premium">
+                 <Shield size={40} strokeWidth={1.5} />
+              </div>
+              <div className="space-y-4">
+                 <h2 className="text-6xl font-black text-mat-wine italic leading-none">Sovereign <br />Identity.</h2>
+                 <p className="text-xl text-mat-slate/50 leading-relaxed max-w-xl">
+                    Establishing your statutory standing within the Matriarch Registry. {userEmail && <span className="text-mat-wine/40">[{userEmail}]</span>}
+                 </p>
+              </div>
+           </div>
 
-          <div className="p-10 md:p-16 flex-1 flex flex-col space-y-10">
-            {/* Header */}
-            <div className="space-y-4">
-               <div className="w-14 h-14 bg-mat-wine rounded-2xl flex items-center justify-center text-white mb-6">
-                  <Shield size={28} strokeWidth={1.5} />
-               </div>
-               <h2 className="text-4xl font-black text-mat-wine italic">Sovereign Onboarding</h2>
-               <p className="text-sm text-mat-slate/50 leading-relaxed">
-                 Welcome to Matriarch, {userEmail || 'Sovereign'}. Before you enter the ecosystem, we must establish your statutory eligibility and data preferences.
-               </p>
-            </div>
+           {/* Cell 2: Age Gate (Bento Span 4) */}
+           <div className="md:col-span-4 mat-glass-deep p-10 rounded-[4rem] border border-mat-rose/10 flex flex-col justify-between bg-white/5 group hover:border-mat-wine/30 transition-all">
+              <div className="space-y-6">
+                 <div className="flex items-center gap-3 text-mat-wine">
+                    <Calendar size={20} />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em]">Age Ritual</span>
+                 </div>
+                 <div className="space-y-4">
+                    <input 
+                      type="date"
+                      value={dob}
+                      onChange={(e) => setDob(e.target.value)}
+                      className="w-full h-20 bg-mat-obsidian text-mat-gold border-none rounded-3xl px-8 font-black text-2xl focus:ring-4 focus:ring-mat-gold/20 outline-none transition-all shadow-inner"
+                    />
+                    <p className="text-[10px] text-mat-slate/40 font-bold uppercase tracking-widest leading-relaxed">Statutory Hard-Lock: <br />Minimum 18 CY required.</p>
+                 </div>
+              </div>
+           </div>
 
-            {/* Age Gate */}
-            <div className="space-y-6">
-               <div className="flex items-center gap-3 text-mat-wine">
-                  <Calendar size={18} />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Statutory Age Verification</span>
-               </div>
-               <div className="relative group">
-                  <input 
-                    type="date"
-                    value={dob}
-                    onChange={(e) => setDob(e.target.value)}
-                    className="w-full h-16 bg-white border border-mat-rose/10 rounded-2xl px-6 font-bold text-mat-wine-deep focus:ring-2 focus:ring-mat-wine/20 outline-none transition-all"
-                  />
-                  <p className="mt-2 text-[10px] text-mat-slate/40 font-medium">You must be at least 18 years of age to participate.</p>
-               </div>
-            </div>
+           {/* Cell 3: Data Sovereignty (Bento Span 4) */}
+           <div className="md:col-span-4 mat-glass-deep p-10 rounded-[4rem] border border-mat-rose/10 flex flex-col gap-8">
+              <div className="flex items-center gap-3 text-mat-wine">
+                 <Zap size={20} />
+                 <span className="text-[10px] font-black uppercase tracking-[0.3em]">Extraction Consent</span>
+              </div>
+              
+              <div className="space-y-4">
+                 <div 
+                   onClick={() => setAnalytics(!analytics)}
+                   className={`p-6 rounded-3xl cursor-pointer border transition-all flex flex-col gap-4 ${analytics ? 'bg-mat-wine text-white border-mat-wine shadow-lg scale-[1.02]' : 'bg-mat-cream/40 border-mat-rose/10 text-mat-wine'}`}
+                 >
+                    <p className="text-sm font-black uppercase tracking-widest">Analytics Flow</p>
+                    <p className={`text-[10px] leading-relaxed ${analytics ? 'opacity-80' : 'opacity-40 font-medium'}`}>Synchronizes your resonance with optimized discovery algorithms.</p>
+                 </div>
 
-            {/* Granular Consent */}
-            <div className="space-y-6">
-               <div className="flex items-center gap-3 text-mat-wine">
-                  <Zap size={18} />
-                  <span className="text-[10px] font-black uppercase tracking-[0.3em]">Data Processing Consent</span>
-               </div>
-               
-               <div className="space-y-4">
-                  {/* Analytics */}
-                  <div className="flex items-center justify-between p-5 bg-white rounded-2xl border border-mat-rose/5 group hover:border-mat-wine/20 transition-all cursor-pointer" onClick={() => setAnalytics(!analytics)}>
-                     <div>
-                        <p className="text-sm font-bold text-mat-wine">Advanced Analytics</p>
-                        <p className="text-[10px] text-mat-slate/40 mt-1">Improves your discovery and selection experience.</p>
-                     </div>
-                     <div className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${analytics ? 'bg-mat-wine' : 'bg-mat-rose/10'}`}>
-                        <motion.div animate={{ x: analytics ? 24 : 0 }} className="w-4 h-4 bg-white rounded-full shadow-sm" />
-                     </div>
-                  </div>
+                 <div 
+                   onClick={() => setAds(!ads)}
+                   className={`p-6 rounded-3xl cursor-pointer border transition-all flex flex-col gap-4 ${ads ? 'bg-mat-wine text-white border-mat-wine shadow-lg scale-[1.02]' : 'bg-mat-cream/40 border-mat-rose/10 text-mat-wine'}`}
+                 >
+                    <p className="text-sm font-black uppercase tracking-widest">Visual Tethers</p>
+                    <p className={`text-[10px] leading-relaxed ${ads ? 'opacity-80' : 'opacity-40 font-medium'}`}>Permits tailored media infusions based on your standing.</p>
+                 </div>
+              </div>
+           </div>
 
-                  {/* Ads */}
-                  <div className="flex items-center justify-between p-5 bg-white rounded-2xl border border-mat-rose/5 group hover:border-mat-wine/20 transition-all cursor-pointer" onClick={() => setAds(!ads)}>
-                     <div>
-                        <p className="text-sm font-bold text-mat-wine">Personalized Media</p>
-                        <p className="text-[10px] text-mat-slate/40 mt-1">Tailored ad experiences based on your ranking data.</p>
-                     </div>
-                     <div className={`w-12 h-6 rounded-full transition-all flex items-center px-1 ${ads ? 'bg-mat-wine' : 'bg-mat-rose/10'}`}>
-                        <motion.div animate={{ x: ads ? 24 : 0 }} className="w-4 h-4 bg-white rounded-full shadow-sm" />
-                     </div>
-                  </div>
+           {/* Cell 4: Infrastructure (Bento Span 8) */}
+           <div className="md:col-span-8 mat-glass-deep p-10 rounded-[4rem] border border-mat-rose/10 flex flex-col justify-between relative overflow-hidden group">
+              <div className="absolute inset-0 bg-gradient-to-br from-mat-wine/5 to-transparent pointer-events-none" />
+              <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-12 h-full">
+                 <div className="space-y-6 flex-1">
+                    <div className="flex items-center gap-3 text-mat-wine">
+                       <CheckCircle2 size={20} />
+                       <span className="text-[10px] font-black uppercase tracking-[0.3em]">Core Integrity</span>
+                    </div>
+                    <p className="text-2xl font-bold italic text-mat-wine leading-tight"> Platforms algorithms are immutable and active by default to maintain the sanctuary order. </p>
+                 </div>
 
-                  {/* Ranking - Essential */}
-                  <div className="flex items-center justify-between p-5 bg-mat-wine/5 rounded-2xl border border-mat-wine/10 opacity-60">
-                     <div>
-                        <p className="text-sm font-bold text-mat-wine">Ranking Algorithms</p>
-                        <p className="text-[10px] text-mat-slate/40 mt-1">Essential for the platform&apos;s asymmetric mechanics.</p>
-                     </div>
-                     <CheckCircle2 className="text-mat-wine w-6 h-6" />
-                  </div>
-               </div>
-            </div>
+                 <button 
+                  onClick={handleFinish}
+                  disabled={isLoading}
+                  className="w-full md:w-64 h-32 bg-mat-wine text-white rounded-[2.5rem] flex flex-col items-center justify-center gap-2 group/btn relative overflow-hidden shadow-2xl hover:scale-[1.05] active:scale-[0.95] transition-all disabled:opacity-20"
+                 >
+                    <div className="absolute inset-0 bg-gradient-to-tr from-mat-rose to-transparent opacity-0 group-hover/btn:opacity-40 transition-opacity" />
+                    {isLoading ? (
+                      <span className="animate-pulse text-[10px] font-black uppercase tracking-[0.2em]">Synchronizing...</span>
+                    ) : (
+                      <>
+                        <span className="text-xl font-black italic">Enter Sanctuary</span>
+                        <ChevronRight className="group-hover/btn:translate-x-2 transition-transform" />
+                      </>
+                    )}
+                 </button>
+              </div>
 
-            {/* Error Message */}
-            {error && (
-               <motion.div 
-                 initial={{ opacity: 0, y: 10 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 className="p-4 bg-red-50 border border-red-100 rounded-2xl flex gap-3 text-red-600"
-               >
-                 <AlertCircle size={18} className="shrink-0" />
-                 <p className="text-[11px] font-bold leading-relaxed">{error}</p>
-               </motion.div>
-            )}
-
-            {/* Footer Action */}
-            <div className="pt-6">
-               <button 
-                 onClick={handleFinish}
-                 disabled={isLoading}
-                 className="w-full h-18 bg-mat-wine text-white rounded-2xl flex items-center justify-center gap-3 font-black uppercase tracking-[0.2em] shadow-xl shadow-mat-wine/20 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:grayscale"
-               >
-                  {isLoading ? 'Processing Access...' : (
-                    <>
-                      Enter Matriarch 
-                      <ChevronRight size={20} />
-                    </>
-                  )}
-               </button>
-            </div>
-          </div>
+              {error && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="absolute bottom-6 left-10 right-10 flex items-center gap-4 text-red-600 bg-red-50/80 backdrop-blur-md p-4 rounded-2xl border border-red-100"
+                >
+                   <AlertCircle size={18} />
+                   <p className="text-[10px] font-black uppercase tracking-widest">{error}</p>
+                </motion.div>
+              )}
+           </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>

@@ -469,5 +469,69 @@ export const AdminService = {
       console.error("ADMIN_DIRECT_MSG_ERROR:", err);
       return false;
     }
+  },
+
+  /**
+   * 🛡️ Identity Audit Lifecycle:
+   * Fetches users with pending biometric verification evidence.
+   */
+  getPendingAudits: async () => {
+    try {
+      const sql = `
+        SELECT a.*, p.full_name, p.photos as profile_photos, p.is_verified
+        FROM protocol_audits a
+        JOIN profiles p ON a.user_id = p.user_id
+        WHERE a.status = 'PENDING'
+        ORDER BY a.created_at ASC
+      `;
+      const res = await turso.execute(sql);
+      return res.rows;
+    } catch (err) {
+      console.error("ADMIN_GET_AUDITS_ERROR:", err);
+      return [];
+    }
+  },
+
+  /**
+   * ⚖️ Sovereign Judgment:
+   * Resolves a pending audit, sealing the verification if approved.
+   */
+  resolveAudit: async (auditId: string, userId: string, approved: boolean) => {
+    try {
+      if (approved) {
+        await turso.batch([
+          { sql: "UPDATE profiles SET is_verified = 1 WHERE user_id = ?", args: [userId] },
+          { sql: "UPDATE protocol_audits SET status = 'APPROVED' WHERE id = ?", args: [auditId] }
+        ], "write");
+      } else {
+        await turso.execute({ 
+           sql: "UPDATE protocol_audits SET status = 'REJECTED' WHERE id = ?", 
+           args: [auditId] 
+        });
+      }
+      
+      // Reset caches
+      metricsCache = null;
+      rosterCache = null;
+      return true;
+    } catch (err) {
+      console.error("ADMIN_RESOLVE_AUDIT_ERROR:", err);
+      return false;
+    }
+  },
+
+  /**
+   * 👑 Global Rank Ritual:
+   * Triggers a system-wide re-calculation of the absolute rank sequence.
+   */
+  recalculateAllRanks: async () => {
+    try {
+       const { SanctuaryService } = await import('@/services/sanctuary');
+       await SanctuaryService.recalculateGlobalRanks();
+       return true;
+    } catch (err) {
+       console.error("ADMIN_RECALC_RANK_ERROR:", err);
+       return false;
+    }
   }
 };
