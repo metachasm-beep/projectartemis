@@ -28,9 +28,20 @@ for (const row of existingWomen.rows) {
 }
 
 // Also add directly known uploaded URLs (from the seeder run)
+// Fallback Cloudinary URLs if the DB query returns nothing
+const FALLBACK_WOMAN_URLS = [
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022950/matriarch_profiles/fzejcdp16tsszoqvz7xq.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022951/matriarch_profiles/qcg6eyjz7lquygxareva.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022952/matriarch_profiles/kcbyrutxyijvjijou37w.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022953/matriarch_profiles/hejcujlhil2aukl8filj.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022954/matriarch_profiles/b9diveydkf6omiiltvyi.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022955/matriarch_profiles/c9a1wrwjcahii3wge49o.jpg",
+  "https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776022956/matriarch_profiles/nrrk1hgm7kdatux2rhmw.jpg"
+];
+
 const ALL_WOMAN_CLOUD_URLS = [...new Set([
   ...cloudinaryUrls,
-  // Re-upload safety fallback via fetch if needed — we'll rotate what we have in DB
+  ...FALLBACK_WOMAN_URLS
 ])];
 
 console.log(`Found ${ALL_WOMAN_CLOUD_URLS.length} Cloudinary woman portrait URLs to rotate from.`);
@@ -76,7 +87,7 @@ for (let i = 0; i < NEW_WOMAN_PROFILES.length; i++) {
 
   if (check.rows.length > 0) {
     await turso.execute({
-      sql: "UPDATE profiles SET photos = ?, full_name = ?, city = ?, bio = ?, occupation = ?, is_verified = 1, updated_at = ? WHERE user_id = ?",
+      sql: "UPDATE profiles SET photos = ?, full_name = ?, city = ?, bio = ?, occupation = ?, onboarding_status = 'COMPLETED', is_verified = 1, updated_at = ? WHERE user_id = ?",
       args: [photosJson, p.name, p.city, p.bio, p.occupation, now, p.id]
     });
     console.log(`  ↺  Updated: ${p.name}`);
@@ -91,7 +102,7 @@ for (let i = 0; i < NEW_WOMAN_PROFILES.length; i++) {
       is_verified, tokens, rank_score, absolute_rank,
       profile_strength, onboarding_status,
       created_at, updated_at
-    ) VALUES (?, ?, 'woman', ?, ?, ?, ?, ?, ?, '[]', 1, 0, 0, 0, 100, 'complete', ?, ?)`,
+    ) VALUES (?, ?, 'woman', ?, ?, ?, ?, ?, ?, '[]', 1, 0, 0, 0, 100, 'COMPLETED', ?, ?)`,
     args: [
       p.id, p.name, p.dob, p.bio,
       p.city, p.occupation, p.education,
