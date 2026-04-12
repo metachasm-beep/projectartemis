@@ -18,16 +18,8 @@ const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
 ];
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
-  const handleNav = (link: typeof NAV_LINKS[0]) => {
-    if (link.scroll) {
-      document.getElementById(link.scroll)?.scrollIntoView({ behavior: 'smooth' });
-    } else if (link.href) {
-      window.open(link.href, '_blank');
-    }
-  };
-
   return (
-    <nav className="fixed top-0 w-full z-[100] px-8 py-8 flex items-center justify-between pointer-events-none">
+    <nav className="fixed top-0 w-full z-[200] px-8 py-8 flex items-center justify-between pointer-events-none">
       <div className="pointer-events-auto">
         <motion.button
           whileHover={{ scale: 1.05 }}
@@ -40,22 +32,36 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
       </div>
       <div className="pointer-events-auto hidden md:flex items-center gap-12">
         {NAV_LINKS.map(link => (
-          <button
-            key={link.label}
-            onClick={() => handleNav(link)}
-            className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] bg-transparent border-0 cursor-pointer"
-          >
-            {link.label}
-          </button>
+          link.scroll ? (
+            <button
+              key={link.label}
+              onClick={() => document.getElementById(link.scroll!)?.scrollIntoView({ behavior: 'smooth' })}
+              className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] bg-transparent border-0 cursor-pointer"
+            >
+              {link.label}
+            </button>
+          ) : (
+            <a
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] no-underline"
+            >
+              {link.label}
+            </a>
+          )
         ))}
-        <motion.button
+        <motion.a
+          href="https://matriarchindia.com/signin"
+          target="_blank"
+          rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          onClick={() => window.open('https://matriarchindia.com/signin', '_blank')}
-          className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10"
+          className="px-6 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10 no-underline"
         >
           Join Sanctuary
-        </motion.button>
+        </motion.a>
       </div>
     </nav>
   );

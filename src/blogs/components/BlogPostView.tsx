@@ -19,21 +19,26 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
     return DUMMY_ASPIRANTS.find(a => a.id === post.authorId);
   }, [post.authorId]);
 
-  // Fetch the long-form content from the markdown file
+  // Fetch the long-form content from the markdown file, or fallback to post.content
   useEffect(() => {
-    setLoading(true);
-    fetch(post.markdownUrl)
-      .then(res => res.text())
-      .then(text => {
-        setMarkdown(text);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error("Failed to load article content:", err);
-        setMarkdown("Error loading content. Please return to the archive.");
-        setLoading(false);
-      });
-  }, [post.markdownUrl]);
+    if (post.markdownUrl && post.markdownUrl.trim() !== '') {
+      setLoading(true);
+      fetch(post.markdownUrl)
+        .then(res => res.text())
+        .then(text => {
+          setMarkdown(text);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Failed to load article content:", err);
+          setMarkdown("Error loading content. Please return to the archive.");
+          setLoading(false);
+        });
+    } else {
+      setMarkdown(post.content);
+      setLoading(false);
+    }
+  }, [post.markdownUrl, post.content]);
 
   return (
     <motion.div
