@@ -411,6 +411,7 @@ class Media {
       texture.image = img;
       texture.needsUpdate = true;
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
+    };
     img.onerror = () => {
       console.error('Failed to load image for sanctuary gaze:', this.image);
     };
