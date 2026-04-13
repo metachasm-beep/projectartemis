@@ -390,7 +390,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             </section>
 
             {/* Mobile Fold 2: Infinite Gaze */}
-            <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col snap-start relative">
+            <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col snap-start relative pointer-events-none">
                 <div className="flex-1 relative overflow-hidden bg-mat-ivory/5">
                    <div className="absolute inset-0 scale-125">
                       {gazeProfiles.length > 0 && (
@@ -476,7 +476,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
               <motion.div 
                 variants={cardSpring}
-                className="w-full xl:w-[55%] relative rounded-[3rem] md:rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none h-[40vh] md:h-full flex-1"
+                className="w-full xl:w-[55%] relative rounded-[3rem] md:rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none select-none h-[40vh] md:h-full flex-1"
               >
                   <div className="absolute inset-x-0 top-0 h-24 md:h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 h-24 md:h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
