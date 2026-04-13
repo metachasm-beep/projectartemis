@@ -9,17 +9,15 @@ export const SanctuaryService = {
     let sql = "";
     let args: any[] = [];
 
-    // Convert discovery algorithms to dynamic percentile rank logic
+    // Order: Rank 1 -> Rank N (Ascending)
     if (type === 'imperial') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY (rowid - (COALESCE(rank_score, 0) * 10)) ASC LIMIT 10";
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY absolute_rank ASC LIMIT 20";
     } else if (type === 'truth') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY created_at DESC LIMIT 10";
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY absolute_rank ASC LIMIT 20";
     } else if (type === 'rising') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' ORDER BY created_at DESC LIMIT 10";
+       sql = "SELECT * FROM profiles WHERE role = 'man' ORDER BY created_at DESC, absolute_rank ASC LIMIT 20";
     } else if (type === 'nearby' && city) {
-       // "rowid" naturally increments as users join. (low rowid = joined early = better base rank)
-       // rank_score acts as the "token_bonus" which subtracts from rowid to artificially lower their absolute rank.
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY (rowid - COALESCE(rank_score, 0)) ASC LIMIT 10";
+       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY absolute_rank ASC LIMIT 20";
        args = [city];
     } else if (type === 'shortlist') {
        sql = "SELECT p.* FROM profiles p JOIN shortlists s ON p.user_id = s.man_user_id WHERE s.woman_user_id = ? ORDER BY s.created_at DESC";
@@ -139,32 +137,30 @@ export const SanctuaryService = {
   /**
    * 💎 AURA Tokenomics: Percentile Leap Protocol.
    */
-  purchaseJump: async (userId: string, jumpType: 'nudge' | 'surge' | 'elite', city: string) => {
-    // 1. Calculate N (Density)
-    const nRes = await turso.execute({ sql: "SELECT COUNT(*) as density FROM profiles WHERE role='man' AND city = ?", args: [city] });
-    const density = Number(nRes.rows[0]?.density || 100); // fallback to 100
+  /**
+   * 💎 AURA Tokenomics: Percentile Leap Protocol.
+   * Logic: 1 INR = 1 Aura Token.
+   * Jump percentage of the total male population.
+   */
+  purchaseJump: async (userId: string, jumpPercent: number) => {
+    // 1. Calculate N (Total Men)
+    const nRes = await turso.execute({ sql: "SELECT COUNT(*) as density FROM profiles WHERE role='man'" });
+    const totalMen = Number(nRes.rows[0]?.density || 100);
     
-    // 2. Assign P (Jump Power) Modeled on the Tier System
-    let power = 0;
-    if (jumpType === 'nudge') power = 0.05;
-    if (jumpType === 'surge') power = 0.15;
-    if (jumpType === 'elite') power = 0.50;
+    // 2. Calculate Bonus Required.
+    // Every 'rank_score' point effectively competes against others.
+    // To jump 'X' percentage of 'N' people, we award a bonus.
+    // We'll use a standard weight: 100 points per 1% jump of the total population.
+    const jumpPoints = Math.floor((jumpPercent / 100) * totalMen * 10); 
 
-    // 3. Apply the leap (P * N). 
-    // Example: Delhi has 10,000 men. A 15% Surge = 1,500 jump.
-    // If we were adding base multiplier mechanics we'd calculate base rank first.
-    const leapBonus = Math.floor(power * density);
-
-    // 4. Update the token_bonus (reusing rank_boost_count)
-    await SanctuaryService.rewardRank(userId, leapBonus, `Tiered Jump Executed: ${jumpType.toUpperCase()}`);
-    return leapBonus;
+    // 4. Update the rank_score
+    await SanctuaryService.rewardRank(userId, jumpPoints, `Aura Jump Executed: ${jumpPercent}% Population Leap`);
+    return jumpPoints;
   },
 
-  // NOTE: AURA token purchases & wallet deductions would go here.
-  // Until an `aura_balance` column is formally migrated, we handle balance virtually on the frontend.
   purchaseSealOfExcellence: async (userId: string) => {
-     // A massive artificial jump bridging them past the entire density bracket entirely.
-     await SanctuaryService.rewardRank(userId, 999999, "Seal of Excellence Acquired");
+     // The ultimate seal: A 1,000,000 point boost to virtually guarantee Rank #1 position.
+     await SanctuaryService.rewardRank(userId, 1000000, "Seal of Excellence Acquired");
      return true;
   },
 

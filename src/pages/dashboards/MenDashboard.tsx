@@ -141,14 +141,23 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     }
   };
 
-  const handleBumpRank = async () => {
-    if ((profile?.tokens || 0) < 49) return;
+  const handleBumpRank = async (percent: number) => {
+    const cost = percent * 10; // 1% = 10 Tokens (e.g. 10% = 100 Tokens)
+    if ((profile?.tokens || 0) < cost) return;
     setIsBumping(true);
     try {
+      // 1. Deduct Tokens
       await turso.execute(
-        "UPDATE profiles SET tokens = tokens - 49, rank_score = rank_score + 500, updated_at = ? WHERE user_id = ?",
-        [new Date().toISOString(), profile.user_id]
+        "UPDATE profiles SET tokens = tokens - ?, updated_at = ? WHERE user_id = ?",
+        [cost, new Date().toISOString(), profile.user_id]
       );
+      
+      // 2. Perform the Jump
+      await SanctuaryService.purchaseJump(profile.user_id, percent);
+      
+      // 3. Final Re-ranking to ensure exclusivity
+      await SanctuaryService.recalculateGlobalRanks();
+      
       await refreshProfile();
       await fetchRank();
     } catch (err) {
@@ -577,13 +586,24 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                         <p className="text-[10px] text-mat-cream/40 uppercase tracking-widest">Tokens</p>
                         <p className="text-5xl font-black text-mat-gold italic tracking-tighter">₹{profile.tokens || 0}</p>
                      </div>
-                     <button 
-                       onClick={handleBumpRank}
-                       disabled={isBumping || (profile?.tokens || 0) < 49}
-                       className="w-full py-5 bg-mat-gold text-mat-wine rounded-xl font-bold uppercase tracking-widest text-[11px] shadow-mat-gold-glow"
-                     >
-                        {isBumping ? "Syncing..." : "Augment Rank"}
-                     </button>
+                     <div className="grid grid-cols-2 gap-3">
+                       <button 
+                         onClick={() => handleBumpRank(10)}
+                         disabled={isBumping || (profile?.tokens || 0) < 100}
+                         className="flex-1 py-4 bg-mat-gold text-mat-wine rounded-xl font-bold uppercase tracking-widest text-[9px] shadow-mat-gold-glow flex flex-col items-center gap-1"
+                       >
+                          <span>Leap 10%</span>
+                          <span className="opacity-60 text-[7px]">100 Tokens</span>
+                       </button>
+                       <button 
+                         onClick={() => handleBumpRank(25)}
+                         disabled={isBumping || (profile?.tokens || 0) < 250}
+                         className="flex-1 py-4 bg-mat-wine text-white rounded-xl font-bold uppercase tracking-widest text-[9px] border border-mat-gold/30 flex flex-col items-center gap-1"
+                       >
+                          <span>Surge 25%</span>
+                          <span className="opacity-60 text-[7px]">250 Tokens</span>
+                       </button>
+                     </div>
                   </div>
                </motion.div>
             </section>
@@ -687,15 +707,27 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                        <p className="text-3xl md:text-5xl font-black text-mat-gold italic tracking-tighter shadow-mat-gold-glow">₹{profile.tokens || 0}</p>
                     </div>
 
-                    <div className="space-y-2 md:space-y-3">
-                      <button 
-                        onClick={handleBumpRank}
-                        disabled={isBumping || (profile?.tokens || 0) < 49}
-                        className="w-full py-4 md:py-6 bg-mat-gold text-mat-wine rounded-xl md:rounded-2xl mat-text-label-pro flex items-center justify-center gap-3 md:gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20 text-[9px] md:text-[11px] font-bold"
-                      >
-                         {isBumping ? "Syncing..." : "Augment"} <Sparkles size={12} className="fill-current" />
-                      </button>
-                      {(profile?.tokens || 0) < 49 && onNavigateToStore && (
+                    <div className="space-y-2 md:space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        <button 
+                          onClick={() => handleBumpRank(10)}
+                          disabled={isBumping || (profile?.tokens || 0) < 100}
+                          className="w-full py-3 md:py-4 bg-mat-gold text-mat-wine rounded-xl md:rounded-2xl mat-text-label-pro flex flex-col items-center justify-center gap-1 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20 text-[9px] md:text-[10px] font-bold"
+                        >
+                           <span>Leap 10%</span>
+                           <span className="opacity-60 text-[7px] md:text-[8px]">100 Tokens</span>
+                        </button>
+                        <button 
+                          onClick={() => handleBumpRank(25)}
+                          disabled={isBumping || (profile?.tokens || 0) < 250}
+                          className="w-full py-3 md:py-4 bg-mat-wine text-white rounded-xl md:rounded-2xl mat-text-label-pro flex flex-col items-center justify-center gap-1 hover:scale-[1.02] active:scale-95 transition-all border border-mat-gold/30 disabled:opacity-20 text-[9px] md:text-[10px] font-bold"
+                        >
+                           <span>Surge 25%</span>
+                           <span className="opacity-60 text-[7px] md:text-[8px]">250 Tokens</span>
+                        </button>
+                      </div>
+                      
+                      {(profile?.tokens || 0) < 100 && onNavigateToStore && (
                         <button
                           onClick={onNavigateToStore}
                           className="w-full py-4 border border-mat-gold/30 text-mat-gold rounded-2xl mat-text-label-pro flex items-center justify-center gap-3 hover:bg-mat-gold/10 transition-all text-[9px] tracking-widest"
