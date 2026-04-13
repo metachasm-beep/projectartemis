@@ -69,7 +69,6 @@ export const MigrationService = {
     const flag = 'matriarch_migration_claims_meta_v1';
     if (localStorage.getItem(flag)) return;
     try {
-      // Ensure the table exists first before altering
       await MigrationService.migrateSystemTables();
       await silentAlter("ALTER TABLE pending_claims ADD COLUMN metadata TEXT;", 'pending_claims.metadata');
       localStorage.setItem(flag, 'COMPLETED');
@@ -121,6 +120,23 @@ export const MigrationService = {
   },
 
   /**
+   * v6 — Profile Dossier: Adds legacy/missing columns required for leaderboard and discovery.
+   */
+  migrateProfileDossier: async () => {
+    const flag = 'matriarch_migration_dossier_v1';
+    if (localStorage.getItem(flag)) return;
+    try {
+      await silentAlter("ALTER TABLE profiles ADD COLUMN full_name TEXT;", 'full_name');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN age INTEGER;", 'age');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN city TEXT;", 'city');
+      localStorage.setItem(flag, 'COMPLETED');
+      console.log('🏛️ DOSSIER_MIGRATION: age/city/full_name manifested.');
+    } catch (err) {
+      console.error('🏛️ DOSSIER_MIGRATION_FAILURE:', err);
+    }
+  },
+
+  /**
    * runAll — Execute all migrations in dependency order.
    */
   runAll: async () => {
@@ -129,6 +145,7 @@ export const MigrationService = {
     await MigrationService.migrateSystemTables();
     await MigrationService.migrateClaimsMetadata();
     await MigrationService.migrateStreakSchema();
+    await MigrationService.migrateProfileDossier();
     
     // 🏛️ Blog Registry Manifestation
     const { ManifestoService } = await import('./manifestoService');
