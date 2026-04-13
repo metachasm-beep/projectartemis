@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { turso } from '@/lib/turso';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import TrumpCard from '@/components/discovery/TrumpCard';
 import CircularGallery from '@/components/animations/CircularGallery';
@@ -161,82 +161,118 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   // 👑 Sanctuary Designated Tier: Based on official population brackets
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, _totalMen || 1);
 
+  // ─── HERO REVEAL RITUAL ───
+  const { scrollY } = useScroll();
+  const bgY = useTransform(scrollY, [0, 500], [0, 50]);
+  
+  const bloomHero = {
+    initial: { scale: 1.1, opacity: 0, filter: 'blur(40px)' },
+    animate: { 
+      scale: 1, 
+      opacity: 0.5, 
+      filter: 'blur(0px)', 
+      transition: { duration: 2.5, ease: [0.16, 1, 0.3, 1] } 
+    }
+  };
+
   return (
-    <motion.div 
-      initial="initial"
-      animate="animate"
-      variants={bloomVariants}
-      className="space-y-12 pb-40 pt-12 max-w-7xl mx-auto px-6"
-    >
-      <h1 className="sr-only">Matriarch Dossier: Personal Standing & Identity Resonance</h1>
-      
-      {/* ─── PHASE HERO: THE SOVEREIGN ANCHOR (TRUMP CARD + GAZE) ─── */}
-      <div className="flex flex-col xl:flex-row gap-12 items-stretch min-h-[85vh]">
-        {/* Left: Upscaled Hero Trump Card */}
-        <div className="w-full xl:w-[45%] flex flex-col justify-center items-center">
-           <div className="w-full max-w-[500px] hover:scale-[1.03] transition-all duration-1000 ease-out relative group">
-              <div className="absolute -inset-12 bg-mat-gold/10 rounded-[4rem] blur-[100px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-              <TrumpCard 
-                profile={{
-                  id: profile.user_id,
-                  user_id: profile.user_id,
-                  name: profile.full_name,
-                  age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
-                  city: profile.city || 'Undisclosed',
-                  img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
-                  status: currentLevel.name,
-                  bio: profile.bio || "Identity narrative not established.",
-                  height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
-                  vocation: profile.occupation || 'Aspirant',
-                  tier: currentLevel.name,
-                  is_verified: profile.is_verified,
-                  absolute_rank: absRank,
-                  rank_tier: currentLevel.id
-                }}
-              />
-           </div>
-        </div>
-
-        {/* Right: The Gaze Infinite Scroll (Ambient Fold) */}
-        <div className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 shadow-inner pointer-events-none group/gallery select-none">
-            <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
-            
-
-
-            {gazeProfiles.length > 0 && (
-              <div className="relative w-full h-full scale-110">
-                <CircularGallery 
-                  items={gazeProfiles}
-                  bend={0}
-                  scrollSpeed={0.5}
-                  autoScroll={true}
-                  autoScrollSpeed={0.05}
-                  onCenterUpdate={setActiveGazeIndex}
-                />
-                
-                <div className="absolute inset-x-0 bottom-24 flex justify-center z-[100]">
-                  <AnimatePresence mode="wait">
-                    <motion.div 
-                      key={activeGazeIndex}
-                      initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
-                      animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                      exit={{ y: -10, opacity: 0 }}
-                      className="mat-glass-deep px-12 py-6 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center gap-1"
-                    >
-                      <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
-                        {(gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary')?.toString().split(' ')[0]}
-                      </span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-mat-gold opacity-100">
-                        {gazeProfiles[activeGazeIndex]?.age || 25} • {gazeProfiles[activeGazeIndex]?.city || 'Undisclosed'}
-                      </span>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
-              </div>
-            )}
-        </div>
+    <div className="relative isolate min-h-screen">
+      {/* ─── IMMERSIVE HERO REVEAL LAYER ─── */}
+      <div className="absolute inset-x-0 top-0 h-[120vh] z-[-1] overflow-hidden pointer-events-none select-none">
+        <motion.div
+           initial="initial"
+           animate="animate"
+           style={{ y: bgY }}
+           variants={bloomHero}
+           className="relative w-full h-full"
+        >
+          <img 
+            src="https://images.unsplash.com/photo-1629831778945-816d99763784?q=80&w=2048&auto=format&fit=crop"
+            alt=""
+            className="w-full h-full object-cover grayscale-[0.2] brightness-[0.7]"
+          />
+          {/* Obsidian Melt Protocol: Fades the image into the dashboard floor */}
+          <div className="absolute inset-0 bg-gradient-to-b from-mat-obsidian/40 via-transparent to-mat-obsidian" />
+          <div className="absolute inset-0 bg-gradient-to-r from-mat-obsidian/40 via-transparent to-mat-obsidian" />
+        </motion.div>
       </div>
+
+      <motion.div 
+        initial="initial"
+        animate="animate"
+        variants={bloomVariants}
+        className="space-y-12 pb-40 pt-12 max-w-7xl mx-auto px-6 relative z-10"
+      >
+        <h1 className="sr-only">Matriarch Dossier: Personal Standing & Identity Resonance</h1>
+        
+        {/* ─── PHASE HERO: THE SOVEREIGN ANCHOR (TRUMP CARD + GAZE) ─── */}
+        <div className="flex flex-col xl:flex-row gap-12 items-stretch min-h-[85vh]">
+          {/* Left: Upscaled Hero Trump Card */}
+          <div className="w-full xl:w-[45%] flex flex-col justify-center items-center">
+             <div className="w-full max-w-[500px] hover:scale-[1.03] transition-all duration-1000 ease-out relative group">
+                <div className="absolute -inset-24 bg-mat-gold/10 rounded-[4rem] blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                <TrumpCard 
+                  profile={{
+                    id: profile.user_id,
+                    user_id: profile.user_id,
+                    name: profile.full_name,
+                    age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+                    city: profile.city || 'Undisclosed',
+                    img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+                    status: currentLevel.name,
+                    bio: profile.bio || "Identity narrative not established.",
+                    height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+                    vocation: profile.occupation || 'Aspirant',
+                    tier: currentLevel.name,
+                    is_verified: profile.is_verified,
+                    absolute_rank: absRank,
+                    rank_tier: currentLevel.id
+                  }}
+                />
+             </div>
+          </div>
+
+          {/* Right: The Gaze Infinite Scroll (Ambient Fold) */}
+          <div className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none">
+              <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+              
+
+              {gazeProfiles.length > 0 && (
+                <div className="relative w-full h-full scale-110">
+                  <CircularGallery 
+                    items={gazeProfiles}
+                    bend={0}
+                    scrollSpeed={0.5}
+                    autoScroll={true}
+                    autoScrollSpeed={0.05}
+                    onCenterUpdate={setActiveGazeIndex}
+                  />
+                  
+                  <div className="absolute inset-x-0 bottom-24 flex justify-center z-[100]">
+                    <AnimatePresence mode="wait">
+                      <motion.div 
+                        key={activeGazeIndex}
+                        initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
+                        animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                        exit={{ y: -10, opacity: 0 }}
+                        className="mat-glass-deep px-12 py-6 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center gap-1"
+                      >
+                        <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
+                          {(gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary')?.toString().split(' ')[0]}
+                        </span>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-mat-gold opacity-100">
+                          {gazeProfiles[activeGazeIndex]?.age || 25} • {gazeProfiles[activeGazeIndex]?.city || 'Undisclosed'}
+                        </span>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+              )}
+          </div>
+        </div>
+      </motion.div>
+    </div>
 
       {/* ─── MAGIC BENTO: STANDING & CALIBRATION ─── */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-12">
