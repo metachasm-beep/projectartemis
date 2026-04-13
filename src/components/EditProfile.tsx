@@ -474,7 +474,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              />
           )}
        </AnimatePresence>
-        </div>
       </motion.div>
     </motion.div>
   );
