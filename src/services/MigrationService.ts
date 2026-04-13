@@ -129,5 +129,9 @@ export const MigrationService = {
     await MigrationService.migrateSystemTables();
     await MigrationService.migrateClaimsMetadata();
     await MigrationService.migrateStreakSchema();
+    
+    // 🏛️ Blog Registry Manifestation
+    const { ManifestoService } = await import('./manifestoService');
+    await ManifestoService.initialize();
   }
 };
