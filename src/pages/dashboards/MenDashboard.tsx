@@ -334,14 +334,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-6 relative z-10 w-full">
+      <div className="max-w-[1600px] mx-auto px-4 md:px-6 relative z-10 w-full">
         
         {/* ─── FOLD ONE: HEROIC SOVEREIGNTY ─── */}
-        <section className="h-screen overflow-hidden flex flex-col pt-32 md:pt-40">
-          <header className="overflow-hidden mb-12">
+        <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col pt-16 md:pt-40">
+          <header className="overflow-hidden mb-6 md:mb-12">
             <motion.h1 
               variants={maskReveal}
-              className="text-[12px] font-black uppercase tracking-[1.2em] text-mat-gold/60 text-center"
+              className="text-[9px] md:text-[12px] font-black uppercase tracking-[0.8em] md:tracking-[1.2em] text-mat-gold/60 text-center"
             >
               Matriarch Dossier: Standing & Identity Resonance
             </motion.h1>
@@ -349,18 +349,18 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           
           <motion.div 
             variants={containerStagger}
-            className="flex-1 flex flex-col xl:flex-row gap-16 items-center"
+            className="flex-1 flex flex-col xl:flex-row gap-6 md:gap-16 items-center overflow-hidden"
           >
             {/* Left: Interactive Parallax Trump Card */}
             <motion.div 
               variants={cardSpring}
-              className="w-full xl:w-[45%] flex flex-col justify-center items-center"
+              className="w-full xl:w-[45%] flex flex-col justify-center items-center scale-[0.85] md:scale-100"
             >
                <motion.div 
                   onMouseMove={handleParallax}
                   onMouseLeave={resetParallax}
                   style={{ rotateX, rotateY, transformStyle: "preserve-3d", transformGpu: "true" }}
-                  className="w-full max-w-[500px] relative group cursor-crosshair"
+                  className="w-full max-w-[420px] md:max-w-[500px] relative group cursor-crosshair"
                >
                   <div className="absolute -inset-24 bg-mat-gold/10 rounded-[4rem] blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                   <TrumpCard 
@@ -387,10 +387,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             {/* Right: The Gaze Infinite Scroll */}
             <motion.div 
               variants={cardSpring}
-              className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none h-full flex-1"
+              className="w-full xl:w-[55%] relative rounded-[3rem] md:rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none h-[40vh] md:h-full flex-1"
             >
-                <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+                <div className="absolute inset-x-0 top-0 h-24 md:h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-24 md:h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
                 
                 {gazeProfiles.length > 0 && (
                   <div className="relative w-full h-full scale-110">
@@ -428,59 +428,61 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </section>
       
         {/* ─── FOLD TWO: THE LOGIC OF STANDING ─── */}
-        <section className="h-screen overflow-hidden flex flex-col justify-center py-12">
+        <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col justify-center py-6 md:py-12">
           <motion.div 
             variants={containerStagger}
-            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8"
           >
         {/* Bento Cell 1: Personal Standing */}
         <motion.div 
           variants={cardSpring}
-          className="md:col-span-2 lg:col-span-2 mat-glass-deep p-12 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700"
+          className="md:col-span-2 lg:col-span-2 mat-glass-deep p-6 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700"
         >
-           <div className="space-y-8">
+           <div className="space-y-4 md:space-y-8">
               <div className="flex justify-between items-center">
-                 <div className="space-y-2">
-                    <h3 className="text-4xl font-bold italic text-mat-wine">Integrity Dial.</h3>
+                 <div className="space-y-1 md:space-y-2">
+                    <h3 className="text-2xl md:text-4xl font-bold italic text-mat-wine">Integrity Dial.</h3>
                     <p className="mat-text-label-pro">Profile calibration metrics</p>
                  </div>
-                 <Activity className="text-mat-rose/40 w-8 h-8 group-hover:rotate-12 transition-transform" />
-              </div>
-              <div className="grid grid-cols-2 gap-6">
+                 <Activity className="text-mat-rose/40 w-8 h-               <div className="grid grid-cols-2 gap-3 md:gap-6">
                  {[
                    { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
                    { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
                    { label: 'Verification', val: profile.is_verified ? 100 : 0, icon: UserCheckIcon },
                    { label: 'Activity', val: 85, icon: TrendingUp }
                  ].map((m, i) => (
-                   <div key={i} className="space-y-4 p-5 bg-mat-ivory/40 rounded-[2rem] border border-mat-rose/5 group/stat hover:bg-white transition-all shadow-sm">
+                   <div key={i} className="space-y-2 md:space-y-4 p-3 md:p-5 bg-mat-ivory/40 rounded-[1.5rem] md:rounded-[2rem] border border-mat-rose/5 group/stat hover:bg-white transition-all shadow-sm">
                       <div className="flex justify-between items-center">
-                         <m.icon size={14} className="text-mat-rose group-hover/stat:scale-110 transition-transform" />
-                         <span className="text-lg font-bold text-mat-wine italic">{m.val}%</span>
+                         <m.icon size={12} className="text-mat-rose group-hover/stat:scale-110 transition-transform" />
+                         <span className="text-sm md:text-lg font-bold text-mat-wine italic">{m.val}%</span>
                       </div>
                       <div className="space-y-1">
-                         <p className="text-[9px] font-black uppercase tracking-widest text-mat-slate/40">{m.label}</p>
-                         <div className="h-1 bg-mat-rose/5 rounded-full overflow-hidden">
+                         <p className="text-[7px] md:text-[9px] font-black uppercase tracking-widest text-mat-slate/40">{m.label}</p>
+                         <div className="h-0.5 md:h-1 bg-mat-rose/5 rounded-full overflow-hidden">
                             <motion.div initial={{ width: 0 }} animate={{ width: `${m.val}%` }} className="h-full bg-mat-wine/40" />
                          </div>
                       </div>
                    </div>
                  ))}
               </div>
+>
+                   </div>
+                 ))}
+              </div>
            </div>
-           <div className="flex gap-4 mt-8">
+           <div className="flex gap-3 mt-6 md:mt-8">
              <button 
                onClick={() => setIsEditing?.(true)}
-               className="flex-1 py-5 border border-mat-wine/30 text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine/5 transition-all text-[11px] font-bold"
+               className="flex-1 py-3 md:py-5 border border-mat-wine/30 text-mat-wine rounded-xl md:rounded-2xl mat-text-label-pro flex items-center justify-center gap-2 hover:bg-mat-wine/5 transition-all text-[10px] md:text-[11px] font-bold"
              >
-                Edit Dossier <Camera size={14} />
+                Edit Dossier <Camera size={12} />
              </button>
              <button 
                onClick={handleSyncIntegrity}
                disabled={isBumping}
-               className="flex-1 py-5 bg-mat-wine text-white rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine-soft transition-all shadow-mat-premium disabled:opacity-50 text-[11px] font-bold"
+               className="flex-1 py-3 md:py-5 bg-mat-wine text-white rounded-xl md:rounded-2xl mat-text-label-pro flex items-center justify-center gap-2 hover:bg-mat-wine-soft transition-all shadow-mat-premium disabled:opacity-50 text-[10px] md:text-[11px] font-bold"
              >
-                {isBumping ? "Syncing..." : "Recalibrate"} <ArrowUpRight size={14} />
+                {isBumping ? "Syncing..." : "Recalibrate"} <ArrowUpRight size={12} />
              </button>
            </div>
         </motion.div>
@@ -488,27 +490,27 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         {/* Bento Cell 2: Rank Ritual */}
         <motion.div 
           variants={cardSpring}
-          className="md:col-span-1 lg:col-span-1 mat-glass-deep p-12 rounded-[3.5rem] bg-mat-obsidian text-mat-cream overflow-hidden relative group"
+          className="md:col-span-1 lg:col-span-1 mat-glass-deep p-6 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] bg-mat-obsidian text-mat-cream overflow-hidden relative group"
         >
            <div className="absolute inset-0 bg-gradient-to-br from-mat-wine/30 via-transparent to-transparent pointer-events-none" />
-           <div className="relative z-10 space-y-8 flex flex-col justify-between h-full">
-              <div className="space-y-2">
-                 <h4 className="text-3xl font-bold italic leading-none">Augment <br />Aura.</h4>
-                 <p className="text-mat-cream/40 text-[9px] font-bold uppercase tracking-widest leading-relaxed">Spend tokens to <br />ascend the ladder.</p>
+           <div className="relative z-10 space-y-4 md:space-y-8 flex flex-col justify-between h-full">
+              <div className="space-y-1 md:space-y-2">
+                 <h4 className="text-xl md:text-3xl font-bold italic leading-none">Augment <br />Aura.</h4>
+                 <p className="text-mat-cream/40 text-[7px] md:text-[9px] font-bold uppercase tracking-widest leading-relaxed">Spend tokens to <br />ascend the ladder.</p>
               </div>
               
-              <div className="space-y-1 py-6">
-                 <p className="mat-text-label-pro text-mat-cream/40">Tokens</p>
-                 <p className="text-5xl font-black text-mat-gold italic tracking-tighter shadow-mat-gold-glow">₹{profile.tokens || 0}</p>
+              <div className="space-y-1 py-2 md:py-6">
+                 <p className="mat-text-label-pro text-mat-cream/40 text-[8px] md:text-xs">Tokens</p>
+                 <p className="text-3xl md:text-5xl font-black text-mat-gold italic tracking-tighter shadow-mat-gold-glow">₹{profile.tokens || 0}</p>
               </div>
 
-              <div className="space-y-3">
+              <div className="space-y-2 md:space-y-3">
                 <button 
                   onClick={handleBumpRank}
                   disabled={isBumping || (profile?.tokens || 0) < 49}
-                  className="w-full py-6 bg-mat-gold text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20 text-[11px] font-bold"
+                  className="w-full py-4 md:py-6 bg-mat-gold text-mat-wine rounded-xl md:rounded-2xl mat-text-label-pro flex items-center justify-center gap-3 md:gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20 text-[9px] md:text-[11px] font-bold"
                 >
-                   {isBumping ? "Syncing..." : "Augment"} <Sparkles size={14} className="fill-current" />
+                   {isBumping ? "Syncing..." : "Augment"} <Sparkles size={12} className="fill-current" />
                 </button>
                 {(profile?.tokens || 0) < 49 && onNavigateToStore && (
                   <button
@@ -525,25 +527,25 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         {/* Bento Cell 3: Identity Summary */}
         <motion.div 
           variants={cardSpring}
-          className="md:col-span-3 lg:col-span-1 mat-glass-deep p-10 rounded-[3.5rem] bg-mat-ivory/40 flex flex-col justify-between border border-mat-gold/10"
+          className="md:col-span-3 lg:col-span-1 mat-glass-deep p-6 md:p-10 rounded-[2.5rem] md:rounded-[3.5rem] bg-mat-ivory/40 flex flex-col justify-between border border-mat-gold/10"
         >
-           <div className="space-y-6">
-              <div className="w-14 h-14 rounded-2xl bg-mat-wine/5 flex items-center justify-center border border-mat-wine/10">
-                 <Crown className="text-mat-wine w-8 h-8" />
+           <div className="space-y-4 md:space-y-6">
+              <div className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl bg-mat-wine/5 flex items-center justify-center border border-mat-wine/10">
+                 <Crown className="text-mat-wine w-6 h-6 md:w-8 md:h-8" />
               </div>
-              <div className="space-y-2">
-                 <span className="mat-text-label-pro opacity-40">Aura Rank</span>
-                 <p className={`text-3xl font-bold italic ${currentLevel.color === 'mat-gold-foil' ? 'text-mat-gold shadow-sm' : 'text-mat-wine'}`}>{currentLevel.name}</p>
+              <div className="space-y-1 md:space-y-2">
+                 <span className="mat-text-label-pro opacity-40 text-[8px] md:text-xs">Aura Rank</span>
+                 <p className={`text-xl md:text-3xl font-bold italic ${currentLevel.color === 'mat-gold-foil' ? 'text-mat-gold shadow-sm' : 'text-mat-wine'}`}>{currentLevel.name}</p>
               </div>
-              <div className="space-y-2 pt-4">
-                 <span className="mat-text-label-pro color-mat-wine">Verification</span>
-                 <Badge className={`w-fit px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest ${profile.is_verified ? 'bg-mat-wine text-white' : 'bg-mat-rose/20 text-mat-rose'}`}>
+              <div className="space-y-2 pt-2 md:pt-4">
+                 <span className="mat-text-label-pro color-mat-wine text-[8px] md:text-xs">Verification</span>
+                 <Badge className={`w-fit px-3 md:px-4 py-1 md:py-1.5 rounded-full text-[7px] md:text-[9px] font-black uppercase tracking-widest ${profile.is_verified ? 'bg-mat-wine text-white' : 'bg-mat-rose/20 text-mat-rose'}`}>
                     {profile.is_verified ? 'Sovereign Verified' : 'Awaiting Audit'}
                  </Badge>
               </div>
            </div>
-           <div className="pt-8 border-t border-mat-rose/5">
-              <p className="text-[10px] text-mat-slate/40 leading-relaxed italic uppercase tracking-tighter">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
+           <div className="pt-4 md:pt-8 border-t border-mat-rose/5">
+              <p className="text-[8px] md:text-[10px] text-mat-slate/40 leading-relaxed italic uppercase tracking-tighter">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
            </div>
         </motion.div>
         </motion.div>
