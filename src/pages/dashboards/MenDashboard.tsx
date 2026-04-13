@@ -444,7 +444,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     <h3 className="text-2xl md:text-4xl font-bold italic text-mat-wine">Integrity Dial.</h3>
                     <p className="mat-text-label-pro">Profile calibration metrics</p>
                  </div>
-                 <Activity className="text-mat-rose/40 w-8 h-               <div className="grid grid-cols-2 gap-3 md:gap-6">
+                 <Activity className="text-mat-rose/40 w-8 h-8 group-hover:rotate-12 transition-transform" />
+              </div>
+              <div className="grid grid-cols-2 gap-3 md:gap-6">
                  {[
                    { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
                    { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
