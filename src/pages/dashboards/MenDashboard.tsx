@@ -162,7 +162,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, _totalMen || 1);
 
   // ─── LUXURY REVEAL ORCHESTRATION ───
-  const { scrollY, scrollYProgress } = useScroll();
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const { scrollY, scrollYProgress } = useScroll({
+    container: scrollContainerRef
+  });
   
   const [isMobile, setIsMobile] = useState(false);
 
@@ -289,6 +292,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   return (
     <motion.div 
+      ref={scrollContainerRef}
       initial="initial"
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian snap-y snap-mandatory overflow-y-auto overflow-x-hidden h-screen"
