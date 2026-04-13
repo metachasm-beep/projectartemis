@@ -382,7 +382,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             {/* Right: The Gaze Infinite Scroll */}
             <motion.div 
               variants={cardSpring}
-              className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none mb-12"
+              className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none h-full flex-1"
             >
                 <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
