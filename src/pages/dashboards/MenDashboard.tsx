@@ -161,39 +161,54 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   // 👑 Sanctuary Designated Tier: Based on official population brackets
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, _totalMen || 1);
 
-  // ─── HERO REVEAL RITUAL ───
+  // ─── HERO REVEAL RITUAL v2: THE CRIMSON APERTURE ───
   const { scrollY } = useScroll();
-  const bgY = useTransform(scrollY, [0, 500], [0, 50]);
+  const bgY = useTransform(scrollY, [0, 500], [0, 80]);
+  const bgScale = useTransform(scrollY, [0, 500], [1, 1.05]);
   
   const bloomHero = {
-    initial: { scale: 1.1, opacity: 0, filter: 'blur(40px)' },
+    initial: { 
+      scale: 1.15, 
+      opacity: 0, 
+      filter: 'blur(60px)',
+      clipPath: 'circle(0% at 50% 50%)'
+    },
     animate: { 
       scale: 1, 
-      opacity: 0.5, 
+      opacity: 0.6, 
       filter: 'blur(0px)', 
-      transition: { duration: 2.5, ease: [0.16, 1, 0.3, 1] } 
+      clipPath: 'circle(100% at 50% 50%)',
+      transition: { 
+        duration: 2.8, 
+        ease: [0.16, 1, 0.3, 1],
+        clipPath: { duration: 2, ease: "circOut" }
+      } 
     }
   };
 
   return (
-    <div className="relative isolate min-h-screen">
-      {/* ─── IMMERSIVE HERO REVEAL LAYER ─── */}
-      <div className="absolute inset-x-0 top-0 h-[120vh] z-[-1] overflow-hidden pointer-events-none select-none">
+    <div className="relative isolate min-h-screen bg-mat-obsidian">
+      {/* ─── IMMERSIVE HERO REVEAL LAYER v2: CRIMSON SANCTUARY ─── */}
+      <div className="absolute inset-x-0 top-0 h-[130vh] z-[-1] overflow-hidden pointer-events-none select-none">
         <motion.div
            initial="initial"
            animate="animate"
-           style={{ y: bgY }}
+           style={{ y: bgY, scale: bgScale }}
            variants={bloomHero}
            className="relative w-full h-full"
         >
           <img 
-            src="https://images.unsplash.com/photo-1629831778945-816d99763784?q=80&w=2048&auto=format&fit=crop"
+            src="https://images.unsplash.com/photo-1519781542704-957ff19f6e83?q=80&w=2070&auto=format&fit=crop"
             alt=""
-            className="w-full h-full object-cover grayscale-[0.2] brightness-[0.7]"
+            className="w-full h-full object-cover grayscale-[0.1] brightness-[0.8] contrast-[1.1]"
           />
-          {/* Obsidian Melt Protocol: Fades the image into the dashboard floor */}
-          <div className="absolute inset-0 bg-gradient-to-b from-mat-obsidian/40 via-transparent to-mat-obsidian" />
-          <div className="absolute inset-0 bg-gradient-to-r from-mat-obsidian/40 via-transparent to-mat-obsidian" />
+          {/* Chiaroscuro Masking Protocol: Center-weighted radial focus */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_0%,rgba(5,5,5,0.8)_70%)]" />
+          
+          {/* True Black Obsidian Floor Melt */}
+          <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
+          <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-mat-obsidian to-transparent" />
+          <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-mat-obsidian to-transparent" />
         </motion.div>
       </div>
 
