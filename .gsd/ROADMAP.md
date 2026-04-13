@@ -1,19 +1,12 @@
-# ROADMAP: Women's Dashboard Immersive Reveal
+# ROADMAP: Women's Dashboard Immersive Folds
 
-## Phase 1: Foundations & Components
+## Phase 1: Fold Foundations
 **Status: TODO**
-- [ ] Create `src/components/dashboard/HeroSection.tsx` [NEW]
-- [ ] Create `src/components/dashboard/HoverParallaxCard.tsx` [NEW]
-- [ ] Refine `src/utils/animations.ts` with PWA-optimized variants [MODIFY]
+- [ ] Create `src/components/dashboard/ParallaxFold.tsx` [NEW]
+- [ ] Refactor `WomenDashboard.tsx` into Fold Orchestrator [MODIFY]
 
-## Phase 2: Integration & Orchestration
+## Phase 2: Parallax Rituals
 **Status: TODO**
-- [ ] Refactor `src/pages/dashboards/WomenDashboard.tsx` to use modular components [MODIFY]
-- [ ] Verify staggered entrance orchestration
-- [ ] Implement hardware acceleration checks
-
-## Phase 3: Verification & Polish
-**Status: TODO**
-- [ ] Verify 60fps performance
-- [ ] Audit "Luxury Minimalist" visual fidelity
-- [ ] Final commit & state snapshot
+- [ ] Implement `useScroll` velocity backgrounds
+- [ ] Optimize image rendering for 60fps parallax
+- [ ] Final visual polish and state snapshot
