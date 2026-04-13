@@ -174,18 +174,18 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   // 2. TWO-FOLD CROSS-REVEAL LOGIC
   // Fold 1 (Top) Transition: Move from Full-Width to Detail zoom
-  const bgAOpacity = useTransform(smoothScrollY, [0, 1000], [1, 0]);
+  const bgAOpacity = useTransform(smoothScrollY, [0, 800], [1, 0]);
   const bgAScale = useTransform(smoothScrollY, [0, 1000], [1.02, 1.8]);
   
   // Fold 2 (Bottom) Transition: Manifest Rose as the logic threshold is crossed
-  const bgBOpacity = useTransform(smoothScrollY, [600, 1200], [0, 1]);
+  const bgBOpacity = useTransform(smoothScrollY, [400, 900], [0, 1]);
   const bgBScale = useTransform(smoothScrollY, [600, 1200], [0.8, 1.05]);
 
   // Shared Dramatic Tilt & Lens Sequence (Orchestrated per fold)
   const bgRotateX = useTransform(smoothScrollY, [0, 1200], [0, 20]);
   const bgLensFilter = useTransform(smoothScrollY, [0, 1200], [
     `blur(0px) brightness(1) saturate(1.1)`,
-    `blur(40px) brightness(0.2) saturate(0.2)`
+    `blur(12px) brightness(0.65) saturate(0.8)`
   ]);
 
   // 1. Mask-Reveal Heading Variants
@@ -330,8 +330,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       <div className="max-w-[1600px] mx-auto px-6 relative z-10 w-full">
         
         {/* ─── FOLD ONE: HEROIC SOVEREIGNTY ─── */}
-        <section className="min-h-screen flex flex-col pt-12 md:pt-24">
-          <header className="overflow-hidden mb-8">
+        <section className="min-h-screen flex flex-col pt-32 md:pt-48">
+          <header className="overflow-hidden mb-12">
             <motion.h1 
               variants={maskReveal}
               className="text-[12px] font-black uppercase tracking-[1.2em] text-mat-gold/60 text-center"
