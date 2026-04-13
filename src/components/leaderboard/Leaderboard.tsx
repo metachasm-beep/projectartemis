@@ -22,12 +22,15 @@ interface LeaderboardProps {
 export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank, isInline }) => {
   const [leaders, setLeaders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     const fetchLeaders = async () => {
+      setLoading(true);
       try {
+        // 🌊 Cache Busting: Ensuring absolute ground truth from the archive
         const data = await SanctuaryService.getLeaderboard(50);
-        setLeaders(data);
+        setLeaders([...data]); // Force new reference
       } catch (err) {
         console.error("Leaderboard fetch failed:", err);
       } finally {
@@ -35,7 +38,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank, isInl
       }
     };
     fetchLeaders();
-  }, []);
+  }, [refreshKey]);
 
   const getRankIcon = (rank: number) => {
     if (rank === 1) return <Crown className="text-mat-gold" size={24} />;
