@@ -183,9 +183,11 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   // Shared Dramatic Tilt & Lens Sequence (Orchestrated per fold)
   const bgRotateX = useTransform(smoothScrollY, [0, 1200], [0, 20]);
-  const bgLensFilter = useTransform(smoothScrollY, [0, 1200], [
+  const bgLensFilter = useTransform(smoothScrollY, [0, 400, 800, 1200], [
     `blur(0px) brightness(1) saturate(1.1)`,
-    `blur(12px) brightness(0.65) saturate(0.8)`
+    `blur(15px) brightness(0.6) saturate(0.8)`,
+    `blur(10px) brightness(0.75) saturate(0.9)`,
+    `blur(0px) brightness(1) saturate(1.1)`
   ]);
 
   // 1. Mask-Reveal Heading Variants
@@ -330,7 +332,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       <div className="max-w-[1600px] mx-auto px-6 relative z-10 w-full">
         
         {/* ─── FOLD ONE: HEROIC SOVEREIGNTY ─── */}
-        <section className="min-h-screen flex flex-col pt-32 md:pt-48">
+        <section className="h-screen overflow-hidden flex flex-col pt-32 md:pt-40">
           <header className="overflow-hidden mb-12">
             <motion.h1 
               variants={maskReveal}
@@ -342,7 +344,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           
           <motion.div 
             variants={containerStagger}
-            className="flex-1 flex flex-col xl:flex-row gap-16 items-stretch"
+            className="flex-1 flex flex-col xl:flex-row gap-16 items-center"
           >
             {/* Left: Interactive Parallax Trump Card */}
             <motion.div 
@@ -421,7 +423,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </section>
       
         {/* ─── FOLD TWO: THE LOGIC OF STANDING ─── */}
-        <section className="min-h-screen py-24 md:py-32">
+        <section className="h-screen overflow-hidden flex flex-col justify-center py-12">
           <motion.div 
             variants={containerStagger}
             className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
@@ -541,12 +543,6 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </motion.div>
         </motion.div>
         </section>
-
-        <div className="py-32 text-center">
-           <p className="text-[12px] font-black uppercase tracking-[1.5em] opacity-10 select-none text-mat-wine pointer-events-none">
-              Matriarch // Standing Is Power
-           </p>
-        </div>
       </div>
     </motion.div>
   );

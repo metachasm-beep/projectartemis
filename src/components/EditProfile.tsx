@@ -168,23 +168,36 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto p-4 md:p-8 space-y-12 pb-32">
-       <div className="flex justify-between items-end border-b border-mat-rose/10 pb-8">
-          <div className="space-y-4">
-             <div className="flex items-center gap-3">
-                <Sparkles size={16} className="text-mat-rose animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose italic">Identity Enhancement</span>
-             </div>
-             <h2 className="text-5xl font-bold text-mat-wine italic leading-tight" style={{fontFamily: '"Playfair Display", serif'}}>
-               Refine Your <br /><span className="text-mat-rose/30">Sanctuary.</span>
-             </h2>
-          </div>
-          <button onClick={onCancel} className="p-4 rounded-2xl bg-mat-rose/5 text-mat-wine/40 hover:text-mat-wine transition-all">
-             <X size={20} />
-          </button>
-       </div>
-
-       <div className="grid grid-cols-1 gap-12">
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 bg-black/60 backdrop-blur-xl overflow-hidden"
+    >
+      <motion.div 
+        initial={{ y: 40, opacity: 0, scale: 0.95 }}
+        animate={{ y: 0, opacity: 1, scale: 1 }}
+        exit={{ y: 20, opacity: 0, scale: 0.95 }}
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto mat-glass-deep rounded-[3.5rem] border border-white/20 shadow-2xl p-8 md:p-12 space-y-12 relative hide-scrollbar"
+      >
+        <div className="flex justify-between items-end border-b border-mat-rose/10 pb-8">
+           <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                 <Sparkles size={16} className="text-mat-rose animate-pulse" />
+                 <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose italic">Identity Enhancement</span>
+              </div>
+              <h2 className="text-5xl font-bold text-mat-wine italic leading-tight" style={{fontFamily: '"Playfair Display", serif'}}>
+                Refine Your <br /><span className="text-mat-rose/30">Sanctuary.</span>
+              </h2>
+           </div>
+           <button onClick={onCancel} className="p-4 rounded-2xl bg-mat-rose/5 text-mat-wine/40 hover:text-mat-wine transition-all">
+              <X size={20} />
+           </button>
+        </div>
+        
+        {/* ... Rest of existing form remains identical inside the glass card ... */}
+        <div className="grid grid-cols-1 gap-12">
+            {/* Ported sections go here - keeping logic identical */}
           <section className="space-y-8">
              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -461,6 +474,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              />
           )}
        </AnimatePresence>
-    </div>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 };

@@ -43,14 +43,11 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void; onNavig
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full relative">
+      {/* ─── SANCTUARY VIEW LAYER ─── */}
       <AnimatePresence mode="wait">
-        {isEditing ? (
-          <motion.div key="edit" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="pb-20 pt-8">
-            <EditProfile profile={profile} onUpdate={() => { refreshProfile(); setIsEditing(false); }} onCancel={() => setIsEditing(false)} />
-          </motion.div>
-        ) : profile.role === 'man' ? (
-          <motion.div key="view-man" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">
+        {profile.role === 'man' ? (
+          <motion.div key="view-man" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
              <MenDashboard 
                profile={profile} 
                status={{ rank_tier: 'Aspirant' }} 
@@ -61,9 +58,20 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void; onNavig
              />
           </motion.div>
         ) : (
-          <motion.div key="view-woman" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="w-full">
+          <motion.div key="view-woman" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
              <WomenSanctuary profile={profile} metrics={{ matches: sovereignMetrics.matches, sessionSeconds: sovereignMetrics.sessionSeconds }} setIsEditing={setIsEditing} onBeginDiscovery={onBeginDiscovery} />
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ─── IDENTITY EDIT OVERLAY LAYER ─── */}
+      <AnimatePresence>
+        {isEditing && (
+          <EditProfile 
+            profile={profile} 
+            onUpdate={() => { refreshProfile(); setIsEditing(false); }} 
+            onCancel={() => setIsEditing(false)} 
+          />
         )}
       </AnimatePresence>
     </div>
