@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { turso } from '@/lib/turso';
-import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import TrumpCard from '@/components/discovery/TrumpCard';
 import CircularGallery from '@/components/animations/CircularGallery';
