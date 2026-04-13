@@ -172,15 +172,21 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     restDelta: 0.001 
   });
 
-  // 2. 1000% DRAMATIC HYPER-TRANSFORMS
-  const bgY = useTransform(smoothScrollY, [0, 1000], [0, 800]);
-  const bgScale = useTransform(smoothScrollY, [0, 1000], [0.4, 2.8]);
-  const bgRotateX = useTransform(smoothScrollY, [0, 1000], [0, 25]);
+  // 2. CROSS-REVEAL TRANSFORM LOGIC
+  // Layer A: The Pool (Starts as distant spec, zooms through viewer)
+  const bgAOpacity = useTransform(smoothScrollY, [0, 600], [1, 0]);
+  const bgAScale = useTransform(smoothScrollY, [0, 600], [0.1, 10]);
   
-  // 3. CINEMATIC LENS SEQUENCE
-  const bgBlur = useTransform(smoothScrollY, [0, 800], ["blur(0px)", "blur(60px)"]);
-  const bgBrightness = useTransform(smoothScrollY, [0, 800], [0.95, 0.15]);
-  const bgSaturate = useTransform(smoothScrollY, [0, 800], ["saturate(1.1)", "saturate(0.1)"]);
+  // Layer B: The Rose (Manifests from distant spec, reaches zoom-out baseline)
+  const bgBOpacity = useTransform(smoothScrollY, [400, 1000], [0, 1]);
+  const bgBScale = useTransform(smoothScrollY, [400, 1000], [0.1, 0.5]);
+
+  // Shared Dramatic Tilt & Lens Sequence
+  const bgRotateX = useTransform(smoothScrollY, [0, 1000], [0, 30]);
+  const bgLensFilter = useTransform(smoothScrollY, [0, 1000], [
+    `blur(0px) brightness(1) saturate(1.1)`,
+    `blur(60px) brightness(0.15) saturate(0.1)`
+  ]);
 
   // 1. Mask-Reveal Heading Variants
   const maskReveal = {
@@ -191,7 +197,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       transition: { 
         duration: 2.2, 
         ease: [0.16, 1, 0.3, 1],
-        delay: 1.2
+        delay: 1.5
       } 
     }
   };
@@ -221,16 +227,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     }
   };
 
-  // 3. Immersive Hero Aperture (Scale-In + Breathe) - Zoomed Out by 200%
+  // 3. Immersive Hero Aperture (Scale-In + Breathe) - Max Zoomed Out (0.1x)
   const bloomHero = {
     initial: { 
-      scale: 0.4, 
+      scale: 0.1, 
       opacity: 0, 
       filter: 'blur(60px)',
       clipPath: 'circle(0% at 50% 50%)'
     },
     animate: { 
-      scale: [0.45, 0.5, 0.51, 0.5],
+      scale: [0.1, 0.12, 0.11, 0.1],
       opacity: 0.85, 
       filter: 'blur(0px)', 
       clipPath: 'circle(100% at 50% 50%)',
@@ -240,7 +246,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         clipPath: { duration: 2.2, ease: "circOut" },
         scale: {
           times: [0, 0.4, 0.7, 1],
-          duration: 12,
+          duration: 15,
           repeat: Infinity,
           repeatType: "mirror"
         }
@@ -277,19 +283,18 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian"
     >
-      {/* ─── IMMERSIVE HERO REVEAL LAYER v5: 1000% DRAMA ─── */}
-      <div className="absolute inset-0 h-[160vh] z-[-1] overflow-hidden pointer-events-none select-none">
+      {/* ─── IMMERSIVE HERO REVEAL LAYER v6: HYPER-DRAMATIC CROSS-REVEAL ─── */}
+      <div className="absolute inset-0 h-[180vh] z-[-1] overflow-hidden pointer-events-none select-none">
+        
+        {/* LAYER A: THE SURREAL POOL (Zoom-Through Abyss) */}
         <motion.div
            style={{ 
-             y: bgY, 
-             scale: bgScale, 
+             scale: bgAScale, 
+             opacity: bgAOpacity,
              rotateX: bgRotateX,
-             filter: useTransform(smoothScrollY, [0, 800], [
-               `blur(0px) brightness(1) saturate(1.1)`,
-               `blur(60px) brightness(0.15) saturate(0.1)`
-             ]),
+             filter: bgLensFilter,
              transformGpu: "true", 
-             willChange: "transform, filter",
+             willChange: "transform, opacity, filter",
              transformStyle: "preserve-3d" 
            }}
            variants={bloomHero}
@@ -300,12 +305,32 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             alt=""
             className="w-full h-full object-cover grayscale-[0.05] brightness-[0.85] contrast-[1.05]"
           />
-          {/* Chiaroscuro Masking: Luxurious Center Glow */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_0%,rgba(5,5,5,0.7)_60%,rgba(5,5,5,0.95)_100%)]" />
-          
-          {/* Obsidian Floor Melt */}
-          <div className="absolute inset-x-0 bottom-0 h-[70vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
         </motion.div>
+
+        {/* LAYER B: THE ROSE SANCTUARY (Manifest from Abyss) */}
+        <motion.div
+           style={{ 
+             scale: bgBScale, 
+             opacity: bgBOpacity,
+             rotateX: bgRotateX,
+             filter: bgLensFilter,
+             transformGpu: "true", 
+             willChange: "transform, opacity, filter",
+             transformStyle: "preserve-3d" 
+           }}
+           className="absolute w-[300%] h-[300%] -left-[100%] -top-[100%]"
+        >
+          <img 
+            src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776087223/sanctuary_rose_v1.jpg"
+            alt=""
+            className="w-full h-full object-cover brightness-[0.9] contrast-[1.1]"
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_0%,rgba(5,5,5,0.7)_60%,rgba(5,5,5,0.95)_100%)]" />
+        </motion.div>
+
+        {/* Obsidian Floor Melt (Universal) */}
+        <div className="absolute inset-x-0 bottom-0 h-[80vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
       </div>
 
       <div className="space-y-16 pb-40 pt-24 md:pt-40 max-w-[1600px] mx-auto px-6 relative z-10 w-full">
