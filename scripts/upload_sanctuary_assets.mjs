@@ -30,7 +30,7 @@ async function uploadAsset() {
     const formData = new FormData();
     formData.append('file', base64Image);
     formData.append('upload_preset', UPLOAD_PRESET);
-    formData.append('public_id', 'sanctuary_love_reveal_v3');
+    formData.append('public_id', 'sanctuary_surreal_v1');
 
     const response = await axios.post(
       `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,

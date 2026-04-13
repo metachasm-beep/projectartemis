@@ -163,8 +163,17 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   // ─── LUXURY REVEAL ORCHESTRATION ───
   const { scrollY } = useScroll();
-  const bgY = useTransform(scrollY, [0, 500], [0, 80]);
-  const bgScale = useTransform(scrollY, [0, 500], [1, 1.08]);
+  
+  // 1. Butter-Smooth Scroll Intertia: Physics-based damped tracking
+  const smoothScrollY = useSpring(scrollY, { 
+    stiffness: 80, 
+    damping: 30, 
+    mass: 0.8,
+    restDelta: 0.001 
+  });
+
+  const bgY = useTransform(smoothScrollY, [0, 800], [0, 150]);
+  const bgScale = useTransform(smoothScrollY, [0, 800], [1, 1.15]);
 
   // 1. Mask-Reveal Heading Variants
   const maskReveal = {
@@ -261,15 +270,21 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian"
     >
-      {/* ─── IMMERSIVE HERO REVEAL LAYER v3: SURREAL SANCTUARY ─── */}
+      {/* ─── IMMERSIVE HERO REVEAL LAYER v4: BUTTER-SMOOTH SURREAL ─── */}
       <div className="absolute inset-x-0 top-0 h-[140vh] z-[-1] overflow-hidden pointer-events-none select-none">
         <motion.div
-           style={{ y: bgY, scale: bgScale, transformGpu: "true" }}
+           style={{ 
+             y: bgY, 
+             scale: bgScale, 
+             transformGpu: "true", 
+             willChange: "transform",
+             transformStyle: "preserve-3d" 
+           }}
            variants={bloomHero}
            className="relative w-full h-full"
         >
           <img 
-            src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776084709/sanctuary_love_reveal_v3.jpg"
+            src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776086316/sanctuary_surreal_v1.jpg"
             alt=""
             className="w-full h-full object-cover grayscale-[0.05] brightness-[0.85] contrast-[1.05]"
           />
