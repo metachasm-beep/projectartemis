@@ -173,7 +173,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   });
 
   const bgY = useTransform(smoothScrollY, [0, 800], [0, 150]);
-  const bgScale = useTransform(smoothScrollY, [0, 800], [1, 1.15]);
+  const bgScale = useTransform(smoothScrollY, [0, 800], [0.5, 0.55]);
 
   // 1. Mask-Reveal Heading Variants
   const maskReveal = {
@@ -214,16 +214,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     }
   };
 
-  // 3. Immersive Hero Aperture (Scale-In + Breathe)
+  // 3. Immersive Hero Aperture (Scale-In + Breathe) - Zoomed Out by 200%
   const bloomHero = {
     initial: { 
-      scale: 1.15, 
+      scale: 0.4, 
       opacity: 0, 
       filter: 'blur(60px)',
       clipPath: 'circle(0% at 50% 50%)'
     },
     animate: { 
-      scale: [1.1, 1, 1.02, 1],
+      scale: [0.45, 0.5, 0.51, 0.5],
       opacity: 0.85, 
       filter: 'blur(0px)', 
       clipPath: 'circle(100% at 50% 50%)',
@@ -233,7 +233,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         clipPath: { duration: 2.2, ease: "circOut" },
         scale: {
           times: [0, 0.4, 0.7, 1],
-          duration: 10,
+          duration: 12,
           repeat: Infinity,
           repeatType: "mirror"
         }
@@ -271,7 +271,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       className="relative isolate min-h-screen bg-mat-obsidian"
     >
       {/* ─── IMMERSIVE HERO REVEAL LAYER v4: BUTTER-SMOOTH SURREAL ─── */}
-      <div className="absolute inset-x-0 top-0 h-[140vh] z-[-1] overflow-hidden pointer-events-none select-none">
+      <div className="absolute inset-0 h-[140vh] z-[-1] overflow-hidden pointer-events-none select-none">
         <motion.div
            style={{ 
              y: bgY, 
@@ -281,7 +281,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
              transformStyle: "preserve-3d" 
            }}
            variants={bloomHero}
-           className="relative w-full h-full"
+           className="absolute w-[200%] h-[200%] -left-[50%] -top-[50%]"
         >
           <img 
             src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776086316/sanctuary_surreal_v1.jpg"
