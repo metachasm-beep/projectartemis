@@ -142,6 +142,11 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
       await turso.execute(sql, args);
       
+      // 👑 Sovereign Integration: Immediately recalibrate the global ladder
+      // This ensures the new aspirant is assigned a strictly unique absolute rank.
+      const { SanctuaryService } = await import('@/services/sanctuary');
+      await SanctuaryService.recalculateGlobalRanks();
+      
       // Construct the optimistic profile object
       const finalizedProfile: MatriarchProfile = {
         user_id: userId,
