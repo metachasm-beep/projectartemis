@@ -106,7 +106,7 @@ export const MigrationService = {
    * v5 — Interaction & Retention: Adds streak and session tracking to profiles.
    */
   migrateStreakSchema: async () => {
-    const flag = 'matriarch_migration_streak_v1';
+    const flag = 'matriarch_migration_streak_v2';
     if (localStorage.getItem(flag)) return;
     try {
       await silentAlter("ALTER TABLE profiles ADD COLUMN consecutive_days INTEGER DEFAULT 0;", 'consecutive_days');
@@ -114,7 +114,7 @@ export const MigrationService = {
       await silentAlter("ALTER TABLE profiles ADD COLUMN last_streak_at TEXT;", 'last_streak_at');
       await silentAlter("ALTER TABLE profiles ADD COLUMN total_session_seconds INTEGER DEFAULT 0;", 'total_session_seconds');
       localStorage.setItem(flag, 'COMPLETED');
-      console.log('🔥 STREAK_SCHEMA: Retention indices manifested.');
+      console.log('🔥 STREAK_SCHEMA_V2: Retention indices manifested.');
     } catch (err) {
       console.error('🔥 STREAK_SCHEMA_FAILURE:', err);
     }

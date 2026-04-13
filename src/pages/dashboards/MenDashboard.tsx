@@ -225,10 +225,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                       className="mat-glass-deep px-12 py-6 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center gap-1"
                     >
                       <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
-                        {gazeProfiles[activeGazeIndex]?.originalName.split(' ')[0]}
+                        {(gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary')?.toString().split(' ')[0]}
                       </span>
                       <span className="text-[10px] font-black uppercase tracking-widest text-mat-gold opacity-100">
-                        {gazeProfiles[activeGazeIndex]?.age} • {gazeProfiles[activeGazeIndex]?.city}
+                        {gazeProfiles[activeGazeIndex]?.age || 25} • {gazeProfiles[activeGazeIndex]?.city || 'Undisclosed'}
                       </span>
                     </motion.div>
                   </AnimatePresence>

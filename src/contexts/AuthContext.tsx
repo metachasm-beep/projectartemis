@@ -64,8 +64,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setProfile(prev => prev ? { ...prev, consecutive_days: newStreak, last_login_at: now.toISOString() } : null);
     } catch (err: any) {
-      if (err?.message?.includes('no such column: consecutive_days')) {
-        console.warn("STREAK_SYNC: Database schema mismatch (consecutive_days missing). Skipping ritual.");
+      if (err?.message?.includes('no such column: consecutive_days') || err?.message?.includes('no such column: last_login_at')) {
+        console.warn("STREAK_SYNC: Database schema mismatch (retention columns missing). Skipping ritual.");
       } else {
         console.warn("Streak Sync Ritual interrupted:", err);
       }
