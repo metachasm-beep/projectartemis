@@ -198,9 +198,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
            className="relative w-full h-full"
         >
           <img 
-            src="https://images.unsplash.com/photo-1519781542704-957ff19f6e83?q=80&w=2070&auto=format&fit=crop"
+            src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776084709/sanctuary_love_reveal_v3.jpg"
             alt=""
-            className="w-full h-full object-cover grayscale-[0.1] brightness-[0.8] contrast-[1.1]"
+            className="w-full h-full object-cover grayscale-[0.05] brightness-[0.8] contrast-[1.05]"
           />
           {/* Chiaroscuro Masking Protocol: Center-weighted radial focus */}
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_0%,rgba(5,5,5,0.8)_70%)]" />
@@ -216,7 +216,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         initial="initial"
         animate="animate"
         variants={bloomVariants}
-        className="space-y-12 pb-40 pt-12 max-w-7xl mx-auto px-6 relative z-10"
+        className="space-y-12 pb-40 pt-24 md:pt-32 max-w-7xl mx-auto px-6 relative z-10"
       >
         <h1 className="sr-only">Matriarch Dossier: Personal Standing & Identity Resonance</h1>
         

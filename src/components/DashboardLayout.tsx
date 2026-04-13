@@ -26,7 +26,7 @@ export const DashboardLayout: React.FC = () => {
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 
   // 🍷 Sovereign Ritual Toggle
-  const isSovereignMode = activeTab === 'sovereign_browse';
+  const isImmersive = activeTab === 'sovereign_browse' || activeTab === 'profile';
 
   return (
     <motion.div 
@@ -34,7 +34,7 @@ export const DashboardLayout: React.FC = () => {
       animate={{ opacity: 1 }} 
       className={cn(
         "min-h-screen transition-colors duration-1000",
-        isSovereignMode ? "bg-mat-cream/50 pt-0" : "bg-mat-cream pt-24 md:pt-32 pb-16"
+        isImmersive ? "bg-mat-obsidian pt-0" : "bg-mat-cream pt-24 md:pt-32 pb-16"
       )}
     >
       <MatriarchToolbar 
@@ -45,7 +45,7 @@ export const DashboardLayout: React.FC = () => {
       
       <main className={cn(
         "mx-auto transition-all duration-1000",
-        isSovereignMode ? "w-full px-0" : "container px-6 md:px-8 lg:px-0"
+        isImmersive ? "w-full px-0" : "container px-6 md:px-8 lg:px-0"
       )}>
         <AnimatePresence mode="wait">
           {activeTab === 'discovery' && (
