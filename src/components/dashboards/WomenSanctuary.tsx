@@ -24,6 +24,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
 import { OracleWidget, SanctuaryWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
 import { ThreeAnchor } from '@/components/dashboard/promax/ThreeAnchor';
+import { SkillOrchestrator } from '@/services/SkillOrchestrator';
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -72,13 +73,26 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         
         {/* 🏛️ Top Header: Sovereign Branding */}
         <header className="flex justify-between items-end mb-4">
-          <div className="space-y-2">
-            <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 text-mat-gold rounded-full bg-mat-gold/5 font-mono text-[9px] uppercase tracking-[0.3em] backdrop-blur-md">
-              Registry: Elite Sanctum Verified [PROTOCOL_v2.0]
-            </Badge>
-            <h1 className="text-6xl font-bold text-mat-cream tracking-tighter italic leading-none drop-shadow-2xl" style={{ fontFamily: 'Playfair Display, serif' }}>
-              Sovereign Presence<span className="text-mat-gold font-sans">.</span>
-            </h1>
+          <div className="flex items-center gap-6">
+            {profile?.photos?.[0] ? (
+              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)] flex-shrink-0">
+                 <img src={profile.photos[0]} alt="Sovereign Profile" className="w-full h-full object-cover" />
+                 <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/40 to-transparent mix-blend-overlay"></div>
+              </div>
+            ) : (
+              <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 backdrop-blur-md">
+                 <span className="font-mono text-mat-gold/50 text-[10px] tracking-widest">ID</span>
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 text-mat-gold rounded-full bg-mat-gold/5 font-mono text-[9px] uppercase tracking-[0.3em] backdrop-blur-md">
+                Registry: Elite Sanctum Verified [PROTOCOL_v2.0]
+              </Badge>
+              <h1 className="text-6xl font-bold text-mat-cream tracking-tighter italic leading-none drop-shadow-2xl" style={{ fontFamily: 'Playfair Display, serif' }}>
+                Sovereign Presence<span className="text-mat-gold font-sans">.</span>
+              </h1>
+            </div>
           </div>
           
           <div className="flex items-center gap-8">
