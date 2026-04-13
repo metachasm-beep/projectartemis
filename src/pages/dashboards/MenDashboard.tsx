@@ -172,20 +172,20 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     restDelta: 0.001 
   });
 
-  // 2. CROSS-REVEAL TRANSFORM LOGIC
-  // Layer A: The Pool (Starts as distant spec, zooms through viewer)
-  const bgAOpacity = useTransform(smoothScrollY, [0, 600], [1, 0]);
-  const bgAScale = useTransform(smoothScrollY, [0, 600], [0.1, 10]);
+  // 2. TWO-FOLD CROSS-REVEAL LOGIC
+  // Fold 1 (Top) Transition: Move from Full-Width to Detail zoom
+  const bgAOpacity = useTransform(smoothScrollY, [0, 1000], [1, 0]);
+  const bgAScale = useTransform(smoothScrollY, [0, 1000], [1.02, 1.8]);
   
-  // Layer B: The Rose (Manifests from distant spec, reaches zoom-out baseline)
-  const bgBOpacity = useTransform(smoothScrollY, [400, 1000], [0, 1]);
-  const bgBScale = useTransform(smoothScrollY, [400, 1000], [0.1, 0.5]);
+  // Fold 2 (Bottom) Transition: Manifest Rose as the logic threshold is crossed
+  const bgBOpacity = useTransform(smoothScrollY, [600, 1200], [0, 1]);
+  const bgBScale = useTransform(smoothScrollY, [600, 1200], [0.8, 1.05]);
 
-  // Shared Dramatic Tilt & Lens Sequence
-  const bgRotateX = useTransform(smoothScrollY, [0, 1000], [0, 30]);
-  const bgLensFilter = useTransform(smoothScrollY, [0, 1000], [
+  // Shared Dramatic Tilt & Lens Sequence (Orchestrated per fold)
+  const bgRotateX = useTransform(smoothScrollY, [0, 1200], [0, 20]);
+  const bgLensFilter = useTransform(smoothScrollY, [0, 1200], [
     `blur(0px) brightness(1) saturate(1.1)`,
-    `blur(60px) brightness(0.15) saturate(0.1)`
+    `blur(40px) brightness(0.2) saturate(0.2)`
   ]);
 
   // 1. Mask-Reveal Heading Variants
@@ -197,7 +197,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       transition: { 
         duration: 2.2, 
         ease: [0.16, 1, 0.3, 1],
-        delay: 1.5
+        delay: 0.8
       } 
     }
   };
@@ -227,29 +227,23 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     }
   };
 
-  // 3. Immersive Hero Aperture (Scale-In + Breathe) - Max Zoomed Out (0.1x)
+  // 3. Immersive Hero Aperture (Scale-In + Breathe) - Screen Width Initial (1.0x)
   const bloomHero = {
     initial: { 
-      scale: 0.1, 
+      scale: 1, 
       opacity: 0, 
-      filter: 'blur(60px)',
+      filter: 'blur(30px)',
       clipPath: 'circle(0% at 50% 50%)'
     },
     animate: { 
-      scale: [0.1, 0.12, 0.11, 0.1],
-      opacity: 0.85, 
+      scale: 1,
+      opacity: 0.9, 
       filter: 'blur(0px)', 
       clipPath: 'circle(100% at 50% 50%)',
       transition: { 
-        duration: 3, 
+        duration: 2.5, 
         ease: [0.16, 1, 0.3, 1],
-        clipPath: { duration: 2.2, ease: "circOut" },
-        scale: {
-          times: [0, 0.4, 0.7, 1],
-          duration: 15,
-          repeat: Infinity,
-          repeatType: "mirror"
-        }
+        clipPath: { duration: 1.8, ease: "circOut" }
       } 
     }
   };
@@ -269,7 +263,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
     
     x.set(clientX - centerX);
-    y.set(clientY - centerY);
+    y.set(centerY - centerY);
   }
 
   function resetParallax() {
@@ -283,10 +277,10 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian"
     >
-      {/* ─── IMMERSIVE HERO REVEAL LAYER v6: HYPER-DRAMATIC CROSS-REVEAL ─── */}
-      <div className="absolute inset-0 h-[180vh] z-[-1] overflow-hidden pointer-events-none select-none">
+      {/* ─── IMMERSIVE DUAL-FOLD BACKGROUND ─── */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none select-none">
         
-        {/* LAYER A: THE SURREAL POOL (Zoom-Through Abyss) */}
+        {/* FOLD 1: THE SURREAL POOL (Screen Width Start) */}
         <motion.div
            style={{ 
              scale: bgAScale, 
@@ -298,7 +292,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
              transformStyle: "preserve-3d" 
            }}
            variants={bloomHero}
-           className="absolute w-[300%] h-[300%] -left-[100%] -top-[100%]"
+           className="absolute inset-0"
         >
           <img 
             src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776086316/sanctuary_surreal_v1.jpg"
@@ -308,7 +302,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_0%,rgba(5,5,5,0.7)_60%,rgba(5,5,5,0.95)_100%)]" />
         </motion.div>
 
-        {/* LAYER B: THE ROSE SANCTUARY (Manifest from Abyss) */}
+        {/* FOLD 2: THE ROSE SANCTUARY (Manifest on Scroll) */}
         <motion.div
            style={{ 
              scale: bgBScale, 
@@ -319,7 +313,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
              willChange: "transform, opacity, filter",
              transformStyle: "preserve-3d" 
            }}
-           className="absolute w-[300%] h-[300%] -left-[100%] -top-[100%]"
+           className="absolute inset-0"
         >
           <img 
             src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776087223/sanctuary_rose_v1.jpg"
@@ -330,105 +324,108 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </motion.div>
 
         {/* Obsidian Floor Melt (Universal) */}
-        <div className="absolute inset-x-0 bottom-0 h-[80vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
+        <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
       </div>
 
-      <div className="space-y-16 pb-40 pt-24 md:pt-40 max-w-[1600px] mx-auto px-6 relative z-10 w-full">
-        <header className="overflow-hidden mb-8">
-          <motion.h1 
-            variants={maskReveal}
-            className="text-[12px] font-black uppercase tracking-[1.2em] text-mat-gold/60 text-center"
-          >
-            Matriarch Dossier: Standing & Identity Resonance
-          </motion.h1>
-        </header>
+      <div className="max-w-[1600px] mx-auto px-6 relative z-10 w-full">
         
-        {/* ─── PHASE HERO: THE SOVEREIGN ANCHOR (TRUMP CARD + GAZE) ─── */}
-        <motion.div 
-          variants={containerStagger}
-          className="flex flex-col xl:flex-row gap-16 items-stretch min-h-[85vh]"
-        >
-          {/* Left: Interactive Parallax Trump Card */}
+        {/* ─── FOLD ONE: HEROIC SOVEREIGNTY ─── */}
+        <section className="min-h-screen flex flex-col pt-12 md:pt-24">
+          <header className="overflow-hidden mb-8">
+            <motion.h1 
+              variants={maskReveal}
+              className="text-[12px] font-black uppercase tracking-[1.2em] text-mat-gold/60 text-center"
+            >
+              Matriarch Dossier: Standing & Identity Resonance
+            </motion.h1>
+          </header>
+          
           <motion.div 
-            variants={cardSpring}
-            className="w-full xl:w-[45%] flex flex-col justify-center items-center"
+            variants={containerStagger}
+            className="flex-1 flex flex-col xl:flex-row gap-16 items-stretch"
           >
-             <motion.div 
-                onMouseMove={handleParallax}
-                onMouseLeave={resetParallax}
-                style={{ rotateX, rotateY, transformStyle: "preserve-3d", transformGpu: "true" }}
-                className="w-full max-w-[500px] relative group cursor-crosshair"
-             >
-                <div className="absolute -inset-24 bg-mat-gold/10 rounded-[4rem] blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-                <TrumpCard 
-                  profile={{
-                    id: profile.user_id,
-                    user_id: profile.user_id,
-                    name: profile.full_name,
-                    age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
-                    city: profile.city || 'Undisclosed',
-                    img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
-                    status: currentLevel.name,
-                    bio: profile.bio || "Identity narrative not established.",
-                    height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
-                    vocation: profile.occupation || 'Aspirant',
-                    tier: currentLevel.name,
-                    is_verified: profile.is_verified,
-                    absolute_rank: absRank,
-                    rank_tier: currentLevel.id
-                  }}
-                />
-             </motion.div>
-          </motion.div>
-
-          {/* Right: The Gaze Infinite Scroll (Ambient Fold) */}
-          <motion.div 
-            variants={cardSpring}
-            className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none"
-          >
-              <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
-              
-
-              {gazeProfiles.length > 0 && (
-                <div className="relative w-full h-full scale-110">
-                  <CircularGallery 
-                    items={gazeProfiles}
-                    bend={0}
-                    scrollSpeed={0.5}
-                    autoScroll={true}
-                    autoScrollSpeed={0.05}
-                    onCenterUpdate={setActiveGazeIndex}
+            {/* Left: Interactive Parallax Trump Card */}
+            <motion.div 
+              variants={cardSpring}
+              className="w-full xl:w-[45%] flex flex-col justify-center items-center"
+            >
+               <motion.div 
+                  onMouseMove={handleParallax}
+                  onMouseLeave={resetParallax}
+                  style={{ rotateX, rotateY, transformStyle: "preserve-3d", transformGpu: "true" }}
+                  className="w-full max-w-[500px] relative group cursor-crosshair"
+               >
+                  <div className="absolute -inset-24 bg-mat-gold/10 rounded-[4rem] blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+                  <TrumpCard 
+                    profile={{
+                      id: profile.user_id,
+                      user_id: profile.user_id,
+                      name: profile.full_name,
+                      age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+                      city: profile.city || 'Undisclosed',
+                      img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+                      status: currentLevel.name,
+                      bio: profile.bio || "Identity narrative not established.",
+                      height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+                      vocation: profile.occupation || 'Aspirant',
+                      tier: currentLevel.name,
+                      is_verified: profile.is_verified,
+                      absolute_rank: absRank,
+                      rank_tier: currentLevel.id
+                    }}
                   />
-                  
-                  <div className="absolute inset-x-0 bottom-24 flex justify-center z-[100]">
-                    <AnimatePresence mode="wait">
-                      <motion.div 
-                        key={activeGazeIndex}
-                        initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
-                        animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
-                        exit={{ y: -10, opacity: 0 }}
-                        className="mat-glass-deep px-12 py-6 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center gap-1"
-                      >
-                        <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
-                          {(gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary')?.toString().split(' ')[0]}
-                        </span>
-                        <span className="text-[10px] font-black uppercase tracking-widest text-mat-gold opacity-100">
-                          {gazeProfiles[activeGazeIndex]?.age || 25} • {gazeProfiles[activeGazeIndex]?.city || 'Undisclosed'}
-                        </span>
-                      </motion.div>
-                    </AnimatePresence>
+               </motion.div>
+            </motion.div>
+
+            {/* Right: The Gaze Infinite Scroll */}
+            <motion.div 
+              variants={cardSpring}
+              className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none mb-12"
+            >
+                <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+                <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
+                
+                {gazeProfiles.length > 0 && (
+                  <div className="relative w-full h-full scale-110">
+                    <CircularGallery 
+                      items={gazeProfiles}
+                      bend={0}
+                      scrollSpeed={0.5}
+                      autoScroll={true}
+                      autoScrollSpeed={0.05}
+                      onCenterUpdate={setActiveGazeIndex}
+                    />
+                    
+                    <div className="absolute inset-x-0 bottom-24 flex justify-center z-[100]">
+                      <AnimatePresence mode="wait">
+                        <motion.div 
+                          key={activeGazeIndex}
+                          initial={{ y: 20, opacity: 0, filter: 'blur(10px)' }}
+                          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+                          exit={{ y: -10, opacity: 0 }}
+                          className="mat-glass-deep px-12 py-6 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center gap-1"
+                        >
+                          <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
+                            {(gazeProfiles[activeGazeIndex]?.originalName || 'Sanctuary')?.toString().split(' ')[0]}
+                          </span>
+                          <span className="text-[10px] font-black uppercase tracking-widest text-mat-gold opacity-100">
+                            {gazeProfiles[activeGazeIndex]?.age || 25} • {gazeProfiles[activeGazeIndex]?.city || 'Undisclosed'}
+                          </span>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+            </motion.div>
           </motion.div>
-        </motion.div>
+        </section>
       
-      {/* ─── MAGIC BENTO: STANDING & CALIBRATION ─── */}
-      <motion.div 
-        variants={containerStagger}
-        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-12"
-      >
+        {/* ─── FOLD TWO: THE LOGIC OF STANDING ─── */}
+        <section className="min-h-screen py-24 md:py-32">
+          <motion.div 
+            variants={containerStagger}
+            className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"
+          >
         {/* Bento Cell 1: Personal Standing */}
         <motion.div 
           variants={cardSpring}
