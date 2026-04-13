@@ -193,9 +193,9 @@ export const SanctuaryService = {
           SELECT user_id, 
           ROW_NUMBER() OVER (
             ORDER BY 
-              is_verified DESC, 
-              rank_score DESC, 
-              created_at ASC, 
+              COALESCE(is_verified, 0) DESC, 
+              COALESCE(rank_score, 0) DESC, 
+              COALESCE(created_at, '9999-12-31') ASC, 
               user_id ASC
           ) as new_rank
           FROM profiles
