@@ -541,6 +541,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <p className="text-[10px] text-mat-slate/40 leading-relaxed italic uppercase tracking-tighter">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
            </div>
         </motion.div>
+        </motion.div>
         </section>
       </div>
     </motion.div>
