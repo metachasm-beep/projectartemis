@@ -8,8 +8,8 @@ import { HeroSection } from '@/components/dashboard/HeroSection';
 import { HoverParallaxCard } from '@/components/dashboard/HoverParallaxCard';
 import { ParallaxFold } from '@/components/dashboard/ParallaxFold';
 
-import foldOneBg from '@/assets/fold_one_bg.jpg';
-import foldTwoBg from '@/assets/fold_two_bg.jpg';
+import foldOneBg from '@/assets/tim-mossholder-rjvE1L-6ODs-unsplash.jpg';
+import foldTwoBg from '@/assets/haseeb-jamil-qCn0kU9M_uk-unsplash.jpg';
 
 import { 
   ShieldCheck, 
@@ -53,7 +53,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         bgImage={foldOneBg} 
         overlayClassName="bg-mat-cream/50"
       >
-        <motion.div variants={staggerContainer} className="space-y-24">
+        <motion.div variants={staggerContainer} className="space-y-12 md:space-y-24">
           <HeroSection points={status?.points} onBoost={handleBoost} />
 
           {/* Quick Actions / Aura Token Indicator */}
@@ -104,7 +104,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         parallaxSpeed={0.4}
         className="border-t border-white/5"
       >
-        <motion.div variants={staggerContainer} className="space-y-32">
+        <motion.div variants={staggerContainer} className="space-y-16 md:space-y-32">
           <div className="space-y-6">
             <Badge variant="outline" className="px-6 py-2 border-white/20 text-mat-gold rounded-full bg-white/5 backdrop-blur-md mat-text-label-pro">Sovereign Registry</Badge>
             <h2 className="mat-text-display-pro text-mat-cream">Your Absolute <br /><span className="italic opacity-30">Frequency.</span></h2>

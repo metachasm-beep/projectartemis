@@ -31,17 +31,18 @@ export const ParallaxFold: React.FC<ParallaxFoldProps> = ({
     offset: ["start end", "end start"]
   });
 
-  // Calculate parallax offset: 0 to parallaxSpeed * height
+  // Calculate parallax offset and immersive scale
   const y = useTransform(scrollYProgress, [0, 1], ["0%", `${parallaxSpeed * 100}%`]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1.1, 1]);
 
   return (
     <div 
       ref={containerRef}
       className={`relative min-h-screen w-full overflow-hidden ${className} ${isDark ? 'text-mat-cream' : 'text-mat-wine'}`}
     >
-      {/* 🖼️ Sharp Parallax Background */}
+      {/* 🖼️ Sharp Immersive Parallax Background */}
       <motion.div 
-        style={{ y }}
+        style={{ y, scale }}
         className="absolute inset-x-0 top-[-20%] h-[140%] w-full z-0 pointer-events-none will-change-transform transform-gpu"
       >
         <img 
