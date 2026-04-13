@@ -608,6 +608,99 @@ export const AdminService = {
   },
 
   /**
+   * 🏦 Tithe Ledger: Retrieve all pending UTR claims.
+   */
+  getPendingAuraClaims: async () => {
+    try {
+      const res = await turso.execute(`
+        SELECT c.*, p.full_name, p.city as user_city, p.photos as user_photos
+        FROM pending_claims c
+        JOIN profiles p ON c.user_id = p.user_id
+        WHERE c.status = 'pending'
+        ORDER BY c.created_at DESC
+      `);
+      return res.rows;
+    } catch (err) {
+      console.error("ADMIN_GET_CLAIMS_ERROR:", err);
+      return [];
+    }
+  },
+
+  /**
+   * ⚖️ Sovereign Redemption:
+   * Manually approve or reject a UTR claim.
+   */
+  resolveAuraClaim: async (claimId: string, approved: boolean) => {
+    try {
+      if (!approved) {
+        await turso.execute({
+          sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?",
+          args: [claimId]
+        });
+        return true;
+      }
+
+      // 1. Fetch Claim Details
+      const claimRes = await turso.execute({
+        sql: "SELECT * FROM pending_claims WHERE id = ?",
+        args: [claimId]
+      });
+      const claim: any = claimRes.rows[0];
+      if (!claim) throw new Error("Claim not found.");
+
+      // 2. Extract Power and Density
+      let jumpType = 'nudge';
+      let city = 'Delhi';
+      let amount = 49;
+
+      if (claim.metadata) {
+        try {
+          const meta = JSON.parse(claim.metadata);
+          jumpType = meta.jump_type || 'nudge';
+          city = meta.city || 'Delhi';
+          amount = meta.amount || (jumpType === 'surge' ? 149 : jumpType === 'elite' ? 499 : 49);
+        } catch (e) {}
+      }
+
+      // 3. Calculate Leap Bonus
+      const JUMP_POWER: Record<string, number> = { nudge: 0.05, surge: 0.15, elite: 0.50 };
+      const densityRes = await turso.execute({
+        sql: "SELECT COUNT(*) as density FROM profiles WHERE role = 'man' AND city = ?",
+        args: [city]
+      });
+      const density = Number(densityRes.rows[0]?.density || 1000);
+      const leapBonus = Math.floor((JUMP_POWER[jumpType] || 0.05) * density);
+
+      // 4. Atomic Payload: Status Update + Profile Update + Rank Log
+      const { v4: uuidv4 } = await import('uuid');
+      const logId = `rank_log_${uuidv4()}`;
+
+      await turso.batch([
+        { sql: "UPDATE pending_claims SET status = 'approved' WHERE id = ?", args: [claimId] },
+        { 
+          sql: "UPDATE profiles SET tokens = tokens + ?, rank_score = rank_score + ?, updated_at = ? WHERE user_id = ?", 
+          args: [amount, leapBonus, new Date().toISOString(), claim.user_id] 
+        },
+        { 
+          sql: "INSERT INTO rank_logs (id, user_id, delta, reason) VALUES (?, ?, ?, ?)", 
+          args: [logId, claim.user_id, leapBonus, `ADMIN_RELEASE: ${jumpType.toUpperCase()} | UTR: ${claim.submitted_utr}`] 
+        }
+      ], "write");
+
+      // 5. Trigger Rank Reflow
+      const { SanctuaryService } = await import('./sanctuary');
+      await SanctuaryService.recalculateGlobalRanks();
+
+      metricsCache = null;
+      rosterCache = null;
+      return true;
+    } catch (err) {
+      console.error("ADMIN_RESOLVE_CLAIM_ERROR:", err);
+      return false;
+    }
+  },
+
+  /**
    * 👑 Global Rank Ritual:
    * Triggers a system-wide re-calculation of the absolute rank sequence.
    */

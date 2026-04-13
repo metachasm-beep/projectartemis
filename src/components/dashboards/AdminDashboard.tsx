@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
 import { AdminBlogModeration } from './AdminBlogModeration';
 import { DirectMessageModal } from './DirectMessageModal';
+import { AdminAuraPanel } from './AdminAuraPanel';
 
 interface AdminDashboardProps {
   onOpenPictureManager?: () => void;
@@ -22,8 +23,9 @@ interface AdminDashboardProps {
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureManager }) => {
   const { user: currentUser } = useAuth();
-  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
+  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'COMMUNICATIONS' | 'JOURNAL' | 'TITHE'>('ROSTER');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
+  const [pendingClaimsCount, setPendingClaimsCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
@@ -34,6 +36,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
   // Fetch initial data
   useEffect(() => {
     loadData();
+    AdminService.getPendingAuraClaims().then(c => setPendingClaimsCount(c.length));
   }, []);
 
   const [filters, setFilters] = useState({
@@ -254,13 +257,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
       </div>
 
       <div className="flex justify-center border-b border-mat-rose/10 pb-4 gap-8">
-         {['ROSTER', 'COMMUNICATIONS', 'JOURNAL'].map(t => (
+         {['ROSTER', 'TITHE', 'COMMUNICATIONS', 'JOURNAL'].map(t => (
             <button 
               key={t}
               onClick={() => setDashboardTab(t as any)}
-              className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 ${dashboardTab === t ? 'border-mat-wine text-mat-wine' : 'border-transparent text-mat-wine/30 hover:text-mat-wine'}`}
+              className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 relative ${dashboardTab === t ? 'border-mat-wine text-mat-wine' : 'border-transparent text-mat-wine/30 hover:text-mat-wine'}`}
             >
                {t}
+               {t === 'TITHE' && pendingClaimsCount > 0 && (
+                  <span className="absolute -top-1 -right-4 w-2 h-2 rounded-full bg-mat-rose shadow-[0_0_8px_#d41243] animate-pulse" />
+               )}
             </button>
          ))}
       </div>
@@ -487,6 +493,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
             </div>
           </div>
         </>
+      ) : dashboardTab === 'TITHE' ? (
+        <AdminAuraPanel />
       ) : dashboardTab === 'COMMUNICATIONS' ? (
         <AdminCommunicationsHub />
       ) : (
