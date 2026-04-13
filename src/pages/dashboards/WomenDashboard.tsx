@@ -1,14 +1,9 @@
 import React from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { FAQ } from '@/components/FAQ';
 import { staggerContainer } from '@/utils/animations';
 
-import { HeroSection } from '@/components/dashboard/HeroSection';
-import { HoverParallaxCard } from '@/components/dashboard/HoverParallaxCard';
-import { ParallaxFold } from '@/components/dashboard/ParallaxFold';
-
-import foldOneBg from '@/assets/tim-mossholder-rjvE1L-6ODs-unsplash.jpg';
 import foldTwoBg from '@/assets/haseeb-jamil-qCn0kU9M_uk-unsplash.jpg';
 
 import { 
@@ -21,7 +16,7 @@ import {
   Eye,
   Star,
   Compass,
-  Scroll
+  HelpCircle
 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 
@@ -42,27 +37,14 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
   status, 
   handleBoost 
 }) => {
+  const [showFAQ, setShowFAQ] = React.useState(false);
+
   return (
     <motion.div 
       initial="initial"
       animate="animate"
-      className="relative w-full"
+      className="relative w-full lg:h-screen lg:overflow-hidden bg-mat-obsidian flex flex-col lg:flex-row transition-all duration-700"
     >
-      {/* 🏹 FOLD 1: THE SOVEREIGN ARRIVAL */}
-      <ParallaxFold 
-        bgImage={foldOneBg} 
-        overlayClassName="bg-mat-cream/50"
-      >
-        <motion.div variants={staggerContainer} className="space-y-12 md:space-y-24">
-          <HeroSection points={status?.points} onBoost={handleBoost} />
-
-          {/* Quick Actions / Aura Token Indicator */}
-          <div className="flex flex-col md:flex-row gap-6">
-            <motion.div 
-              initial={{ x: -20, opacity: 0 }}
-              animate={{ x: 0, opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-col gap-px bg-mat-rose/10 w-full md:w-auto overflow-hidden rounded-[2.5rem] mat-glass-deep border border-mat-rose/20 shadow-mat-premium z-10"
             >
               <div className="bg-mat-ivory/60 px-12 py-8 flex flex-col justify-center min-w-[200px] border-b border-mat-rose/5">
                 <span className="mat-text-label-pro opacity-40">Aura Tokens</span>
