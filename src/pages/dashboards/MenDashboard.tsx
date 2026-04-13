@@ -467,11 +467,6 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                    </div>
                  ))}
               </div>
->
-                   </div>
-                 ))}
-              </div>
-           </div>
            <div className="flex gap-3 mt-6 md:mt-8">
              <button 
                onClick={() => setIsEditing?.(true)}
