@@ -539,13 +539,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <p className="text-[10px] text-mat-slate/40 leading-relaxed italic uppercase tracking-tighter">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
            </div>
         </motion.div>
-      </motion.div>
+        </motion.div>
+        </section>
 
-      <div className="py-32 text-center">
-         <p className="text-[12px] font-black uppercase tracking-[1.5em] opacity-10 select-none text-mat-wine pointer-events-none">
-            Matriarch // Standing Is Power
-         </p>
-      </div>
+        <div className="py-32 text-center">
+           <p className="text-[12px] font-black uppercase tracking-[1.5em] opacity-10 select-none text-mat-wine pointer-events-none">
+              Matriarch // Standing Is Power
+           </p>
+        </div>
       </div>
     </motion.div>
   );
