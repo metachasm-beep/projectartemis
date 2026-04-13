@@ -187,9 +187,10 @@ export const SanctuaryService = {
    */
   recalculateGlobalRanks: async () => {
     try {
-      // 1. Calculate new ranks using Window Function
-      const r = await turso.execute({
-        sql: `
+      // 🌊 Sovereign Atomic Reflow: One statement to re-index the entire sanctuary.
+      // Priority: Verified Status > Rank Score (Integrity+Tokens) > Seniority > Deterministic UID.
+      await turso.execute(`
+        WITH ranked AS (
           SELECT user_id, 
           ROW_NUMBER() OVER (
             ORDER BY 
@@ -200,19 +201,12 @@ export const SanctuaryService = {
           ) as new_rank
           FROM profiles
           WHERE role = 'man'
-        `
-      });
-
-      // 2. Perform atomic batch update for all men
-      // (For small to medium datasets, this is extremely fast in SQLite/Turso)
-      const updates = r.rows.map((row: any) => ({
-        sql: "UPDATE profiles SET absolute_rank = ? WHERE user_id = ?",
-        args: [row.new_rank, row.user_id]
-      }));
-
-      if (updates.length > 0) {
-        await turso.batch(updates, "write");
-      }
+        )
+        UPDATE profiles
+        SET absolute_rank = ranked.new_rank
+        FROM ranked
+        WHERE profiles.user_id = ranked.user_id;
+      `);
     } catch (err) {
       console.error("RANK_REFLOW_CRITICAL_FAILURE:", err);
     }

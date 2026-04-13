@@ -168,10 +168,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank, isInl
 
                     {/* Score / Status */}
                     <div className="flex flex-col items-end">
-                       <div className={`px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] border ${
-                         aspirant.absolute_rank <= 3 ? 'bg-mat-gold/10 border-mat-gold/20 text-mat-gold' : 'bg-white/5 border-white/10 text-white/40'
-                       }`}>
-                         {aspirant.absolute_rank <= 10 ? 'Elite' : aspirant.absolute_rank <= 50 ? 'Vanguard' : 'Aspirant'}
+                       <div className={cn(
+                         "px-4 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] border",
+                         aspirant.absolute_rank <= (leaders.length * 0.05) ? 'bg-mat-gold/10 border-mat-gold/20 text-mat-gold' : 
+                         aspirant.absolute_rank <= (leaders.length * 0.3) ? 'bg-mat-wine/10 border-mat-wine/20 text-mat-wine' :
+                         'bg-white/5 border-white/10 text-white/40'
+                       )}>
+                         {SanctuaryService.getTierFromRank(aspirant.absolute_rank, leaders.length || 1).name}
                        </div>
                     </div>
 
