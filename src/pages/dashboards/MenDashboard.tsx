@@ -271,9 +271,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               )}
           </div>
         </div>
-      </motion.div>
-    </div>
-
+      
       {/* ─── MAGIC BENTO: STANDING & CALIBRATION ─── */}
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-12">
         {/* Bento Cell 1: Personal Standing */}
@@ -388,5 +386,6 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
          </p>
       </div>
     </motion.div>
+  </div>
   );
 };
