@@ -162,9 +162,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, _totalMen || 1);
 
   // ─── LUXURY REVEAL ORCHESTRATION ───
-  const { scrollY } = useScroll();
+  const { scrollY, scrollYProgress } = useScroll();
   
-  // 1. Butter-Smooth Scroll Intertia: Physics-based damped tracking
+  // 1. Butter-Smooth Scroll Intertia
   const smoothScrollY = useSpring(scrollY, { 
     stiffness: 70, 
     damping: 35, 
@@ -172,21 +172,26 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     restDelta: 0.001 
   });
 
-  // 2. TWO-FOLD CROSS-REVEAL LOGIC
-  // Fold 1 (Top) Transition: Move from Full-Width to Detail zoom
-  const bgAOpacity = useTransform(smoothScrollY, [0, 800], [1, 0]);
-  const bgAScale = useTransform(smoothScrollY, [0, 1000], [1.02, 1.8]);
-  
-  // Fold 2 (Bottom) Transition: Manifest Rose as the logic threshold is crossed
-  const bgBOpacity = useTransform(smoothScrollY, [400, 900], [0, 1]);
-  const bgBScale = useTransform(smoothScrollY, [600, 1200], [0.8, 1.05]);
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30
+  });
 
-  // Shared Dramatic Tilt & Lens Sequence (Orchestrated per fold)
-  const bgRotateX = useTransform(smoothScrollY, [0, 1200], [0, 20]);
-  const bgLensFilter = useTransform(smoothScrollY, [0, 400, 800, 1200], [
+  // 2. TWO-FOLD CROSS-REVEAL LOGIC (Relative progress 0.0 to 1.0)
+  // Fold 1 (Top) Transition
+  const bgAOpacity = useTransform(smoothProgress, [0, 0.7], [1, 0]);
+  const bgAScale = useTransform(smoothProgress, [0, 1], [1.02, 1.6]);
+  
+  // Fold 2 (Bottom) Transition: Perfectly zoomed out to 1.0 at terminus
+  const bgBOpacity = useTransform(smoothProgress, [0.3, 0.8], [0, 1]);
+  const bgBScale = useTransform(smoothProgress, [0.5, 1], [0.85, 1.0]);
+
+  // Shared Dramatic Tilt & Lens Sequence: Manifest total clarity at progress 1.0
+  const bgRotateX = useTransform(smoothProgress, [0, 1], [0, 15]);
+  const bgLensFilter = useTransform(smoothProgress, [0, 0.4, 0.7, 1], [
     `blur(0px) brightness(1) saturate(1.1)`,
     `blur(15px) brightness(0.6) saturate(0.8)`,
-    `blur(10px) brightness(0.75) saturate(0.9)`,
+    `blur(10px) brightness(0.8) saturate(0.9)`,
     `blur(0px) brightness(1) saturate(1.1)`
   ]);
 
