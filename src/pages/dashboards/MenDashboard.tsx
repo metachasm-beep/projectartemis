@@ -161,11 +161,51 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   // 👑 Sanctuary Designated Tier: Based on official population brackets
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, _totalMen || 1);
 
-  // ─── HERO REVEAL RITUAL v2: THE CRIMSON APERTURE ───
+  // ─── LUXURY REVEAL ORCHESTRATION ───
   const { scrollY } = useScroll();
   const bgY = useTransform(scrollY, [0, 500], [0, 80]);
-  const bgScale = useTransform(scrollY, [0, 500], [1, 1.05]);
-  
+  const bgScale = useTransform(scrollY, [0, 500], [1, 1.08]);
+
+  // 1. Mask-Reveal Heading Variants
+  const maskReveal = {
+    initial: { y: "100%", opacity: 0 },
+    animate: { 
+      y: 0, 
+      opacity: 1, 
+      transition: { 
+        duration: 1.2, 
+        ease: [0.16, 1, 0.3, 1],
+        delay: 0.8
+      } 
+    }
+  };
+
+  // 2. Staggered Bento Variants
+  const containerStagger = {
+    animate: {
+      transition: {
+        staggerChildren: 0.15,
+        delayChildren: 1.2
+      }
+    }
+  };
+
+  const cardSpring = {
+    initial: { y: 60, opacity: 0, filter: 'blur(10px)' },
+    animate: { 
+      y: 0, 
+      opacity: 1, 
+      filter: 'blur(0px)',
+      transition: { 
+        type: "spring", 
+        stiffness: 70, 
+        damping: 15,
+        mass: 1.2
+      } 
+    }
+  };
+
+  // 3. Immersive Hero Aperture (Scale-In + Breathe)
   const bloomHero = {
     initial: { 
       scale: 1.15, 
@@ -174,57 +214,99 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       clipPath: 'circle(0% at 50% 50%)'
     },
     animate: { 
-      scale: 1, 
-      opacity: 0.6, 
+      scale: [1.1, 1, 1.02, 1],
+      opacity: 0.85, 
       filter: 'blur(0px)', 
       clipPath: 'circle(100% at 50% 50%)',
       transition: { 
-        duration: 2.8, 
+        duration: 3, 
         ease: [0.16, 1, 0.3, 1],
-        clipPath: { duration: 2, ease: "circOut" }
+        clipPath: { duration: 2.2, ease: "circOut" },
+        scale: {
+          times: [0, 0.4, 0.7, 1],
+          duration: 10,
+          repeat: Infinity,
+          repeatType: "mirror"
+        }
       } 
     }
   };
 
+  // 4. Hover-Parallax Logic (Hardware Accelerated)
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(y, [-300, 300], [8, -8]), { stiffness: 150, damping: 20 });
+  const rotateY = useSpring(useTransform(x, [-300, 300], [-8, 8]), { stiffness: 150, damping: 20 });
+
+  function handleParallax(event: React.MouseEvent | React.TouchEvent) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+    
+    x.set(clientX - centerX);
+    y.set(clientY - centerY);
+  }
+
+  function resetParallax() {
+    x.set(0);
+    y.set(0);
+  }
+
   return (
-    <div className="relative isolate min-h-screen bg-mat-obsidian">
-      {/* ─── IMMERSIVE HERO REVEAL LAYER v2: CRIMSON SANCTUARY ─── */}
-      <div className="absolute inset-x-0 top-0 h-[130vh] z-[-1] overflow-hidden pointer-events-none select-none">
+    <motion.div 
+      initial="initial"
+      animate="animate"
+      className="relative isolate min-h-screen bg-mat-obsidian"
+    >
+      {/* ─── IMMERSIVE HERO REVEAL LAYER v3: SURREAL SANCTUARY ─── */}
+      <div className="absolute inset-x-0 top-0 h-[140vh] z-[-1] overflow-hidden pointer-events-none select-none">
         <motion.div
-           initial="initial"
-           animate="animate"
-           style={{ y: bgY, scale: bgScale }}
+           style={{ y: bgY, scale: bgScale, transformGpu: "true" }}
            variants={bloomHero}
            className="relative w-full h-full"
         >
           <img 
             src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776084709/sanctuary_love_reveal_v3.jpg"
             alt=""
-            className="w-full h-full object-cover grayscale-[0.05] brightness-[0.8] contrast-[1.05]"
+            className="w-full h-full object-cover grayscale-[0.05] brightness-[0.85] contrast-[1.05]"
           />
-          {/* Chiaroscuro Masking Protocol: Center-weighted radial focus */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_0%,rgba(5,5,5,0.8)_70%)]" />
+          {/* Chiaroscuro Masking: Luxurious Center Glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_45%,transparent_0%,rgba(5,5,5,0.7)_60%,rgba(5,5,5,0.95)_100%)]" />
           
-          {/* True Black Obsidian Floor Melt */}
-          <div className="absolute inset-x-0 bottom-0 h-[60vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
-          <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-mat-obsidian to-transparent" />
-          <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-mat-obsidian to-transparent" />
+          {/* Obsidian Floor Melt */}
+          <div className="absolute inset-x-0 bottom-0 h-[70vh] bg-gradient-to-t from-mat-obsidian via-mat-obsidian/80 to-transparent" />
         </motion.div>
       </div>
 
-      <motion.div 
-        initial="initial"
-        animate="animate"
-        variants={bloomVariants}
-        className="space-y-12 pb-40 pt-24 md:pt-32 max-w-7xl mx-auto px-6 relative z-10"
-      >
-        <h1 className="sr-only">Matriarch Dossier: Personal Standing & Identity Resonance</h1>
+      <div className="space-y-16 pb-40 pt-24 md:pt-40 max-w-[1600px] mx-auto px-6 relative z-10 w-full">
+        <header className="overflow-hidden mb-8">
+          <motion.h1 
+            variants={maskReveal}
+            className="text-[12px] font-black uppercase tracking-[1.2em] text-mat-gold/60 text-center"
+          >
+            Matriarch Dossier: Standing & Identity Resonance
+          </motion.h1>
+        </header>
         
         {/* ─── PHASE HERO: THE SOVEREIGN ANCHOR (TRUMP CARD + GAZE) ─── */}
-        <div className="flex flex-col xl:flex-row gap-12 items-stretch min-h-[85vh]">
-          {/* Left: Upscaled Hero Trump Card */}
-          <div className="w-full xl:w-[45%] flex flex-col justify-center items-center">
-             <div className="w-full max-w-[500px] hover:scale-[1.03] transition-all duration-1000 ease-out relative group">
+        <motion.div 
+          variants={containerStagger}
+          className="flex flex-col xl:flex-row gap-16 items-stretch min-h-[85vh]"
+        >
+          {/* Left: Interactive Parallax Trump Card */}
+          <motion.div 
+            variants={cardSpring}
+            className="w-full xl:w-[45%] flex flex-col justify-center items-center"
+          >
+             <motion.div 
+                onMouseMove={handleParallax}
+                onMouseLeave={resetParallax}
+                style={{ rotateX, rotateY, transformStyle: "preserve-3d", transformGpu: "true" }}
+                className="w-full max-w-[500px] relative group cursor-crosshair"
+             >
                 <div className="absolute -inset-24 bg-mat-gold/10 rounded-[4rem] blur-[120px] opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                 <TrumpCard 
                   profile={{
@@ -244,11 +326,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     rank_tier: currentLevel.id
                   }}
                 />
-             </div>
-          </div>
+             </motion.div>
+          </motion.div>
 
           {/* Right: The Gaze Infinite Scroll (Ambient Fold) */}
-          <div className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none">
+          <motion.div 
+            variants={cardSpring}
+            className="w-full xl:w-[55%] relative rounded-[5rem] overflow-hidden border border-mat-gold/10 bg-mat-ivory/5 mat-glass shadow-inner pointer-events-none group/gallery select-none"
+          >
               <div className="absolute inset-x-0 top-0 h-48 z-10 pointer-events-none bg-gradient-to-b from-mat-obsidian via-mat-obsidian/40 to-transparent" />
               <div className="absolute inset-x-0 bottom-0 h-48 z-10 pointer-events-none bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent" />
               
@@ -284,13 +369,19 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   </div>
                 </div>
               )}
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       
       {/* ─── MAGIC BENTO: STANDING & CALIBRATION ─── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-12">
+      <motion.div 
+        variants={containerStagger}
+        className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8 pt-12"
+      >
         {/* Bento Cell 1: Personal Standing */}
-        <div className="md:col-span-2 lg:col-span-2 mat-glass-deep p-12 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700">
+        <motion.div 
+          variants={cardSpring}
+          className="md:col-span-2 lg:col-span-2 mat-glass-deep p-12 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700"
+        >
            <div className="space-y-8">
               <div className="flex justify-between items-center">
                  <div className="space-y-2">
@@ -324,22 +415,25 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
            <div className="flex gap-4 mt-8">
              <button 
                onClick={() => setIsEditing?.(true)}
-               className="flex-1 py-5 border border-mat-wine/30 text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine/5 transition-all"
+               className="flex-1 py-5 border border-mat-wine/30 text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine/5 transition-all text-[11px] font-bold"
              >
                 Edit Dossier <Camera size={14} />
              </button>
              <button 
                onClick={handleSyncIntegrity}
                disabled={isBumping}
-               className="flex-1 py-5 bg-mat-wine text-white rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine-soft transition-all shadow-mat-premium disabled:opacity-50"
+               className="flex-1 py-5 bg-mat-wine text-white rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:bg-mat-wine-soft transition-all shadow-mat-premium disabled:opacity-50 text-[11px] font-bold"
              >
                 {isBumping ? "Syncing..." : "Recalibrate"} <ArrowUpRight size={14} />
              </button>
            </div>
-        </div>
+        </motion.div>
 
         {/* Bento Cell 2: Rank Ritual */}
-        <div className="md:col-span-1 lg:col-span-1 mat-glass-deep p-12 rounded-[3.5rem] bg-mat-obsidian text-mat-cream overflow-hidden relative group">
+        <motion.div 
+          variants={cardSpring}
+          className="md:col-span-1 lg:col-span-1 mat-glass-deep p-12 rounded-[3.5rem] bg-mat-obsidian text-mat-cream overflow-hidden relative group"
+        >
            <div className="absolute inset-0 bg-gradient-to-br from-mat-wine/30 via-transparent to-transparent pointer-events-none" />
            <div className="relative z-10 space-y-8 flex flex-col justify-between h-full">
               <div className="space-y-2">
@@ -356,7 +450,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 <button 
                   onClick={handleBumpRank}
                   disabled={isBumping || (profile?.tokens || 0) < 49}
-                  className="w-full py-6 bg-mat-gold text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20"
+                  className="w-full py-6 bg-mat-gold text-mat-wine rounded-2xl mat-text-label-pro flex items-center justify-center gap-4 hover:scale-[1.02] active:scale-95 transition-all shadow-mat-gold-glow disabled:opacity-20 text-[11px] font-bold"
                 >
                    {isBumping ? "Syncing..." : "Augment"} <Sparkles size={14} className="fill-current" />
                 </button>
@@ -370,10 +464,13 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 )}
               </div>
            </div>
-        </div>
+        </motion.div>
 
         {/* Bento Cell 3: Identity Summary */}
-        <div className="md:col-span-3 lg:col-span-1 mat-glass-deep p-10 rounded-[3.5rem] bg-mat-ivory/40 flex flex-col justify-between border border-mat-gold/10">
+        <motion.div 
+          variants={cardSpring}
+          className="md:col-span-3 lg:col-span-1 mat-glass-deep p-10 rounded-[3.5rem] bg-mat-ivory/40 flex flex-col justify-between border border-mat-gold/10"
+        >
            <div className="space-y-6">
               <div className="w-14 h-14 rounded-2xl bg-mat-wine/5 flex items-center justify-center border border-mat-wine/10">
                  <Crown className="text-mat-wine w-8 h-8" />
@@ -390,17 +487,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               </div>
            </div>
            <div className="pt-8 border-t border-mat-rose/5">
-              <p className="text-[10px] text-mat-slate/40 leading-relaxed italic">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
+              <p className="text-[10px] text-mat-slate/40 leading-relaxed italic uppercase tracking-tighter">Absolute Standing: <span className="text-mat-wine font-bold">#{absRank || profile.absolute_rank || '---'}</span> of {_totalMen}</p>
            </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <div className="py-32 text-center">
          <p className="text-[12px] font-black uppercase tracking-[1.5em] opacity-10 select-none text-mat-wine pointer-events-none">
             Matriarch // Standing Is Power
          </p>
       </div>
-    </motion.div>
-  </div>
+    </div>
   );
 };

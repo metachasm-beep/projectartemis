@@ -11,7 +11,7 @@ const __dirname = dirname(__filename);
 
 const CLOUD_NAME = process.env.VITE_CLOUDINARY_CLOUD_NAME || 'dsmbhnjg5';
 const UPLOAD_PRESET = process.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'matriarch_profiles';
-const LOCAL_IMAGE_PATH = join(__dirname, '../nick-brunner-k4xDXNskVsQ-unsplash.jpg');
+const LOCAL_IMAGE_PATH = join(__dirname, '../alexander-park-reNVIeIHdo8-unsplash.jpg');
 
 async function uploadAsset() {
   console.log('🚀 MATRIARCH_ASSET_SYNC: Manifesting User Asset in Cloudinary...');
