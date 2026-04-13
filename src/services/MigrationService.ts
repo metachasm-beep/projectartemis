@@ -69,6 +69,8 @@ export const MigrationService = {
     const flag = 'matriarch_migration_claims_meta_v1';
     if (localStorage.getItem(flag)) return;
     try {
+      // Ensure the table exists first before altering
+      await MigrationService.migrateSystemTables();
       await silentAlter("ALTER TABLE pending_claims ADD COLUMN metadata TEXT;", 'pending_claims.metadata');
       localStorage.setItem(flag, 'COMPLETED');
       console.log('💳 CLAIMS_META: metadata column manifested.');
@@ -78,11 +80,53 @@ export const MigrationService = {
   },
 
   /**
+   * v4 — System Infrastructure: Creates all secondary protocol tables.
+   */
+  migrateSystemTables: async () => {
+    const flag = 'matriarch_migration_system_v1';
+    if (localStorage.getItem(flag)) return;
+    console.log('🛠️ SYSTEM_MANIFEST: Manifesting secondary protocols...');
+    try {
+      await turso.batch([
+        { sql: "CREATE TABLE IF NOT EXISTS pending_claims (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, submitted_utr TEXT NOT NULL, status TEXT DEFAULT 'pending', metadata TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+        { sql: "CREATE TABLE IF NOT EXISTS received_payments (utr TEXT PRIMARY KEY, amount INTEGER NOT NULL, is_claimed INTEGER DEFAULT 0, sender_info TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+        { sql: "CREATE TABLE IF NOT EXISTS profile_analytics (id TEXT PRIMARY KEY, man_user_id TEXT, woman_user_id TEXT, metric_type TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+        { sql: "CREATE TABLE IF NOT EXISTS rank_logs (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, delta INTEGER NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+        { sql: "CREATE TABLE IF NOT EXISTS shortlists (id TEXT PRIMARY KEY, woman_user_id TEXT NOT NULL, man_user_id TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+        { sql: "CREATE TABLE IF NOT EXISTS user_interactions (id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, target_id TEXT NOT NULL, interaction_type TEXT NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" }
+      ], 'write');
+      localStorage.setItem(flag, 'COMPLETED');
+      console.log('🛠️ SYSTEM_MANIFEST: Secondary infrastructure complete.');
+    } catch (err) {
+      console.error('🛠️ SYSTEM_MANIFEST_FAILURE:', err);
+    }
+  },
+
+  /**
+   * v5 — Interaction & Retention: Adds streak and session tracking to profiles.
+   */
+  migrateStreakSchema: async () => {
+    const flag = 'matriarch_migration_streak_v1';
+    if (localStorage.getItem(flag)) return;
+    try {
+      await silentAlter("ALTER TABLE profiles ADD COLUMN consecutive_days INTEGER DEFAULT 0;", 'consecutive_days');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN last_streak_at TEXT;", 'last_streak_at');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN total_session_seconds INTEGER DEFAULT 0;", 'total_session_seconds');
+      localStorage.setItem(flag, 'COMPLETED');
+      console.log('🔥 STREAK_SCHEMA: Retention indices manifested.');
+    } catch (err) {
+      console.error('🔥 STREAK_SCHEMA_FAILURE:', err);
+    }
+  },
+
+  /**
    * runAll — Execute all migrations in dependency order.
    */
   runAll: async () => {
     await MigrationService.migratePaymentSchema();
     await MigrationService.migrateAuditProtocol();
+    await MigrationService.migrateSystemTables();
     await MigrationService.migrateClaimsMetadata();
+    await MigrationService.migrateStreakSchema();
   }
 };
