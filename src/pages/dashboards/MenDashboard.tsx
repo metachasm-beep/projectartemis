@@ -166,14 +166,21 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   
   // 1. Butter-Smooth Scroll Intertia: Physics-based damped tracking
   const smoothScrollY = useSpring(scrollY, { 
-    stiffness: 80, 
-    damping: 30, 
-    mass: 0.8,
+    stiffness: 70, 
+    damping: 35, 
+    mass: 1.2,
     restDelta: 0.001 
   });
 
-  const bgY = useTransform(smoothScrollY, [0, 800], [0, 150]);
-  const bgScale = useTransform(smoothScrollY, [0, 800], [0.5, 0.55]);
+  // 2. 1000% DRAMATIC HYPER-TRANSFORMS
+  const bgY = useTransform(smoothScrollY, [0, 1000], [0, 800]);
+  const bgScale = useTransform(smoothScrollY, [0, 1000], [0.4, 2.8]);
+  const bgRotateX = useTransform(smoothScrollY, [0, 1000], [0, 25]);
+  
+  // 3. CINEMATIC LENS SEQUENCE
+  const bgBlur = useTransform(smoothScrollY, [0, 800], ["blur(0px)", "blur(60px)"]);
+  const bgBrightness = useTransform(smoothScrollY, [0, 800], [0.95, 0.15]);
+  const bgSaturate = useTransform(smoothScrollY, [0, 800], ["saturate(1.1)", "saturate(0.1)"]);
 
   // 1. Mask-Reveal Heading Variants
   const maskReveal = {
@@ -182,9 +189,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       y: 0, 
       opacity: 1, 
       transition: { 
-        duration: 1.2, 
+        duration: 2.2, 
         ease: [0.16, 1, 0.3, 1],
-        delay: 0.8
+        delay: 1.2
       } 
     }
   };
@@ -270,18 +277,23 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian"
     >
-      {/* ─── IMMERSIVE HERO REVEAL LAYER v4: BUTTER-SMOOTH SURREAL ─── */}
-      <div className="absolute inset-0 h-[140vh] z-[-1] overflow-hidden pointer-events-none select-none">
+      {/* ─── IMMERSIVE HERO REVEAL LAYER v5: 1000% DRAMA ─── */}
+      <div className="absolute inset-0 h-[160vh] z-[-1] overflow-hidden pointer-events-none select-none">
         <motion.div
            style={{ 
              y: bgY, 
              scale: bgScale, 
+             rotateX: bgRotateX,
+             filter: useTransform(smoothScrollY, [0, 800], [
+               `blur(0px) brightness(1) saturate(1.1)`,
+               `blur(60px) brightness(0.15) saturate(0.1)`
+             ]),
              transformGpu: "true", 
-             willChange: "transform",
+             willChange: "transform, filter",
              transformStyle: "preserve-3d" 
            }}
            variants={bloomHero}
-           className="absolute w-[200%] h-[200%] -left-[50%] -top-[50%]"
+           className="absolute w-[300%] h-[300%] -left-[100%] -top-[100%]"
         >
           <img 
             src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776086316/sanctuary_surreal_v1.jpg"
