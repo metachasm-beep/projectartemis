@@ -110,6 +110,7 @@ export const MigrationService = {
     if (localStorage.getItem(flag)) return;
     try {
       await silentAlter("ALTER TABLE profiles ADD COLUMN consecutive_days INTEGER DEFAULT 0;", 'consecutive_days');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN last_login_at TEXT;", 'last_login_at');
       await silentAlter("ALTER TABLE profiles ADD COLUMN last_streak_at TEXT;", 'last_streak_at');
       await silentAlter("ALTER TABLE profiles ADD COLUMN total_session_seconds INTEGER DEFAULT 0;", 'total_session_seconds');
       localStorage.setItem(flag, 'COMPLETED');

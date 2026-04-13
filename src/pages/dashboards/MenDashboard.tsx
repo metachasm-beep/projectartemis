@@ -91,9 +91,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
         return {
           image: photo,
-          text: r.full_name?.toString().split(' ')[0] || 'Sanctuary Identity',
+          text: (r.full_name || 'Sanctuary Identity').toString().split(' ')[0],
           subText: `${age} • ${r.city || 'Undisclosed'}`,
-          originalName: r.full_name,
+          originalName: r.full_name || 'Sanctuary Identity',
           age,
           city: r.city
         };

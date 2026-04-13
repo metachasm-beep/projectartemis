@@ -69,7 +69,7 @@ export const Discovery: React.FC = () => {
   const GALLERY_ITEMS = useMemo(() => 
     aspirants.map(m => ({ 
       image: m.img, 
-      text: m.name.toString().toUpperCase() 
+      text: (m.name || 'Sanctuary Identity').toString().toUpperCase() 
     })), [aspirants]);
 
   const handleSelect = useCallback((index: number) => {
