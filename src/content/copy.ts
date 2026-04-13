@@ -60,11 +60,6 @@ export const SEO_COPY = {
   women: {
     sanctuary: {
       subtitle: "Your sanctuary awaits. The protocol curates the highest strata of aspirants governed entirely by your choice.",
-      coven: {
-        title: "THE COVEN",
-        subtitle: "Elite Community Forums",
-        desc: "Enter the sacred forum of the Matriarch to commune with the high-strata community."
-      },
       privacy: {
          title: "Identity Sealed",
          desc: "Your true identity remains completely hidden from observers until a resonance is confirmed."

@@ -93,11 +93,10 @@ export const AdminService = {
     }
 
     try {
-      const [menQ, womenQ, verifiedQ, topicsQ, tokensQ] = await Promise.all([
+      const [menQ, womenQ, verifiedQ, tokensQ] = await Promise.all([
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
-        turso.execute("SELECT COUNT(*) as count FROM forum_topics"),
         turso.execute("SELECT SUM(tokens) as total FROM profiles")
       ]);
 
@@ -105,7 +104,6 @@ export const AdminService = {
         totalMen: Number(menQ.rows[0]?.count || 0),
         totalWomen: Number(womenQ.rows[0]?.count || 0),
         verifiedProfiles: Number(verifiedQ.rows[0]?.count || 0),
-        totalForumTopics: Number(topicsQ.rows[0]?.count || 0),
         totalTokens: Number(tokensQ.rows[0]?.total || 0)
       };
 
@@ -113,7 +111,7 @@ export const AdminService = {
       return data;
     } catch (err) {
       console.error("ADMIN_METRICS_ERROR:", err);
-      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0, totalTokens: 0 };
+      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalTokens: 0 };
     }
   },
 
@@ -222,16 +220,8 @@ export const AdminService = {
     };
 
     try {
-      console.log(`ADMIN_SERVICE: Executing Resilient Deep Purge for identity: ${userId}`);
-      
-      // 🗳️ Community Forums & Social
-      await silentDelete("DELETE FROM forum_replies WHERE author_id = ?", [userId]);
-      await silentDelete("DELETE FROM forum_topics_likes WHERE user_id = ?", [userId]);
-      await silentDelete("DELETE FROM forum_topics_saves WHERE user_id = ?", [userId]);
-      await silentDelete("DELETE FROM forum_tips WHERE sender_id = ? OR receiver_id = ?", [userId, userId]);
-      await silentDelete("DELETE FROM forum_topics WHERE author_id = ?", [userId]);
-      await silentDelete("DELETE FROM forum_circles WHERE created_by = ?", [userId]);
-      await silentDelete("DELETE FROM forum_circle_members WHERE user_id = ?", [userId]);
+      // 🍷 Identity & Messaging Cleanup (Self-Contained)
+      console.log(`ADMIN_SERVICE: Executing Deep Purge traversal for identity: ${userId}`);
       
       // 💬 Messaging & Communication
       await silentDelete("DELETE FROM messages WHERE sender_user_id = ?", [userId]);
@@ -366,22 +356,6 @@ export const AdminService = {
     } catch (err) {
       console.error("ADMIN_BULK_DEDUPE_ERROR:", err);
       throw err;
-    }
-  },
-
-  purgeForumTopic: async (topicId: string) => {
-    try {
-      await turso.batch([
-        { sql: "DELETE FROM forum_replies WHERE topic_id = ?", args: [topicId] },
-        { sql: "DELETE FROM forum_topics_likes WHERE topic_id = ?", args: [topicId] },
-        { sql: "DELETE FROM forum_topics_saves WHERE topic_id = ?", args: [topicId] },
-        { sql: "DELETE FROM forum_topics WHERE id = ?", args: [topicId] }
-      ]);
-      metricsCache = null;
-      return true;
-    } catch (err) {
-      console.error("ADMIN_PURGE_FORUM_ERROR:", err);
-      return false;
     }
   },
 

@@ -4,7 +4,6 @@ import { Card, CardHeader, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Chip } from '@heroui/react';
 import { Leaderboard } from '@/components/leaderboard/Leaderboard';
-import { SanctuaryForum } from '@/components/forum/SanctuaryForum';
 import AdUnit from '@/components/common/AdUnit';
 import { SEO_COPY } from '@/content/copy';
 import type { MatriarchProfile } from '@/types';
@@ -12,7 +11,8 @@ import React, { useState } from 'react';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion';
+import '@/styles/skeuomorph.css';
 
 interface WomenSanctuaryProps {
   profile: MatriarchProfile;
@@ -20,235 +20,199 @@ interface WomenSanctuaryProps {
   setIsEditing: (val: boolean) => void;
   onBeginDiscovery?: () => void;
 }
-
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ profile, metrics, setIsEditing }) => {
-  const forumRef = React.useRef<HTMLDivElement>(null);
   const [showVerification, setShowVerification] = useState(false);
   const { refreshProfile } = useAuth();
+  const { scrollY } = useScroll();
+  
+  // 🎭 IMMERSIVE REVEAL CALCULATIONS
+  const revealOpacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const revealScale = useTransform(scrollY, [0, 800], [1, 1.1]);
+  const revealBlur = useTransform(scrollY, [0, 600], [0, 10]);
+  const contentY = useTransform(scrollY, [0, 600], [0, -100]);
+  const textY = useTransform(scrollY, [0, 300], [0, 100]);
   
   const firstName = profile.full_name?.split(' ')[0] || 'Unknown';
   
-  const scrollToForum = () => {
-    forumRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <TooltipProvider>
-    <div className="w-full bg-mat-cream min-h-screen relative overflow-hidden">
-      {/* Mystical Background Glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[80vw] h-[80vw] md:w-[40vw] md:h-[40vw] bg-mat-rose/5 rounded-full blur-[120px] animate-pulse pointer-events-none" style={{ animationDuration: '8s' }} />
-      <div className="absolute bottom-0 right-0 w-[60vw] h-[60vw] md:w-[30vw] md:h-[30vw] bg-mat-gold/5 rounded-full blur-[100px] pointer-events-none" />
+    <div className="w-full bg-mat-cream min-h-[200vh] relative overflow-x-hidden">
+      
+      {/* ─── SCENE 1: SOVEREIGN REVEAL (IMMERSIVE) ─── */}
+      <motion.div 
+        style={{ opacity: revealOpacity, scale: revealScale, filter: `blur(${revealBlur}px)` }}
+        className="fixed inset-0 z-0 h-screen w-full pointer-events-none"
+      >
+         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-cream/20 to-mat-cream z-10" />
+         <img 
+            src={profile.photos?.[0] || 'https://images.unsplash.com/photo-1621184455862-c163dfb30e0f?auto=format&fit=crop&q=80&w=2000'} 
+            className="w-full h-full object-cover grayscale brightness-50 contrast-125"
+            alt="Reveal Base"
+         />
+         
+         <motion.div 
+            style={{ y: textY }}
+            className="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-20"
+         >
+            <Chip color="primary" className="mb-8 border-mat-gold/30 text-mat-gold bg-black/40 backdrop-blur-md px-6 py-2 uppercase tracking-[0.5em] font-black text-[10px]">Registry: Established</Chip>
+            <h1 className="mat-text-display-pro text-white text-[10vw] leading-[0.8] tracking-tightest drop-shadow-2xl">
+               {firstName}<br /><span className="text-mat-gold italic opacity-80 uppercase text-[3vw] tracking-[0.4em] font-black">Sovereign Presence</span>
+            </h1>
+            <div className="mt-12 w-px h-24 bg-gradient-to-b from-mat-gold/0 via-mat-gold to-mat-gold/0 animate-pulse" />
+         </motion.div>
+      </motion.div>
 
-      <div className="container mx-auto px-6 lg:px-8 py-24 md:py-32 relative z-10 max-w-7xl">
-        
-        {/* Header Actions & Branding */}
-        <div className="absolute top-0 left-0 w-full p-8 flex justify-between items-center pointer-events-none">
-          <div className="pointer-events-auto">
-             <Tooltip>
-                <TooltipTrigger asChild>
+      {/* ─── SCENE 2: TACTILE DASHBOARD (SKEUOMORPHIC) ─── */}
+      <motion.div 
+         style={{ y: contentY }}
+         className="relative z-10 pt-[85vh] md:pt-[90vh] pb-32"
+      >
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[30vh] bg-gradient-to-b from-transparent to-mat-cream pointer-events-none" />
+
+        <div className="container mx-auto px-6 lg:px-8 relative z-10 max-w-7xl">
+          
+          {/* Header Action Strip (Skeuomorphic) */}
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 mb-20">
+             <div className="mat-glass-tactile p-1 rounded-full flex items-center gap-4 pr-6">
+                <Tooltip>
+                   <TooltipTrigger asChild>
+                      <Button 
+                         onPress={() => !profile.is_verified && setShowVerification(true)}
+                         className={`h-12 px-8 rounded-full font-black uppercase tracking-widest text-[10px] transition-all ${profile.is_verified ? 'bg-green-500/10 border-green-500/30 text-green-500 cursor-default' : 'mat-button-gold'}`}
+                      >
+                         {profile.is_verified ? (
+                           <div className="flex items-center gap-2">
+                              <ShieldCheck size={14} /> Identity Sealed
+                           </div>
+                         ) : (
+                           "Establish Sync"
+                         )}
+                      </Button>
+                   </TooltipTrigger>
+                   <TooltipContent className="bg-mat-wine text-mat-cream font-bold text-[10px] uppercase border-none tracking-widest px-4 py-2">
+                      {profile.is_verified ? "Your presence is immutable." : "Initiate biometric synchronization."}
+                   </TooltipContent>
+                </Tooltip>
+                <div className="pr-4 border-r border-mat-rose/20">
+                   <p className="text-mat-wine/40 text-[8px] font-black uppercase tracking-widest">Protocol Status</p>
+                   <p className="text-mat-wine text-[10px] font-bold uppercase">{profile.is_verified ? 'Active Sanctuary' : 'Pending Verification'}</p>
+                </div>
+             </div>
+
+             <div className="text-center md:text-right">
+                <h2 className="text-mat-wine text-2xl font-black tracking-tightest uppercase italic">The Master Dashboard</h2>
+                <div className="h-1 w-24 bg-mat-gold ml-auto mt-2" />
+             </div>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+             
+             {/* 🎖️ Skeuomorphic Dossier Card */}
+             <div className="col-span-1 lg:col-span-4">
+                <div className="mat-tactile-card p-4 aspect-[3/4.2] relative group">
+                   <div className="w-full h-full rounded-[2.5rem] overflow-hidden relative shadow-inner border-[12px] border-white/50">
+                      <img 
+                        src={profile.photos?.[0] || 'https://api.dicebear.com/7.x/avataaars/svg?seed=anon'} 
+                        alt="Portrait" 
+                        className="w-full h-full object-cover grayscale brightness-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/40 to-transparent pointer-events-none" />
+                   </div>
+                   
                    <Button 
-                      onPress={() => !profile.is_verified && setShowVerification(true)}
-                      className={`h-10 px-6 rounded-full font-black uppercase tracking-widest text-[9px] border transition-all ${profile.is_verified ? 'bg-green-500/10 border-green-500/30 text-green-500 cursor-default' : 'bg-mat-gold text-black border-transparent shadow-[0_0_20px_rgba(212,175,55,0.3)] hover:scale-[1.05]'}`}
+                      isIconOnly
+                      onPress={() => setIsEditing(true)}
+                      className="absolute -bottom-4 -right-4 w-16 h-16 mat-button-wine rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center p-0"
                    >
-                      {profile.is_verified ? (
-                        <div className="flex items-center gap-2">
-                           <ShieldCheck size={12} /> Sync Established
-                        </div>
-                      ) : (
-                        "Get Verified"
-                      )}
+                      <Camera size={24} />
                    </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                   {profile.is_verified ? "Your sanctuary presence is sealed." : "Establish biometric synchronization to seal your sanctuary presence."}
-                </TooltipContent>
-             </Tooltip>
+
+                   <div className="absolute top-10 left-10 p-3 mat-glass-tactile rounded-2xl">
+                      <Crown className="text-mat-gold" size={20} />
+                   </div>
+                </div>
+             </div>
+
+             <div className="col-span-1 lg:col-span-8 space-y-8">
+                {/* Tactical Bio Surface */}
+                <div className="mat-tactile-card p-10 space-y-6 text-center lg:text-left">
+                   <div className="flex items-center gap-3 justify-center lg:justify-start">
+                      <div className="w-2 h-2 rounded-full bg-mat-rose animate-ping" />
+                      <span className="text-[10px] uppercase tracking-[0.4em] font-black text-mat-wine/60">Profile Manifesto</span>
+                   </div>
+                   <h3 className="text-4xl font-serif font-black italic text-mat-wine">Control is the ultimate <br />expression of grace.</h3>
+                   <p className="text-mat-slate/70 text-lg leading-relaxed max-w-2xl font-light">
+                      Welcome to your sovereign sanctuary, {firstName}. Every interaction on Matriarch is engineered for depth, governed by your precise requirements.
+                   </p>
+                   
+                   <div className="pt-6 flex flex-wrap gap-4 justify-center lg:justify-start">
+                      <Button 
+                         onPress={() => setIsEditing(true)}
+                         className="h-16 px-10 rounded-[1.5rem] mat-button-wine font-black uppercase tracking-widest text-[11px]"
+                      >
+                         Modify Sovereign Identity
+                      </Button>
+                      <Button 
+                         variant="ghost"
+                         className="h-16 px-10 rounded-[1.5rem] border border-mat-wine/10 text-mat-wine font-black uppercase tracking-widest text-[11px] hover:bg-white"
+                         onPress={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
+                      >
+                         Sanctuary Leaderboard
+                      </Button>
+                   </div>
+                </div>
+
+                {/* ─── SCENE 3: TACTILE CLUSTER (METRICS) ─── */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   {/* Resonance Metric */}
+                   <div className="mat-tactile-card p-8 flex items-center justify-between group hover:translate-y-[-4px] transition-all duration-500">
+                      <div className="space-y-2">
+                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-wine/40">Resonances</span>
+                         <h4 className="text-6xl font-serif font-black italic text-mat-wine">{metrics.matches}</h4>
+                         <p className="text-[9px] font-bold uppercase tracking-widest text-mat-rose">Confirmed Matches</p>
+                      </div>
+                      <div className="w-20 h-20 rounded-[2rem] bg-mat-rose/5 border border-mat-rose/10 flex items-center justify-center text-mat-rose shadow-inner group-hover:scale-110 transition-transform">
+                         <Heart size={32} />
+                      </div>
+                   </div>
+
+                   {/* Engagement Metric */}
+                   <div className="mat-tactile-card p-8 flex items-center justify-between group hover:translate-y-[-4px] transition-all duration-500">
+                      <div className="space-y-2">
+                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-wine/40">Engagement</span>
+                         <h4 className="text-6xl font-serif font-black italic text-mat-wine">{Math.floor(metrics.sessionSeconds / 60)}<span className="text-2xl text-mat-rose/40">m</span></h4>
+                         <p className="text-[9px] font-bold uppercase tracking-widest text-mat-rose">Presence Duration</p>
+                      </div>
+                      <div className="w-20 h-20 rounded-[2rem] bg-mat-gold/5 border border-mat-gold/10 flex items-center justify-center text-mat-gold shadow-inner group-hover:scale-110 transition-transform">
+                         <Clock size={32} />
+                      </div>
+                   </div>
+                </div>
+
+                {/* Privacy Safeguard (Dark Tactical Card) */}
+                <div className="bg-mat-obsidian rounded-[3rem] p-10 relative overflow-hidden shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5">
+                   <div className="absolute top-0 right-0 w-64 h-64 bg-mat-rose/10 blur-[80px] pointer-events-none" />
+                   <div className="flex gap-10 items-center">
+                      <div className="w-24 h-24 rounded-[2.5rem] bg-white/5 border border-white/10 flex items-center justify-center text-mat-rose flex-shrink-0">
+                         <Lock size={40} />
+                      </div>
+                      <div className="space-y-4">
+                         <h4 className="text-3xl font-bold italic text-white">Identity Shield: Active</h4>
+                         <p className="text-white/40 text-sm leading-relaxed max-w-md">
+                            Your biometric signature is isolated. No aspirant can view your full visual identity until you initiate resonant contact.
+                         </p>
+                      </div>
+                   </div>
+                </div>
+             </div>
           </div>
-          <div className="text-right hidden sm:block">
-             <h1 className="text-mat-wine text-sm font-black tracking-tighter uppercase italic">The Sanctuary</h1>
-             <p className="text-mat-gold text-[8px] font-bold tracking-[0.3em] uppercase opacity-80">Presence: {firstName.toUpperCase()}</p>
+
+          <div className="mt-40 border-t border-mat-wine/5 pt-20">
+             <Leaderboard isInline={true} />
+             <AdUnit slot="1234567892" className="mt-16 bg-white/40 mat-glass-tactile border-none" />
           </div>
         </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-           
-           {/* Centerpiece Portrait */}
-           <div className="col-span-1 lg:col-span-5 flex flex-col items-center">
-              <div className="relative group w-full max-w-[320px] lg:max-w-[400px]">
-                 <div className="absolute -inset-4 bg-gradient-to-tr from-mat-rose/20 via-transparent to-mat-gold/20 rounded-[3rem] opacity-50 group-hover:opacity-100 transition-opacity duration-1000 blur-xl"></div>
-                 
-                 <div className="relative aspect-[3/4] w-full bg-white rounded-[2.5rem] p-3 shadow-2xl transition-transform duration-700 hover:-translate-y-2">
-                    <div className="w-full h-full rounded-[2rem] overflow-hidden relative">
-                       <img 
-                         src={profile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} 
-                         alt="Sovereign Portrait" 
-                         className="w-full h-full object-cover scale-105"
-                       />
-                    </div>
-                    <Tooltip>
-                       <TooltipTrigger asChild>
-                          <Button 
-                             isIconOnly
-                             onPress={() => setIsEditing(true)}
-                             className="absolute -bottom-4 -right-4 w-14 h-14 bg-mat-wine text-mat-cream rounded-full shadow-lg hover:scale-110 flex items-center justify-center p-0"
-                          >
-                             <Camera size={20} />
-                          </Button>
-                       </TooltipTrigger>
-                       <TooltipContent side="right" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                          Capture your sovereign essence for the discovery archive.
-                       </TooltipContent>
-                    </Tooltip>
-                 </div>
-              </div>
-           </div>
-
-           {/* Typography & Actions */}
-           <div className="col-span-1 lg:col-span-7 space-y-12 text-center lg:text-left">
-              
-              <div className="space-y-6">
-                 <Chip
-                   variant="soft"
-                   className="bg-mat-wine/5 border border-mat-rose/10 pointer-events-none rounded-full h-8 px-4"
-                 >
-                    <div className="flex items-center gap-2">
-                       <Crown size={14} className="text-mat-rose" />
-                       <span className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-wine">Sovereign Presence</span>
-                    </div>
-                 </Chip>
-                 <h1 className="mat-text-display-pro text-mat-wine leading-[0.8] tracking-tighter text-[5rem] sm:text-[6rem] md:text-[8rem]">
-                    {firstName}
-                 </h1>
-                 <p className="text-mat-slate/50 font-light text-lg md:text-xl max-w-xl mx-auto lg:mx-0">
-                    Your sanctuary awaits. The protocol curates the highest strata of aspirants governed entirely by your choice.
-                 </p>
-              </div>
-
-              {/* The Primary Actions */}
-              <div className="pt-8 flex flex-col sm:flex-row gap-6">
-                 <Tooltip>
-                    <TooltipTrigger asChild>
-                       <Button 
-                          onPress={scrollToForum} 
-                          className="group relative flex-1 h-20 rounded-[2rem] overflow-hidden shadow-2xl bg-[#0e0e0e] border border-mat-gold/20 hover:border-mat-gold/50 transition-all p-0"
-                       >
-                          <div className="relative h-full w-full flex items-center justify-center gap-4 text-mat-cream">
-                             <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center backdrop-blur-md">
-                                <MessageSquarePlus size={20} className="text-mat-gold group-hover:scale-110 transition-transform" />
-                             </div>
-                             <div className="text-left">
-                                <h3 className="text-lg font-bold italic font-['Impact'] text-mat-gold tracking-tight">THE COVEN</h3>
-                                <p className="text-[8px] font-black uppercase tracking-widest text-white/50">Elite Community Forums</p>
-                             </div>
-                          </div>
-                       </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                       Enter the sacred forum of the Matriarch to commune with the high-strata community.
-                    </TooltipContent>
-                 </Tooltip>
-
-                 <Tooltip>
-                    <TooltipTrigger asChild>
-                       <Button 
-                          variant="ghost"
-                          className="flex-1 h-20 rounded-[2rem] border-mat-wine/10 text-mat-wine/60 hover:text-mat-wine hover:bg-mat-wine/5 uppercase tracking-[0.2em] font-black text-[10px] transition-all"
-                          onPress={() => setIsEditing(true)}
-                       >
-                          Adjust Sovereign Identity
-                       </Button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom" className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                       Refine the parameters of your sovereign identity.
-                    </TooltipContent>
-                 </Tooltip>
-              </div>
-           </div>
-
-        </div>
-
-        {/* ─── SCENE 2: SOVEREIGN METRICS ─── */}
-        <div className="mt-32 border-t border-mat-rose/10 pt-20">
-           
-           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              
-              {/* Metric 1 */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white">
-                 <CardHeader className="flex justify-between items-center px-4 pt-4 border-none bg-transparent gap-4">
-                    <div className="w-12 h-12 bg-mat-wine/5 rounded-2xl flex items-center justify-center text-mat-wine/40 flex-shrink-0">
-                       <Heart size={20} />
-                    </div>
-                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-mat-slate/30">Matches</span>
-                 </CardHeader>
-                 <CardContent className="px-4 pb-6 overflow-hidden">
-                    <h4 className="text-5xl font-serif font-black italic text-mat-wine">{metrics.matches}</h4>
-                    <p className="text-xs text-mat-slate/40 mt-4 font-medium uppercase tracking-widest">Resonances</p>
-                 </CardContent>
-              </Card>
-
-              {/* Metric 2 */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-sm border border-mat-rose/5 hover:shadow-lg transition-all duration-500 bg-white">
-                 <CardHeader className="flex justify-between items-center px-4 pt-4 border-none bg-transparent gap-4">
-                    <div className="w-12 h-12 bg-mat-gold/5 rounded-2xl flex items-center justify-center text-mat-gold/60 flex-shrink-0">
-                       <Clock size={20} />
-                    </div>
-                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-mat-slate/30">Engagement</span>
-                 </CardHeader>
-                 <CardContent className="px-4 pb-6 overflow-hidden">
-                    <h4 className="text-5xl font-serif font-black italic text-mat-wine">{Math.floor(metrics.sessionSeconds / 60)}<span className="text-2xl text-mat-wine/40">m</span></h4>
-                    <p className="text-xs text-mat-slate/40 mt-4 font-medium uppercase tracking-widest">Time within Sanctuary</p>
-                 </CardContent>
-              </Card>
-
-              {/* Security Status */}
-              <Card className="col-span-1 p-4 rounded-[2.5rem] shadow-2xl relative overflow-hidden bg-mat-obsidian text-mat-cream border-none">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-mat-rose/10 blur-[50px] pointer-events-none" />
-                 
-                 <CardHeader className="flex justify-between items-center px-4 pt-4 relative z-10 border-none bg-transparent gap-4">
-                    <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center text-white/40 flex-shrink-0">
-                       <ShieldCheck size={20} />
-                    </div>
-                    <span className="text-[9px] uppercase tracking-[0.3em] font-black text-white/30">Privacy</span>
-                 </CardHeader>
-                 
-                 <CardContent className="px-4 pb-6 relative z-10 space-y-6 overflow-hidden">
-                    <div>
-                       <h4 className="text-2xl font-bold italic leading-tight">Identity Sealed</h4>
-                       <p className="text-xs text-white/40 mt-2 leading-relaxed whitespace-pre-wrap">Your true identity remains completely hidden from observers until a resonance is confirmed.</p>
-                    </div>
-                    <Tooltip>
-                       <TooltipTrigger asChild>
-                          <Button className="w-full bg-white/10 text-white border border-white/10 rounded-2xl h-14 flex items-center justify-center gap-3 uppercase tracking-widest font-black text-[9px] mt-2 group hover:bg-white/20 transition-all">
-                             <Lock size={14} className="group-hover:scale-110 transition-transform" /> Review Visibility Rules
-                          </Button>
-                       </TooltipTrigger>
-                       <TooltipContent className="bg-mat-wine text-mat-cream border-none font-bold uppercase tracking-widest text-[9px] px-4 py-2">
-                          Examine the protocols governing your presence and visibility.
-                       </TooltipContent>
-                    </Tooltip>
-                 </CardContent>
-              </Card>
-
-           </div>
-
-           {/* Subtle AdUnit for the Sanctuary Floor */}
-           <AdUnit 
-             slot="1234567892" 
-             className="mt-16 bg-white border-mat-rose/10 opacity-60" 
-             ads_accepted={profile.data_processing_consent?.ads_accepted}
-           />
-        </div>
-
-        <div className="mt-40 border-t border-mat-gold/10 pt-20">
-           <Leaderboard isInline={true} />
-        </div>
-
-        {/* ─── SCENE 3: THE COVEN (INLINE) ─── */}
-        <div ref={forumRef} className="mt-40 -mx-6 lg:-mx-8 border-t border-mat-gold/20">
-           <SanctuaryForum profile={profile} onClose={() => {}} isInline={true} />
-        </div>
-
-      </div>
+      </motion.div>
 
       {/* Verification Modal Global */}
       <AnimatePresence>

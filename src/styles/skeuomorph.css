@@ -1,0 +1,74 @@
+/* 🏛️ Skeuomorphic Primitives - Matriarch Protocol */
+
+:root {
+  --mat-cream: #FAF7F2;
+  --mat-wine: #7B2D42;
+  --mat-rose: #C9A09A;
+  --mat-gold: #BFA06A;
+  --mat-obsidian: #0F0F10;
+}
+
+/* 🏺 Tactile Card (Claymorphism/Neumorphism Hybrid) */
+.mat-tactile-card {
+  background: var(--mat-cream);
+  border-radius: 3rem;
+  box-shadow: 
+    10px 10px 20px rgba(0, 0, 0, 0.05),
+    -10px -10px 20px rgba(255, 255, 255, 0.8),
+    inset 2px 2px 5px rgba(255, 255, 255, 0.5),
+    inset -2px -2px 5px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* 💎 Liquid Glass Surface */
+.mat-glass-tactile {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 
+    0 8px 32px 0 rgba(123, 45, 66, 0.08),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+}
+
+/* 🏅 Burnished Gold Button (Skeuomorphic) */
+.mat-button-gold {
+  background: linear-gradient(135deg, #dfc08d 0%, #bfa06a 50%, #a68b5a 100%);
+  color: #2b1d0e;
+  box-shadow: 
+    0 4px 15px rgba(191, 160, 106, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.6),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.mat-button-gold:active {
+  box-shadow: 
+    0 2px 5px rgba(191, 160, 106, 0.2),
+    inset 0 2px 5px rgba(0, 0, 0, 0.3);
+  transform: translateY(1px);
+}
+
+/* 🍷 Deep Wine Pressable (Tactile) */
+.mat-button-wine {
+  background: var(--mat-wine);
+  color: white;
+  box-shadow: 
+    0 8px 20px rgba(123, 45, 66, 0.2),
+    inset 0 2px 2px rgba(255, 255, 255, 0.1),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.mat-button-wine:active {
+  box-shadow: 
+    0 4px 10px rgba(123, 45, 66, 0.1),
+    inset 0 4px 8px rgba(0, 0, 0, 0.5);
+  transform: translateY(2px);
+}
+
+/* 🖼️ Frame Inset (Immersive Reveal Mask) */
+.mat-reveal-mask {
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
