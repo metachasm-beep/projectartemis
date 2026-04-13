@@ -1,6 +1,8 @@
 import React from 'react';
 import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
+import { turso } from '@/lib/turso';
 
 interface MatriarchToolbarProps {
   activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel';
@@ -13,7 +15,23 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   setActiveTab, 
   onLogout 
 }) => {
-  const { profile, isAdmin } = useAuth() as any; // Cast as any because we just added isAdmin and TS might complain before full reload
+  const { profile, isAdmin } = useAuth() as any;
+  const [pendingCount, setPendingCount] = useState(0);
+
+  useEffect(() => {
+    if (profile?.role === 'man') {
+      const fetchPending = async () => {
+        const result = await turso.execute({
+          sql: "SELECT COUNT(*) as count FROM matches WHERE man_user_id = ? AND status = 'PENDING_ACCEPTANCE'",
+          args: [profile.user_id]
+        });
+        setPendingCount(result.rows[0].count as number);
+      };
+      fetchPending();
+      const interval = setInterval(fetchPending, 30000); // Poll every 30s
+      return () => clearInterval(interval);
+    }
+  }, [profile]);
   
   const navItems = [
     ...(profile?.role === 'admin' ? [{ id: 'admin_panel' as const, label: 'Control Panel', icon: Shield }] : []),
@@ -64,6 +82,11 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
                 }`}
               >
                 <item.icon size={16} className={activeTab === item.id ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
+                {item.id === 'messages' && pendingCount > 0 && (
+                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-mat-gold text-mat-wine text-[8px] font-black rounded-full flex items-center justify-center shadow-mat-gold-glow animate-bounce">
+                      {pendingCount}
+                   </span>
+                )}
                 <span className={`text-[9px] font-bold uppercase tracking-[0.1em] md:tracking-[0.2em] hidden md:block ${activeTab === item.id ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`}>
                   {item.label}
                 </span>

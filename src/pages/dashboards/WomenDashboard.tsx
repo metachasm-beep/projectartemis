@@ -16,9 +16,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { VerificationPrompt } from "@/components/VerificationPrompt";
 import { FAQ } from '@/components/FAQ';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { sanitizeBio } from '@/utils/trumpData';
 import { SEO_COPY } from '@/content/copy';
+import { staggerContainer, maskReveal, scaleInBreathe, springSlide, glassIn } from '@/utils/animations';
+
+import heroWoman from '@/assets/hero_woman.jpg';
+import parallaxWoman from '@/assets/parallax_woman.jpg';
 
 interface WomenDashboardProps {
   profile: any;
@@ -32,34 +36,58 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
   status, 
   handleBoost 
 }) => {
-  // ─── MAT-BLOOM VARIANTS ───
-  const bloomVariants = {
-    initial: { scale: 0.98, opacity: 0, filter: 'blur(10px)' },
-    animate: { scale: 1, opacity: 1, filter: 'blur(0px)', transition: { duration: 1.2, ease: [0.16, 1, 0.3, 1] } }
+  // ─── PARALLAX RITUAL ───
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+  
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["10deg", "-10deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-10deg", "10deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent | React.TouchEvent) => {
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    
+    const mouseX = (clientX - rect.left) / width - 0.5;
+    const mouseY = (clientY - rect.top) / height - 0.5;
+    
+    x.set(mouseX);
+    y.set(mouseY);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
   };
 
   return (
     <motion.div 
       initial="initial"
       animate="animate"
-      variants={bloomVariants}
-      className="space-y-20 pb-40 max-w-7xl mx-auto px-6"
+      variants={staggerContainer}
+      className="space-y-24 pb-48 max-w-7xl mx-auto px-6 relative"
     >
       {/* ─── DYNAMIC BRAND HEADER: THE SOVEREIGN ARRIVAL ─── */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-16 border-b border-mat-rose/20 relative">
-        <div className="space-y-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-12 pb-16 border-b border-mat-rose/20 relative pt-12">
+        <div className="space-y-8 relative z-10">
           <h1 className="sr-only">The Inner Sanctuary: Sovereign Dashboard | Matriarch</h1>
-          <motion.div
-            initial={{ x: -20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-          >
-            <Badge variant="outline" className="mat-text-label-pro px-6 py-2 border-mat-rose/30 text-mat-rose rounded-full">The Inner Sanctuary</Badge>
+          <motion.div variants={springSlide}>
+            <Badge variant="outline" className="mat-text-label-pro px-8 py-3 border-mat-rose/30 text-mat-rose rounded-full bg-white/40 backdrop-blur-md">The Inner Sanctuary</Badge>
           </motion.div>
-          <div className="mat-text-display-pro text-mat-wine leading-[0.85]">Your <br /><span className="text-mat-rose/25">Grace.</span></div>
+          <div className="overflow-hidden">
+             <motion.div variants={maskReveal} className="mat-text-display-pro text-mat-wine leading-[0.9]">
+                Welcome to the <br />
+                <span className="text-mat-rose/30 italic">Inner Sanctuary.</span>
+             </motion.div>
+          </div>
         </div>
         
-        <div className="flex flex-col gap-px bg-mat-rose/10 w-full md:w-auto overflow-hidden rounded-[2.5rem] mat-glass-deep border border-mat-rose/20 shadow-mat-premium">
+        <motion.div variants={springSlide} className="flex flex-col gap-px bg-mat-rose/10 w-full md:w-auto overflow-hidden rounded-[2.5rem] mat-glass-deep border border-mat-rose/20 shadow-mat-premium z-10">
            <div className="bg-mat-ivory/60 px-12 py-8 flex flex-col justify-center min-w-[200px] border-b border-mat-rose/5">
               <span className="mat-text-label-pro opacity-40">Aura Tokens</span>
               <div className="flex items-center gap-3">
@@ -75,6 +103,16 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
              {status?.points >= 100 ? "Activate Radiance" : "Gathering Energy"} 
              <Sparkles size={16} className={`group-hover:rotate-12 transition-transform ${status?.points >= 100 ? "text-mat-gold" : "text-white/20"}`} />
            </button>
+        </motion.div>
+
+        {/* 🌸 Hero Background Image: Scale-In Breathe */}
+        <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 pointer-events-none overflow-hidden blur-2xl md:blur-none">
+           <motion.img 
+             variants={scaleInBreathe} 
+             animate={["animate", "breathe"]}
+             src={heroWoman} 
+             className="w-full h-full object-cover transform-gpu"
+           />
         </div>
       </div>
 
@@ -93,28 +131,28 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
 
       {/* ─── BENTO MATRIX: HIGH-DENSITY SOVEREIGN DATA ─── */}
       <div className="bento-grid">
-         {/* 1. Sovereign Identity (Large) */}
-         <div className="bento-span-8 bento-item mat-glass-deep group min-h-[520px] p-2 bg-white/40">
-            <div className="flex flex-col md:flex-row h-full gap-12 bg-mat-cream/40 rounded-[2.5rem] p-10">
-                <div className="relative shrink-0 w-full md:w-80 aspect-[3/4] md:h-full rounded-[3.5rem] overflow-hidden border border-mat-rose/10 shadow-2xl">
-                  {profile?.photos?.[0] ? (
-                    <img 
-                      src={profile.photos[0]} 
-                      className="w-full h-full object-cover group-hover:scale-105 transition-all duration-1000 grayscale hover:grayscale-0 filter sepia-[0.1]" 
+         {/* 1. Sovereign Identity (Large) - Parallax Enabled */}
+         <motion.div 
+            variants={springSlide}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+            className="bento-span-8 bento-item mat-glass-deep group min-h-[520px] p-2 bg-white/40 transform-gpu cursor-pointer"
+         >
+            <div className="flex flex-col md:flex-row h-full gap-12 bg-mat-cream/40 rounded-[2.5rem] p-10" style={{ transform: "translateZ(20px)" }}>
+                <div className="relative shrink-0 w-full md:w-80 aspect-[3/4] md:h-full rounded-[3.5rem] overflow-hidden border border-mat-rose/10 shadow-2xl shadow-mat-wine/10">
+                   <img 
+                      src={parallaxWoman} 
+                      className="w-full h-full object-cover group-hover:scale-110 transition-all duration-1000 grayscale group-hover:grayscale-0 filter sepia-[0.1]" 
                       alt="Sovereign" 
+                      style={{ transform: "translateZ(40px)" }}
                     />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center p-12 text-center text-mat-rose/20 bg-mat-rose/5">
-                      <Crown className="w-20 h-20 mb-6 opacity-40 animate-pulse" />
-                      <p className="mat-text-label-pro">Awaiting <br />Portrait</p>
-                    </div>
-                  )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/40 via-transparent to-transparent opacity-80" />
-                  <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center z-10">
-                     <div className="w-16 h-16 bg-white/10 backdrop-blur-2xl rounded-3xl flex items-center justify-center border border-white/20 shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-t from-mat-wine/60 via-transparent to-transparent opacity-80" />
+                  <div className="absolute bottom-8 left-8 right-8 flex justify-between items-center z-10" style={{ transform: "translateZ(60px)" }}>
+                     <div className="w-16 h-16 bg-white/20 backdrop-blur-2xl rounded-3xl flex items-center justify-center border border-white/30 shadow-2xl">
                         <Crown className="text-white w-8 h-8" />
                      </div>
-                     <Badge className="bg-mat-wine text-white px-6 py-2 rounded-full mat-text-label-pro">{profile?.role?.toUpperCase() || 'MATRIARCH'}</Badge>
+                     <Badge className="bg-mat-wine/80 backdrop-blur-md text-white px-6 py-2 rounded-full mat-text-label-pro border border-white/10">{profile?.role?.toUpperCase() || 'MATRIARCH'}</Badge>
                   </div>
                </div>
 
@@ -152,7 +190,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
          </div>
 
          {/* 2. Harmony Quotient (Small) */}
-         <div className="bento-span-4 bento-item bg-mat-obsidian text-mat-cream group shadow-2xl relative overflow-hidden">
+         <motion.div variants={springSlide} className="bento-span-4 bento-item bg-mat-obsidian text-mat-cream group shadow-2xl relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-br from-mat-wine/30 via-transparent to-transparent pointer-events-none" />
             <div className="flex flex-col h-full justify-between p-12 relative z-10">
                <div className="space-y-8">
@@ -193,10 +231,10 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   Refine Narrative <Scroll size={14} className="group-hover:rotate-12 transition-transform" />
                </button>
             </div>
-         </div>
+         </motion.div>
 
          {/* 3. Connection Archway (Medium) */}
-         <div className="bento-span-8 bento-item mat-glass-deep p-16">
+         <motion.div variants={springSlide} className="bento-span-8 bento-item mat-glass-deep p-16">
             <div className="space-y-16">
                <div className="flex justify-between items-start">
                   <div className="space-y-2">
@@ -225,10 +263,10 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   ))}
                </div>
             </div>
-         </div>
+         </motion.div>
 
          {/* 4. Sanctuary Records (Small) */}
-         <div className="bento-span-4 bento-item mat-glass-liquid border-dashed border-mat-rose/30 group p-12">
+         <motion.div variants={springSlide} className="bento-span-4 bento-item mat-glass-liquid border-dashed border-mat-rose/30 group p-12">
             <div className="flex flex-col h-full justify-between gap-16">
                <div className="space-y-8">
                   <div className="w-16 h-16 mat-glass rounded-2xl flex items-center justify-center text-mat-rose group-hover:text-mat-wine transition-all shadow-premium-gold">
@@ -252,7 +290,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   </div>
                </div>
             </div>
-         </div>
+         </motion.div>
       </div>
 
       <FAQ />

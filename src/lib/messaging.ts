@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
  */
 
 export type CommMode = 'TEXT' | 'DELAYED_TEXT' | 'PROMPT_INTRO' | 'VOICE_REQUEST' | 'VIDEO_REQUEST' | 'HOLD' | 'REVOKED';
-export type MatchStatus = 'ACTIVE' | 'ON_HOLD' | 'UNMATCHED' | 'BLOCKED';
+export type MatchStatus = 'PENDING_ACCEPTANCE' | 'ACTIVE' | 'ON_HOLD' | 'UNMATCHED' | 'BLOCKED' | 'REJECTED';
 
 export interface MessagingMatch {
   id: string;
@@ -34,13 +34,23 @@ export const MessagingService = {
    * 💜 Selection Protocol: A woman initiates a match by selecting a man.
    */
   async createMatch(womanId: string, manId: string): Promise<string> {
+    // 🏛️ Idempotency Ritual: Check for existing match first
+    const existing = await turso.execute({
+      sql: "SELECT id FROM matches WHERE (woman_user_id = ? AND man_user_id = ?) OR (woman_user_id = ? AND man_user_id = ?)",
+      args: [womanId, manId, manId, womanId]
+    });
+
+    if (existing.rows.length > 0) {
+      return existing.rows[0].id as string;
+    }
+
     const matchId = `match_${uuidv4()}`;
     const convId = `conv_${uuidv4()}`;
 
     // Atomic match creation
     await turso.batch([
       {
-        sql: "INSERT INTO matches (id, woman_user_id, man_user_id) VALUES (?, ?, ?)",
+        sql: "INSERT INTO matches (id, woman_user_id, man_user_id, status) VALUES (?, ?, ?, 'PENDING_ACCEPTANCE')",
         args: [matchId, womanId, manId]
       },
       {
@@ -49,7 +59,7 @@ export const MessagingService = {
       },
       {
         sql: "INSERT INTO match_state_history (id, match_id, to_status, changed_by_user_id) VALUES (?, ?, ?, ?)",
-        args: [`hist_${uuidv4()}`, matchId, 'ACTIVE', womanId]
+        args: [`hist_${uuidv4()}`, matchId, 'PENDING_ACCEPTANCE', womanId]
       }
     ], "write");
 
@@ -131,6 +141,11 @@ export const MessagingService = {
       }
     }
 
+    // 3.5 Consent Enforcement: Men cannot respond if connection is still pending
+    if (match.status === 'PENDING_ACCEPTANCE' && !isWoman) {
+      throw new Error("Sovereign Consent Required: You must accept this resonance before responding.");
+    }
+
     if (mode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed) {
       // Men can only send prompt responses, not free messages
        throw new Error("Prompt Mandatory: You must complete the woman's introductory story first.");
@@ -174,5 +189,39 @@ export const MessagingService = {
       sql: "DELETE FROM messages WHERE id = ? AND sender_user_id = ?",
       args: [msgId, userId]
     });
+  },
+
+  /**
+   * 🏛️ Accept Resonance: The man welcomes the connection.
+   */
+  async acceptMatch(matchId: string, manId: string): Promise<void> {
+    const histId = `hist_${uuidv4()}`;
+    await turso.batch([
+      {
+        sql: "UPDATE matches SET status = 'ACTIVE' WHERE id = ? AND man_user_id = ?",
+        args: [matchId, manId]
+      },
+      {
+        sql: "INSERT INTO match_state_history (id, match_id, to_status, changed_by_user_id) VALUES (?, ?, ?, ?)",
+        args: [histId, matchId, 'ACTIVE', manId]
+      }
+    ], "write");
+  },
+
+  /**
+   * 🏛️ Reject Outreach: The man declines the connection.
+   */
+  async rejectMatch(matchId: string, manId: string): Promise<void> {
+    const histId = `hist_${uuidv4()}`;
+    await turso.batch([
+      {
+        sql: "UPDATE matches SET status = 'REJECTED' WHERE id = ? AND man_user_id = ?",
+        args: [matchId, manId]
+      },
+      {
+        sql: "INSERT INTO match_state_history (id, match_id, to_status, changed_by_user_id) VALUES (?, ?, ?, ?)",
+        args: [histId, matchId, 'REJECTED', manId]
+      }
+    ], "write");
   }
 };

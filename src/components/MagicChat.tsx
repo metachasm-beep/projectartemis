@@ -93,6 +93,22 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
     return () => { if (channel) channel.unsubscribe(); };
   }, [match.id, currentUserId]);
 
+  const handleAccept = async () => {
+    try {
+      await MessagingService.acceptMatch(match.id, currentUserId);
+      window.location.reload(); // Hard refresh to sync state or handle via state uplift
+    } catch (e: any) { alert(e.message || "Failed to accept resonance."); }
+  };
+
+  const handleReject = async () => {
+    try {
+      if (confirm("Reject this outreach? The connection will be permanently severed.")) {
+        await MessagingService.rejectMatch(match.id, currentUserId);
+        onBack();
+      }
+    } catch (e: any) { alert(e.message || "Failed to decline outreach."); }
+  };
+
   useEffect(() => { if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight; }, [messages, otherUserTyping]);
 
   const handleSend = async () => {
@@ -117,14 +133,16 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
   // 🧩 Permission Rituals
   const isHold = commMode === 'HOLD';
   const isRevoked = commMode === 'REVOKED';
+  const isPending = match.status === 'PENDING_ACCEPTANCE';
   const isTimeLocked = commMode === 'DELAYED_TEXT' && match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date() && !isWoman;
   const isPromptLocked = commMode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed;
-  const canSend = (userRole === 'admin') || (!isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isAdminMonitor);
+  const canSend = (userRole === 'admin') || (!isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isPending && !isAdminMonitor);
 
   const getStatusLabel = () => {
     if (isAdminMonitor) return { l: "Sovereign Gaze Active", s: "Watching resonant dialogue in surveillance mode.", i: Eye };
     if (isHold) return { l: "Sanctuary in Recess", s: "The connection is being held for reflection.", i: Pause };
     if (isRevoked) return { l: "Connection Terminated", s: "The Matriarch has revoked this sanctuary resonance.", i: Lock };
+    if (isPending) return { l: "Resonance Awaiting Consent", s: "A sovereign choice is required to open the bridge.", i: ShieldCheck };
     if (isTimeLocked) return { l: "Temporal Lock Active", s: "Resonance will be granted when the time is right.", i: Clock };
     if (isPromptLocked) return { l: "Aura Prompt Required", s: "Patience. She must initiate the ritual questions.", i: Zap };
     return { l: "Sanctuary Open", s: "Resonant dialogue is manifesting.", i: Sparkles };
@@ -219,22 +237,37 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
       </div>
 
       {/* ─── Sovereign Asymmetric Input ─── */}
-      <div className="p-10 bg-white/40 border-t border-mat-rose/5 backdrop-blur-3xl">
+      <div className="p-10 bg-white/40 border-t border-mat-rose/5 backdrop-blur-3xl relative">
+         {isPending && !isWoman && !isAdminMonitor && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="absolute inset-0 z-50 bg-mat-wine/95 backdrop-blur-xl flex flex-col items-center justify-center p-8 text-center space-y-6">
+               <div className="space-y-2">
+                  <h4 className="text-3xl font-bold italic text-mat-gold tracking-tight">Sovereign Choice.</h4>
+                  <p className="text-[10px] text-mat-cream/60 uppercase tracking-[0.3em] max-w-xs leading-relaxed">
+                     This aspirant seeks resonance with your identity. <br />Will you welcome her into your sanctuary?
+                  </p>
+               </div>
+               <div className="flex gap-4 w-full max-w-xs">
+                  <Button onClick={handleAccept} className="flex-1 h-16 bg-mat-gold text-mat-wine rounded-2xl font-black uppercase tracking-widest text-[10px] shadow-mat-gold-glow">Accept</Button>
+                  <Button onClick={handleReject} variant="ghost" className="flex-1 h-16 bg-white/5 text-mat-rose rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-white/10">Decline</Button>
+               </div>
+            </motion.div>
+         )}
+
          {!canSend ? (
-           <div className="flex flex-col items-center justify-center py-6 text-center space-y-5 animate-in fade-in slide-in-from-bottom-4">
-              <div className="flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-mat-wine/5 border border-mat-rose/10 text-mat-wine/60 shadow-inner">
-                 <Lock size={18} className="opacity-40" />
-                 <span className="text-[11px] font-black uppercase tracking-[0.4em] italic">Resonance Shielded</span>
-              </div>
-              <p className="text-[10px] uppercase font-black tracking-widest text-mat-wine/20 max-w-sm leading-relaxed">{status.s}</p>
-           </div>
+            <div className="flex flex-col items-center justify-center py-6 text-center space-y-5 animate-in fade-in slide-in-from-bottom-4">
+               <div className="flex items-center gap-4 px-10 py-5 rounded-[2rem] bg-mat-wine/5 border border-mat-rose/10 text-mat-wine/60 shadow-inner">
+                  {isPending ? <ShieldCheck size={18} className="text-mat-gold animate-pulse" /> : <Lock size={18} className="opacity-40" />}
+                  <span className="text-[11px] font-black uppercase tracking-[0.4em] italic">{isPending ? "Awaiting Acceptance" : "Resonance Shielded"}</span>
+               </div>
+               <p className="text-[10px] uppercase font-black tracking-widest text-mat-wine/20 max-w-sm leading-relaxed">{status.s}</p>
+            </div>
          ) : (
-           <div className="flex items-center gap-6 bg-white rounded-[2.5rem] p-4 border border-mat-rose/10 shadow-mat-premium focus-within:border-mat-wine focus-within:shadow-mat-rose/10 transition-all group">
-              <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Share your resonance..." className="flex-1 bg-transparent border-none outline-none px-6 text-sm italic font-bold placeholder:text-mat-slate/20 text-mat-wine" />
-              <button onClick={handleSend} disabled={!inputValue.trim() || sending} className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full flex items-center justify-center hover:bg-mat-wine-soft shadow-mat-premium transition-all active:scale-95 disabled:opacity-10">
-                 {sending ? <Sparkles size={24} className="animate-spin" /> : <Send size={24} />}
-              </button>
-           </div>
+            <div className="flex items-center gap-6 bg-white rounded-[2.5rem] p-4 border border-mat-rose/10 shadow-mat-premium focus-within:border-mat-wine focus-within:shadow-mat-rose/10 transition-all group">
+               <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} placeholder="Share your resonance..." className="flex-1 bg-transparent border-none outline-none px-6 text-sm italic font-bold placeholder:text-mat-slate/20 text-mat-wine" />
+               <button onClick={handleSend} disabled={!inputValue.trim() || sending} className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full flex items-center justify-center hover:bg-mat-wine-soft shadow-mat-premium transition-all active:scale-95 disabled:opacity-10">
+                  {sending ? <Sparkles size={24} className="animate-spin" /> : <Send size={24} />}
+               </button>
+            </div>
          )}
       </div>
     </div>
