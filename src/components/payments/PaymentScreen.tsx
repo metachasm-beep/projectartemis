@@ -92,6 +92,14 @@ export const PaymentScreen: React.FC = () => {
         }),
       });
 
+      // 🛡️ FRONTEND HARDENING: Check for JSON response
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        const text = await res.text();
+        console.error('🔗 API_NON_JSON_ERROR:', text);
+        throw new Error('Registry Sync Failure: The sanctuary server returned an invalid response. Please try again in moments.');
+      }
+
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || 'Claim failed.');
@@ -102,7 +110,8 @@ export const PaymentScreen: React.FC = () => {
         setStatus('success');
       }
     } catch (err: any) {
-      setErrorMessage(err.message);
+      console.error('💳 CLAIM_ERROR:', err);
+      setErrorMessage(err.message || 'An unexpected error occurred during sync.');
       setStatus('error');
     }
   };
