@@ -497,6 +497,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             Matriarch // Standing Is Power
          </p>
       </div>
-    </div>
+      </div>
+    </motion.div>
   );
 };
