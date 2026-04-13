@@ -632,15 +632,7 @@ export const AdminService = {
    */
   resolveAuraClaim: async (claimId: string, approved: boolean) => {
     try {
-      if (!approved) {
-        await turso.execute({
-          sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?",
-          args: [claimId]
-        });
-        return true;
-      }
-
-      // 1. Fetch Claim Details
+      // 1. Fetch Claim Details (Required for both paths)
       const claimRes = await turso.execute({
         sql: "SELECT * FROM pending_claims WHERE id = ?",
         args: [claimId]
@@ -648,7 +640,21 @@ export const AdminService = {
       const claim: any = claimRes.rows[0];
       if (!claim) throw new Error("Claim not found.");
 
-      // 2. Extract Power and Density
+      if (!approved) {
+        await turso.execute({
+          sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?",
+          args: [claimId]
+        });
+
+        // 🛡️ REJECTION TRANSMISSION
+        await AdminService.sendDirectAdminMessage(
+          claim.user_id, 
+          `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] could not be verified by the Sanctuary's financial ledger. Please ensure your transaction details are correct and re-submit your claim via the dashboard. Command discarded.`
+        );
+        return true;
+      }
+
+      // 2. Extract Power and Density for Approval
       let jumpType = 'nudge';
       let city = 'Delhi';
       let amount = 49;
@@ -686,6 +692,12 @@ export const AdminService = {
           args: [logId, claim.user_id, leapBonus, `ADMIN_RELEASE: ${jumpType.toUpperCase()} | UTR: ${claim.submitted_utr}`] 
         }
       ], "write");
+
+      // 🛡️ APPROVAL TRANSMISSION
+      await AdminService.sendDirectAdminMessage(
+        claim.user_id,
+        `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] has been verified. ${amount} Aura tokens have been credited to your identity, and your standing has been elevated by ${leapBonus} rank points. The Sanctuary acknowledges your support. Resonance established.`
+      );
 
       // 5. Trigger Rank Reflow
       const { SanctuaryService } = await import('./sanctuary');
