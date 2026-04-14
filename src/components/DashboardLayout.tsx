@@ -20,8 +20,9 @@ export const DashboardLayout: React.FC = () => {
   const bypassCtx = useContext(AuthBypassContext);
   const realAuth = useAuth();
   const { profile, signOut } = bypassCtx || realAuth;
-  // Define correct initial tab based on role so admins land on control panel
-  const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' : 'profile';
+  // Define correct initial tab based on role so admins land on control panel, women on browse
+  const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' : 
+                         profile?.role === 'woman' ? 'discovery' : 'profile';
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 

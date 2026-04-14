@@ -45,13 +45,11 @@ const DockIcon: React.FC<DockIconProps> = ({ icon: Icon, label, mouseX, onClick 
 };
 
 interface DockProps {
-  handleLogout: () => void;
   onShowFAQ?: () => void;
   onShowVerification?: () => void;
 }
 
 export const Dock: React.FC<DockProps> = ({ 
-  handleLogout, 
   onShowFAQ, 
   onShowVerification 
 }) => {
@@ -63,10 +61,6 @@ export const Dock: React.FC<DockProps> = ({
       onMouseLeave={() => mouseX.set(Infinity)}
       className="flex items-center gap-4 p-4 rounded-[2.5rem] bg-black/40 backdrop-blur-3xl border border-white/10 shadow-2xl"
     >
-      <DockIcon icon={Home} label="Sanctuary" mouseX={mouseX} />
-      <DockIcon icon={Search} label="Discovery" mouseX={mouseX} />
-      <DockIcon icon={MessageCircle} label="Dialogs" mouseX={mouseX} />
-      <DockIcon icon={User} label="Identity" mouseX={mouseX} />
       <DockIcon icon={Settings} label="Protocols" mouseX={mouseX} />
       
       <div className="w-px h-8 bg-white/10 mx-2" />
@@ -75,10 +69,6 @@ export const Dock: React.FC<DockProps> = ({
       {onShowVerification && (
         <DockIcon icon={ShieldCheck} label="Identity Seal" mouseX={mouseX} onClick={onShowVerification} />
       )}
-      
-      <div className="w-px h-8 bg-white/10 mx-2" />
-      
-      <DockIcon icon={LogOut} label="Depart" mouseX={mouseX} onClick={handleLogout} />
     </motion.nav>
   );
 };

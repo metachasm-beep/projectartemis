@@ -69,10 +69,32 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏰 Main Interface Layer */}
-      <main className="relative z-10 w-full h-full p-6 lg:p-10 flex flex-col gap-6">
+      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col gap-8">
         
+        {/* 🎭 Minimal Identity Zone (Top-Left personalization) */}
+        <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
+           {profile?.photos?.[0] ? (
+             <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+                <img src={profile.photos[0]} alt="Sovereign" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/30 to-transparent mix-blend-overlay"></div>
+             </div>
+           ) : (
+             <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md">
+                <span className="font-mono text-mat-gold/50 text-[10px] tracking-widest uppercase">ID</span>
+             </div>
+           )}
+           <div className="space-y-1">
+              <Badge variant="outline" className="px-3 py-1 border-mat-gold/30 text-mat-gold text-[7px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/5 backdrop-blur-md">
+                Protocol: Active Sync
+              </Badge>
+              <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+                {profile?.full_name?.split(' ')[0] || 'Sovereign'} Presence.
+              </h1>
+           </div>
+        </header>
+
         {/* 🕸️ The Sovereign Matrix: 12-Column Grid (Squeezed for Zero-Scroll) */}
-        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-5 lg:gap-6 pb-20">
+        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-5 lg:gap-6 pb-12">
           
           {/* 👁️ Zone 1: The Oracle (Insight) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.1}>
@@ -123,8 +145,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             <SanctuaryWidget 
                metrics={metrics} 
                profile={profile}
-               onShowFAQ={() => setShowFAQ(true)}
-               onShowVerification={() => setShowVerification(true)}
             />
           </GlassCard>
 
@@ -161,7 +181,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         {/* 🚀 Floating Command Dock (Zero-Scroll Navigation) */}
         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
           <Dock 
-            handleLogout={handleLogout} 
             onShowFAQ={() => setShowFAQ(true)}
             onShowVerification={!profile?.is_verified ? () => setShowVerification(true) : undefined}
           />
