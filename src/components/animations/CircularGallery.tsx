@@ -652,7 +652,8 @@ class App {
       }
     ];
     const galleryItems = items && items.length ? items : defaultItems;
-    // Purity Fix: Only double if dataset is small. For discovery streams (200+), doubling creates perceived duplicates.
+    // Purity Fix: We must store the original length so modulo math works universally.
+    (this as any).originalLength = galleryItems.length;
     this.mediasImages = galleryItems.length < 24 ? galleryItems.concat(galleryItems) : galleryItems;
     this.medias = this.mediasImages.map((data, index) => {
       return new Media({
@@ -703,7 +704,7 @@ class App {
          if (this.medias && this.medias.length > 0) {
             const width = this.medias[0].width;
             const itemIndex = Math.round(Math.abs(this.scroll.target) / width);
-            const originalLength = this.mediasImages.length / 2;
+            const originalLength = (this as any).originalLength || this.mediasImages.length;
             this.onSelect(itemIndex % originalLength);
          }
       }
@@ -759,7 +760,8 @@ class App {
     if (this.onCenterUpdate && this.medias.length > 0) {
       const width = this.medias[0].width;
       const centeredIndex = Math.round(Math.abs(this.scroll.current) / width);
-      this.onCenterUpdate(centeredIndex % (this.mediasImages.length / 2));
+      const originalLength = (this as any).originalLength || this.mediasImages.length;
+      this.onCenterUpdate(centeredIndex % originalLength);
     }
     
     this.raf = window.requestAnimationFrame(this.update.bind(this));
