@@ -22,8 +22,9 @@ import { FAQ } from '@/components/FAQ';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
-import { OracleWidget, SanctuaryWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
+import { OracleWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
 import { ThreeAnchor } from '@/components/dashboard/promax/ThreeAnchor';
+import { TrumpCard } from '@/components/discovery/TrumpCard';
 import { SkillOrchestrator } from '@/services/SkillOrchestrator';
 
 interface WomenSanctuaryProps {
@@ -65,13 +66,13 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         {/* 🎭 Header Zone */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
            {profile?.photos?.[0] ? (
-             <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
+             <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-mat-gold shadow-[0_0_50px_rgba(212,175,55,0.4)]">
                 <img src={profile.photos[0]} alt="User" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/30 to-transparent mix-blend-overlay"></div>
+                <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/40 to-transparent mix-blend-overlay"></div>
              </div>
            ) : (
-             <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md">
-                <span className="font-mono text-mat-gold/50 text-[10px] tracking-widest uppercase">ID</span>
+             <div className="w-32 h-32 rounded-3xl bg-white/5 border-2 border-white/10 flex items-center justify-center backdrop-blur-md">
+                <span className="font-mono text-mat-gold text-[14px] font-black tracking-[0.5em] uppercase">ID</span>
              </div>
            )}
            <div className="space-y-1">
@@ -131,13 +132,26 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
           </GlassCard>
 
-          {/* 🌿 Profile Zone (Identity Hub) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-8" delay={0.3}>
-            <SanctuaryWidget 
-               metrics={metrics} 
-               profile={profile}
+          <div className="col-span-12 lg:col-span-4 row-span-8 overflow-hidden rounded-[3.5rem] border border-white/10 glass-surface shadow-2xl">
+            <TrumpCard 
+               isDashboard
+               profile={{
+                 id: profile?.user_id || '0',
+                 name: profile?.full_name || 'Anonymous',
+                 age: profile?.age || 24,
+                 city: profile?.city || 'Delhi',
+                 img: profile?.photos?.[0] || '',
+                 status: profile?.tier || 'Aspirant',
+                 bio: profile?.bio || 'No bio available.',
+                 height_str: profile?.height || '5\'6"',
+                 vocation: profile?.vocation || 'Member',
+                 tier: profile?.tier || 'Aspirant',
+                 is_verified: profile?.is_verified,
+                 absolute_rank: (profile as any)?.absolute_rank,
+                 rank_tier: profile?.tier
+               }} 
             />
-          </GlassCard>
+          </div>
 
           {/* 📜 Activity Zone (Performance) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.4}>

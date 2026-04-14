@@ -37,9 +37,10 @@ interface TrumpCardProps {
   };
   onClose?: () => void;
   onAction?: (type: string) => void;
+  isDashboard?: boolean;
 }
 
-export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction }) => {
+export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction, isDashboard }) => {
   const stats = mapToTrumpStats(profile);
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
 
@@ -59,7 +60,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[480px] min-h-[750px] bg-mat-obsidian border-[10px] border-mat-gold rounded-[3rem] shadow-[0_0_150px_rgba(191,160,106,0.6)] overflow-hidden flex flex-col group p-2"
+      className={cn(
+        "relative bg-mat-obsidian border-[10px] border-mat-gold rounded-[3rem] shadow-[0_0_150px_rgba(191,160,106,0.6)] overflow-hidden flex flex-col group p-2",
+        isDashboard ? "w-full h-full" : "w-full max-w-[480px] min-h-[750px]"
+      )}
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
