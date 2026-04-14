@@ -227,7 +227,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="mat-glass-deep rounded-[3rem] p-12 md:p-16 shadow-mat-premium border-mat-rose/10">
              <AnimatePresence mode="wait">
                 {step === 'ROLE' && (
-                  <motion.div key="role" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className                      <div className="text-center space-y-4">
+                  <motion.div key="role" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-10">
+                     <div className="text-center space-y-4">
                         <div className="w-16 h-16 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><Heart size={32} /></div>
                         <h2 className="text-5xl font-bold text-mat-wine italic leading-tight">Welcome to <br />Matriarch</h2>
                         <p className="text-mat-slate text-sm italic">Create your profile to join the community.</p>
@@ -241,7 +242,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         ))}
                      </div>
                      <button disabled={!formData.role} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] disabled:opacity-20 shadow-mat-premium transition-all">Get Started</button>
-                  </motion.div>        </motion.div>                 {step === 'BASICS' && (
+                  </motion.div>
+                )}
+
+                {step === 'BASICS' && (
                   <motion.div key="basics" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
                      <div className="text-center space-y-4"><h2 className="text-4xl font-bold text-mat-wine italic">Profile Details</h2><p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/40">Tell us about yourself</p></div>
                      <div className="space-y-8">
@@ -256,7 +260,9 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                      </div>
                      <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">Next Step</button>
                   </motion.div>
-                )}v>                 {step === 'PHOTO' && (
+                )}
+
+                {step === 'PHOTO' && (
                    <motion.div key="photo" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-10 text-center">
                       <div className="space-y-4">
                         <Camera className="mx-auto text-mat-rose" size={40} />
@@ -295,7 +301,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         )}
                       </div>
                    </motion.div>
-                )}v>
                 )}
 
                 {step === 'STATS' && (
@@ -349,7 +354,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                       </div>
 
                       <button disabled={!formData.trump_stats.hometown || !formData.trump_stats.signature_move} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20">Set Attributes</button>
-                                   {step === 'LEGAL' && (
+                   </motion.div>
+                )}
+
+                {step === 'LEGAL' && (
                    <motion.div key="legal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 text-center">
                       <div className="space-y-6"><div className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><ShieldCheck size={40} /></div><h2 className="text-4xl font-bold text-mat-wine italic">Community Standards</h2><p className="text-mat-slate text-sm leading-relaxed max-w-sm mx-auto italic">By joining, you agree to interact with sincerity, respect, and clear intentions.</p></div>
                       <div className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-rose/10 space-y-4">
@@ -359,7 +367,6 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                       {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{error}</p>}
                       <button onClick={updateProfile} disabled={loading} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform">{loading ? 'Joining...' : 'Launch Dashboard'}</button>
                    </motion.div>
-                )}   </motion.div>
                 )}
              </AnimatePresence>
           </div>

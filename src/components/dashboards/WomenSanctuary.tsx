@@ -61,7 +61,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏰 Main Interface Layer */}
-      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col g        {/* 🎭 Header Zone */}
+      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col gap-12">
+        {/* 🎭 Header Zone */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
            {profile?.photos?.[0] ? (
              <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
