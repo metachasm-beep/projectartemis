@@ -343,19 +343,19 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             </div>
           </section>
         ) : (
-          <section className="h-[100dvh] min-h-[100dvh] pt-24 pb-8 snap-start flex flex-col items-center justify-center">
-            <header className="mb-12 text-center px-6">
+          <section className="h-[100dvh] min-h-[100dvh] pt-16 pb-4 snap-start flex flex-col items-center justify-center">
+            <header className="mb-6 text-center px-6">
               <motion.h1 
                 variants={maskReveal} 
-                className="text-6xl lg:text-7xl font-light text-white italic tracking-tighter"
+                className="text-5xl lg:text-6xl font-light text-white italic tracking-tighter"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
                 Identity Resonance.
               </motion.h1>
-              <motion.p variants={maskReveal} className="text-[11px] font-medium uppercase tracking-[1.2em] text-mat-gold/30 mt-4 ml-6">
+              <motion.p variants={maskReveal} className="text-[10px] font-medium uppercase tracking-[1.2em] text-mat-gold/30 mt-3 ml-6">
                 Sanctuary Selection Protocol
               </motion.p>
-              <motion.div variants={maskReveal} className="mt-8 flex justify-center w-full">
+              <motion.div variants={maskReveal} className="mt-6 flex justify-center w-full">
                  <ArchetypeBadge occupation={profile.occupation} size="lg" />
               </motion.div>
             </header>
@@ -384,7 +384,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     onMouseMove={handleParallax} 
                     onMouseLeave={() => {x.set(0); y.set(0)}} 
                     style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} 
-                    className="w-full max-h-[75vh] origin-center"
+                    className="w-full max-h-[60vh] xl:max-h-[65vh] origin-center"
                   >
                     <TrumpCard 
                       isDashboard
@@ -407,7 +407,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     />
                   </motion.div>
 
-                  <div className="mt-10">
+                  <div className="mt-6">
                     <AnimatePresence mode="wait">
                        <motion.div 
                           key={activeGazeIndex} 
