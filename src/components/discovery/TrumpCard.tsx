@@ -59,20 +59,20 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
-      className="relative w-full max-w-[420px] aspect-[2/3.1] md:aspect-[2/3.3] bg-mat-obsidian border-[8px] border-mat-gold rounded-[2.5rem] shadow-[0_0_120px_rgba(191,160,106,0.5)] overflow-hidden flex flex-col group p-2"
+      className="relative w-full max-w-[480px] min-h-[750px] bg-mat-obsidian border-[10px] border-mat-gold rounded-[3rem] shadow-[0_0_150px_rgba(191,160,106,0.6)] overflow-hidden flex flex-col group p-2"
     >
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
       {/* 🏆 TRUMP CARD HEADER */}
       <div className="absolute top-2 left-2 right-2 h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl overflow-hidden rounded-t-[1.5rem]">
         <div className="flex flex-col">
-           <span className="text-[8px] font-black uppercase tracking-[0.3em] text-mat-obsidian/60 italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
-           <span className="text-[10px] font-black uppercase tracking-widest text-mat-obsidian/40 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
+           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-obsidian italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
+           <span className="text-[14px] font-black uppercase tracking-widest text-mat-obsidian/70 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
-              <span className="text-[8px] font-black uppercase text-mat-obsidian/60">Power Lvl</span>
-              <span className="mat-text-impact text-mat-obsidian text-2xl leading-none">{powerLevel}</span>
+              <span className="text-[12px] font-black uppercase text-mat-obsidian/80">Power Lvl</span>
+              <span className="mat-text-impact text-mat-obsidian text-3xl leading-none">{powerLevel}</span>
            </div>
            {onClose && (
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-mat-obsidian/10 flex items-center justify-center hover:bg-mat-obsidian/20 transition-colors">
@@ -82,8 +82,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
       </div>
 
-      {/* 🖼️ HERO PORTRAIT AREA - OPTIMIZED FOR VISIBILITY */}
-      <div className="relative flex-[0_0_48%] min-h-0 mt-12 overflow-hidden border-b-4 border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.2rem] z-10 flex flex-col">
+      {/* 🖼️ HERO PORTRAIT AREA - MASSIVE UPSCALE (400% IMPACT) */}
+      <div className="relative flex-[0_0_68%] min-h-0 mt-14 overflow-hidden border-b-[6px] border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col">
         <div className="w-full h-full relative overflow-hidden flex-1 bg-mat-obsidian">
           <img 
             src={profile.img} 
@@ -94,10 +94,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* 🏅 COLLECTIBLE RANK BADGE - TOP LEFT TUCKED */}
-        <div className="absolute top-4 left-4 z-30">
-           <div className="w-16 h-16 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border-4 border-mat-gold shadow-2xl scale-75 md:scale-100 -rotate-6 group-hover:rotate-0 transition-transform duration-500">
-              <span className="text-[8px] font-black text-mat-gold uppercase tracking-tighter">Rank</span>
-              <span className="text-2xl font-black text-white italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
+        <div className="absolute top-6 left-6 z-30">
+           <div className="w-20 h-20 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border-4 border-mat-gold shadow-2xl scale-100 group-hover:rotate-0 transition-transform duration-500">
+              <span className="text-[10px] font-black text-mat-gold uppercase tracking-tighter">Rank</span>
+              <span className="text-3xl font-black text-white italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
            </div>
         </div>
         
@@ -109,10 +109,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* Status Badge */}
-        <div className="absolute top-6 right-6 z-20">
-           <div className="px-4 py-1.5 bg-mat-gold text-mat-obsidian rounded-full flex items-center gap-2 shadow-2xl border-2 border-mat-obsidian/10">
-              <Crown size={12} fill="currentColor" />
-              <span className="text-[9px] font-black uppercase tracking-widest">{profile.status}</span>
+        <div className="absolute top-8 right-8 z-20">
+           <div className="px-6 py-2 bg-mat-gold text-mat-obsidian rounded-full flex items-center gap-2 shadow-2xl border-2 border-mat-obsidian/10">
+              <Crown size={16} fill="currentColor" />
+              <span className="text-[13px] font-black uppercase tracking-widest">{profile.status}</span>
            </div>
         </div>
 
@@ -123,7 +123,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
               </p>
               <VerificationBadge verified={profile.is_verified} />
            </div>
-           <p className="text-[11px] uppercase tracking-[0.5em] font-black text-white/70 mt-1 drop-shadow-md">
+           <p className="text-[14px] uppercase tracking-[0.5em] font-black text-white mt-2 drop-shadow-md">
              Age {profile.age} • {profile.city.toUpperCase()}
            </p>
         </div>
@@ -134,7 +134,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         
         {/* Bio Inlay */}
         <div className="mb-6 flex-shrink-0">
-           <p className="text-mat-cream/80 text-[11px] leading-relaxed font-light line-clamp-2 italic">
+           <p className="text-mat-cream text-[14px] leading-relaxed font-light line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
@@ -142,12 +142,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         {/* 📊 STAT GRID (3 IN A ROW) */}
         <div className="grid grid-cols-3 gap-x-4 gap-y-6">
           {statItems.map((s, i) => (
-            <div key={i} className="space-y-1.5">
+            <div key={i} className="space-y-2">
                <div className="flex items-center justify-between px-0.5">
-                  <span className="text-[7.5px] font-black uppercase tracking-wider text-white/40">{s.label}</span>
-                  <span className="text-[9px] font-black text-mat-gold italic">{s.value}</span>
+                  <span className="text-[11px] font-black uppercase tracking-wider text-white">{s.label}</span>
+                  <span className="text-[13px] font-black text-mat-gold italic">{s.value}</span>
                </div>
-               <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden border border-white/5">
+               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden border border-white/10">
                   <motion.div 
                      initial={{ width: 0 }}
                      animate={{ width: `${s.value}%` }}
@@ -160,32 +160,32 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* 📋 DOSSIER FOOTER */}
-        <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/10 pt-6 pb-2">
+        <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/20 pt-6 pb-2 text-white">
            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
-                 <Trophy size={14} />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                 <Trophy size={18} />
               </div>
               <div className="flex flex-col">
-                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Capital Tier</span>
-                 <span className="text-[9px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
+                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Capital Tier</span>
+                 <span className="text-[13px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
               </div>
            </div>
            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
-                 <MapPin size={14} />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                 <MapPin size={18} />
               </div>
               <div className="flex flex-col">
-                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Stature</span>
-                 <span className="text-[9px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
+                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Stature</span>
+                 <span className="text-[13px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
               </div>
            </div>
            <div className="flex items-center gap-3 col-span-2">
-              <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/5 text-mat-gold">
-                 <Lock size={14} />
+              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                 <Lock size={18} />
               </div>
               <div className="flex flex-col">
-                 <span className="text-[7px] uppercase font-black tracking-widest text-white/30">Core Vocation</span>
-                 <span className="text-[9px] font-bold text-mat-cream/50 italic truncate">{profile.vocation}</span>
+                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Core Vocation</span>
+                 <span className="text-[13px] font-bold text-mat-cream italic truncate">{profile.vocation}</span>
               </div>
            </div>
         </div>

@@ -75,7 +75,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
              </div>
            )}
            <div className="space-y-1">
-              <Badge variant="outline" className="px-3 py-1 border-mat-gold/30 text-mat-gold text-[7px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/5 backdrop-blur-md">
+              <Badge variant="outline" className="px-4 py-1.5 border-mat-gold text-mat-gold text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/10 backdrop-blur-md">
                 Status: Verified & Syncing
               </Badge>
               <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
@@ -97,7 +97,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
              <ThreeAnchor quality="high" />
              <div className="h-full flex flex-col justify-between relative z-10">
                 <div className="space-y-1">
-                   <p className="font-mono text-[9px] text-mat-wine uppercase tracking-[0.6em] mb-1">Visual Overview</p>
+                   <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
                    <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
                      Design <span className="opacity-10 text-mat-gold">& Style.</span>
                    </h2>
@@ -122,7 +122,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                          </div>
                          <div className="space-y-0.5">
                             <p className="text-2xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
-                            <p className="font-mono text-[8px] opacity-30 uppercase tracking-[0.2em]">{stat.label}</p>
+                            <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.2em]">{stat.label}</p>
                          </div>
                        </motion.div>
                     ));
@@ -152,15 +152,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
                 </div>
                 <div>
-                   <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.5em]">Account Verification</p>
-                   <p className="text-xs font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">VERIFIED</span></p>
+                   <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.4em]">Account Verification</p>
+                   <p className="text-sm font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">VERIFIED</span></p>
                 </div>
               </div>
               
               {!profile?.is_verified && (
                 <button 
                   onClick={() => setShowVerification(true)}
-                  className="px-5 py-2.5 border border-mat-gold/20 text-mat-gold text-[8px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
+                  className="px-6 py-3 border-2 border-mat-gold text-mat-gold text-[11px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
                 >
                   Verify Now
                 </button>

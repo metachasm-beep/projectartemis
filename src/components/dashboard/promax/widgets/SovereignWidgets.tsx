@@ -14,8 +14,8 @@ export const OracleWidget: React.FC<{ metrics: any; onBeginDiscovery?: () => voi
       <div className="space-y-4">
         <div className="flex justify-between items-center text-white/40">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[9px] tracking-[0.4em] uppercase font-black">Discovery Status</span>
-            <span className="px-1.5 py-0 pb-1 bg-mat-wine/20 border border-mat-wine/30 rounded text-[7px] text-mat-wine font-bold tracking-widest">{vibeStatus}</span>
+            <span className="font-mono text-[12px] tracking-[0.4em] uppercase font-black text-white">Discovery Status</span>
+            <span className="px-2 py-0.5 bg-mat-wine/30 border border-mat-wine/40 rounded text-[11px] text-mat-wine font-black tracking-widest">{vibeStatus}</span>
           </div>
           <Activity size={14} className="text-mat-wine animate-pulse" />
         </div>
@@ -26,20 +26,20 @@ export const OracleWidget: React.FC<{ metrics: any; onBeginDiscovery?: () => voi
             </span>
             <span className="text-mat-gold/60 text-sm font-mono tracking-widest">% MATCH</span>
           </div>
-          <p className="font-mono text-[9px] opacity-40 uppercase tracking-[0.2em]">Match Potential</p>
+          <p className="font-mono text-[12px] text-white/80 uppercase tracking-[0.2em]">Match Potential</p>
         </div>
       </div>
 
       <div className="space-y-3">
         <div className="p-4 bg-mat-wine/5 border border-mat-wine/10 rounded-2xl backdrop-blur-md">
-          <p className="text-[9px] text-mat-cream/60 leading-relaxed italic font-mono lowercase">
+          <p className="text-[11px] text-mat-cream leading-relaxed italic font-mono lowercase">
             &gt; OPTIMIZING_SEARCH...<br/>
             &gt; STATUS: {(resonance * 1.05).toFixed(2)} [STABLE]
           </p>
         </div>
         <button 
           onClick={onBeginDiscovery}
-          className="w-full py-4 bg-mat-wine text-mat-cream font-mono text-[9px] rounded-2xl hover:bg-mat-gold hover:text-black transition-all flex items-center justify-center gap-3 font-black uppercase tracking-[0.3em] group shadow-lg shadow-mat-wine/20"
+          className="w-full py-5 bg-mat-wine text-mat-cream font-mono text-[13px] rounded-2xl hover:bg-mat-gold hover:text-black transition-all flex items-center justify-center gap-3 font-black uppercase tracking-[0.3em] group shadow-lg shadow-mat-wine/20"
         >
           Find Matches 
           <Sparkles size={12} strokeWidth={3} className="group-hover:animate-spin" />
@@ -70,11 +70,11 @@ export const SanctuaryWidget: React.FC<{
                </div>
              ) : (
                <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-md">
-                  <span className="font-mono text-mat-gold/40 text-[8px] tracking-widest">ID</span>
+                  <span className="font-mono text-mat-gold text-[11px] font-black tracking-widest">ID</span>
                </div>
              )}
              <div className="space-y-0.5">
-                <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.4em]">Profile Info</p>
+                <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.4em]">Profile Info</p>
                 <p className="text-mat-cream font-bold italic text-sm tracking-tight leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
                   {profile?.full_name || 'ANONYMOUS'}
                 </p>
@@ -85,8 +85,8 @@ export const SanctuaryWidget: React.FC<{
         <div className="space-y-2">
 
            <div className="flex items-center gap-3">
-             <p className="font-mono text-[9px] text-mat-gold/60 uppercase tracking-[0.5em]">User Activity</p>
-             <span className="px-1.5 py-0 bg-mat-gold/10 border border-mat-gold/20 rounded text-[7px] text-mat-gold font-bold tracking-widest whitespace-nowrap">{circadianStatus}</span>
+             <p className="font-mono text-[11px] text-mat-gold font-black uppercase tracking-[0.5em]">User Activity</p>
+             <span className="px-2 py-0.5 bg-mat-gold/20 border border-mat-gold/30 rounded text-[11px] text-mat-gold font-bold tracking-widest whitespace-nowrap">{circadianStatus}</span>
            </div>
            <h3 className="text-3xl font-bold italic text-white leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>Daily Progress.</h3>
         </div>
@@ -98,7 +98,7 @@ export const SanctuaryWidget: React.FC<{
               {vitality.toFixed(2)}
            </span>
            <div className="space-y-1">
-             <p className="text-[9px] text-mat-gold font-bold font-mono tracking-tighter uppercase">{(vitality * 100).toFixed(0)}% ACTIVE</p>
+             <p className="text-[12px] text-mat-gold font-black font-mono tracking-tighter uppercase">{(vitality * 100).toFixed(0)}% ACTIVE</p>
              <div className="w-16 h-1 bg-white/5 rounded-full overflow-hidden">
                 <motion.div 
                   initial={{ width: 0 }}
@@ -110,15 +110,15 @@ export const SanctuaryWidget: React.FC<{
         </div>
         
         <div className="grid grid-cols-2 gap-3">
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-            <p className="font-mono text-[7px] opacity-40 uppercase mb-1 tracking-widest">Profile Health</p>
-            <p className="text-mat-gold text-[10px] font-black italic">{skinLuminance}</p>
+          <div className="p-3 rounded-xl bg-white/10 border border-white/20">
+            <p className="font-mono text-[11px] text-white/60 uppercase mb-1 tracking-widest">Profile Health</p>
+            <p className="text-mat-gold text-[12px] font-black italic">{skinLuminance}</p>
           </div>
-          <div className="p-3 rounded-xl bg-white/5 border border-white/10">
-            <p className="font-mono text-[7px] opacity-40 uppercase mb-1 tracking-widest">Status</p>
+          <div className="p-3 rounded-xl bg-white/10 border border-white/20">
+            <p className="font-mono text-[11px] text-white/60 uppercase mb-1 tracking-widest">Status</p>
             <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-mat-gold animate-pulse shadow-[0_0_5px_rgba(212,175,55,0.5)]" />
-              <p className="text-white text-[10px] font-bold italic tracking-widest font-mono">ONLINE</p>
+              <div className="w-2 h-2 rounded-full bg-mat-gold animate-pulse shadow-[0_0_5px_rgba(212,175,55,0.7)]" />
+              <p className="text-white text-[12px] font-bold italic tracking-widest font-mono">ONLINE</p>
             </div>
           </div>
         </div>
@@ -136,9 +136,9 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
   return (
     <div className="h-full flex flex-col justify-between py-1">
       <div className="space-y-3">
-          <div className="flex items-center gap-3 text-white/30">
-            <ShieldCheck size={16} strokeWidth={1.5} className="text-mat-gold" />
-            <span className="font-mono text-[9px] uppercase tracking-[0.4em] font-black">Activity Rank</span>
+          <div className="flex items-center gap-3 text-white">
+            <ShieldCheck size={18} strokeWidth={2} className="text-mat-gold" />
+            <span className="font-mono text-[12px] uppercase tracking-[0.4em] font-black">Activity Rank</span>
           </div>
           <h4 className="text-3xl font-bold italic text-white tracking-widest leading-none drop-shadow-lg" style={{ fontFamily: 'Playfair Display, serif' }}>
             My <span className="opacity-10 text-mat-gold">Standing.</span>
@@ -149,11 +149,11 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
         <div className="bg-mat-wine/5 rounded-3xl p-6 border border-white/5 shadow-inner">
            <div className="flex items-center justify-between mb-4">
               <div className="space-y-1">
-                 <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.2em]">Global Rank</p>
-                 <p className="text-mat-gold text-xl font-bold italic leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>{rank}</p>
+                 <p className="font-mono text-[11px] text-white/60 uppercase tracking-[0.2em]">Global Rank</p>
+                 <p className="text-mat-gold text-2xl font-bold italic leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>{rank}</p>
               </div>
               <div className="text-right">
-                <p className="text-[9px] font-mono text-mat-gold font-black">{authorityScore.toFixed(0)}%</p>
+                <p className="text-[12px] font-mono text-mat-gold font-black">{authorityScore.toFixed(0)}%</p>
                 <div className="w-10 h-1 bg-mat-gold/20 rounded-full mt-1 overflow-hidden">
                    <motion.div 
                      initial={{ width: 0 }}
@@ -163,7 +163,7 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
                 </div>
               </div>
            </div>
-           <p className="text-[9px] text-white/30 italic font-mono leading-tight uppercase tracking-tight">
+           <p className="text-[11px] text-white/60 italic font-mono leading-tight uppercase tracking-tight">
             Account verified. Status: {authorityScore > 50 ? 'ASCENDING' : 'SECURE'}.
            </p>
         </div>

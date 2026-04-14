@@ -216,7 +216,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           {/* Progress Indication */}
           <div className="flex flex-col gap-3 px-4">
              <div className="flex justify-between items-end">
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-wine/40">Profile Setup</span>
+                <span className="text-[14px] font-black uppercase tracking-[0.4em] text-mat-wine/80">Profile Setup</span>
                 <span className="text-sm font-bold text-mat-wine italic">Step {currentSteps.indexOf(step) + 1} of {currentSteps.length}</span>
              </div>
              <div className="h-1 bg-mat-fog rounded-full overflow-hidden">
@@ -241,24 +241,24 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                            </button>
                         ))}
                      </div>
-                     <button disabled={!formData.role} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] disabled:opacity-20 shadow-mat-premium transition-all">Get Started</button>
+                     <button disabled={!formData.role} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] disabled:opacity-20 shadow-mat-premium transition-all">Get Started</button>
                   </motion.div>
                 )}
 
                 {step === 'BASICS' && (
                   <motion.div key="basics" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
-                     <div className="text-center space-y-4"><h2 className="text-4xl font-bold text-mat-wine italic">Profile Details</h2><p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/40">Tell us about yourself</p></div>
+                     <div className="text-center space-y-4"><h2 className="text-4xl font-bold text-mat-wine italic">Profile Details</h2><p className="text-[13px] font-black uppercase tracking-widest text-mat-slate/80">Tell us about yourself</p></div>
                      <div className="space-y-8">
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Full Name</label>
+                           <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Full Name</label>
                            <Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Current City</label>
+                           <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Current City</label>
                            <CitySelector value={formData.city} onChange={city => setFormData({...formData, city})} />
                         </div>
                      </div>
-                     <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">Next Step</button>
+                     <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] shadow-mat-premium">Next Step</button>
                   </motion.div>
                 )}
 
@@ -270,7 +270,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                            <h2 className="text-4xl font-bold text-mat-wine italic">Your Photo</h2>
                            <div className="flex items-center gap-2 px-3 py-1 bg-mat-rose/10 border border-mat-rose/20 rounded-full">
                               <ShieldCheck size={10} className="text-mat-rose" />
-                              <span className="text-[9px] font-black text-mat-rose uppercase tracking-[0.2em]">Mandatory Requirement</span>
+                              <span className="text-[12px] font-black text-mat-rose uppercase tracking-[0.2em]">Mandatory Requirement</span>
                            </div>
                         </div>
                         <p className="text-mat-slate text-sm italic max-w-xs mx-auto leading-relaxed">
@@ -287,17 +287,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                          {formData.photos.length < 6 && (
                             <div className="aspect-square border-2 border-dashed border-mat-rose/30 rounded-2xl flex flex-col items-center justify-center gap-2 hover:bg-mat-rose/5 relative cursor-pointer">
                                <Plus className="text-mat-rose/40" />
-                               <span className="text-[10px] font-bold text-mat-rose/40 uppercase tracking-widest">Select Image</span>
+                               <span className="text-[12px] font-bold text-mat-rose/60 uppercase tracking-widest">Select Image</span>
                                <input type="file" accept="image/*" className="absolute inset-0 opacity-0" onChange={e => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
                             </div>
                          )}
                       </div>
                       <div className="space-y-4">
-                        <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20 transition-all">
+                        <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] shadow-mat-premium disabled:opacity-20 transition-all">
                           {loading ? 'Saving Photo...' : 'Save Photo'}
                         </button>
                         {formData.photos.length === 0 && (
-                          <p className="text-[9px] font-bold text-mat-rose/60 uppercase tracking-widest animate-pulse">Photo required to proceed</p>
+                          <p className="text-[11px] font-bold text-mat-rose/90 uppercase tracking-widest animate-pulse">Photo required to proceed</p>
                         )}
                       </div>
                    </motion.div>
@@ -307,7 +307,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                    <motion.div key="stats" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }} className="space-y-8">
                       <div className="text-center space-y-2">
                         <h2 className="text-4xl font-bold text-mat-wine italic">Your Stats</h2>
-                        <p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/50">Define your attributes for the array</p>
+                        <p className="text-[12px] font-black uppercase tracking-widest text-mat-slate/80">Define your attributes for the array</p>
                       </div>
                       
                       <div className="space-y-6">
@@ -319,7 +319,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                           { key: 'social', left: 'Lone Wolf', right: 'Party Animal', icon: '🍻' },
                         ].map((stat) => (
                           <div key={stat.key} className="space-y-2 bg-white/40 p-4 rounded-2xl border border-mat-rose/10">
-                            <div className="flex justify-between items-center text-[10px] uppercase font-black tracking-widest text-mat-wine/80">
+                            <div className="flex justify-between items-center text-[12px] uppercase font-black tracking-widest text-mat-wine/90">
                                <span>{stat.left}</span>
                                <span className="flex items-center gap-1 text-mat-wine text-base">{stat.icon} {String(stat.key).toUpperCase()}</span>
                                <span>{stat.right}</span>
@@ -339,21 +339,21 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         
                         <div className="bg-white/40 p-4 rounded-2xl border border-mat-rose/10 space-y-4">
                            <div className="space-y-1">
-                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Hometown origin</label>
+                             <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Hometown origin</label>
                              <Input placeholder="Parts Unknown" value={formData.trump_stats.hometown} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, hometown: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                            <div className="space-y-1">
-                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Weight Class (Vibe)</label>
+                             <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Weight Class (Vibe)</label>
                              <Input placeholder="Heavyweight Overthinker" value={formData.trump_stats.weight_class} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, weight_class: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                            <div className="space-y-1">
-                             <label className="text-[9px] font-black uppercase tracking-widest text-mat-wine/60">Signature Move (Prompt)</label>
+                             <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Signature Move (Prompt)</label>
                              <Input placeholder="Makes a mean sourdough" value={formData.trump_stats.signature_move} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, signature_move: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                         </div>
                       </div>
 
-                      <button disabled={!formData.trump_stats.hometown || !formData.trump_stats.signature_move} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20">Set Attributes</button>
+                      <button disabled={!formData.trump_stats.hometown || !formData.trump_stats.signature_move} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] shadow-mat-premium disabled:opacity-20">Set Attributes</button>
                    </motion.div>
                 )}
 
@@ -361,7 +361,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                    <motion.div key="legal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 text-center">
                       <div className="space-y-6"><div className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><ShieldCheck size={40} /></div><h2 className="text-4xl font-bold text-mat-wine italic">Community Standards</h2><p className="text-mat-slate text-sm leading-relaxed max-w-sm mx-auto italic">By joining, you agree to interact with sincerity, respect, and clear intentions.</p></div>
                       <div className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-rose/10 space-y-4">
-                         <div className="flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-mat-wine">Profile Strength</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
+                         <div className="flex justify-between items-center"><span className="text-[14px] font-black uppercase tracking-widest text-mat-wine">Profile Strength</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
                          <div className="h-2 bg-mat-fog rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: `${strength}%` }} className="h-full bg-mat-gold shadow-sm" /></div>
                       </div>
                       {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{error}</p>}

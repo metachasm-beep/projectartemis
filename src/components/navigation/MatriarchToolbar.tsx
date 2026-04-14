@@ -56,7 +56,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   if (activeTab === 'sovereign_browse') return null;
 
   return (
-    <div className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-[95%] max-w-xl px-2 py-2 rounded-full bg-mat-wine/80 backdrop-blur-2xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] border border-white/10 flex items-center justify-between transition-all duration-500">
+    <div className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full bg-mat-wine/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500">
         <div className="flex items-center gap-1">
           {navItems.map((item) => (
             <button
@@ -74,32 +74,34 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
                     {pendingCount}
                  </span>
               )}
-              <span className={`text-[9px] font-bold uppercase tracking-[0.2em] hidden sm:block ${activeTab === item.id ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`}>
+              <span className={`text-[12px] font-bold uppercase tracking-[0.2em] hidden sm:block ${activeTab === item.id ? 'opacity-100' : 'opacity-80 group-hover:opacity-100'}`}>
                 {item.label}
               </span>
             </button>
           ))}
         </div>
 
-        {/* 🍷 Action Group */}
-        <div className="flex items-center gap-2 pr-2">
+        {/* 🍷 Divider */}
+        <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
+
+        <div className="flex items-center gap-2">
           {isAdmin && (
              <div className="hidden lg:flex bg-black/20 p-1 rounded-full items-center border border-white/5">
                <button 
                  onClick={() => handleAdminToggle('man')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
                  Man
                </button>
                <button 
                  onClick={() => handleAdminToggle('woman')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
                  Woman
                </button>
                <button 
                  onClick={() => handleAdminToggle('admin')}
-                 className={`px-3 py-1.5 text-[8px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/80 hover:text-mat-cream'}`}
                >
                  Admin
                </button>
@@ -108,7 +110,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
 
           <button
             onClick={onLogout}
-            className="p-3 rounded-full bg-white/5 text-mat-cream/40 transition-all hover:text-mat-rose hover:bg-white/10 group"
+            className="p-3 rounded-full bg-white/10 text-mat-cream/60 transition-all hover:text-mat-rose hover:bg-white/20 group"
           >
             <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
