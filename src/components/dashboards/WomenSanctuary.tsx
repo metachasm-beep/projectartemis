@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
-import { Aurora } from '@/components/dashboard/promax/Aurora';
+import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
 import { GlassCard } from '@/components/dashboard/promax/GlassCard';
 import { Dock } from '@/components/dashboard/promax/Dock';
 import { FAQ } from '@/components/FAQ';
@@ -54,16 +54,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-obsidian selection:bg-mat-wine selection:text-white">
-      {/* 🌌 High-Fidelity Aurora Background */}
-      <div className="absolute inset-0 z-0 scale-105">
-        <Aurora 
-          colorStops={['#0a0a0a', '#722f37', '#0a0a0a']} 
-          amplitude={1.4} 
-          speed={0.4}
-          quality="high"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-80" />
-      </div>
+      {/* 🌌 High-Performance Liquid Mesh Background */}
+      <LiquidMesh />
 
       {/* 🎞️ Global Post-Processing */}
       <PostProcessOverlay />
