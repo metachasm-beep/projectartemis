@@ -281,8 +281,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                     className="relative flex items-center justify-between group/stat py-3 border-b border-mat-noir/[0.05] hover:border-mat-rose-gold/40 transition-colors"
                   >
                     <div className="flex flex-col min-w-0 pr-4">
-                      <h3 className="mat-text-editorial-caps text-[8px] text-mat-noir/40 tracking-[0.2em] uppercase mb-1">{stat.label}</h3>
-                      <p className="mat-text-editorial-huge text-2xl lg:text-3xl text-mat-noir leading-none">{stat.value}</p>
+                      <h3 className="mat-text-editorial-caps text-[7px] md:text-[8px] text-mat-noir/40 tracking-[0.25em] lg:tracking-[0.3em] uppercase mb-1.5">{stat.label}</h3>
+                      <p className="mat-text-editorial-huge font-serif italic font-light text-3xl lg:text-4xl text-mat-noir leading-none">{stat.value}</p>
                     </div>
                     <div className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_8px_rgba(0,0,0,0.05)] text-mat-rose-gold transition-all duration-500",
