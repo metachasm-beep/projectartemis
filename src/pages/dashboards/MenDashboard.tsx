@@ -205,14 +205,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
   const bgAOpacity = useTransform(smoothProgress, [0, 0.4, 0.7], [1, 1, 0]);
-  const bgAScale = useTransform(smoothProgress, [0, 1], [1.02, 1.8]);
+  const bgAScale = useTransform(smoothProgress, [0, 1], [1.0, 1.05]);
   const bgBOpacity = useTransform(smoothProgress, [0.3, 0.6, 1], [0, 1, 1]);
-  const bgBScale = useTransform(smoothProgress, [0.4, 1], [0.8, 1.0]);
-  
-  const bgLensFilter = useTransform(smoothProgress, [0, 1], [
-    `blur(0px) brightness(1)`,
-    `blur(0px) brightness(1)`
-  ]);
+  const bgBScale = useTransform(smoothProgress, [0, 1], [1.05, 1.0]);
 
   const maskReveal = {
     initial: { y: "100%", opacity: 0 },
@@ -245,12 +240,33 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       className="relative isolate min-h-screen bg-mat-obsidian snap-y snap-mandatory overflow-y-auto overflow-x-hidden h-screen no-scrollbar"
     >
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-        <motion.div style={{ scale: bgAScale, opacity: bgAOpacity, filter: bgLensFilter }} className="absolute inset-0">
-          <img src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776086316/sanctuary_surreal_v1.jpg" className="w-full h-full object-cover brightness-[0.8] contrast-[1.1]" />
+        {/* Cinematic Layer A: Noir Obsidian */}
+        <motion.div 
+          style={{ scale: bgAScale, opacity: bgAOpacity, willChange: 'transform, opacity' }} 
+          className="absolute inset-0 mat-cinematic-grain bg-mat-obsidian"
+        >
+          <div 
+            className="absolute inset-0 animate-[mat-breathe-gradient_15s_ease-in-out_infinite]"
+            style={{ 
+              background: 'radial-gradient(circle at 50% 40%, oklch(0.2 0.01 20 / 0.4) 0%, transparent 70%)',
+              backgroundSize: '100% 100%'
+            }} 
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-obsidian/40 to-mat-obsidian" />
         </motion.div>
-        <motion.div style={{ scale: bgBScale, opacity: bgBOpacity, filter: bgLensFilter }} className="absolute inset-0">
-          <img src="https://res.cloudinary.com/dsmbhnjg5/image/upload/v1776087223/sanctuary_rose_v1.jpg" className="w-full h-full object-cover brightness-[0.8] contrast-[1.1]" />
+
+        {/* Cinematic Layer B: Rose Intelligence */}
+        <motion.div 
+          style={{ scale: bgBScale, opacity: bgBOpacity, willChange: 'transform, opacity' }}
+          className="absolute inset-0 mat-cinematic-grain bg-[#0C0A09]"
+        >
+          <div 
+            className="absolute inset-0 animate-[mat-breathe-gradient_20s_ease-in-out_infinite]"
+            style={{ 
+              background: 'radial-gradient(circle at 60% 60%, oklch(0.25 0.04 10 / 0.3) 0%, transparent 70%)',
+              backgroundSize: '100% 100%'
+            }} 
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-obsidian/40 to-mat-obsidian" />
         </motion.div>
       </div>

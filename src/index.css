@@ -31,6 +31,11 @@
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
   }
+
+  @keyframes mat-breathe-gradient {
+    0%, 100% { background-size: 100% 100%; background-position: center; }
+    50% { background-size: 150% 150%; background-position: center; }
+  }
 }
 
 @layer base {
@@ -142,5 +147,19 @@
   .aura-glow-rose {
     --aura-color: rgba(183, 110, 121, 0.4);
     animation: mat-aura-pulse 5s ease-in-out infinite;
+  }
+
+  /* ─── Cinematic Backgrounds (Low GPU) ─── */
+  .mat-cinematic-grain {
+    position: relative;
+  }
+  .mat-cinematic-grain::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1; /* Below content, above background */
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.1' style='mix-blend-mode: overlay;'/%3E%3C/svg%3E");
+    opacity: 0.8;
   }
 }
