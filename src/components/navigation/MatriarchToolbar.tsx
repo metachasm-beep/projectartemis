@@ -56,7 +56,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   if (activeTab === 'sovereign_browse') return null;
 
   return (
-    <div className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full bg-mat-wine/90 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500">
+    <div className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full bg-white/10 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500">
         <div className="flex items-center gap-1">
           {navItems.map((item) => (
             <button
@@ -64,8 +64,8 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
               onClick={() => setActiveTab(item.id as Extract<typeof activeTab, string>)}
               className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all duration-300 group relative ${
                 activeTab === item.id 
-                ? 'bg-mat-cream text-mat-wine shadow-xl' 
-                : 'text-mat-cream/40 hover:text-mat-cream hover:bg-white/5'
+                ? 'bg-mat-bone text-mat-wine shadow-xl' 
+                : 'text-mat-bone/40 hover:text-mat-bone hover:bg-white/5'
               }`}
             >
               <item.icon size={16} className={activeTab === item.id ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
@@ -89,19 +89,19 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
              <div className="hidden lg:flex bg-black/20 p-1 rounded-full items-center border border-white/5">
                <button 
                  onClick={() => handleAdminToggle('man')}
-                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'man' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-bone/80 hover:text-mat-bone'}`}
                >
                  Man
                </button>
                <button 
                  onClick={() => handleAdminToggle('woman')}
-                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'woman' ? 'bg-mat-gold text-mat-wine shadow-mat-gold' : 'text-mat-bone/80 hover:text-mat-bone'}`}
                >
                  Woman
                </button>
                <button 
                  onClick={() => handleAdminToggle('admin')}
-                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-cream text-mat-wine shadow-mat-rose' : 'text-mat-cream/80 hover:text-mat-cream'}`}
+                 className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-full transition-all ${profile?.role === 'admin' ? 'bg-mat-bone text-mat-wine shadow-mat-rose' : 'text-mat-bone/80 hover:text-mat-bone'}`}
                >
                  Admin
                </button>
@@ -110,7 +110,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
 
           <button
             onClick={onLogout}
-            className="p-3 rounded-full bg-white/10 text-mat-cream/60 transition-all hover:text-mat-rose hover:bg-white/20 group"
+            className="p-3 rounded-full bg-white/10 text-mat-bone/60 transition-all hover:text-mat-rose hover:bg-white/20 group"
           >
             <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
