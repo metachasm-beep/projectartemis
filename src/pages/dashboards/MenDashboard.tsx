@@ -477,7 +477,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           </section>
         ) : (
           <section className="h-[100dvh] min-h-[100dvh] py-20 snap-start flex flex-col justify-center">
-                      <motion.div variants={cardSpring} className="mat-glass-deep p-10 rounded-[3.5rem] border border-mat-gold/10 flex flex-col items-center justify-between text-center">
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <motion.div variants={cardSpring} className="mat-glass-deep p-10 rounded-[3.5rem] border border-mat-gold/10 flex flex-col items-center justify-between text-center">
                    <div className="w-full">
                       <AuraMeter integrity={calculateIntegrity()} />
                       <div className="mt-8 space-y-2">
