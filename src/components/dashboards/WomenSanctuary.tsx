@@ -73,16 +73,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#DED8D1] selection:bg-mat-gold selection:text-white">
-      <TextureOverlay />
-      
-      {/* 🏛️ Muted Suede Foundation (Matte Taupe) */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#E5E0D8] via-[#DED8D1] to-[#D1CBC3]">
-        <div 
-          className="absolute inset-0 opacity-[0.25] mix-blend-multiply pointer-events-none"
-          style={{ filter: 'url(#grainy-texture)' }}
-        />
-        <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.08)]" />
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-white selection:bg-[#D81E05] selection:text-white">
+      {/* 🏛️ Swiss Monolith Foundation (Stark Grid) */}
+      <div className="absolute inset-0 z-0 bg-white">
+        {/* Subtle grid lines for architectural reference */}
+        <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[radial-gradient(#000_1px,transparent_1px)] [background-size:40px_40px]" />
       </div>
 
       {/* 🎞️ Global Post-Processing */}
@@ -91,13 +86,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       {/* 🏰 Main Interface Layer */}
       <main className="relative z-10 w-full h-full pt-20 pb-10 px-8 flex flex-col gap-6">
         {/* 🎭 Header Zone (Compact Text Only) */}
-        <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
-            <div className="space-y-1">
-              <Badge variant="outline" className="px-4 py-1.5 border-mat-slate/10 text-mat-slate/40 text-[10px] uppercase tracking-[0.3em] font-bold rounded-full bg-white/20 shadow-none backdrop-blur-xl">
-                The Sanctuary Hub
-              </Badge>
-               <h1 className="text-mat-slate font-display font-normal text-6xl tracking-tighter leading-none mt-2" style={{ fontFamily: 'Italiana, serif' }}>
-                Welcome, <span className="text-mat-slate/60">{profile?.full_name?.split(' ')[0] || 'User'}</span>.
+        <header className="absolute top-12 left-12 z-20 flex items-center gap-8">
+            <div className="space-y-2">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-1 bg-[#D81E05]" />
+                <span className="text-[#0A0A0A]/40 text-[10px] uppercase tracking-[0.4em] font-bold">Protocol Index 01</span>
+              </div>
+               <h1 className="text-[#0A0A0A] font-sans font-bold text-7xl tracking-[-0.05em] leading-[0.9] mt-2 uppercase" style={{ fontFamily: 'Instrument Sans, sans-serif' }}>
+                 {profile?.full_name?.split(' ')[0] || 'User'} <span className="text-[#D81E05]">.Live</span>
               </h1>
             </div>
         </header>
@@ -107,20 +103,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
           <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-4 pb-12 overflow-hidden h-full">
             
             {/* Left Column (Authority & Insights) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-6 h-full">
-              <GlassCard className="row-span-6 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.1}>
-                {/* 🧵 Tonal Stitching Motif */}
-                <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
+            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-8 h-full">
+              <GlassCard className="row-span-6 bg-white border-2 border-[#0A0A0A] shadow-none rounded-none" delay={0.1}>
+                {/* 📐 Clinical Layout */}
+                <div className="absolute top-0 right-0 p-4 border-l-2 border-b-2 border-[#0A0A0A] text-[10px] font-bold font-mono">INSIGHT_A.1</div>
                 <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
               </GlassCard>
-              <GlassCard className="row-span-6 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.4}>
-                 <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
+              <GlassCard className="row-span-6 bg-[#0A0A0A] border-2 border-[#0A0A0A] shadow-none rounded-none" delay={0.4}>
+                 <div className="absolute top-0 right-0 p-4 border-l-2 border-b-2 border-white/20 text-white/40 text-[10px] font-bold font-mono">STATUS_B.2</div>
                  <InfluenceWidget metrics={metrics} />
               </GlassCard>
             </div>
 
-            {/* Center Column (Hero Anchor) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden rounded-[3.5rem] border-[12px] border-[#DED8D1] bg-white shadow-[0_40px_80px_rgba(0,0,0,0.1)] relative">
+            {/* Center Column (Hero Anchor - Full Color) */}
+            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden border-2 border-[#0A0A0A] bg-white shadow-none relative">
               <TrumpCard 
                  isDashboard
                  profile={{
@@ -139,18 +135,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                    rank_tier: profile?.tier
                  }} 
               />
+              <div className="absolute bottom-0 left-0 w-full h-8 bg-[#D81E05] z-10 flex items-center justify-center">
+                 <span className="text-white text-[9px] font-bold tracking-[0.5em] uppercase">Human_Focus.Live</span>
+              </div>
             </div>
 
             {/* Right Column (Design & Security) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-4 h-full">
-              <GlassCard className="row-span-8 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.2}>
-                 <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
+            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-8 h-full">
+              <GlassCard className="row-span-8 bg-[#F2F2F2] border-2 border-[#0A0A0A] shadow-none rounded-none" delay={0.2}>
                  <ThreeAnchor quality="high" />
                  <div className="h-full flex flex-col justify-between relative z-10">
-                    <div className="space-y-1">
-                       <p className="font-mono text-[10px] text-mat-slate/30 font-bold uppercase tracking-[0.5em] mb-2">Sanctuary Overview</p>
-                        <h2 className="text-6xl font-display font-normal text-mat-slate tracking-tighter leading-none" style={{ fontFamily: 'Italiana, serif' }}>
-                          Life <span className="opacity-40">Fabric.</span>
+                    <div className="space-y-0.5">
+                       <p className="text-[10px] text-[#0A0A0A]/40 font-bold uppercase tracking-[0.5em] mb-4">Metric.System.03</p>
+                        <h2 className="text-7xl font-sans font-bold text-[#0A0A0A] tracking-[-0.05em] leading-[0.85] uppercase" style={{ fontFamily: 'Instrument Sans, sans-serif' }}>
+                          Vitality <br/><span className="text-[#D81E05]">Index.</span>
                         </h2>
                     </div>
 
@@ -162,21 +160,17 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                           { label: 'Rating', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold', tip: 'Asset purity index' },
                           { label: 'Quality', val: arc.lightingStability, icon: Zap, color: 'text-mat-rose', tip: 'Lighting & consistency stability' },
                           { label: 'System', val: 'STABLE', icon: Activity, color: 'text-mat-gold', tip: 'Real-time rendering status' },
-                        ];
-                        
-                        return stats.map((stat, i) => (
+                                            return stats.map((stat, i) => (
                            <Tooltip key={i}>
                              <TooltipTrigger asChild>
                                <motion.div 
-                                 whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.4)' }}
-                                 className="space-y-3 p-4 bg-white/20 rounded-[1.2rem] border border-white/10 shadow-sm cursor-help transition-all"
+                                 whileHover={{ backgroundColor: '#D81E05', color: 'white' }}
+                                 className="space-y-4 p-6 bg-white border border-[#0A0A0A] shadow-none cursor-help transition-all group"
                                >
-                                  <div className="w-10 h-10 bg-mat-slate/5 rounded-full flex items-center justify-center border border-mat-slate/5">
-                                    <stat.icon size={18} className={cn("text-mat-slate/60")} strokeWidth={1.5} />
-                                  </div>
+                                  <div className="w-10 h-1 border-b-2 border-current" />
                                   <div className="space-y-0.5">
-                                     <p className="text-3xl font-display font-normal text-mat-slate tracking-tighter" style={{ fontFamily: 'Italiana, serif' }}>{stat.val}</p>
-                                     <p className="font-sans text-[9px] text-mat-slate/30 uppercase tracking-[0.1em] font-bold">{stat.label}</p>
+                                     <p className="text-4xl font-sans font-bold tracking-tight" style={{ fontFamily: 'Instrument Sans, sans-serif' }}>{stat.val}</p>
+                                     <p className="font-sans text-[10px] opacity-40 uppercase tracking-[0.2em] font-bold group-hover:opacity-100">{stat.label}</p>
                                   </div>
                                 </motion.div>
                              </TooltipTrigger>
@@ -184,31 +178,31 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                                <p className="text-[11px] uppercase tracking-widest font-bold">{stat.tip}</p>
                              </TooltipContent>
                            </Tooltip>
+                        ));tip>
                         ));
                       })()}
                     </div>
                   </div>
               </GlassCard>
 
-              <GlassCard className="row-span-4 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.5}>
-                <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
-                <div className="h-full flex flex-col justify-center px-6 space-y-4">
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 bg-mat-slate/5 rounded-2xl border border-mat-slate/10 shadow-inner">
-                      <ShieldCheck size={20} className="text-mat-slate/40" strokeWidth={1.5} />
+              <GlassCard className="row-span-4 bg-[#D81E05] border-2 border-[#D81E05] shadow-none rounded-none text-white" delay={0.5}>
+                <div className="h-full flex flex-col justify-center px-8 space-y-6">
+                  <div className="flex items-center gap-6">
+                    <div className="p-3 bg-white/20 border border-white/30">
+                      <ShieldCheck size={24} className="text-white" strokeWidth={2} />
                     </div>
                     <div>
-                       <p className="font-sans text-[11px] text-mat-slate/30 uppercase tracking-[0.2em] font-bold">Safety Level</p>
-                       <p className="text-sm font-normal text-mat-slate tracking-widest leading-none mt-1 uppercase" style={{ fontFamily: 'Italiana, serif' }}>Absolute Privacy</p>
+                       <p className="font-sans text-[10px] opacity-60 uppercase tracking-[0.4em] font-bold">Safety.Protocol</p>
+                       <p className="text-xl font-sans font-bold tracking-tight uppercase" style={{ fontFamily: 'Instrument Sans, sans-serif' }}>Absolute Privacy</p>
                     </div>
                   </div>
                   
                   {!profile?.is_verified && (
                     <button 
                       onClick={() => setShowVerification(true)}
-                      className="w-full py-5 bg-mat-slate text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-[1.2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all"
+                      className="w-full py-6 bg-white text-[#D81E05] text-[12px] font-bold uppercase tracking-[0.3em] hover:bg-[#0A0A0A] hover:text-white transition-all active:scale-[0.98]"
                     >
-                      Verify Identity
+                      Authenticate
                     </button>
                   )}
                 </div>
