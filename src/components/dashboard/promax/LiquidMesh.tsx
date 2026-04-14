@@ -1,77 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
+import React from 'react';
+import { motion } from 'framer-motion';
 
 /**
- * 🌊 LiquidMesh: Reactive High-Fidelity Fluid Background
- * Implements cursor-following mesh gradients and refractive textures
- * for the 'Liquid Glassmorphism' aesthetic.
+ * 🌊 LiquidMesh 2.0: The Haute Foundation
+ * Re-engineered for the 'Editorial Luxury' system.
+ * Features slow ambient drift, ivory/cashmere tones, and silk-textures.
  */
 export const LiquidMesh: React.FC = () => {
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const springConfig = { damping: 50, stiffness: 300 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      mouseX.set(e.clientX / window.innerWidth);
-      mouseY.set(e.clientY / window.innerHeight);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  const gradientX = useTransform(smoothX, [0, 1], ['20%', '80%']);
-  const gradientY = useTransform(smoothY, [0, 1], ['20%', '80%']);
-
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden bg-mat-ivory pointer-events-none">
-      {/* 🔮 Primary Reactive Pulse (Liquid Glow) */}
+    <div className="absolute inset-0 z-0 overflow-hidden bg-mat-bone pointer-events-none">
+      {/* 🔮 Ambient Silk Drift (Ivory Pulse) */}
       <motion.div 
-        className="absolute inset-0 will-change-transform"
-        style={{
-          background: useTransform(
-            [gradientX, gradientY],
-            ([x, y]) => `radial-gradient(circle at ${x} ${y}, rgba(77, 159, 255, 0.15) 0%, transparent 60%)`
-          )
+        animate={{ 
+          x: ['0%', '2%', '-1%', '0%'],
+          y: ['0%', '1%', '2%', '0%'],
+          scale: [1, 1.05, 0.98, 1]
         }}
-      />
-
-      {/* 🫧 Ambient Secondary Drifts */}
-      <div 
-        className="absolute inset-0 opacity-20 mix-blend-multiply"
+        transition={{ 
+          duration: 30, 
+          repeat: Infinity, 
+          ease: "linear" 
+        }}
+        className="absolute -inset-[50%] opacity-[0.4] blur-[120px]"
         style={{
           background: `
-            radial-gradient(circle at 10% 20%, rgba(255, 77, 141, 0.1) 0%, transparent 40%),
-            radial-gradient(circle at 90% 80%, rgba(77, 159, 255, 0.1) 0%, transparent 50%),
-            radial-gradient(circle at 50% 50%, rgba(201, 110, 80, 0.05) 0%, transparent 70%)
+            radial-gradient(circle at 20% 30%, var(--color-mat-cashmere) 0%, transparent 60%),
+            radial-gradient(circle at 80% 70%, #EAE0D5 0%, transparent 50%)
           `
         }}
       />
 
-      {/* 📽️ High-Fidelity Refractive Texture (Moving Noise) */}
-      <motion.div 
-        animate={{ 
-          backgroundPosition: ['0% 0%', '100% 100%'],
-        }}
-        transition={{ 
-          duration: 40, 
-          repeat: Infinity, 
-          ease: "linear" 
-        }}
-        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+      {/* 🏺 Editorial Vignette (Rose Gold Mist) */}
+      <div 
+        className="absolute inset-0 opacity-[0.08]"
         style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-          backgroundSize: '400px 400px'
+          background: `radial-gradient(circle at 50% 50%, transparent 40%, var(--color-mat-rose-gold) 100%)`
         }}
       />
 
-      {/* 🏺 Prismatic Vignette */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-mat-accent-blue/5 via-transparent to-mat-accent-rose/5" />
-      <div className="absolute inset-0 backdrop-blur-[2px]" />
+      {/* 🎞️ High-Fashion Grain (Static & Subtle) */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] mix-blend-overlay"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+          backgroundSize: '150px 150px'
+        }}
+      />
+
+      {/* 🌈 Spectral Prismatic Edge */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-mat-rose-gold/[0.03] via-transparent to-mat-gold/[0.03]" />
     </div>
   );
 };

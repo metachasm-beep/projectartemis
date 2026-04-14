@@ -55,7 +55,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   ];
 
   return (
-    <div className="relative w-full min-h-screen overflow-x-hidden bg-mat-ivory selection:bg-mat-rose-gold selection:text-white">
+    <div className="relative w-full h-screen overflow-hidden bg-mat-ivory selection:bg-mat-rose-gold selection:text-white flex flex-col">
       {/* 🌊 Liquid Foundation (Silk Drift) */}
       <LiquidMesh />
 
@@ -63,9 +63,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏙️ The Haute Sanctuary Canvas */}
-      <main className="relative z-10 w-full min-h-screen px-6 py-12 lg:px-24">
+      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-6 lg:px-24 lg:pt-8 min-h-0">
         {/* ✨ Editorial Header: The Monumental Serif */}
-        <header className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+        <header className="flex flex-col md:flex-row justify-between items-end mb-6 gap-4 shrink-0">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -76,8 +76,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                <span className="w-12 h-[1px] bg-mat-rose-gold" />
                <h3 className="mat-text-editorial-caps">Sanctuary Alpha</h3>
             </div>
-            <h1 className="mat-text-editorial-huge text-8xl lg:text-[10rem]">
-              Sovereign <br />
+            <h1 className="mat-text-editorial-huge text-6xl lg:text-8xl leading-none">
+              Sovereign <br className="hidden md:block" />
               <span className="text-mat-rose-gold italic font-medium">Existence.</span>
             </h1>
           </motion.div>
@@ -106,12 +106,12 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         <TooltipProvider>
           {/* 🧩 The Editorial Spread (Bento Grid) */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 min-h-[800px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 flex-1 min-h-0 pb-20">
             
             {/* 👗 Profile Portrait (The Hero Anchor) */}
             <div className="md:col-span-4 h-full">
-              <GlassCard className="h-full p-0 flex flex-col group/card" delay={0.1}>
-                <div className="relative h-[60%] overflow-hidden">
+              <GlassCard className="h-full p-0 flex flex-col group/card overflow-hidden" delay={0.1}>
+                <div className="relative h-[45%] overflow-hidden shrink-0">
                   <img 
                     src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"} 
                     alt={profile?.full_name} 
@@ -124,13 +124,13 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   </div>
                 </div>
                 
-                <div className="p-10 flex flex-col justify-between flex-grow">
-                  <div className="space-y-2">
-                    <h2 className="mat-text-editorial-huge text-5xl text-mat-noir">{profile?.full_name || 'User'}</h2>
-                    <p className="mat-text-editorial-caps text-mat-rose-gold">{profile?.city || 'The Sanctuary'}</p>
+                <div className="p-6 lg:p-8 flex flex-col justify-between flex-grow min-h-0">
+                  <div className="space-y-1">
+                    <h2 className="mat-text-editorial-huge text-4xl text-mat-noir">{profile?.full_name || 'User'}</h2>
+                    <p className="mat-text-editorial-caps text-mat-rose-gold text-xs">{profile?.city || 'The Sanctuary'}</p>
                   </div>
                   
-                  <div className="flex items-center gap-4 pt-8">
+                  <div className="flex items-center gap-4 pt-4 shrink-0">
                     <button 
                       onClick={() => setIsEditing(true)}
                       className="flex-grow py-5 bg-mat-noir text-mat-bone mat-text-editorial-caps text-[11px] rounded-full hover:bg-mat-rose-gold transition-all duration-500 shadow-xl"
@@ -146,19 +146,19 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
 
             {/* 💎 The Skill Atelier (Metrics & Interaction) */}
-            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-10">
+            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-6 h-full">
               {stats.map((stat, idx) => (
                 <div key={idx} className={idx === 0 ? "col-span-2 row-span-2" : "col-span-2"}>
-                  <GlassCard className="h-full p-10 flex flex-col justify-between group/stat" delay={0.2 + idx * 0.1}>
+                  <GlassCard className="h-full p-6 lg:p-8 flex flex-col justify-between group/stat overflow-hidden" delay={0.2 + idx * 0.1}>
                     <div>
-                      <div className="w-12 h-12 rounded-full bg-mat-cashmere/50 flex items-center justify-center text-mat-rose-gold mb-6 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-500">
+                      <div className="w-10 h-10 rounded-full bg-mat-cashmere/50 flex items-center justify-center text-mat-rose-gold mb-4 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-500">
                         {stat.icon}
                       </div>
-                      <h3 className="mat-text-editorial-caps mb-2">{stat.label}</h3>
-                      <p className="mat-text-editorial-huge text-6xl text-mat-noir">{stat.value}</p>
+                      <h3 className="mat-text-editorial-caps mb-1 text-[10px]">{stat.label}</h3>
+                      <p className="mat-text-editorial-huge text-4xl md:text-5xl text-mat-noir">{stat.value}</p>
                     </div>
                     
-                    <div className="pt-8">
+                    <div className="pt-4 shrink-0 hidden lg:block">
                        <p className="mat-text-body-chic text-xs">Synchronization Protocol Opt-in at 100%.</p>
                        <div className="mt-4 h-1 w-full bg-mat-noir/5 rounded-full overflow-hidden">
                           <motion.div 
@@ -174,10 +174,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               ))}
 
               {/* 🦢 System Authentication (Call to Action) */}
-              <GlassCard className="col-span-2 p-10 bg-mat-noir flex flex-col justify-between relative overflow-hidden" delay={0.6}>
-                <div className="relative z-10 space-y-4">
-                  <h3 className="mat-text-editorial-caps text-mat-rose-gold">Verification Hub</h3>
-                  <h2 className="mat-text-editorial-huge text-4xl text-mat-bone leading-tight">
+              <GlassCard className="col-span-2 p-6 lg:p-8 bg-mat-noir flex flex-col justify-between relative overflow-hidden h-full" delay={0.6}>
+                <div className="relative z-10 space-y-2">
+                  <h3 className="mat-text-editorial-caps text-mat-rose-gold text-[10px]">Verification Hub</h3>
+                  <h2 className="mat-text-editorial-huge text-3xl md:text-4xl text-mat-bone leading-tight">
                     Sovereign <br />Identity.
                   </h2>
                 </div>
@@ -202,7 +202,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         </TooltipProvider>
 
         {/* 🚀 Editorial Command Dock */}
-        <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
+        <div className="fixed bottom-6 lg:bottom-10 left-1/2 -translate-x-1/2 z-50">
           <Dock 
             onShowFAQ={() => setShowFAQ(true)}
             onShowVerification={!profile?.is_verified ? () => setShowVerification(true) : undefined}
