@@ -158,14 +158,57 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         {/* ══ MAIN BODY ════════════════════════════════════ */}
         <TooltipProvider>
-          <div className="flex gap-4 flex-1 min-h-0">
+          <div className="flex gap-4 flex-1 min-h-0 items-start">
 
-            {/* ── TRUMP CARD ───────────────────────────── */}
+            {/* ── LEFT STATS (first 5) ─────────────────── */}
+            <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+              {stats.slice(0, 5).map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -14, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ delay: 0.08 + idx * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className={cn(
+                    "relative flex items-center gap-3 px-4 py-3 rounded-2xl group/stat cursor-default w-full",
+                    "transition-all duration-300 overflow-hidden",
+                    SkeuSurface,
+                    "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.90),0_6px_18px_rgba(0,0,0,0.13)]",
+                    "hover:translate-y-[-1px]",
+                    "active:shadow-[inset_0_2px_6px_rgba(0,0,0,0.12)] active:translate-y-0"
+                  )}
+                >
+                  <div className={cn("absolute -top-3 -right-3 w-14 h-14 rounded-full blur-xl opacity-50 bg-gradient-to-br pointer-events-none", stat.accent)} />
+                  <div className={cn(
+                    "shrink-0 w-8 h-8 rounded-xl flex items-center justify-center",
+                    "bg-gradient-to-br from-white to-[#ede8e0]",
+                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.09)]",
+                    "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
+                    "group-hover/stat:from-mat-rose-gold group-hover/stat:to-mat-rose-gold/80 group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-400"
+                  )}>
+                    {stat.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="mat-text-editorial-huge text-xl text-mat-noir leading-none">{stat.value}</p>
+                    <h3 className="mat-text-editorial-caps text-[7px] text-mat-noir/38 tracking-[0.15em] uppercase mt-0.5 truncate">{stat.label}</h3>
+                  </div>
+                  <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-mat-noir/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${50 + Math.abs(Math.sin(idx * 1.5)) * 45}%` }}
+                      transition={{ duration: 1.6, delay: 0.4 + idx * 0.06 }}
+                      className="h-full bg-gradient-to-r from-mat-rose-gold/50 to-mat-rose-gold/10"
+                    />
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* ── TRUMP CARD (centre) ─────────────────── */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={cn("w-64 shrink-0 h-full rounded-2xl overflow-hidden flex flex-col group/card", SkeuSurface)}
+              className={cn("w-56 shrink-0 h-full rounded-2xl overflow-hidden flex flex-col group/card", SkeuSurface)}
             >
               {/* Portrait */}
               <div className="relative h-48 overflow-hidden shrink-0">
@@ -263,56 +306,47 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
             </motion.div>
 
-            {/* ── STAT CHIPS: auto-sizing flex-wrap ───── */}
-            <div className="flex-1 min-h-0 flex flex-col justify-start">
-              <div className="flex flex-wrap gap-2.5 content-start">
-                {stats.map((stat, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, y: 8, scale: 0.94 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={{ delay: 0.08 + idx * 0.05, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-                    className={cn(
-                      "relative flex items-center gap-3 px-4 py-3 rounded-2xl group/stat cursor-default",
-                      "transition-all duration-300 overflow-hidden",
-                      SkeuSurface,
-                      "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.90),0_6px_18px_rgba(0,0,0,0.13),0_2px_5px_rgba(0,0,0,0.07)]",
-                      "hover:translate-y-[-1px]",
-                      "active:shadow-[inset_0_2px_6px_rgba(0,0,0,0.12)] active:translate-y-0"
-                    )}
-                  >
-                    {/* Accent glow */}
-                    <div className={cn("absolute -top-3 -right-3 w-14 h-14 rounded-full blur-xl opacity-50 bg-gradient-to-br pointer-events-none", stat.accent)} />
-
-                    {/* Icon chip */}
-                    <div className={cn(
-                      "shrink-0 w-8 h-8 rounded-xl flex items-center justify-center",
-                      "bg-gradient-to-br from-white to-[#ede8e0]",
-                      "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.09)]",
-                      "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
-                      "group-hover/stat:from-mat-rose-gold group-hover/stat:to-mat-rose-gold/80 group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-400"
-                    )}>
-                      {stat.icon}
-                    </div>
-
-                    {/* Text */}
-                    <div>
-                      <p className="mat-text-editorial-huge text-xl text-mat-noir leading-none whitespace-nowrap">{stat.value}</p>
-                      <h3 className="mat-text-editorial-caps text-[7px] text-mat-noir/38 tracking-[0.15em] uppercase mt-0.5 whitespace-nowrap">{stat.label}</h3>
-                    </div>
-
-                    {/* Progress underline */}
-                    <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-mat-noir/5 rounded-full overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${50 + Math.abs(Math.sin(idx * 1.5)) * 45}%` }}
-                        transition={{ duration: 1.6, delay: 0.4 + idx * 0.06 }}
-                        className="h-full bg-gradient-to-r from-mat-rose-gold/50 to-mat-rose-gold/10"
-                      />
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
+            {/* ── RIGHT STATS (last 5) ─────────────────── */}
+            <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+              {stats.slice(5).map((stat, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: 14, scale: 0.95 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  transition={{ delay: 0.08 + idx * 0.07, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                  className={cn(
+                    "relative flex items-center gap-3 px-4 py-3 rounded-2xl group/stat cursor-default w-full",
+                    "transition-all duration-300 overflow-hidden",
+                    SkeuSurface,
+                    "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.90),0_6px_18px_rgba(0,0,0,0.13)]",
+                    "hover:translate-y-[-1px]",
+                    "active:shadow-[inset_0_2px_6px_rgba(0,0,0,0.12)] active:translate-y-0"
+                  )}
+                >
+                  <div className={cn("absolute -top-3 -right-3 w-14 h-14 rounded-full blur-xl opacity-50 bg-gradient-to-br pointer-events-none", stat.accent)} />
+                  <div className={cn(
+                    "shrink-0 w-8 h-8 rounded-xl flex items-center justify-center",
+                    "bg-gradient-to-br from-white to-[#ede8e0]",
+                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.09)]",
+                    "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
+                    "group-hover/stat:from-mat-rose-gold group-hover/stat:to-mat-rose-gold/80 group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-400"
+                  )}>
+                    {stat.icon}
+                  </div>
+                  <div className="min-w-0">
+                    <p className="mat-text-editorial-huge text-xl text-mat-noir leading-none">{stat.value}</p>
+                    <h3 className="mat-text-editorial-caps text-[7px] text-mat-noir/38 tracking-[0.15em] uppercase mt-0.5 truncate">{stat.label}</h3>
+                  </div>
+                  <div className="absolute bottom-0 left-4 right-4 h-[1.5px] bg-mat-noir/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${50 + Math.abs(Math.sin((idx + 5) * 1.5)) * 45}%` }}
+                      transition={{ duration: 1.6, delay: 0.4 + idx * 0.06 }}
+                      className="h-full bg-gradient-to-r from-mat-rose-gold/50 to-mat-rose-gold/10"
+                    />
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
           </div>
