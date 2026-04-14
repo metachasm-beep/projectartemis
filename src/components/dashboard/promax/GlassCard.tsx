@@ -6,6 +6,7 @@ interface GlassCardProps {
   children: React.ReactNode;
   className?: string;
   delay?: number;
+  noPadding?: boolean;
 }
 
 /**
@@ -16,7 +17,8 @@ interface GlassCardProps {
 export const GlassCard: React.FC<GlassCardProps> = ({ 
   children, 
   className,
-  delay = 0 
+  delay = 0,
+  noPadding = false
 }) => {
   return (
     <motion.div
@@ -27,7 +29,10 @@ export const GlassCard: React.FC<GlassCardProps> = ({
         delay, 
         ease: [0.16, 1, 0.3, 1] 
       }}
-      className={`relative overflow-hidden group transition-all duration-700 bg-white/5 border border-white/10 rounded-[2.5rem] ${className}`}
+      className={cn(
+        "relative overflow-hidden group transition-all duration-700 bg-white/5 border border-white/10 rounded-[1.25rem]",
+        className
+      )}
     >
       {/* 🧩 Static Glass Base (Backdrop blur) */}
       <div className="absolute inset-0 mat-glass-refraction z-0 pointer-events-none" />
@@ -45,7 +50,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
         }}
       />
       
-      <div className="relative z-30 p-8 h-full">
+      <div className={cn("relative z-30 h-full", !noPadding && "p-8")}>
         {children}
       </div>
     </motion.div>
