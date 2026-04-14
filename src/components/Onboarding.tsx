@@ -142,8 +142,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
 
       await turso.execute(sql, args);
       
-      // 👑 Sovereign Integration: Immediately recalibrate the global ladder
-      // This ensures the new aspirant is assigned a strictly unique absolute rank.
+      // 👑 System Integration: Immediately recalibrate the global ladder
+      // This ensures the new member is assigned a strictly unique absolute rank.
       const { SanctuaryService } = await import('@/services/sanctuary');
       await SanctuaryService.recalculateGlobalRanks();
       
@@ -181,8 +181,8 @@ export const Onboarding: React.FC<OnboardingProps> = ({
       await new Promise(r => setTimeout(r, 400));
       onComplete(finalizedProfile);
     } catch (err: any) {
-      console.error("Sanctuary Error Ritual:", err);
-      setError('Connection with the archive was interrupted. Please try again.');
+      console.error("Setup Error:", err);
+      setError('Connection with the community was interrupted. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -216,7 +216,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           {/* Progress Indication */}
           <div className="flex flex-col gap-3 px-4">
              <div className="flex justify-between items-end">
-                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-wine/40">Resonance Ritual</span>
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-wine/40">Profile Setup</span>
                 <span className="text-sm font-bold text-mat-wine italic">Step {currentSteps.indexOf(step) + 1} of {currentSteps.length}</span>
              </div>
              <div className="h-1 bg-mat-fog rounded-full overflow-hidden">
@@ -227,11 +227,10 @@ export const Onboarding: React.FC<OnboardingProps> = ({
           <div className="mat-glass-deep rounded-[3rem] p-12 md:p-16 shadow-mat-premium border-mat-rose/10">
              <AnimatePresence mode="wait">
                 {step === 'ROLE' && (
-                  <motion.div key="role" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="space-y-12">
-                     <div className="text-center space-y-4">
+                  <motion.div key="role" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className                      <div className="text-center space-y-4">
                         <div className="w-16 h-16 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><Heart size={32} /></div>
                         <h2 className="text-5xl font-bold text-mat-wine italic leading-tight">Welcome to <br />Matriarch</h2>
-                        <p className="text-mat-slate text-sm italic">Identify your essence to enter the sanctuary.</p>
+                        <p className="text-mat-slate text-sm italic">Create your profile to join the community.</p>
                      </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[{r:'woman', l:'I am a Woman', e:'🌸'}, {r:'man', l:'I am a Man', e:'🌿'}].map(item => (
@@ -241,40 +240,35 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                            </button>
                         ))}
                      </div>
-                     <button disabled={!formData.role} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] disabled:opacity-20 shadow-mat-premium transition-all">Begin Ritual</button>
-                  </motion.div>
-                )}
-
-                {step === 'BASICS' && (
+                     <button disabled={!formData.role} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] disabled:opacity-20 shadow-mat-premium transition-all">Get Started</button>
+                  </motion.div>        </motion.div>                 {step === 'BASICS' && (
                   <motion.div key="basics" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-10">
-                     <div className="text-center space-y-4"><h2 className="text-4xl font-bold text-mat-wine italic">Your Identifier</h2><p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/40">The beginning of your narrative</p></div>
+                     <div className="text-center space-y-4"><h2 className="text-4xl font-bold text-mat-wine italic">Profile Details</h2><p className="text-[10px] font-black uppercase tracking-widest text-mat-slate/40">Tell us about yourself</p></div>
                      <div className="space-y-8">
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Display Name</label>
+                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Full Name</label>
                            <Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
                         </div>
                         <div className="space-y-2">
-                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Current Sanctuary (City)</label>
+                           <label className="text-[10px] font-black uppercase tracking-widest text-mat-wine/60 ml-2">Current City</label>
                            <CitySelector value={formData.city} onChange={city => setFormData({...formData, city})} />
                         </div>
                      </div>
-                     <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">Continue Resonance</button>
+                     <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium">Next Step</button>
                   </motion.div>
-                )}
-
-                {step === 'PHOTO' && (
+                )}v>                 {step === 'PHOTO' && (
                    <motion.div key="photo" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="space-y-10 text-center">
                       <div className="space-y-4">
                         <Camera className="mx-auto text-mat-rose" size={40} />
                         <div className="flex flex-col items-center gap-2">
-                           <h2 className="text-4xl font-bold text-mat-wine italic">Your Portrait</h2>
+                           <h2 className="text-4xl font-bold text-mat-wine italic">Your Photo</h2>
                            <div className="flex items-center gap-2 px-3 py-1 bg-mat-rose/10 border border-mat-rose/20 rounded-full">
                               <ShieldCheck size={10} className="text-mat-rose" />
                               <span className="text-[9px] font-black text-mat-rose uppercase tracking-[0.2em]">Mandatory Requirement</span>
                            </div>
                         </div>
                         <p className="text-mat-slate text-sm italic max-w-xs mx-auto leading-relaxed">
-                          The Sanctuary requires a visual anchor. Please upload your <span className="text-mat-wine font-bold">best, high-resolution portrait</span> to begin your resonance.
+                          The community requires a profile photo. Please upload your <span className="text-mat-wine font-bold">best, high-resolution photo</span> to get started.
                         </p>
                       </div>
                       <div className="grid grid-cols-3 gap-4">
@@ -294,13 +288,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                       </div>
                       <div className="space-y-4">
                         <button disabled={loading || formData.photos.length === 0} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20 transition-all">
-                          {loading ? 'Synthesizing...' : 'Establish Portrait'}
+                          {loading ? 'Saving Photo...' : 'Save Photo'}
                         </button>
                         {formData.photos.length === 0 && (
-                          <p className="text-[9px] font-bold text-mat-rose/60 uppercase tracking-widest animate-pulse">Portrait selection required to proceed</p>
+                          <p className="text-[9px] font-bold text-mat-rose/60 uppercase tracking-widest animate-pulse">Photo required to proceed</p>
                         )}
                       </div>
                    </motion.div>
+                )}v>
                 )}
 
                 {step === 'STATS' && (
@@ -354,19 +349,17 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                       </div>
 
                       <button disabled={!formData.trump_stats.hometown || !formData.trump_stats.signature_move} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[11px] shadow-mat-premium disabled:opacity-20">Set Attributes</button>
-                   </motion.div>
-                )}
-
-                {step === 'LEGAL' && (
+                                   {step === 'LEGAL' && (
                    <motion.div key="legal" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-10 text-center">
-                      <div className="space-y-6"><div className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><ShieldCheck size={40} /></div><h2 className="text-4xl font-bold text-mat-wine italic">The Sovereign Covenant</h2><p className="text-mat-slate text-sm leading-relaxed max-w-sm mx-auto italic">By entering, you pledge to interact with sincerity, respect, and intention.</p></div>
+                      <div className="space-y-6"><div className="w-20 h-20 bg-mat-wine text-mat-cream rounded-full mx-auto flex items-center justify-center shadow-mat-premium"><ShieldCheck size={40} /></div><h2 className="text-4xl font-bold text-mat-wine italic">Community Standards</h2><p className="text-mat-slate text-sm leading-relaxed max-w-sm mx-auto italic">By joining, you agree to interact with sincerity, respect, and clear intentions.</p></div>
                       <div className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-rose/10 space-y-4">
-                         <div className="flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-mat-wine">Aura Potential</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
+                         <div className="flex justify-between items-center"><span className="text-[10px] font-black uppercase tracking-widest text-mat-wine">Profile Strength</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
                          <div className="h-2 bg-mat-fog rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: `${strength}%` }} className="h-full bg-mat-gold shadow-sm" /></div>
                       </div>
                       {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{error}</p>}
-                      <button onClick={updateProfile} disabled={loading} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform">{loading ? 'Opening Portal...' : 'Enter Sanctuary'}</button>
+                      <button onClick={updateProfile} disabled={loading} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform">{loading ? 'Joining...' : 'Launch Dashboard'}</button>
                    </motion.div>
+                )}   </motion.div>
                 )}
              </AnimatePresence>
           </div>

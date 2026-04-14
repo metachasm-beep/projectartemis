@@ -7,15 +7,15 @@ import { Badge } from '@/components/ui/badge';
 const BENTO_ITEMS = [
   {
     title: "Identity Verification",
-    desc: "Every initiate undergoes a multi-layer verification sequence to ensure the sanctuary's absolute integrity.",
+    desc: "Every member is verified to ensure a secure and genuine community.",
     icon: ShieldCheck,
-    badges: ["Verified Souls Only", "0% Ghosting"],
+    badges: ["Verified Profiles Only", "0% Ghosting"],
     color: "mat-rose",
     bg: "bg-mat-rose/5"
   },
   {
-    title: "Instant Synchronicity",
-    desc: "Real-time matching based on intent, standing, and presence score. No algorithms, just alignment.",
+    title: "Precision Matching",
+    desc: "Real-time matching based on lifestyle, values, and activity. No fake algorithms, just real choices.",
     icon: Zap,
     alignment: "98.4%",
     color: "mat-gold",
@@ -23,17 +23,17 @@ const BENTO_ITEMS = [
   },
   {
     title: "Safe Haven",
-    desc: "A private sanctuary designed for high-value dialogue and long-term meaningful connection.",
+    desc: "A private community designed for high-value dialogue and long-term meaningful connection.",
     icon: Heart,
     footer: "End-to-End Encrypted",
     color: "mat-rose",
     bg: "bg-white/5"
   },
   {
-    title: "Standing Hierarchy",
-    desc: "Earn your standing through verified presence, absolute integrity, and community contribution.",
+    title: "Quality Network",
+    desc: "Enhance your profile through verified activity and positive interactions.",
     icon: Activity,
-    footer: "Verified Protocol active",
+    footer: "Verified status active",
     color: "mat-cream",
     bg: "bg-mat-obsidian border-mat-rose/20"
   }
@@ -47,8 +47,8 @@ const SelectionMatrixFold: React.FC = () => {
         <div className="text-left space-y-4 max-w-2xl">
           <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-rose/40">The Infrastructure</span>
           <h2 className="text-5xl md:text-7xl font-display text-mat-cream leading-[0.9] uppercase tracking-tighter">
-            Selection <br />
-            <span className="text-white/20 italic">Architecture</span>
+            Member <br />
+            <span className="text-white/20 italic">Selection</span>
           </h2>
         </div>
 
@@ -93,7 +93,7 @@ const SelectionMatrixFold: React.FC = () => {
                 {item.alignment && (
                   <div className="space-y-3">
                     <div className="flex justify-between text-[9px] font-black uppercase tracking-widest text-mat-gold">
-                      <span>Matrix Alignment</span>
+                      <span>Compatibility</span>
                       <span>{item.alignment}</span>
                     </div>
                     <div className="h-1 bg-white/5 rounded-full overflow-hidden">

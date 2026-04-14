@@ -81,7 +81,7 @@ const HeroFold: React.FC = () => {
           transition={{ delay: 0.5 }}
           className="text-mat-rose font-display tracking-[0.2em] text-sm mb-6 uppercase"
         >
-          High-Status Sovereignty
+          Elite Community
         </motion.span>
         
         <motion.h1 
@@ -100,7 +100,7 @@ const HeroFold: React.FC = () => {
           transition={{ delay: 1 }}
           className="text-mat-cream/70 max-w-xl text-lg md:text-xl font-light leading-relaxed mb-12"
         >
-          India's most exclusive merit-based protocol for refined companionship and high-authority status.
+          India's most exclusive network for high-value connections and refined companionship.
         </motion.p>
 
         <motion.div
@@ -116,12 +116,12 @@ const HeroFold: React.FC = () => {
             })} 
             className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30"
           >
-            ENTER SANCTUARY
+            GET STARTED
           </StarBorder>
           
           <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
             <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
-              READ JOURNALS
+              READ BLOGS
             </StarBorder>
           </button>
         </motion.div>
@@ -132,7 +132,7 @@ const HeroFold: React.FC = () => {
           transition={{ repeat: Infinity, duration: 2 }}
           className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40"
         >
-          <span className="text-[10px] tracking-[0.3em] font-display uppercase">Scroll to Discover</span>
+          <span className="text-[10px] tracking-[0.3em] font-display uppercase">Scroll to Explore</span>
           <ArrowDown className="w-4 h-4" />
         </motion.div>
       </motion.div>

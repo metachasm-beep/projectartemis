@@ -38,13 +38,13 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
               "mat-text-label-pro !text-[11px] not-italic mb-1",
               isMan ? "text-mat-obsidian" : "text-white"
             )}>
-              A Sanctuary Built on Truth
+              A Community Built on Trust
             </h3>
             <p className={cn(
               "text-[10px] uppercase tracking-[0.25em] font-medium leading-relaxed italic",
               isMan ? "text-mat-obsidian/70" : "text-white/40"
             )}>
-              Let us know you are real, so you can truly be found in our Sanctuary.
+              Let us know you are real, so you can truly be found in our community.
             </p>
           </div>
         </div>

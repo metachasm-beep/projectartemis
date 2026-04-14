@@ -18,9 +18,9 @@ import SafetyActions from './common/SafetyActions';
 import { SanctuaryService } from '@/services/sanctuary';
 
 /**
- * 🍷 SOVEREIGN BROWSING: The Minimalist Discovery Ritual
- * An infinite scroll experience designed for the Seeker's sovereign gaze.
- * Sorted by Rank: Lowest to Highest (The Root Ascent).
+ * 🍷 PREMIUM DISCOVERY: Minimalist Profile Browsing
+ * An infinite scroll experience designed for a high-end discovery feel.
+ * Sorted by Rank: Lowest to Highest.
  */
 
 interface Profile {
@@ -71,7 +71,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
       setProfiles(prev => offset === 0 ? parsed : [...prev, ...parsed]);
       setHasMore(parsed.length === LIMIT);
     } catch (err) {
-      console.error('Sovereign fetch error:', err);
+      console.error('Discovery fetch error:', err);
       setHasMore(false);
     } finally {
       setLoading(false);
@@ -111,11 +111,11 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
 
   return (
     <div className="relative min-h-[100vh] bg-mat-cream overflow-x-hidden">
-      {/* ─── Control Header (Notch Safe) ─── */}
+      {/* ─── Discovery Header ─── */}
       <div className="fixed top-4 md:top-8 left-1/2 -translate-x-1/2 z-[110] flex items-center gap-4 md:gap-6 px-6 md:px-10 py-3 md:py-5 bg-mat-wine/90 backdrop-blur-2xl rounded-full shadow-2xl border border-mat-rose/20 w-[90%] md:w-auto justify-between md:justify-start">
          <div className="flex items-center gap-2 md:gap-3">
             <Sparkles size={14} className="text-mat-gold animate-pulse" />
-            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-mat-cream">Sovereign Portal</span>
+            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-mat-cream">Premium Browse</span>
          </div>
          <div className="w-px h-4 bg-mat-cream/10" />
          <Button onClick={onStop} variant="ghost" className="h-8 px-3 md:px-4 text-mat-rose hover:text-mat-cream hover:bg-mat-rose/20 text-[8px] md:text-[9px] font-black uppercase tracking-widest gap-2">
@@ -151,7 +151,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                      <div className="absolute top-0 left-0 w-full z-30 pt-4 pb-12 px-4 bg-gradient-to-b from-black/90 to-transparent flex justify-between items-start">
                         <div>
                           <h3 className="text-3xl md:text-4xl font-black uppercase tracking-tighter text-mat-cream drop-shadow-[0_4px_4px_rgba(0,0,0,1)] leading-none font-['Impact'] italic">
-                            {(profile.full_name || 'Aspirant').split(' ')[0]}
+                            {(profile.full_name || 'Member').split(' ')[0]}
                           </h3>
                           {age && <p className="text-[10px] text-white/40 font-bold uppercase tracking-widest mt-1">{age}y</p>}
                         </div>
@@ -173,7 +173,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                        />
                      </div>
 
-                     {/* Real-Data Footer */}
+                     {/* Status Footer */}
                      <div className="absolute bottom-0 left-0 right-0 z-30 bg-black/85 backdrop-blur-md border-t border-mat-gold/20 p-4 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className={`text-[10px] font-black uppercase tracking-widest ${tier.color === 'mat-gold-foil' ? 'text-mat-gold' : 'text-mat-rose'}`}>
@@ -193,26 +193,26 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                         )}
                      </div>
 
-                     {/* Resonance Overlay */}
+                     {/* Match Overlay */}
                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
                         <motion.div 
-                          initial={false} 
-                          animate={{ scale: status === 'matching' ? 1.2 : 0, opacity: status === 'matching' ? 1 : 0 }}
-                          className="p-8 rounded-full bg-mat-gold/20 backdrop-blur-3xl text-mat-gold"
+                           initial={false} 
+                           animate={{ scale: status === 'matching' ? 1.2 : 0, opacity: status === 'matching' ? 1 : 0 }}
+                           className="p-8 rounded-full bg-mat-gold/20 backdrop-blur-3xl text-mat-gold"
                         >
                            <Sparkles size={48} className="animate-spin" />
                         </motion.div>
                         
                         <AnimatePresence>
-                          {status === 'success' && (
-                             <motion.div 
-                               initial={{ scale: 0, opacity: 0 }}
-                               animate={{ scale: 1, opacity: 1 }}
-                               className="p-8 rounded-full bg-mat-rose backdrop-blur-3xl text-mat-cream shadow-mat-premium"
-                             >
-                                <Heart size={48} fill="currentColor" />
-                             </motion.div>
-                          )}
+                           {status === 'success' && (
+                              <motion.div 
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="p-8 rounded-full bg-mat-rose backdrop-blur-3xl text-mat-cream shadow-mat-premium"
+                              >
+                                 <Heart size={48} fill="currentColor" />
+                              </motion.div>
+                           )}
                         </AnimatePresence>
                      </div>
                    </CardContent>
@@ -223,16 +223,16 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
             {loading && [1, 2, 3, 4].map(i => <SkeletonCard key={i} />)}
          </div>
 
-         {/* ─── The Infinite Horizon ─── */}
+         {/* ─── Infinite Discovery ─── */}
          <div ref={loader} className="py-48 flex flex-col items-center justify-center">
             {hasMore ? (
                <motion.div animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 2 }} className="text-mat-wine/20 flex flex-col items-center gap-6">
                   <ChevronDown size={32} strokeWidth={1} />
-                  <p className="text-[10px] font-black uppercase tracking-[0.6em]">The Root Ascent Continues</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.6em]">Loading more profiles</p>
                </motion.div>
             ) : (
                <div className="p-20 border border-mat-rose/5 bg-mat-wine/5 rounded-[4rem] text-center italic text-mat-wine/20">
-                  <p className="mat-text-label-pro opacity-40">The registry of seekers rests. Focus on current resonances.</p>
+                  <p className="mat-text-label-pro opacity-40">No more profiles available today. Focus on current connections.</p>
                </div>
             )}
          </div>

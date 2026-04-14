@@ -102,7 +102,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
 
   return (
     <div className="w-full max-w-xl mx-auto p-12 space-y-12 bg-black/40 backdrop-blur-xl rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
-      {/* 🔮 THE SOVEREIGN PROGRESS RAIL */}
+      {/* 🔮 Verification Progress Rail */}
       <div className="flex justify-between items-center px-4 relative z-10">
         {progressSteps.map((s, i) => {
           const isActive = getStepIndex(step) >= i;
@@ -126,7 +126,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                   "text-[8px] font-black uppercase tracking-[0.2em] transition-colors",
                   isActive ? "text-mat-gold" : "text-white/10"
                 )}>
-                  {s.label}
+                  {s.label === 'Registry' ? 'Phone' : s.label}
                 </span>
               </div>
               {i < 2 && (
@@ -150,16 +150,16 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                <ShieldCheck size={80} className="text-mat-gold relative z-10" strokeWidth={1} />
             </div>
             <div className="space-y-4">
-               <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Sovereign Identity</h2>
+               <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Identity Verification</h2>
                <p className="text-[11px] text-white/40 uppercase tracking-[0.3em] max-w-xs mx-auto leading-relaxed font-medium">
-                 Initiate the live identity protocol. Powered by Didit’s zero-knowledge handshake. No simulations, only truth.
+                 Start the secure identity check. Verified by Didit’s encrypted system. No bots, only real users.
                </p>
             </div>
             <Button 
                onClick={() => setStep('ID_VERIFICATION')}
                className="w-full h-18 bg-mat-gold text-mat-obsidian hover:bg-white font-black uppercase tracking-[0.4em] text-[12px] rounded-3xl group shadow-[0_20px_40px_rgba(212,175,55,0.15)] mt-4"
             >
-               Activate Protocol <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+               Start Verification <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
             </Button>
           </motion.div>
         )}
@@ -167,7 +167,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         {(step === 'ID_VERIFICATION' || step === 'LIVENESS') && (
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 h-[500px]">
              <div className="space-y-2">
-                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02: Live Handshake</span>
+                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02: Identity Check</span>
                 <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">ID & Biometrics</h3>
              </div>
 
@@ -176,30 +176,30 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                   src={diditService.getVerificationUrl()}
                   allow="camera *; microphone *; display-capture *;"
                   className="w-full h-full border-none"
-                  title="Didit Sovereign Handshake"
+                  title="Didit Verification Flow"
                 />
                 
                 {/* 🛡️ Privacy Overlay HUD */}
                 <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 pointer-events-none">
                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                   <span className="text-[7px] text-white/60 font-black uppercase tracking-widest">Live Encryption Active</span>
+                   <span className="text-[7px] text-white/60 font-black uppercase tracking-widest">Secure Encryption Active</span>
                 </div>
              </div>
              
-             <p className="text-[9px] text-white/20 uppercase tracking-[0.2em]">Our protocol combines Aadhaar OTP, Name Validation, and Face Liveness via Didit.</p>
+             <p className="text-[9px] text-white/20 uppercase tracking-[0.2em]">Our system uses Aadhaar checks and Face Liveness via Didit.</p>
           </motion.div>
         )}
 
         {step === 'PHONE_REGISTRY' && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} key="phone" className="space-y-10 relative z-10">
              <div className="space-y-2 text-center">
-                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 03: Registry</span>
-                <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Registry Binding</h3>
+                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 03: Final Step</span>
+                <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Phone Verification</h3>
              </div>
 
              <div className="bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/5 space-y-8 backdrop-blur-sm">
                 <div className="space-y-4">
-                   <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black text-center">Finalize Sovereign Mobile Registry</p>
+                   <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black text-center">Confirm Your Mobile Number</p>
                    <div className="flex gap-3">
                       <div className="w-24 h-18 bg-black/40 border border-white/10 rounded-2xl flex items-center justify-center text-mat-gold font-mono text-lg">+91</div>
                       <Input 
@@ -214,7 +214,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                       disabled={loading || phoneNumber.length !== 10}
                       className="w-full h-18 bg-white/[0.05] border border-white/10 text-white hover:bg-white/10 font-bold uppercase tracking-[0.3em] rounded-2xl text-[11px]"
                    >
-                       {loading ? <Loader2 className="animate-spin" /> : 'Transmit Binding Signal'}
+                       {loading ? <Loader2 className="animate-spin" /> : 'Send Verification Code'}
                    </Button>
                 </div>
 
@@ -230,7 +230,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                       disabled={loading || phoneOtp.length !== 6}
                       className="w-full h-18 bg-mat-gold text-mat-obsidian hover:bg-white font-black uppercase tracking-[0.4em] rounded-2xl text-[12px] shadow-lg"
                    >
-                      Seal Identity
+                      Confirm Identity
                    </Button>
                 </div>
              </div>
@@ -251,8 +251,8 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 </div>
              </motion.div>
              <div className="space-y-4">
-                <h2 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Identity Sealed</h2>
-                <p className="text-[12px] text-green-400 font-black uppercase tracking-[0.6em] animate-pulse">Welcome to the Inner Sanctuary</p>
+                <h2 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Identity Verified</h2>
+                <p className="text-[12px] text-green-400 font-black uppercase tracking-[0.6em] animate-pulse">Welcome to the community</p>
              </div>
           </motion.div>
         )}
@@ -276,10 +276,10 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         )}
       </AnimatePresence>
 
-      {/* 🏛️ LEGAL ADVISORY */}
+      {/* 🏛️ SYSTEM ADVISORY */}
       <div className="flex justify-between items-center opacity-20 pt-4 border-t border-white/5 relative z-10">
-        <span className="text-[8px] font-black uppercase tracking-[0.4em]">Sovereign Protocol v2.4.7</span>
-        <span className="text-[8px] font-black uppercase tracking-[0.4em]">Zero-Knowledge Handshake</span>
+        <span className="text-[8px] font-black uppercase tracking-[0.4em]">System Version v2.4.7</span>
+        <span className="text-[8px] font-black uppercase tracking-[0.4em]">Secure Verification Check</span>
       </div>
     </div>
 

@@ -61,13 +61,13 @@ export const Dock: React.FC<DockProps> = ({
       onMouseLeave={() => mouseX.set(Infinity)}
       className="flex items-center gap-4 p-4 rounded-[2.5rem] bg-black/40 backdrop-blur-3xl border border-white/10 shadow-2xl"
     >
-      <DockIcon icon={Settings} label="Protocols" mouseX={mouseX} />
+      <DockIcon icon={Settings} label="Settings" mouseX={mouseX} />
       
       <div className="w-px h-8 bg-white/10 mx-2" />
       
-      <DockIcon icon={HelpCircle} label="Sovereign Gnosis" mouseX={mouseX} onClick={onShowFAQ} />
+      <DockIcon icon={HelpCircle} label="Support" mouseX={mouseX} onClick={onShowFAQ} />
       {onShowVerification && (
-        <DockIcon icon={ShieldCheck} label="Identity Seal" mouseX={mouseX} onClick={onShowVerification} />
+        <DockIcon icon={ShieldCheck} label="Verification" mouseX={mouseX} onClick={onShowVerification} />
       )}
     </motion.nav>
   );

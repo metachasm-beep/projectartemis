@@ -61,13 +61,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏰 Main Interface Layer */}
-      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col gap-8">
-        
-        {/* 🎭 Minimal Identity Zone (Top-Left personalization) */}
+      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col g        {/* 🎭 Header Zone */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
            {profile?.photos?.[0] ? (
              <div className="relative w-16 h-16 rounded-2xl overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.2)]">
-                <img src={profile.photos[0]} alt="Sovereign" className="w-full h-full object-cover" />
+                <img src={profile.photos[0]} alt="User" className="w-full h-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/30 to-transparent mix-blend-overlay"></div>
              </div>
            ) : (
@@ -77,30 +75,30 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
            )}
            <div className="space-y-1">
               <Badge variant="outline" className="px-3 py-1 border-mat-gold/30 text-mat-gold text-[7px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/5 backdrop-blur-md">
-                Protocol: Active Sync
+                Status: Verified & Syncing
               </Badge>
               <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
-                {profile?.full_name?.split(' ')[0] || 'Sovereign'} Presence.
+                Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}.
               </h1>
            </div>
         </header>
 
-        {/* 🕸️ The Sovereign Matrix: 12-Column Grid (Squeezed for Zero-Scroll) */}
+        {/* 🕸️ Dashboard Grid: 12-Column Layout */}
         <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-5 lg:gap-6 pb-12">
           
-          {/* 👁️ Zone 1: The Oracle (Insight) */}
+          {/* 👁️ Discovery Zone (Insights) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.1}>
             <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
           </GlassCard>
 
-          {/* 🏛️ Zone 2: The Architect (Vision) */}
+          {/* 🏛️ Design Zone (Results) */}
           <GlassCard className="col-span-12 lg:col-span-8 row-span-4" delay={0.2}>
              <ThreeAnchor quality="high" />
              <div className="h-full flex flex-col justify-between relative z-10">
                 <div className="space-y-1">
-                   <p className="font-mono text-[9px] text-mat-wine uppercase tracking-[0.6em] mb-1">Vision Matrix</p>
+                   <p className="font-mono text-[9px] text-mat-wine uppercase tracking-[0.6em] mb-1">Visual Overview</p>
                    <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
-                     Aesthetic <span className="opacity-10 text-mat-gold">Sovereignty.</span>
+                     Design <span className="opacity-10 text-mat-gold">& Style.</span>
                    </h2>
                 </div>
 
@@ -108,10 +106,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   {(() => {
                     const arc = SkillOrchestrator.getArchitectVisuals();
                     return [
-                      { label: 'Gaze Depth', val: `${arc.gazeDepth}%`, icon: Eye, color: 'text-white' },
-                      { label: 'Asset Purity', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold' },
-                      { label: 'Shader Status', val: arc.lightingStability, icon: Zap, color: 'text-mat-rose' },
-                      { label: 'Sync Status', val: 'LIVE', icon: Activity, color: 'text-mat-gold' },
+                      { label: 'Views', val: `${arc.gazeDepth}`, icon: Eye, color: 'text-white' },
+                      { label: 'Rating', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold' },
+                      { label: 'Quality', val: arc.lightingStability, icon: Zap, color: 'text-mat-rose' },
+                      { label: 'System', val: 'STABLE', icon: Activity, color: 'text-mat-gold' },
                     ].map((stat, i) => (
                       <motion.div 
                         key={i} 
@@ -125,14 +123,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                             <p className="text-2xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
                             <p className="font-mono text-[8px] opacity-30 uppercase tracking-[0.2em]">{stat.label}</p>
                          </div>
-                      </motion.div>
+                       </motion.div>
                     ));
                   })()}
                 </div>
               </div>
           </GlassCard>
 
-          {/* 🌿 Zone 3: The Sanctuary (Identity Hub) */}
+          {/* 🌿 Profile Zone (Identity Hub) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-8" delay={0.3}>
             <SanctuaryWidget 
                metrics={metrics} 
@@ -140,12 +138,12 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             />
           </GlassCard>
 
-          {/* 📜 Zone 4: The Influence (Authority) */}
+          {/* 📜 Activity Zone (Performance) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.4}>
              <InfluenceWidget metrics={metrics} />
           </GlassCard>
 
-          {/* 🛡️ Zone 5: Registry Integrity (Command) */}
+          {/* 🛡️ Account Zone (Security) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-2" delay={0.5}>
             <div className="h-full flex items-center justify-between px-2">
               <div className="flex items-center gap-4">
@@ -153,8 +151,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
                 </div>
                 <div>
-                   <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.5em]">Integrity Protocol</p>
-                   <p className="text-xs font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">STABLE</span></p>
+                   <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.5em]">Account Verification</p>
+                   <p className="text-xs font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">VERIFIED</span></p>
                 </div>
               </div>
               
@@ -163,7 +161,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   onClick={() => setShowVerification(true)}
                   className="px-5 py-2.5 border border-mat-gold/20 text-mat-gold text-[8px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
                 >
-                  Apply
+                  Verify Now
                 </button>
               )}
             </div>
@@ -207,9 +205,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                <div className="space-y-12">
                   <div className="space-y-4">
                     <h2 className="text-5xl mat-text-display-pro text-white leading-tight uppercase font-black tracking-tighter">
-                      Sovereign <span className="mat-text-gradient-gold">Gnosis</span>
+                      Help <span className="mat-text-gradient-gold">& Support</span>
                     </h2>
-                    <p className="mat-text-label-pro opacity-40 uppercase tracking-widest text-xs">Knowledge Base Protocol</p>
+                    <p className="mat-text-label-pro opacity-40 uppercase tracking-widest text-xs">Frequently Asked Questions</p>
                   </div>
                   
                   <div className="pointer-events-auto">

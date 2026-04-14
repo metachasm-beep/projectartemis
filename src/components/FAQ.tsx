@@ -20,22 +20,22 @@ interface FAQItem {
 const FAQ_DATA: FAQItem[] = [
   {
     question: "Why is Aadhaar Verification mandatory?",
-    answer: "The 'Seal of Truth' ensures the Sanctuary remains a space of absolute authenticity. By verifying your identity via Aadhaar, we eliminate bots and bad actors, ensuring that every soul you meet is real and committed.",
+    answer: "Verification ensures our community remains a safe space for real people. By verifying your identity via Aadhaar, we eliminate bots and fake profiles, ensuring that everyone you meet is real and committed.",
     icon: ShieldCheck
   },
   {
-    question: "How do Divine Blessings (Tokens) work?",
-    answer: "Tokens are the lifeblood of visibility. You earn 10 tokens daily for simple presence. Streaks grant larger rewards: 100 tokens for 7 days, and 1000 for 30 days. These can be used for 'Presence Bumps' or unlocking discovery filters.",
+    question: "How do Activity Points work?",
+    answer: "Points are earned for staying active on the platform. You get 10 points daily just for signing in. Regular streaks grant larger rewards: 100 points for a 7-day streak, and 1000 for 30 days. These can be used to boost your visibility or unlock advanced discovery filters.",
     icon: Zap
   },
   {
     question: "My profile is verified but not 'Active'?",
-    answer: "Profiles are activated once the Seal of Truth is applied (Aadhaar Verified). If you are verified but still see an inactive status, please Synchronization your dashboard or contact the Architect.",
+    answer: "Profiles are fully activated once the ID Verification is complete. If you are verified but still see an inactive status, please refresh your dashboard or contact our support team.",
     icon: Users
   },
   {
-    question: "How do I find a Connection?",
-    answer: "For Matriarchs, the 'Boundless Discovery' allows you to browse all verified Seekers. For Seekers, your story is presented to Matriarchs based on your Impact Score and Presence Bumps.",
+    question: "How do connections work?",
+    answer: "Women can browse all verified profiles in the community. For men, your profile is presented to others based on your engagement score and visibility boosts.",
     icon: Search
   }
 ];
@@ -50,9 +50,9 @@ export const FAQ: React.FC = () => {
           <HelpCircle className="text-mat-gold w-6 h-6" />
         </div>
         <h2 className="text-5xl mat-text-display-pro text-white leading-tight uppercase">
-          Divine <span className="mat-text-gradient-gold">Wisdom</span>
+          Help <span className="mat-text-gradient-gold">Center</span>
         </h2>
-        <p className="mat-text-label-pro">Frequently Asked Truths</p>
+        <p className="mat-text-label-pro">Common Questions</p>
       </div>
 
       <div className="max-w-3xl mx-auto space-y-4">
@@ -100,13 +100,13 @@ export const FAQ: React.FC = () => {
 
       <div className="max-w-3xl mx-auto pt-12 text-center">
          <div className="p-12 rounded-[3.5rem] mat-glass-premium border-white/5 bg-white/[0.02] space-y-8">
-            <p className="mat-text-label-pro opacity-40">Still have questions about your journey?</p>
+            <p className="mat-text-label-pro opacity-40">Still have questions about your account?</p>
             <Button 
                variant="outline" 
                className="h-16 px-12 rounded-2xl border-mat-gold/30 text-mat-gold hover:bg-mat-gold/10 font-black uppercase tracking-[0.3em] text-[10px] shadow-mat-gold/20"
-               onClick={() => window.location.href = 'mailto:architect@matriarch.app'}
+               onClick={() => window.location.href = 'mailto:support@matriarch.app'}
             >
-               Summon the Architect
+               Contact Support
             </Button>
          </div>
       </div>
