@@ -2,7 +2,7 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { Post } from '../data/posts';
+import type { Post } from '../data/posts';
 import { DUMMY_ASPIRANTS } from '../../data/dummyProfiles';
 import PerfectTextWrapper from './PerfectTextWrapper';
 

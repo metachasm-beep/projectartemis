@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Post } from '../data/posts';
+import type { Post } from '../data/posts';
 import { motion, AnimatePresence } from 'framer-motion';
 import MagicBento from './MagicBento';
 

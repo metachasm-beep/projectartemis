@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ManifestoService, ManifestoSubmission } from '@/services/manifestoService';
+import { ManifestoService, type ManifestoSubmission } from '@/services/manifestoService';
 import { CheckCircle, XCircle, Eye, Clock, User, Filter, RefreshCw, Layers } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import ReactMarkdown from 'react-markdown';
