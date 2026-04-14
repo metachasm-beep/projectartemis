@@ -245,7 +245,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   transition={{ delay: 0.1 + idx * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
                   className={cn(
-                    "relative flex flex-col justify-between p-3 rounded-2xl overflow-hidden group/stat",
+                    "relative flex flex-col justify-between p-3 lg:p-4 rounded-2xl overflow-hidden group/stat",
                     "transition-all duration-300 cursor-default",
                     // Skeuomorphic raised tile — Apple / Ferrari luxury material
                     "bg-gradient-to-b from-[#fdfcfa] to-[#ece8e0]",
@@ -258,25 +258,27 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                 >
                   {/* Accent colour wash (top-right corner glow) */}
                   <div className={cn(
-                    "absolute -top-4 -right-4 w-16 h-16 rounded-full blur-2xl opacity-40 bg-gradient-to-br",
+                    "absolute -top-4 -right-4 w-20 h-20 rounded-full blur-2xl opacity-50 bg-gradient-to-br",
                     stat.accent
                   )} />
 
-                  {/* Icon chip */}
-                  <div className={cn(
-                    "w-7 h-7 rounded-xl flex items-center justify-center mb-2 shrink-0",
-                    "bg-gradient-to-br from-white to-[#ede8e0]",
-                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.10)]",
-                    "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
-                    "group-hover/stat:bg-gradient-to-br group-hover/stat:from-mat-rose-gold/90 group-hover/stat:to-mat-rose-gold group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-500"
-                  )}>
-                    {stat.icon}
+                  {/* Icon chip + Label row */}
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <div className={cn(
+                      "w-6 h-6 rounded-lg flex items-center justify-center shrink-0",
+                      "bg-gradient-to-br from-white to-[#ede8e0]",
+                      "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_3px_rgba(0,0,0,0.10)]",
+                      "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
+                      "group-hover/stat:bg-gradient-to-br group-hover/stat:from-mat-rose-gold/90 group-hover/stat:to-mat-rose-gold group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-500"
+                    )}>
+                      {stat.icon}
+                    </div>
+                    <h3 className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-[0.15em] uppercase leading-none truncate">{stat.label}</h3>
                   </div>
 
-                  {/* Value & Label */}
+                  {/* Value — fills card width */}
                   <div>
-                    <p className="mat-text-editorial-huge text-[15px] text-mat-noir leading-none">{stat.value}</p>
-                    <h3 className="mat-text-editorial-caps text-[5.5px] text-mat-noir/35 tracking-[0.2em] mt-0.5 uppercase">{stat.label}</h3>
+                    <p className="mat-text-editorial-huge text-2xl lg:text-3xl text-mat-noir leading-none tracking-tight">{stat.value}</p>
                   </div>
 
                   {/* Thin progress underline */}
