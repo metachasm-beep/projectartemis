@@ -29,10 +29,9 @@ interface EditProfileProps {
   profile: MatriarchProfile;
   onUpdate: (updatedProfile: MatriarchProfile) => void;
   onCancel: () => void;
-  onOpenSettings: () => void;
 }
 
-export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onCancel, onOpenSettings }) => {
+export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onCancel }) => {
   const [formData, setFormData] = useState<MatriarchProfile>({ ...profile });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -181,7 +180,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
         exit={{ y: 20, opacity: 0, scale: 0.95 }}
         className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#000000] rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] p-8 md:p-12 space-y-12 relative hide-scrollbar selection:bg-mat-rose-gold selection:text-white"
       >
-        {/* Suggestion 1: Noir High-Contrast — Dramatic Starkness */}
         <div className="absolute inset-0 bg-gradient-to-tr from-mat-noir via-transparent to-mat-wine/10 opacity-30 pointer-events-none" />
         
         <div className="relative z-10 flex justify-between items-end border-b border-white/10 pb-8">
@@ -200,7 +198,6 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
         </div>
         
         <div className="relative z-10 grid grid-cols-1 gap-12">
-            {/* Ported sections go here - keeping logic identical */}
           <section className="space-y-8">
              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
@@ -208,7 +205,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       <TooltipTrigger>
                          <Camera className="w-6 h-6 text-mat-rose-gold" strokeWidth={1} />
                       </TooltipTrigger>
-                      <TooltipContent>Upload up to 6 high-quality photos to tell your story.</TooltipContent>
+                      <TooltipContent>Upload up to 6 photos</TooltipContent>
                    </Tooltip>
                    <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white">Visual Narrative</h3>
                 </div>
@@ -219,73 +216,34 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                    </div>
                 ) : (
                    <span className="text-[9px] font-bold text-mat-rose/40 uppercase tracking-widest">
-                      {(formData.photos?.length || 0)} / {PHOTO_LIMIT} Photos
+                      {(formData.photos?.length || 0)} / {PHOTO_LIMIT}
                    </span>
                 )}
              </div>
 
              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {formData.photos?.map((url, i) => (
-                   <motion.div 
-                     key={url}
-                     initial={{ opacity: 0, scale: 0.9 }}
-                     animate={{ opacity: 1, scale: 1 }}
-                     className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm"
-                   >
-                      <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-110 group-hover:sepia-[0.3]" />
-                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                         <button 
-                           onClick={() => handleDeletePhoto(i)}
-                           className="w-12 h-12 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose hover:text-white transition-all shadow-xl"
-                         >
+                   <motion.div key={url} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm">
+                      <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700" />
+                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
+                         <button onClick={() => handleDeletePhoto(i)} className="w-12 h-12 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose transition-all">
                             <Trash2 size={20} />
                          </button>
                       </div>
                    </motion.div>
                 ))}
 
-                 {profile.is_verified && (
-                    <div className="col-span-full p-6 rounded-3xl bg-mat-gold/5 border border-mat-gold/10 flex flex-col items-center text-center space-y-3">
-                       <ShieldCheck size={32} className="text-mat-gold opacity-80" />
-                       <div className="space-y-1">
-                          <p className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em]">Biometric Shield Active</p>
-                          <p className="text-[9px] font-medium text-mat-gold/60 uppercase leading-relaxed max-w-[280px]">
-                             Your visual identity is locked to maintain the integrity of your verified status. 
-                             Contact protocol security to initiate a re-scan.
-                          </p>
-                       </div>
-                    </div>
-                 )}
-
                  {(formData.photos?.length || 0) < PHOTO_LIMIT && !profile.is_verified && (
                   <div className="grid grid-cols-1 gap-4">
-                    <Tooltip>
-                       <TooltipTrigger asChild>
-                          <label className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-rose/20 bg-mat-rose/[0.02] hover:bg-mat-rose/5 transition-all cursor-pointer group">
-                             <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
-                             <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                                <Plus className="text-mat-rose w-6 h-6" />
-                             </div>
-                             <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Upload</span>
-                          </label>
-                       </TooltipTrigger>
-                       <TooltipContent>Add a new photo from your device.</TooltipContent>
-                    </Tooltip>
-                    
-                    <Tooltip>
-                       <TooltipTrigger asChild>
-                          <button 
-                            onClick={() => setShowCamera(true)}
-                            className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-gold/20 bg-mat-gold/[0.02] hover:bg-mat-gold/5 transition-all group"
-                          >
-                             <div className="w-12 h-12 bg-mat-cream rounded-full flex items-center justify-center mb-4 shadow-sm group-hover:scale-110 transition-transform">
-                                <Camera className="text-mat-gold w-6 h-6" />
-                             </div>
-                             <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-[0.2em]">Capture</span>
-                          </button>
-                       </TooltipTrigger>
-                       <TooltipContent>Capture a new photo with your camera.</TooltipContent>
-                    </Tooltip>
+                    <label className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-rose/20 bg-mat-rose/[0.02] hover:bg-mat-rose/5 transition-all cursor-pointer group">
+                       <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
+                       <Plus size={24} className="text-mat-rose mb-2" />
+                       <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Upload</span>
+                    </label>
+                    <button onClick={() => setShowCamera(true)} className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-gold/20 bg-mat-gold/[0.02] hover:bg-mat-gold/5 transition-all group">
+                       <Camera size={24} className="text-mat-gold mb-2" />
+                       <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Capture</span>
+                    </button>
                   </div>
                 )}
              </div>
@@ -293,194 +251,47 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
 
           <section className="space-y-8">
              <div className="flex items-center gap-4">
-                <Tooltip>
-                   <TooltipTrigger>
-                      <User className="w-6 h-6 text-mat-rose-gold" strokeWidth={1} />
-                   </TooltipTrigger>
-                   <TooltipContent>Share the core details of your life.</TooltipContent>
-                </Tooltip>
+                <User className="w-6 h-6 text-mat-rose-gold" strokeWidth={1} />
                 <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white">Foundational Roots</h3>
              </div>
 
              <div className="space-y-6">
                 <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
-                      Full Name
-                      <Tooltip>
-                         <TooltipTrigger>
-                            <Info size={12} className="opacity-80" />
-                         </TooltipTrigger>
-                         <TooltipContent>How you will be addressed within the sanctuary.</TooltipContent>
-                      </Tooltip>
-                   </label>
-                   <Input 
-                      name="full_name"
-                      value={formData.full_name}
-                      onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
-                   />
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Full Name</label>
+                   <Input name="full_name" value={formData.full_name} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
                 </div>
-
                 <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
-                      Your Bio
-                      <Tooltip>
-                         <TooltipTrigger>
-                            <Info size={12} className="opacity-80" />
-                         </TooltipTrigger>
-                         <TooltipContent>A poetic summary of who you are and what you seek.</TooltipContent>
-                      </Tooltip>
-                   </label>
-                   <textarea 
-                      name="bio"
-                      value={sanitizeBio(formData.bio) || ''}
-                      onChange={handleChange}
-                      rows={5}
-                      className="w-full p-6 rounded-2xl bg-white/[0.06] border border-white/30 text-white font-black text-lg tracking-tight focus:outline-none focus:border-mat-rose-gold transition-all placeholder:text-white/10"
-                      placeholder="TELL YOUR STORY..."
-                   />
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Bio</label>
+                   <textarea name="bio" value={sanitizeBio(formData.bio) || ''} onChange={handleChange} rows={4} className="w-full p-6 rounded-2xl bg-white/[0.06] border border-white/30 text-white font-black text-lg focus:outline-none focus:border-mat-rose-gold transition-all" />
                 </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="grid grid-cols-2 gap-6">
                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
-                         Location
-                         <MapPin size={12} className="opacity-80" />
-                      </label>
-                      <Input 
-                         name="city"
-                         value={formData.city || ''}
-                         onChange={handleChange}
-                         className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
-                      />
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">City</label>
+                      <Input name="city" value={formData.city || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
                    </div>
-
                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
-                         Occupation
-                         <Briefcase size={12} className="opacity-80" />
-                      </label>
-                      <Input 
-                         name="occupation"
-                         value={formData.occupation || ''}
-                         onChange={handleChange}
-                         className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
-                      />
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Vocation</label>
+                      <Input name="occupation" value={formData.occupation || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
                    </div>
                 </div>
-             </div>
-          </section>
-
-          <section className="space-y-8">
-             <div className="flex items-center gap-4">
-                <BookOpen className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-mat-wine">Soul Characteristics</h3>
-             </div>
-
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Education</label>
-                   <Input 
-                      name="education"
-                      value={formData.education || ''}
-                      onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" 
-                   />
-                </div>
-
-                <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Religion</label>
-                   <Input 
-                      name="religion"
-                      value={formData.religion || ''}
-                      onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" 
-                   />
-                </div>
-             </div>
-          </section>
-
-          <section className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 space-y-6">
-             <div className="flex items-center gap-4">
-                <Tooltip>
-                   <TooltipTrigger>
-                      <ShieldCheck size={24} className="text-mat-rose-gold opacity-80" />
-                   </TooltipTrigger>
-                   <TooltipContent>Your role and verification status determine your standing in the sanctuary.</TooltipContent>
-                </Tooltip>
-                <div className="space-y-1">
-                   <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Sanctuary Registry Standing</span>
-                   <p className="text-sm font-black text-white uppercase tracking-widest leading-none">Status: {profile.is_verified ? 'Verified Sovereign' : 'Awaiting Gaze'}</p>
-                </div>
-             </div>
-             <div className="space-y-4">
-                <p className="text-[10px] font-medium text-white/30 italic leading-relaxed uppercase tracking-[0.2em]">
-                   * To ensure collective safety, unverified narratives are indexed below verified initiates. Seal your identity to elevate.
-                </p>
              </div>
           </section>
 
           <div className="pt-8 flex flex-col sm:flex-row gap-4">
-             <Button 
-                disabled={loading || success}
-                onClick={handleSave}
-                className="flex-1 h-20 rounded-full bg-white text-black font-black uppercase tracking-[0.5em] text-[11px] transition-all hover:bg-mat-rose-gold hover:text-white shadow-[0_20px_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4"
-             >
-                {loading ? (
-                  <div className="flex gap-2">
-                     {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-black rounded-full animate-bounce" style={{animationDelay: `${i*0.1}s`}} />)}
-                  </div>
-                ) : success ? (
-                  <>
-                     <Check size={20} />
-                     IDENTITY SEALED
-                  </>
-                ) : (
-                  <>
-                     <Save size={18} />
-                     SEAL CHANGES
-                  </>
-                )}
+             <Button disabled={loading || success} onClick={handleSave} className="flex-1 h-20 rounded-full bg-white text-black font-black uppercase tracking-[0.5em] text-[11px] transition-all hover:bg-mat-rose-gold hover:text-white shadow-xl flex items-center justify-center gap-4">
+                {loading ? "Syncing..." : success ? "Identity Sealed" : "Seal Changes"}
              </Button>
-             
-             <button 
-                onClick={onCancel}
-                className="h-20 px-12 rounded-full border border-white/10 text-white/40 font-black uppercase tracking-[0.5em] text-[9px] hover:bg-white/5 hover:text-white transition-all shadow-inner"
-             >
+             <button onClick={onCancel} className="h-20 px-12 rounded-full border border-white/10 text-white/40 font-black uppercase tracking-[0.5em] text-[10px] hover:bg-white/5 transition-all">
                 Retreat
              </button>
-
-              <button 
-                 onClick={onOpenSettings}
-                 className="h-20 px-12 rounded-full border border-dashed border-white/20 text-white/60 font-black uppercase tracking-[0.4em] text-[9px] hover:bg-white/5 hover:text-white transition-all hover:border-white/40"
-              >
-                 Account Protocol
-              </button>
           </div>
+        </div>
 
-          {error && (
-             <motion.div 
-               initial={{ opacity: 0, y: 10 }}
-               animate={{ opacity: 1, y: 0 }}
-               className="p-6 bg-red-50 border border-red-100 rounded-3xl"
-             >
-                <p className="text-[10px] font-bold text-red-600 uppercase tracking-widest text-center">{error}</p>
-             </motion.div>
-          )}
-       </div>
-
-       <AnimatePresence>
-          {showCamera && (
-             <CameraCapture 
-                onCapture={(blob) => {
-                   const file = new File([blob], `capture_${Date.now()}.jpg`, { type: 'image/jpeg' });
-                   handlePhotoUpload(file);
-                   setShowCamera(false);
-                }}
-                onClose={() => setShowCamera(false)}
-             />
-          )}
-       </AnimatePresence>
+        <AnimatePresence>
+           {showCamera && (
+              <CameraCapture onCapture={(blob) => { handlePhotoUpload(new File([blob], `capture.jpg`, { type: 'image/jpeg' })); setShowCamera(false); }} onClose={() => setShowCamera(false)} />
+           )}
+        </AnimatePresence>
       </motion.div>
     </motion.div>
   );

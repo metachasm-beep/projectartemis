@@ -49,7 +49,6 @@ interface WomenSanctuaryProps {
     safetyLevel?: string;
   };
   setIsEditing: (val: boolean) => void;
-  onOpenSettings: () => void;
   onBeginDiscovery?: () => void;
 }
 
@@ -61,7 +60,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   profile,
   metrics, 
   setIsEditing,
-  onOpenSettings,
   onBeginDiscovery 
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);

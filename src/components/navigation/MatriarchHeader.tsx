@@ -6,7 +6,6 @@ import {
   LogOut, 
   HelpCircle, 
   ShieldCheck, 
-  Settings,
   ChevronRight
 } from 'lucide-react';
 import { MatriarchLogo } from "@/components/MatriarchLogo";
@@ -21,9 +20,6 @@ export const MatriarchHeader: React.FC = () => {
       document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
     }},
     { id: 'verification', label: 'Self Verification', desc: 'Secure Your Identity', icon: ShieldCheck, action: () => {
-      setIsOpen(false);
-    }},
-    { id: 'settings', label: 'Preferences', desc: 'Privacy & Settings', icon: Settings, action: () => {
       setIsOpen(false);
     }},
   ];
