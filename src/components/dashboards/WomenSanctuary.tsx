@@ -18,6 +18,7 @@ import { Badge } from "@/components/ui/badge";
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
 import { GlassCard } from '@/components/dashboard/promax/GlassCard';
 import { Dock } from '@/components/dashboard/promax/Dock';
+import { cn } from '@/lib/utils';
 import { FAQ } from '@/components/FAQ';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
