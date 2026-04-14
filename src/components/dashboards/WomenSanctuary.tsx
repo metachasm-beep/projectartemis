@@ -169,150 +169,131 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         {/* ══ MAIN BODY ════════════════════════════════════ */}
         <TooltipProvider>
-          <div className="flex-1 min-h-0 flex flex-col items-center justify-center relative w-full h-full pb-8 md:pb-12">
+          <div className="flex-1 w-full flex flex-col min-h-0 gap-6 pb-6">
 
-            {/* ── SPATIAL TRUMP CARD ISLAND ────────────── */}
+            {/* ── EDITORIAL BROADSHEET TRUMP CARD (Top 60%) ────────────── */}
             <motion.div
-              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              initial={{ opacity: 0, y: 30, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className={cn(
-                "w-[85%] sm:w-[70%] max-w-2xl h-[68%] sm:h-[72vh] rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden flex flex-col group/card relative z-10",
-                "bg-white/60 backdrop-blur-3xl border border-white/60",
-                "shadow-[0_45px_100px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.9),0_2px_15px_rgba(0,0,0,0.05)]",
-              )}
+              className="w-full flex-1 md:flex-[1.4] min-h-0 rounded-[2.5rem] lg:rounded-[3rem] overflow-hidden flex relative group/hero shadow-[0_30px_80px_rgba(0,0,0,0.15)]"
             >
-              {/* Portrait */}
-              <div className="relative h-[65%] overflow-hidden shrink-0">
+              {/* Cinematic Photography */}
+              <div className="absolute inset-0 z-0">
                 <img
-                  src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"}
+                  src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=1600"}
                   alt={profile?.full_name}
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover/card:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-[2.5s] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/hero:scale-[1.03]"
+                  style={{ objectPosition: 'center 30%' }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent" />
-                {/* Name overlay on portrait */}
-                <div className="absolute bottom-4 left-5 right-5">
-                  <h2 className="mat-text-editorial-huge text-3xl md:text-4xl text-white leading-none drop-shadow-xl">
-                    {profile?.full_name || 'Sovereign'}
-                  </h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-white/90 text-[12px] font-light shadow-sm">{age} yrs</span>
-                    {isVerified && <CheckCircle2 size={12} className="text-mat-rose-gold drop-shadow-sm" />}
-                  </div>
-                </div>
-                {/* Live badge */}
-                <div className="absolute top-4 right-4">
-                  <span className="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full mat-text-editorial-caps text-[7px] text-white shadow-[0_2px_8px_rgba(0,0,0,0.15),inset_0_1px_0_rgba(255,255,255,0.3)] border border-white/20">
-                    ● Live
-                  </span>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-mat-noir/90 via-mat-noir/40 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-mat-noir/80 via-transparent to-transparent" />
               </div>
 
-              {/* Bio data */}
-              <div className="flex-1 p-5 md:p-8 flex flex-col justify-between overflow-y-auto custom-scrollbar relative z-10 bg-gradient-to-b from-white/40 to-[#f5f0ea]/80">
-
-                {/* Bio quote */}
-                <p className="text-[11px] md:text-xs text-mat-noir/65 italic leading-relaxed border-l-[3px] border-mat-rose-gold/40 pl-3 mb-4">
-                  "{bio}"
-                </p>
-
-                {/* Stat rows */}
-                <div className="space-y-2.5 mb-4">
-                  {[
-                    { icon: <MapPin size={11} />,        label: 'Location',    value: profile?.city || 'Delhi' },
-                    { icon: <Briefcase size={11} />,     label: 'Profession',  value: occupation },
-                    { icon: <GraduationCap size={11} />, label: 'Education',   value: education },
-                    { icon: <Ruler size={11} />,         label: 'Height',      value: height },
-                  ].map((row, i) => (
-                    <div key={i} className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-white/50 backdrop-blur-xl border border-white/40 shadow-[inset_0_1px_0_rgba(255,255,255,0.7),0_2px_5px_rgba(0,0,0,0.03)]">
-                      <span className="text-mat-rose-gold shrink-0 opacity-80">{row.icon}</span>
-                      <span className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-wider uppercase shrink-0 w-20">{row.label}</span>
-                      <span className="text-[10px] md:text-[11px] text-mat-noir font-medium truncate">{row.value}</span>
+              {/* Editorial Content Overlay */}
+              <div className="relative z-10 p-8 md:p-12 lg:p-14 w-full h-full flex flex-col justify-between text-white max-w-[85%] lg:max-w-4xl">
+                
+                {/* Top Identity Block */}
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h2 className="mat-text-editorial-huge text-5xl md:text-6xl lg:text-7xl drop-shadow-2xl leading-none tracking-tight">
+                      {profile?.full_name || 'Sovereign'}
+                    </h2>
+                    <div className="flex items-center gap-3 mt-4">
+                      <span className="text-white/90 text-sm md:text-base font-light tracking-wider drop-shadow-md">{age} yrs</span>
+                      {isVerified && (
+                        <span className="flex items-center gap-1.5 px-3 py-1 bg-white/10 border border-white/20 rounded-full backdrop-blur-md shadow-lg">
+                          <CheckCircle2 size={12} className="text-mat-rose-gold" />
+                          <span className="text-white/90 mat-text-editorial-caps text-[7px] tracking-[0.2em]">Verified</span>
+                        </span>
+                      )}
                     </div>
-                  ))}
-                </div>
-
-                {/* Profile completeness bar */}
-                <div className="mb-4">
-                  <div className="flex justify-between items-center mb-1.5">
-                    <span className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-wider uppercase">Profile Complete</span>
-                    <span className="text-[9px] font-semibold text-mat-rose-gold">{completeness}%</span>
                   </div>
-                  <div className="h-[3px] bg-mat-noir/10 rounded-full overflow-hidden shadow-inner">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${completeness}%` }}
-                      transition={{ duration: 1.5, delay: 0.5 }}
-                      className="h-full bg-gradient-to-r from-mat-rose-gold/60 to-mat-rose-gold rounded-full"
-                    />
+                  {/* Live badge */}
+                  <div className="shrink-0 hidden md:block">
+                    <span className="px-4 py-1.5 bg-mat-rose-gold/80 backdrop-blur-md rounded-full mat-text-editorial-caps text-[8px] tracking-[0.2em] text-white shadow-xl">
+                      ● Live Instance
+                    </span>
                   </div>
                 </div>
 
-                {/* CTA */}
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className={cn(
-                    "w-full flex items-center justify-center gap-2 py-3 md:py-3.5 rounded-xl text-[9px] md:text-[10px] mat-text-editorial-caps transition-all duration-400 font-medium",
-                    "bg-gradient-to-b from-[#1c1c1c] to-[#0a0a0a] text-white",
-                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_4px_12px_rgba(0,0,0,0.25)] border border-black",
-                    "hover:from-mat-rose-gold hover:to-mat-rose-gold/90 hover:shadow-[0_6px_16px_rgba(183,110,121,0.3)] hover:border-mat-rose-gold",
-                  )}
-                >
-                  <Edit3 size={12} />
-                  Edit Sanctuary Profile
-                </button>
+                {/* Bottom Footer Block */}
+                <div className="flex flex-col gap-8 md:gap-10">
+                  <p className="text-white/85 italic text-sm md:text-base lg:text-lg max-w-2xl leading-relaxed border-l-[3px] border-mat-rose-gold pl-5 drop-shadow-md">
+                    "{bio}"
+                  </p>
+                  
+                  <div className="flex flex-wrap items-center justify-between gap-6">
+                    {/* Meta Data Row */}
+                    <div className="flex flex-wrap items-center gap-6 md:gap-12">
+                      {[
+                        { icon: <MapPin size={16} />,        label: 'Location',    value: profile?.city || 'Delhi' },
+                        { icon: <Briefcase size={16} />,     label: 'Profession',  value: occupation },
+                        { icon: <GraduationCap size={16} />, label: 'Education',   value: education },
+                      ].map((row, i) => (
+                        <div key={i} className="flex items-center gap-3 group/meta">
+                          <span className="text-mat-rose-gold/80 group-hover/meta:text-white transition-colors">{row.icon}</span>
+                          <div className="flex flex-col">
+                            <span className="mat-text-editorial-caps text-[7px] text-white/50 tracking-wider uppercase mb-0.5">{row.label}</span>
+                            <span className="text-xs md:text-sm text-white/90 font-medium drop-shadow-sm">{row.value}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Edit CTA */}
+                    <button
+                      onClick={() => setIsEditing(true)}
+                      className={cn(
+                        "flex items-center justify-center gap-2 px-6 py-3.5 md:py-4 rounded-xl text-[9px] md:text-[10px] mat-text-editorial-caps font-semibold transition-all duration-400 shrink-0",
+                        "bg-white text-mat-noir border border-transparent shadow-[0_8px_30px_rgba(0,0,0,0.2)]",
+                        "hover:bg-mat-rose-gold hover:text-white hover:border-mat-rose-gold hover:shadow-[0_10px_30px_rgba(183,110,121,0.5)]"
+                      )}
+                    >
+                      <Edit3 size={14} />
+                      Curate Dossier
+                    </button>
+                  </div>
+                </div>
               </div>
             </motion.div>
 
-            {/* ── ORBITAL STATS DOCK ───────────────────── */}
+            {/* ── FOOTNOTE STATS BLOCK (Bottom 40%) ───────────────────── */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className={cn(
-                "absolute bottom-4 md:bottom-8 z-[60] flex flex-wrap justify-center items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-3.5 rounded-[2rem] max-w-[95%]",
-                "bg-white/70 backdrop-blur-2xl border border-white/80",
-                "shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
+                "w-full shrink-0 flex-1 md:flex-[0.6] min-h-[220px] rounded-[2.5rem] p-6 lg:p-8 flex flex-col justify-center relative overflow-hidden", 
+                SkeuSurface
               )}
             >
-              {stats.map((stat, idx) => (
-                <Tooltip key={idx}>
-                  <TooltipTrigger asChild>
-                    <motion.div
-                      whileHover={{ scale: 1.15, y: -4 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={cn(
-                        "relative shrink-0 w-10 h-10 md:w-[3.25rem] md:h-[3.25rem] rounded-full flex items-center justify-center cursor-pointer overflow-hidden group/orb",
-                        "bg-gradient-to-b from-white to-[#ece8e0]",
-                        "shadow-[0_4px_10px_rgba(0,0,0,0.06),inset_0_1px_0_rgba(255,255,255,1)] border border-[rgba(0,0,0,0.04)]",
-                        "text-mat-rose-gold transition-all duration-300"
-                      )}
-                    >
-                      {/* Inner accent glow (blooms on hover) */}
-                      <div className={cn(
-                        "absolute inset-0 rounded-full opacity-0 group-hover/orb:opacity-100 transition-opacity duration-500 blur-lg pointer-events-none",
-                        stat.accent
-                      )} />
-                      
-                      <div className="relative z-10 group-hover/orb:scale-110 transition-transform duration-300">
-                        {React.cloneElement(stat.icon as React.ReactElement, { size: 18 })}
-                      </div>
-                      
-                      {/* Micro progress indicator ring (replaces the linear bar) */}
-                      <div className="absolute bottom-1 w-4 md:w-5 h-[2px] bg-mat-noir/5 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-mat-rose-gold/80" 
-                          style={{ width: `${50 + Math.abs(Math.sin((idx) * 1.5)) * 45}%` }} 
-                        />
-                      </div>
-                    </motion.div>
-                  </TooltipTrigger>
-                  <TooltipContent side="top" sideOffset={14} className="bg-[#1c1c1c] text-white border-white/10 rounded-xl px-5 py-3 shadow-2xl backdrop-blur-xl">
-                    <p className="mat-text-editorial-huge text-2xl leading-none mb-1.5">{stat.value}</p>
-                    <p className="mat-text-editorial-caps text-[8px] text-white/50 tracking-widest uppercase">{stat.label}</p>
-                  </TooltipContent>
-                </Tooltip>
-              ))}
+              {/* Subtle accent light */}
+              <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 blur-3xl rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
+              
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-6 lg:gap-x-10 lg:gap-y-8 w-full relative z-10">
+                {stats.map((stat, idx) => (
+                  <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
+                    className="relative flex items-center justify-between group/stat py-3 border-b border-mat-noir/[0.05] hover:border-mat-rose-gold/40 transition-colors"
+                  >
+                    <div className="flex flex-col min-w-0 pr-4">
+                      <h3 className="mat-text-editorial-caps text-[8px] text-mat-noir/40 tracking-[0.2em] uppercase mb-1">{stat.label}</h3>
+                      <p className="mat-text-editorial-huge text-2xl lg:text-3xl text-mat-noir leading-none">{stat.value}</p>
+                    </div>
+                    <div className={cn(
+                      "w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_8px_rgba(0,0,0,0.05)] text-mat-rose-gold transition-all duration-500",
+                      "bg-gradient-to-b from-white to-[#ece8e0] border border-[rgba(0,0,0,0.03)]",
+                      "group-hover/stat:from-mat-rose-gold group-hover/stat:to-mat-rose-gold/90 group-hover/stat:text-white"
+                    )}>
+                      {React.cloneElement(stat.icon as React.ReactElement, { size: 16 })}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
             </motion.div>
 
           </div>
