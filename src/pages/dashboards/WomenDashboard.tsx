@@ -175,10 +175,10 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
                   {[
-                    { label: 'New Seekers', val: '28', icon: Activity, color: 'text-white' },
-                    { label: 'Active Dialogs', val: '4', icon: MessageCircle, color: 'text-mat-rose' },
-                    { label: 'Admiration Index', val: '142', icon: Eye, color: 'text-white/40' },
-                    { label: 'Status Rank', val: 'Elite', icon: Star, color: 'text-mat-gold' },
+                    { label: 'New Seekers', val: status?.matches || 0, icon: Activity, color: 'text-white' },
+                    { label: 'Active Dialogs', val: status?.profilesEngaged || 0, icon: MessageCircle, color: 'text-mat-rose' },
+                    { label: 'Admiration Index', val: status?.profilesViewed || 0, icon: Eye, color: 'text-white/40' },
+                    { label: 'Status Rank', val: status?.safetyLevel || 'Elite', icon: Star, color: 'text-mat-gold' },
                   ].map((stat, i) => (
                     <motion.div 
                       key={i} 
@@ -259,44 +259,39 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         </div>
       </main>
 
-      {/* 🧩 FAQ Premium Modal (Liquid Glass) */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 lg:p-12 backdrop-blur-3xl bg-black/60"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-3xl bg-white"
             onClick={() => setShowFAQ(false)}
           >
-            <motion.div 
-              initial={{ scale: 0.9, y: 30, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.9, y: 30, opacity: 0 }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              onClick={e => e.stopPropagation()}
-              className="w-full max-w-4xl bg-mat-obsidian/90 border border-white/10 rounded-[4rem] p-10 lg:p-20 shadow-[0_0_100px_rgba(75,26,36,0.2)] max-h-[75vh] overflow-y-auto relative glass-surface"
+            <div 
+              className="w-full h-full flex flex-col relative bg-white overflow-hidden" 
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
-               <button 
-                 onClick={() => setShowFAQ(false)}
-                 className="absolute top-10 right-10 w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all z-20"
-               >
-                 <X size={24} />
-               </button>
-               
-               <div className="space-y-12">
-                  <div className="space-y-4">
-                    <h2 className="text-5xl mat-text-display-pro text-white leading-tight uppercase font-black tracking-tighter">
-                      Sovereign <span className="mat-text-gradient-gold">Gnosis</span>
+              <button 
+                onClick={() => setShowFAQ(false)} 
+                className="absolute top-12 right-12 w-16 h-16 bg-black text-white hover:bg-mat-rose-gold transition-all z-20 flex items-center justify-center"
+              >
+                <X size={32} strokeWidth={1} />
+              </button>
+              
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-24 py-32">
+                <div className="max-w-6xl mx-auto space-y-24">
+                  <div className="flex flex-col items-start space-y-8">
+                    <span className="text-[12px] uppercase font-black tracking-[0.6em] opacity-20">Sanctuary Intelligence Protocol</span>
+                    <h2 className="font-serif italic text-7xl md:text-9xl tracking-tighter leading-[0.85] opacity-90 max-w-4xl text-black">
+                      The Gnosis of <br /><span className="opacity-30">Selection.</span>
                     </h2>
-                    <p className="mat-text-label-pro opacity-40 uppercase tracking-widest text-xs">Knowledge Base Protocol</p>
                   </div>
-                  
-                  <div className="pointer-events-auto">
-                    <FAQ />
-                  </div>
-               </div>
-            </motion.div>
+                  <div className="w-full h-px bg-black/10" />
+                  <div className="pointer-events-auto"><FAQ /></div>
+                </div>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

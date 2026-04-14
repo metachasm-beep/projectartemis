@@ -7,11 +7,14 @@ import type { MatriarchProfile } from '../App';
 import { MenDashboard } from './dashboards/MenDashboard';
 import { WomenSanctuary } from '@/components/dashboards/WomenSanctuary';
 import { AdminDashboard } from './dashboards/AdminDashboard';
+import { EditProfile } from '@/components/EditProfile';
+import { AnimatePresence } from 'framer-motion';
 
 export const Dashboard: React.FC = () => {
   const [status, setStatus] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<MatriarchProfile | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const watchdog = setTimeout(() => {
@@ -181,21 +184,36 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <WomenSanctuary 
-      profile={profile} 
-      metrics={{
-        matches: status?.profilesEngaged || 0,
-        sessionSeconds: status?.sessionSeconds || 0,
-        profilesViewed: status?.profilesViewed || 0,
-        profilesEngaged: status?.profilesEngaged || 0,
-        responseRate: status?.responseRate,
-        vibeRating: status?.vibeRating,
-        activeStreak: status?.activeStreak,
-        safetyLevel: status?.safetyLevel
-      }} 
-      setIsEditing={() => {}} // Placeholder for now
-      onBeginDiscovery={() => window.location.href = '/discovery'}
-    />
+    <>
+      <WomenSanctuary 
+        profile={profile} 
+        metrics={{
+          matches: status?.profilesEngaged || 0,
+          sessionSeconds: status?.sessionSeconds || 0,
+          profilesViewed: status?.profilesViewed || 0,
+          profilesEngaged: status?.profilesEngaged || 0,
+          responseRate: status?.responseRate,
+          vibeRating: status?.vibeRating,
+          activeStreak: status?.activeStreak,
+          safetyLevel: status?.safetyLevel
+        }} 
+        setIsEditing={setIsEditing}
+        onBeginDiscovery={() => window.location.href = '/discovery'}
+      />
+
+      <AnimatePresence>
+        {isEditing && profile && (
+          <EditProfile 
+            profile={profile}
+            onUpdate={(updated) => {
+              setProfile(updated);
+              setIsEditing(false);
+            }}
+            onCancel={() => setIsEditing(false)}
+          />
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

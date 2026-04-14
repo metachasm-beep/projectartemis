@@ -703,9 +703,20 @@ class App {
       if (Math.abs(this.start - x) < 5) {
          if (this.medias && this.medias.length > 0) {
             const width = this.medias[0].width;
-            const itemIndex = Math.round(Math.abs(this.scroll.target) / width);
+            
+            // 🥂 Selection Alignment: Map click coordinate to specific card index
+            const canvasWidth = this.gl.canvas.clientWidth;
+            const viewportWidth = this.viewport.width;
+            const centerX = canvasWidth / 2;
+            const dx = x - centerX;
+            const glDx = (dx / canvasWidth) * viewportWidth;
+            
+            const itemIndex = Math.round((this.scroll.target + glDx) / width);
             const originalLength = (this as any).originalLength || this.mediasImages.length;
-            this.onSelect(itemIndex % originalLength);
+            
+            // Normalize index for infinite scroll parity
+            const normalizedIndex = ((itemIndex % originalLength) + originalLength) % originalLength;
+            this.onSelect(normalizedIndex);
          }
       }
     }

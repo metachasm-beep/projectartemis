@@ -77,13 +77,13 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const completeness = profile?.profile_completeness ?? 94;
 
   /* ── Bio data pulled from profile ── */
-  const age         = profile?.age ?? (profile?.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 26);
-  const occupation  = profile?.occupation ?? 'Creative Director';
-  const education   = profile?.education ?? 'Post Graduate';
-  const height      = profile?.height ? `${profile.height} cm` : '165 cm';
-  const bio         = profile?.bio ?? 'Curating beauty, silence, and intentional connection. Here for depth — not noise.';
-  const interests   = profile?.interests ?? ['Art', 'Travel', 'Yoga', 'Literature', 'Film'];
-  const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : 2024;
+  const age         = profile?.age ?? (profile?.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : '--');
+  const occupation  = profile?.occupation ?? '--';
+  const education   = profile?.education ?? '--';
+  const height      = profile?.height ? `${profile.height} cm` : '-- cm';
+  const bio         = profile?.bio ?? 'Awaiting identity narrative...';
+  const interests   = profile?.interests ?? [];
+  const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
 
   /* ── Engagement stats ── */
   const stats = [
@@ -93,10 +93,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
     { label: 'Profiles Viewed', value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50' },
     { label: 'Interactions',    value: String(metrics.saves || 0),                  icon: <MessageCircle size={13} />,accent: 'from-sky-100 to-sky-50' },
     { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50' },
-    { label: 'Response Rate',   value: metrics.responseRate ?? 'High',              icon: <Sparkles size={13} />,     accent: 'from-fuchsia-100 to-fuchsia-50' },
-    { label: 'Vibe Rating',     value: String(metrics.vibeRating ?? 9.8),           icon: <Compass size={13} />,      accent: 'from-orange-100 to-orange-50' },
+    { label: 'Response Rate',   value: metrics.responseRate ?? 'N/A',              icon: <Sparkles size={13} />,     accent: 'from-fuchsia-100 to-fuchsia-50' },
+    { label: 'Vibe Rating',     value: metrics.vibeRating ? String(metrics.vibeRating) : '--', icon: <Compass size={13} />,      accent: 'from-orange-100 to-orange-50' },
     { label: 'Daily Streak',    value: `${metrics.activeStreak || 0}d`,             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50' },
-    { label: 'Security Level',  value: metrics.safetyLevel ?? 'Elite',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50' },
+    { label: 'Security Level',  value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50' },
   ];
 
   /* ─── Skeuomorphic raised surface class ─── */
@@ -301,27 +301,36 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         </TooltipProvider>
       </main>
 
-      {/* ══ FAQ MODAL ══════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-12 backdrop-blur-3xl bg-mat-noir/20"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-3xl bg-white"
             onClick={() => setShowFAQ(false)}
           >
-            <GlassCard className="w-full max-w-5xl p-0 h-auto max-h-[85vh] overflow-hidden rounded-[3rem]" delay={0} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-              <button onClick={() => setShowFAQ(false)} className="absolute top-8 right-8 w-12 h-12 bg-mat-noir/5 rounded-full flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold transition-all z-20">
-                <X size={22} />
+            <div 
+              className="w-full h-full flex flex-col relative bg-white overflow-hidden" 
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setShowFAQ(false)} 
+                className="absolute top-12 right-12 w-16 h-16 bg-black text-white hover:bg-mat-rose-gold transition-all z-20 flex items-center justify-center"
+              >
+                <X size={32} strokeWidth={1} />
               </button>
-              <div className="p-10 lg:p-20 space-y-10 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                <div className="flex flex-col items-center text-center space-y-4 mb-4">
-                  <span className="text-[10px] uppercase font-black tracking-[0.5em] opacity-40">The Oracle</span>
-                  <h2 className="font-serif italic text-6xl md:text-8xl tracking-tighter leading-none opacity-90">
-                    Sanctuary <span className="opacity-40">Knowledge.</span>
-                  </h2>
+              
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-24 py-32">
+                <div className="max-w-6xl mx-auto space-y-24">
+                  <div className="flex flex-col items-start space-y-8">
+                    <span className="text-[12px] uppercase font-black tracking-[0.6em] opacity-20">Sanctuary Intelligence Protocol</span>
+                    <h2 className="font-serif italic text-7xl md:text-9xl tracking-tighter leading-[0.85] opacity-90 max-w-4xl">
+                      The Gnosis of <br /><span className="opacity-30">Selection.</span>
+                    </h2>
+                  </div>
+                  <div className="w-full h-px bg-black/10" />
+                  <div className="pointer-events-auto"><FAQ /></div>
                 </div>
-                <div className="pointer-events-auto prose max-w-none"><FAQ /></div>
               </div>
-            </GlassCard>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
