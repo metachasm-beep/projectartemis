@@ -23,7 +23,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
 
   const background = useTransform(
     [smoothX, smoothY],
-    ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(114, 47, 55, 0.15), transparent 40%)`
+    ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(0, 113, 227, 0.1), transparent 40%)`
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -40,19 +40,24 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0a0a0a]/60 backdrop-blur-3xl shadow-2xl transition-shadow duration-300 group ${className}`}
+      className={`relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0a0a0a]/40 backdrop-blur-xl shadow-2xl transition-shadow duration-300 group ${className}`}
       style={{
-        boxShadow: isHovered ? '0 0 40px rgba(114, 47, 55, 0.1)' : 'none'
+        boxShadow: isHovered ? '0 0 40px rgba(0, 113, 227, 0.08)' : 'none'
       }}
     >
       {/* 🔮 Reactive Spectral Border */}
       <motion.div 
-        className="absolute inset-0 pointer-events-none z-0"
+        className="absolute inset-0 pointer-events-none z-0 opacity-40"
         style={{ background }}
       />
       
-      {/* 🏗️ Industrial Grain Detail */}
-      <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
+      {/* 🏗️ Industrial Grain Detail (High-Performance local noise) */}
+      <div 
+        className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
+        }}
+      />
       
       {/* 🌈 Edge Highlight */}
       <div className="absolute inset-0 border border-white/5 rounded-[2.5rem] pointer-events-none" />

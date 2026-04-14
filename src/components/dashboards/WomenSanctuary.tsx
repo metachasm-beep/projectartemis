@@ -67,10 +67,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         {/* 🎭 Header Zone (Compact Text Only) */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
            <div className="space-y-1">
-              <Badge variant="outline" className="px-4 py-1.5 border-mat-gold text-mat-gold text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/10 backdrop-blur-md">
+              <Badge variant="outline" className="px-4 py-1.5 border-mat-rose text-mat-rose text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-rose/5 backdrop-blur-md">
                 Status: Verified & Syncing
               </Badge>
-              <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+               <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none">
                 Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}.
               </h1>
            </div>
@@ -119,7 +119,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                  <div className="h-full flex flex-col justify-between relative z-10">
                     <div className="space-y-1">
                        <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
-                       <h2 className="text-5xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+                        <h2 className="text-5xl font-bold italic text-mat-cream tracking-tighter leading-none">
                          Design <span className="opacity-10 text-mat-gold">& Style.</span>
                        </h2>
                     </div>

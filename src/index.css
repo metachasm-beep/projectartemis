@@ -1,25 +1,25 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;1,400;1,600;1,700&family=Lato:wght@300;400;700;900&family=Roboto+Condensed:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@700;900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* ─── Romantic & Sovereign Colour Palette ───────────────────────────────── */
-  --color-mat-cream:       #FAF7F2;    /* Main background — warm parchment     */
-  --color-mat-cream-deep:  #F2EBE1;    /* Slightly deeper cream surface         */
-  --color-mat-rose:        #C9A09A;    /* Dusty Rose — primary accent           */
-  --color-mat-rose-deep:   #A67A73;    /* Deeper rose for hover/interactive     */
-  --color-mat-wine:        #7B2D42;    /* Deep Wine — authority / headings      */
-  --color-mat-wine-soft:   #96404F;    /* Softer wine for body text             */
-  --color-mat-gold:        #BFA06A;    /* Antique Gold — premium accents        */
-  --color-mat-gold-soft:   #D4BE92;    /* Soft gold for highlights              */
-  --color-mat-slate:       #6B5C5C;    /* Warm Slate — body text                */
-  --color-mat-fog:         #E8DED8;    /* Borderlines, dividers                 */
-  --color-mat-petal:       #F5E6E4;    /* Light rose tint — for bento cards     */
-  --color-mat-ivory:       #FFFBF7;    /* Near-white for glass surfaces         */
-  --color-mat-obsidian:    #0F0F10;    /* Dark mode / Sovereign surfaces        */
+  /* ─── Apple Inspired 'Pro' Palette ───────────────────────────────── */
+  --color-mat-cream:       #F5F5F7;    /* Apple Light Gray background     */
+  --color-mat-cream-deep:  #E8E8ED;    /* Slightly deeper gray             */
+  --color-mat-rose:        #0071E3;    /* Apple Signature Blue             */
+  --color-mat-rose-deep:   #005FB8;    /* Deeper blue for hover            */
+  --color-mat-wine:        #1D1D1F;    /* Apple Secondary Black (Pro)      */
+  --color-mat-wine-soft:   #424245;    /* Gray for secondary text          */
+  --color-mat-gold:        #86868B;    /* Apple Silver                     */
+  --color-mat-gold-soft:   #B0B0B5;    /* Light silver                     */
+  --color-mat-slate:       #6E6E73;    /* Apple Standard Gray              */
+  --color-mat-fog:         #D2D2D7;    /* Borders & Dividers               */
+  --color-mat-petal:       #FFFFFF;    /* Pure White Surface               */
+  --color-mat-ivory:       #FFFFFF;    /* Bright white for glass           */
+  --color-mat-obsidian:    #000000;    /* Pure Obsidian (Deep Space)       */
 
-  /* ─── Typography ─────────────────────────────────────────────────────────── */
-  --font-display: "Playfair Display", Georgia, serif;
-  --font-body:    "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  /* ─── Typography (SF Pro Inspired) ─────────────────────────────────── */
+  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   /* ─── Radii & Motion ─────────────────────────────────────────────────────── */
   --radius-mat-xl:   42px;
@@ -168,12 +168,12 @@
 
   .bento-item:hover {
     transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 32px 100px rgba(123, 45, 66, 0.12);
+    box-shadow: 0 32px 100px rgba(0, 0, 0, 0.4);
   }
 
   /* Effects */
   .mat-gold-foil {
-    background: linear-gradient(135deg, #BFA06A 0%, #D4BE92 50%, #8C6F3A 100%);
+    background: linear-gradient(135deg, #86868B 0%, #B0B0B5 50%, #D2D2D7 100%);
     background-size: 200% 200%;
     animation: mat-shimmer 6s linear infinite;
     -webkit-background-clip: text;
@@ -193,11 +193,11 @@
   /* ─── Wrestling Card Utilities ─── */
   .mat-card-holographic {
     background: linear-gradient(135deg, 
-      rgba(191, 160, 106, 0.4) 0%, 
-      rgba(255, 255, 255, 0.2) 25%, 
-      rgba(191, 160, 106, 0.4) 50%, 
-      rgba(255, 255, 255, 0.1) 75%, 
-      rgba(191, 160, 106, 0.4) 100%
+      rgba(255, 255, 255, 0.3) 0%, 
+      rgba(255, 255, 255, 0.1) 25%, 
+      rgba(255, 255, 255, 0.3) 50%, 
+      rgba(255, 255, 255, 0.05) 75%, 
+      rgba(255, 255, 255, 0.3) 100%
     );
     background-size: 200% 100%;
     animation: mat-card-glint 4s linear infinite;
