@@ -90,7 +90,7 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <main className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-obsidian selection:bg-mat-gold selection:text-black">
+    <main className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-cream selection:bg-mat-gold/20 selection:text-mat-slate">
       {/* 1. Global Cinematic Texture */}
       <GrainOverlay />
       

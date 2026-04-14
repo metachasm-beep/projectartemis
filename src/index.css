@@ -1,24 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@700;900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* ─── Apple Inspired 'Pro' Palette ───────────────────────────────── */
-  --color-mat-cream:       #F5F5F7;    /* Apple Light Gray background     */
-  --color-mat-cream-deep:  #E8E8ED;    /* Slightly deeper gray             */
-  --color-mat-rose:        #0071E3;    /* Apple Signature Blue             */
-  --color-mat-rose-deep:   #005FB8;    /* Deeper blue for hover            */
-  --color-mat-wine:        #1D1D1F;    /* Apple Secondary Black (Pro)      */
-  --color-mat-wine-soft:   #424245;    /* Gray for secondary text          */
-  --color-mat-gold:        #86868B;    /* Apple Silver                     */
-  --color-mat-gold-soft:   #B0B0B5;    /* Light silver                     */
-  --color-mat-slate:       #6E6E73;    /* Apple Standard Gray              */
-  --color-mat-fog:         #D2D2D7;    /* Borders & Dividers               */
-  --color-mat-petal:       #FFFFFF;    /* Pure White Surface               */
-  --color-mat-ivory:       #FFFFFF;    /* Bright white for glass           */
-  --color-mat-obsidian:    #000000;    /* Pure Obsidian (Deep Space)       */
+  /* ─── Earthy Sanctuary Palette ───────────────────────────────── */
+  --color-mat-cream:       #FEF9F3;    /* Whipped Cream background        */
+  --color-mat-cream-deep:  #F5E6D3;    /* Slightly deeper parchment       */
+  --color-mat-rose:        #849483;    /* Sage Green Secondary            */
+  --color-mat-rose-deep:   #5D6B5D;    /* Deeper sage for hover           */
+  --color-mat-wine:        #5A4D41;    /* Deep Earth Accent               */
+  --color-mat-wine-soft:   #7A6D61;    /* Lighter brown text              */
+  --color-mat-gold:        #C96E50;    /* Terracotta Primary              */
+  --color-mat-gold-soft:   #E09D80;    /* Soft clay                       */
+  --color-mat-slate:       #2D2926;    /* Charcoal Wood Typography        */
+  --color-mat-fog:         #E5D9C4;    /* Borders & Dividers              */
+  --color-mat-petal:       #FFFFFF;    /* Pure White Surface              */
+  --color-mat-ivory:       #FFFBF7;    /* Warm milk glass                 */
+  --color-mat-obsidian:    #1A1715;    /* Night Soil                      */
 
-  /* ─── Typography (SF Pro Inspired) ─────────────────────────────────── */
-  --font-display: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* ─── Typography (High-End Editorial) ─────────────────────────────────── */
+  --font-display: "Cormorant Garamond", serif;
   --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
   /* ─── Radii & Motion ─────────────────────────────────────────────────────── */

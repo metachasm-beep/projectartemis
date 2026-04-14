@@ -55,7 +55,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-obsidian selection:bg-mat-wine selection:text-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-cream selection:bg-mat-gold selection:text-white">
       {/* 🌌 High-Performance Liquid Mesh Background */}
       <LiquidMesh />
 
@@ -70,7 +70,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               <Badge variant="outline" className="px-4 py-1.5 border-mat-rose text-mat-rose text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-rose/5 backdrop-blur-md">
                 Status: Verified & Syncing
               </Badge>
-               <h1 className="text-mat-cream font-bold italic text-2xl tracking-tighter leading-none">
+               <h1 className="text-mat-slate font-display italic text-3xl tracking-tighter leading-none">
                 Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}.
               </h1>
            </div>
@@ -91,7 +91,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
 
             {/* Center Column (Hero Anchor) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden rounded-[3.5rem] border border-white/10 glass-surface shadow-2xl relative">
+            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden rounded-[3.5rem] border border-mat-gold/10 glass-surface shadow-2xl relative">
               <TrumpCard 
                  isDashboard
                  profile={{
@@ -119,9 +119,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                  <div className="h-full flex flex-col justify-between relative z-10">
                     <div className="space-y-1">
                        <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
-                        <h2 className="text-5xl font-bold italic text-mat-cream tracking-tighter leading-none">
-                         Design <span className="opacity-10 text-mat-gold">& Style.</span>
-                       </h2>
+                        <h2 className="text-5xl font-display italic text-mat-slate tracking-tighter leading-none">
+                          Design <span className="opacity-20 text-mat-gold">& Style.</span>
+                        </h2>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
@@ -135,21 +135,21 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                         ];
                         
                         return stats.map((stat, i) => (
-                          <Tooltip key={i}>
-                            <TooltipTrigger asChild>
-                              <motion.div 
-                                whileHover={{ y: -3 }}
-                                className="space-y-3 p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md cursor-help"
-                              >
-                                 <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
-                                   <stat.icon size={18} className={stat.color} strokeWidth={1.5} />
-                                 </div>
-                                 <div className="space-y-0.5">
-                                    <p className="text-xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
-                                    <p className="font-mono text-[10px] text-white/80 uppercase tracking-[0.2em]">{stat.label}</p>
-                                 </div>
-                               </motion.div>
-                            </TooltipTrigger>
+                           <Tooltip key={i}>
+                             <TooltipTrigger asChild>
+                               <motion.div 
+                                 whileHover={{ y: -3 }}
+                                 className="space-y-3 p-4 bg-mat-gold/5 rounded-2xl border border-mat-gold/10 backdrop-blur-md cursor-help"
+                               >
+                                  <div className="w-10 h-10 bg-mat-gold/10 rounded-xl flex items-center justify-center border border-mat-gold/10">
+                                    <stat.icon size={18} className={cn("text-mat-gold", stat.color.includes('rose') && "text-mat-rose")} strokeWidth={1.5} />
+                                  </div>
+                                  <div className="space-y-0.5">
+                                     <p className="text-xl font-bold text-mat-slate italic tracking-tighter font-mono">{stat.val}</p>
+                                     <p className="font-mono text-[10px] text-mat-slate/80 uppercase tracking-[0.2em]">{stat.label}</p>
+                                  </div>
+                                </motion.div>
+                             </TooltipTrigger>
                             <TooltipContent side="top">
                               <p className="text-[11px] uppercase tracking-widest font-bold">{stat.tip}</p>
                             </TooltipContent>
@@ -167,8 +167,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                       <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
                     </div>
                     <div>
-                       <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.4em]">Account Verification</p>
-                       <p className="text-sm font-bold italic text-white tracking-widest leading-none mt-1">Status: <span className="text-mat-gold uppercase font-black">Verified</span></p>
+                       <p className="font-mono text-[11px] text-mat-slate/80 uppercase tracking-[0.4em]">Account Verification</p>
+                       <p className="text-sm font-bold italic text-mat-slate tracking-widest leading-none mt-1">Status: <span className="text-mat-gold uppercase font-black">Verified</span></p>
                     </div>
                   </div>
                   
@@ -202,7 +202,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 lg:p-12 backdrop-blur-3xl bg-black/60"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 lg:p-12 backdrop-blur-3xl bg-mat-slate/60"
             onClick={() => setShowFAQ(false)}
           >
             <motion.div 
@@ -211,21 +211,21 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               exit={{ scale: 0.9, y: 30, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 200 }}
               onClick={e => e.stopPropagation()}
-              className="w-full max-w-4xl bg-mat-obsidian/90 border border-white/10 rounded-[4rem] p-10 lg:p-20 shadow-[0_0_100px_rgba(75,26,36,0.2)] max-h-[75vh] overflow-y-auto relative glass-surface"
+              className="w-full max-w-4xl bg-mat-ivory border border-mat-gold/20 rounded-[4rem] p-10 lg:p-20 shadow-2xl max-h-[75vh] overflow-y-auto relative glass-surface"
             >
                <button 
                  onClick={() => setShowFAQ(false)}
-                 className="absolute top-10 right-10 w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 transition-all z-20"
+                 className="absolute top-10 right-10 w-12 h-12 bg-mat-gold/10 rounded-full flex items-center justify-center text-mat-gold hover:bg-mat-gold/20 transition-all z-20"
                >
                  <X size={24} />
                </button>
                
                <div className="space-y-12">
                   <div className="space-y-4">
-                    <h2 className="text-5xl mat-text-display-pro text-white leading-tight uppercase font-black tracking-tighter">
-                      Help <span className="mat-text-gradient-gold">& Support</span>
+                    <h2 className="text-5xl font-display text-mat-slate leading-tight uppercase font-black tracking-tighter">
+                      Help <span className="text-mat-gold">& Support</span>
                     </h2>
-                    <p className="mat-text-label-pro opacity-40 uppercase tracking-widest text-xs">Frequently Asked Questions</p>
+                    <p className="text-mat-slate opacity-40 uppercase tracking-widest text-xs">Frequently Asked Questions</p>
                   </div>
                   
                   <div className="pointer-events-auto">
@@ -240,15 +240,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       {/* 🧩 Verification Modal */}
       <AnimatePresence>
         {showVerification && (
-          <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-black/80 backdrop-blur-3xl" onClick={() => setShowVerification(false)}>
+          <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-mat-slate/80 backdrop-blur-3xl" onClick={() => setShowVerification(false)}>
              <motion.div 
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 onClick={e => e.stopPropagation()}
-                className="relative w-full max-w-xl rounded-[3.5rem] bg-mat-obsidian border border-mat-gold/20 p-8 shadow-2xl"
+                className="relative w-full max-w-xl rounded-[3.5rem] bg-mat-ivory border border-mat-gold/20 p-8 shadow-2xl"
              >
-                <button onClick={() => setShowVerification(false)} className="absolute top-8 right-8 text-white/40 hover:text-white"><X size={24} /></button>
+                <button onClick={() => setShowVerification(false)} className="absolute top-8 right-8 text-mat-slate/40 hover:text-mat-slate"><X size={24} /></button>
                 <AadhaarVerification 
                   userId={profile.user_id} 
                   onVerified={async () => {

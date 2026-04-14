@@ -23,7 +23,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
 
   const background = useTransform(
     [smoothX, smoothY],
-    ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(0, 113, 227, 0.1), transparent 40%)`
+    ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(201, 110, 80, 0.1), transparent 40%)`
   );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -40,9 +40,9 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      className={`relative overflow-hidden rounded-[2.5rem] border border-white/10 bg-[#0a0a0a]/40 backdrop-blur-xl shadow-2xl transition-shadow duration-300 group ${className}`}
+      className={`relative overflow-hidden rounded-[2.5rem] border border-mat-gold/10 bg-mat-ivory/30 backdrop-blur-2xl shadow-xl transition-shadow duration-300 group ${className}`}
       style={{
-        boxShadow: isHovered ? '0 0 40px rgba(0, 113, 227, 0.08)' : 'none'
+        boxShadow: isHovered ? '0 12px 48px rgba(90, 77, 65, 0.08)' : 'none'
       }}
     >
       {/* 🔮 Reactive Spectral Border */}

@@ -43,7 +43,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-mat-obsidian"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-mat-cream"
     >
       {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
       <motion.div 
@@ -66,8 +66,8 @@ const HeroFold: React.FC = () => {
             style={{ backgroundImage: `url(${IMAGES[imageIndex]})` }}
           />
         </AnimatePresence>
-        {/* Darkening Veil */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-obsidian/40 to-mat-obsidian" />
+        {/* Soft Sanctuary Vignette */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-cream/60 to-mat-cream" />
       </motion.div>
 
       {/* 3. Hero Content */}
@@ -88,17 +88,17 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1, ease: "easeOut" }}
-          className="text-4xl md:text-8xl font-display text-mat-cream mb-6 md:mb-8 leading-tight max-w-4xl px-4"
+          className="text-4xl md:text-8xl font-display text-mat-slate mb-6 md:mb-8 leading-tight max-w-4xl px-4"
         >
           Curating the <br/>
-          <span className="text-mat-gold italic font-serif">Exceptional.</span>
+          <span className="text-mat-gold italic font-display">Exceptional.</span>
         </motion.h1>
 
         <motion.p 
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1 }}
-          className="text-mat-cream/70 max-w-xl text-lg md:text-xl font-light leading-relaxed mb-12"
+          className="text-mat-slate/70 max-w-xl text-lg md:text-xl font-light leading-relaxed mb-12"
         >
           India's most exclusive network for high-value connections and refined companionship.
         </motion.p>
@@ -114,13 +114,13 @@ const HeroFold: React.FC = () => {
               provider: 'google', 
               options: { redirectTo: window.location.origin } 
             })} 
-            className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-mat-gold/30"
+            className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-gold text-white border-mat-gold"
           >
             GET STARTED
           </StarBorder>
           
           <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
-            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-obsidian border-white/10 text-white/60 hover:text-white transition-colors">
+            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-cream-deep border-mat-gold/10 text-mat-slate/60 hover:text-mat-slate transition-colors">
               READ BLOGS
             </StarBorder>
           </button>

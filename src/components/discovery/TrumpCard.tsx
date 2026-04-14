@@ -61,7 +61,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       animate={{ scale: 1, y: 0, opacity: 1 }}
       exit={{ scale: 0.9, y: 30, opacity: 0 }}
       className={cn(
-        "relative bg-mat-obsidian border-[2px] border-mat-gold rounded-[3rem] shadow-[0_0_100px_rgba(0,113,227,0.1)] overflow-hidden flex flex-col group p-2",
+        "relative bg-mat-ivory border-[2px] border-mat-gold/20 rounded-[3rem] shadow-[0_32px_100px_rgba(90,77,65,0.12)] overflow-hidden flex flex-col group p-2",
         isDashboard ? "w-full h-full" : "w-full max-w-[480px] min-h-[750px]"
       )}
     >
@@ -69,17 +69,17 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       
       {/* 🏆 TRUMP CARD HEADER */}
       <div className={cn(
-        "absolute top-2 left-2 right-2 bg-mat-wine flex items-center justify-between px-6 z-20 border-b border-white/5 shadow-2xl overflow-hidden rounded-t-[1.5rem]",
+        "absolute top-2 left-2 right-2 bg-mat-gold flex items-center justify-between px-6 z-20 border-b border-mat-gold-dark/10 shadow-lg overflow-hidden rounded-t-[1.5rem]",
         isDashboard ? "h-14" : "h-16"
       )}>
         <div className="flex flex-col">
-           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-gold italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
-           <span className="text-[14px] font-black uppercase tracking-widest text-mat-gold/50 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
+           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-cream italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
+           <span className="text-[14px] font-black uppercase tracking-widest text-mat-cream/70 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
-              <span className="text-[12px] font-black uppercase text-mat-gold/60">Power Lvl</span>
-              <span className="mat-text-impact text-white text-3xl leading-none">{powerLevel}</span>
+              <span className="text-[12px] font-black uppercase text-mat-cream/60">Power Lvl</span>
+              <span className="mat-text-impact text-mat-cream text-3xl leading-none">{powerLevel}</span>
            </div>
            {onClose && (
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -91,7 +91,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
       {/* 🖼️ HERO PORTRAIT AREA - MASSIVE UPSCALE (400% IMPACT) */}
       <div className={cn(
-        "relative min-h-0 mt-14 overflow-hidden border-b border-white/10 group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col",
+        "relative min-h-0 mt-14 overflow-hidden border-b border-mat-gold/10 group-hover:brightness-105 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col",
         isDashboard ? "flex-[0_0_45%]" : "flex-[0_0_68%]"
       )}>
         <div className="w-full h-full relative overflow-hidden flex-1 bg-mat-obsidian">
@@ -105,9 +105,9 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
         {/* 🏅 COLLECTIBLE RANK BADGE - TOP LEFT TUCKED */}
         <div className="absolute top-6 left-6 z-30">
-           <div className="w-20 h-20 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border border-white/10 shadow-2xl scale-100 group-hover:rotate-0 transition-transform duration-500">
-              <span className="text-[10px] font-black text-white/40 uppercase tracking-tighter">Rank</span>
-              <span className="text-3xl font-black text-mat-rose italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
+           <div className="w-20 h-20 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border border-mat-gold/20 shadow-xl scale-100 group-hover:rotate-0 transition-transform duration-500">
+              <span className="text-[10px] font-black text-mat-cream/40 uppercase tracking-tighter">Rank</span>
+              <span className="text-3xl font-black text-mat-gold italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
            </div>
         </div>
         
@@ -126,14 +126,14 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/60 to-transparent z-10">
+        <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-cream via-mat-cream/60 to-transparent z-10">
            <div className="flex items-center gap-3">
-              <p className="mat-text-impact text-mat-gold text-5xl italic drop-shadow-[0_4px_8px_rgba(0,0,0,0.8)] tracking-tighter leading-tight">
-                {profile.name.toUpperCase()}
+              <p className="font-display text-mat-gold text-5xl italic drop-shadow-sm tracking-tight leading-tight">
+                {profile.name}
               </p>
               <VerificationBadge verified={profile.is_verified} />
            </div>
-           <p className="text-[14px] uppercase tracking-[0.5em] font-black text-white mt-2 drop-shadow-md">
+           <p className="text-[14px] uppercase tracking-[0.5em] font-black text-mat-slate mt-2">
              Age {profile.age} • {profile.city.toUpperCase()}
            </p>
         </div>
@@ -141,13 +141,13 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
       {/* 📜 CONSOLIDATED INTEL */}
       <div className={cn(
-        "flex-1 min-h-0 bg-mat-obsidian/95 backdrop-blur-xl flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar",
+        "flex-1 min-h-0 bg-mat-cream/95 backdrop-blur-xl flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar",
         isDashboard ? "p-5" : "p-8"
       )}>
         
         {/* Bio Inlay */}
         <div className={cn("flex-shrink-0", isDashboard ? "mb-3" : "mb-6")}>
-           <p className="text-mat-cream text-[14px] leading-relaxed font-light line-clamp-2 italic">
+           <p className="text-mat-slate text-[14px] leading-relaxed font-light line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
@@ -159,15 +159,15 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                <TooltipTrigger asChild>
                   <div className="space-y-2 cursor-help group/stat">
                      <div className="flex items-center justify-between px-0.5">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-white group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
+                        <span className="text-[11px] font-black uppercase tracking-wider text-mat-slate group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
                         <span className="text-[13px] font-black text-mat-gold italic">{s.value}</span>
                      </div>
-                     <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden border border-white/10">
+                     <div className="w-full h-2 bg-mat-gold/10 rounded-full overflow-hidden border border-mat-gold/5">
                         <motion.div 
                            initial={{ width: 0 }}
                            animate={{ width: `${s.value}%` }}
                            transition={{ delay: i * 0.1, duration: 0.8 }}
-                           className={cn("h-full bg-gradient-to-r shadow-[0_0_10px_rgba(255,255,255,0.1)]", s.color)} 
+                           className={cn("h-full bg-gradient-to-r shadow-sm", s.color)} 
                         />
                      </div>
                   </div>
@@ -180,16 +180,16 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* 📋 DOSSIER FOOTER */}
-        <div className={cn("grid grid-cols-2 gap-4 border-t border-white/20 pb-2 text-white", isDashboard ? "mt-4 pt-4" : "mt-8 pt-6")}>
+        <div className={cn("grid grid-cols-2 gap-4 border-t border-mat-gold/20 pb-2 text-mat-slate", isDashboard ? "mt-4 pt-4" : "mt-8 pt-6")}>
            <Tooltip>
               <TooltipTrigger asChild>
                  <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
                        <Trophy size={18} />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Tier</span>
-                       <span className="text-[13px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
+                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Tier</span>
+                       <span className="text-[13px] font-bold text-mat-slate uppercase truncate">{profile.tier}</span>
                     </div>
                  </div>
               </TooltipTrigger>
@@ -199,12 +199,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            <Tooltip>
               <TooltipTrigger asChild>
                  <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
                        <MapPin size={18} />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Stature</span>
-                       <span className="text-[13px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
+                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Stature</span>
+                       <span className="text-[13px] font-bold text-mat-slate uppercase">{profile.height_str}</span>
                     </div>
                  </div>
               </TooltipTrigger>
@@ -214,12 +214,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            <Tooltip>
               <TooltipTrigger asChild>
                  <div className="flex items-center gap-3 col-span-2 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
                        <Lock size={18} />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Vocation</span>
-                       <span className="text-[13px] font-bold text-mat-cream italic truncate">{profile.vocation}</span>
+                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Vocation</span>
+                       <span className="text-[13px] font-bold text-mat-slate italic truncate">{profile.vocation}</span>
                     </div>
                  </div>
               </TooltipTrigger>
@@ -236,7 +236,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                  <Button 
                    onPress={() => onAction?.('report')}
                    isIconOnly 
-                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-mat-wine hover:border-mat-wine transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
+                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
                  >
                     <div className="flex items-center justify-center w-full h-full">
                        <ShieldAlert size={20} />
@@ -252,7 +252,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                  <Button 
                    onPress={() => onAction?.('block')}
                    isIconOnly 
-                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-mat-wine hover:border-mat-wine transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
+                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
                  >
                     <div className="flex items-center justify-center w-full h-full">
                        <UserX size={20} />
@@ -269,10 +269,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                   onPress={() => onAction?.('ping')}
                   isIconOnly
                   className={cn(
-                    "w-16 h-16 min-w-0 rounded-full shadow-[0_20px_50px_rgba(0,0,0,0.5)] border-2 border-white/20 transition-all flex items-center justify-center p-0 scale-110",
+                    "w-16 h-16 min-w-0 rounded-full shadow-xl border-2 border-mat-gold/30 transition-all flex items-center justify-center p-0 scale-110",
                     profile.is_verified 
-                      ? "bg-gradient-to-br from-mat-rose to-mat-rose-deep text-white" 
-                      : "bg-white/10 text-white/20 border-white/5"
+                      ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-cream" 
+                      : "bg-mat-cream text-mat-slate/20 border-mat-gold/10"
                   )}
                 >
                     <div className="flex items-center justify-center w-full h-full">
@@ -289,7 +289,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                  <Button 
                    onPress={() => onAction?.('never_show')}
                    isIconOnly
-                   className="w-12 h-12 min-w-0 bg-white/5 border-2 border-mat-gold/30 text-white/40 hover:text-white hover:bg-white/10 transition-all rounded-full p-0 flex items-center justify-center shadow-xl"
+                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
                  >
                     <div className="flex items-center justify-center w-full h-full">
                        <EyeOff size={18} />
