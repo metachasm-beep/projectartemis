@@ -196,7 +196,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                 {/* Top Identity Block */}
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="mat-text-editorial-huge text-5xl md:text-6xl lg:text-7xl drop-shadow-2xl leading-none tracking-tight">
+                    <h2 className="mat-text-editorial-huge font-serif tracking-tighter text-5xl md:text-6xl lg:text-7xl drop-shadow-2xl leading-none">
                       {profile?.full_name || 'Sovereign'}
                     </h2>
                     <div className="flex items-center gap-3 mt-4">
@@ -219,7 +219,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
                 {/* Bottom Footer Block */}
                 <div className="flex flex-col gap-8 md:gap-10">
-                  <p className="text-white/85 italic text-sm md:text-base lg:text-lg max-w-2xl leading-relaxed border-l-[3px] border-mat-rose-gold pl-5 drop-shadow-md">
+                  <p className="text-white/90 font-serif italic font-light text-sm md:text-base lg:text-lg max-w-2xl leading-relaxed border-l-[3px] border-mat-rose-gold pl-5 drop-shadow-md">
                     "{bio}"
                   </p>
                   
