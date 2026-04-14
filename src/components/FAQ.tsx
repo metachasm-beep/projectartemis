@@ -44,71 +44,62 @@ export const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="faq" className="py-20 space-y-16">
-      <div className="text-center space-y-6">
-        <div className="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-white/5 border border-white/10 mb-2">
-          <HelpCircle className="text-mat-gold w-6 h-6" />
-        </div>
-        <h2 className="text-5xl mat-text-display-pro text-white leading-tight uppercase">
-          Help <span className="mat-text-gradient-gold">Center</span>
-        </h2>
-        <p className="mat-text-label-pro">Common Questions</p>
-      </div>
-
-      <div className="max-w-3xl mx-auto space-y-4">
-        {FAQ_DATA.map((item, i) => (
-          <div 
-            key={i}
-            className="mat-panel-premium bg-white/[0.02] border border-white/5 rounded-[2.5rem] overflow-hidden transition-all hover:bg-white/[0.04]"
-          >
-            <button 
-              onClick={() => setOpenIndex(openIndex === i ? null : i)}
-              className="w-full p-8 md:p-10 flex items-center justify-between text-left group"
+    <section id="faq" className="w-full flex justify-center py-10">
+      <div className="w-full max-w-5xl flex flex-col">
+        {/* Cinematic Modernism Layout: Stark, raw lines, extreme high contrast */}
+        <div className="flex flex-col border-t-2 border-current">
+          {FAQ_DATA.map((item, i) => (
+            <div 
+              key={i}
+              className="flex flex-col border-b border-current/20 transition-all duration-700"
             >
-              <div className="flex items-center gap-8">
-                <div className={`p-4 rounded-[1.25rem] transition-all duration-500 ${openIndex === i ? 'bg-mat-gold text-black shadow-mat-gold' : 'bg-white/5 text-mat-gold'}`}>
-                  <item.icon size={20} />
+              <button 
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                className="w-full py-10 md:py-14 flex items-start justify-between text-left group"
+              >
+                <div className="flex items-start gap-8 md:gap-14 w-[85%]">
+                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.4em] opacity-30 mt-2 shrink-0">
+                     0{i + 1}
+                  </span>
+                  <span className="font-serif italic text-4xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tighter group-hover:opacity-50 transition-opacity">
+                    {item.question}
+                  </span>
                 </div>
-                <span className="mat-text-label-pro !text-[11px] text-white group-hover:text-mat-gold transition-colors not-italic">
-                  {item.question}
-                </span>
-              </div>
-              <div className="text-white/20">
-                {openIndex === i ? <Minus size={20} /> : <Plus size={20} />}
-              </div>
-            </button>
+                <div className="mt-2 opacity-40 group-hover:opacity-100 transition-opacity shrink-0">
+                  {openIndex === i ? <Minus size={28} strokeWidth={1} /> : <Plus size={28} strokeWidth={1} />}
+                </div>
+              </button>
 
-            <AnimatePresence>
-              {openIndex === i && (
-                <motion.div 
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
-                >
-                  <div className="px-10 md:px-32 pb-10">
-                    <p className="text-[13px] text-white/60 leading-relaxed font-medium italic">
-                      {item.answer}
-                    </p>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        ))}
-      </div>
+              <AnimatePresence>
+                {openIndex === i && (
+                  <motion.div 
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                    className="overflow-hidden"
+                  >
+                    <div className="pb-14 pl-[4.5rem] md:pl-[6.5rem]">
+                      <p className="text-[12px] md:text-[13px] leading-relaxed tracking-[0.1em] opacity-70 uppercase font-bold max-w-3xl">
+                        {item.answer}
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
 
-      <div className="max-w-3xl mx-auto pt-12 text-center">
-         <div className="p-12 rounded-[3.5rem] mat-glass-premium border-white/5 bg-white/[0.02] space-y-8">
-            <p className="mat-text-label-pro opacity-40">Still have questions about your account?</p>
-            <Button 
-               variant="outline" 
-               className="h-16 px-12 rounded-2xl border-mat-gold/30 text-mat-gold hover:bg-mat-gold/10 font-black uppercase tracking-[0.3em] text-[10px] shadow-mat-gold/20"
+        <div className="pt-24 pb-12 text-center w-full flex flex-col items-center">
+            <span className="text-[10px] uppercase font-black tracking-[0.4em] opacity-40 mb-8">Unresolved Inquiries</span>
+            <button 
                onClick={() => window.location.href = 'mailto:support@matriarch.app'}
+               className="inline-flex items-center justify-center border-2 border-current px-12 py-5 text-[11px] font-black uppercase tracking-[0.3em] hover:bg-current hover:text-[#f5f0ea] transition-all duration-500"
             >
-               Contact Support
-            </Button>
-         </div>
+               Request Oracle Support
+            </button>
+        </div>
       </div>
     </section>
   );

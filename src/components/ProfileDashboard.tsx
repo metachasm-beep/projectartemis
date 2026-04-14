@@ -10,7 +10,7 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void; onNavig
   const { profile, refreshProfile } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [metrics, setMetrics] = useState({ impression: 0, visit: 0, save: 0 });
-  const [sovereignMetrics, setSovereignMetrics] = useState({ matches: 0, sessionSeconds: 0 });
+  const [sovereignMetrics, setSovereignMetrics] = useState<any>({ matches: 0, sessionSeconds: 0, activeStreak: 0, profileViews: 0, profilesEngaged: 0, saves: 0, profileCompleteness: 94 });
 
   useEffect(() => {
     const init = async () => {
@@ -59,7 +59,19 @@ export const ProfileDashboard: React.FC<{ onBeginDiscovery?: () => void; onNavig
           </motion.div>
         ) : (
           <motion.div key="view-woman" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
-             <WomenSanctuary profile={profile} metrics={{ matches: sovereignMetrics.matches, sessionSeconds: sovereignMetrics.sessionSeconds }} setIsEditing={setIsEditing} onBeginDiscovery={onBeginDiscovery} />
+             <WomenSanctuary 
+               profile={{ ...profile, profile_completeness: sovereignMetrics.profileCompleteness }} 
+               metrics={{ 
+                 matches: sovereignMetrics.matches, 
+                 sessionSeconds: sovereignMetrics.sessionSeconds,
+                 activeStreak: sovereignMetrics.activeStreak,
+                 profileViews: sovereignMetrics.profileViews,
+                 profilesEngaged: sovereignMetrics.profilesEngaged,
+                 saves: sovereignMetrics.saves
+               }} 
+               setIsEditing={setIsEditing} 
+               onBeginDiscovery={onBeginDiscovery} 
+             />
           </motion.div>
         )}
       </AnimatePresence>

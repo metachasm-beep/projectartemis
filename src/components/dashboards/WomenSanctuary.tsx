@@ -42,6 +42,7 @@ interface WomenSanctuaryProps {
     sessionSeconds: number;
     profilesViewed?: number;
     profilesEngaged?: number;
+    saves?: number;
     responseRate?: string;
     vibeRating?: number;
     activeStreak?: number;
@@ -86,15 +87,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
   /* ── Engagement stats ── */
   const stats = [
-    { label: 'Profile Views',   value: '4.2k',                                     icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50' },
+    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50' },
     { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50' },
     { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        accent: 'from-pink-100 to-pink-50' },
-    { label: 'Profiles Viewed', value: String(metrics.profilesViewed || 142),       icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50' },
-    { label: 'Interactions',    value: String(metrics.profilesEngaged || 28),       icon: <MessageCircle size={13} />,accent: 'from-sky-100 to-sky-50' },
-    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 12400), icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50' },
+    { label: 'Profiles Viewed', value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50' },
+    { label: 'Interactions',    value: String(metrics.saves || 0),                  icon: <MessageCircle size={13} />,accent: 'from-sky-100 to-sky-50' },
+    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50' },
     { label: 'Response Rate',   value: metrics.responseRate ?? 'High',              icon: <Sparkles size={13} />,     accent: 'from-fuchsia-100 to-fuchsia-50' },
     { label: 'Vibe Rating',     value: String(metrics.vibeRating ?? 9.8),           icon: <Compass size={13} />,      accent: 'from-orange-100 to-orange-50' },
-    { label: 'Daily Streak',    value: `${metrics.activeStreak ?? 12}d`,            icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50' },
+    { label: 'Daily Streak',    value: `${metrics.activeStreak || 0}d`,             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50' },
     { label: 'Security Level',  value: metrics.safetyLevel ?? 'Elite',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50' },
   ];
 
@@ -132,7 +133,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
               {/* Migrated Dock Actions */}
               <div className="flex items-center gap-1.5 mr-2">
-                <button className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
+                <button onClick={() => setIsEditing(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
                   <Settings size={14} />
                 </button>
                 <button onClick={() => setShowFAQ(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
@@ -312,9 +313,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                 <X size={22} />
               </button>
               <div className="p-10 lg:p-20 space-y-10 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                <div>
-                  <h3 className="mat-text-editorial-caps mb-2">The Oracle</h3>
-                  <h2 className="mat-text-editorial-huge text-6xl text-mat-noir leading-none">Sanctuary <span className="italic font-medium text-mat-rose-gold">Knowledge.</span></h2>
+                <div className="flex flex-col items-center text-center space-y-4 mb-4">
+                  <span className="text-[10px] uppercase font-black tracking-[0.5em] opacity-40">The Oracle</span>
+                  <h2 className="font-serif italic text-6xl md:text-8xl tracking-tighter leading-none opacity-90">
+                    Sanctuary <span className="opacity-40">Knowledge.</span>
+                  </h2>
                 </div>
                 <div className="pointer-events-auto prose max-w-none"><FAQ /></div>
               </div>
