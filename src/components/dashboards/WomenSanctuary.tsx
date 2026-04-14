@@ -21,6 +21,8 @@ import {
   Calendar,
   Bookmark,
   Edit3,
+  Settings,
+  HelpCircle,
 } from 'lucide-react';
 
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
@@ -128,6 +130,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               ))}
               <div className="w-8 h-8 rounded-full border-2 border-[#f5f0ea] bg-[#e8e2d8] flex items-center justify-center text-[7px] mat-text-editorial-caps text-mat-noir/50 shadow-sm">+1.2k</div>
             </div>
+              {/* Migrated Dock Actions */}
+              <div className="flex items-center gap-1.5 mr-2">
+                <button className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
+                  <Settings size={14} />
+                </button>
+                <button onClick={() => setShowFAQ(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
+                  <HelpCircle size={14} />
+                </button>
+              </div>
 
             {/* Identity Protocol pill — ~30% header width */}
             <button
@@ -259,7 +270,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
               className={cn(
-                "absolute bottom-4 md:bottom-8 z-20 flex items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-3.5 rounded-full overflow-x-auto custom-scrollbar max-w-full",
+                "absolute bottom-4 md:bottom-8 z-[60] flex flex-wrap justify-center items-center gap-2 md:gap-3 px-4 md:px-6 py-3 md:py-3.5 rounded-[2rem] max-w-[95%]",
                 "bg-white/70 backdrop-blur-2xl border border-white/80",
                 "shadow-[0_20px_40px_rgba(0,0,0,0.1),inset_0_1px_0_rgba(255,255,255,1)]"
               )}
@@ -306,15 +317,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
           </div>
         </TooltipProvider>
-
-        {/* ── COMMAND DOCK ─────────────────────────── */}
-        <div className="fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-50">
-          <Dock
-            onShowFAQ={() => setShowFAQ(true)}
-            onShowVerification={!isVerified ? () => setShowVerification(true) : undefined}
-            hideLogout={true}
-          />
-        </div>
       </main>
 
       {/* ══ FAQ MODAL ══════════════════════════════════ */}
