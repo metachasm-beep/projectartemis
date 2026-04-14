@@ -52,7 +52,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
     { label: 'SOCIAL', value: stats.social, color: 'from-emerald-600 to-emerald-400' },
   ];
 
-  // Calculate total power level
   const powerLevel = Math.round((stats.charisma + stats.stamina + stats.intellect + stats.vibe + stats.social) / 5);
 
   const VOCATIONS: Record<string, string> = {
@@ -68,263 +67,188 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
   return (
     <motion.div 
-      initial={{ scale: 0.9, y: 30, opacity: 0 }}
-      animate={{ scale: 1, y: 0, opacity: 1 }}
-      exit={{ scale: 0.9, y: 30, opacity: 0 }}
+      initial={{ scale: 0.95, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      exit={{ scale: 0.95, opacity: 0 }}
       className={cn(
-        "relative bg-mat-ivory border-[2px] border-mat-gold/20 rounded-[3rem] shadow-[0_32px_100px_rgba(90,77,65,0.12)] overflow-hidden flex flex-col group p-2",
-        isDashboard ? "w-full h-full" : "w-full max-w-[480px] min-h-[750px]"
+        "relative bg-[#1A1A1A] border-l-[1px] border-t-[1px] border-white/10 border-r-[2px] border-b-[2px] border-black/60 rounded-[2.5rem] shadow-[0_40px_120px_rgba(0,0,0,0.8),_inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden flex flex-col group p-[1px] select-none",
+        isDashboard ? "w-full max-h-[100%] aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] min-h-[750px]"
       )}
     >
-      {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
+      {/* 🧬 Material Texture Overlay (Carbon/Noise) */}
+      <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] z-0" />
       
-      {/* 🏆 TRUMP CARD HEADER */}
+      {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-20 mix-blend-overlay group-hover:opacity-40 transition-opacity" />}
+      
+      {/* 🏆 SKEUOMORPHIC METAL HEADER */}
       <div className={cn(
-        "absolute top-2 left-2 right-2 bg-mat-gold flex items-center justify-between px-6 z-20 border-b border-mat-gold-dark/10 shadow-lg overflow-hidden rounded-t-[1.5rem]",
-        isDashboard ? "h-14" : "h-16"
+        "relative bg-gradient-to-b from-[#D4AF37] via-[#B8860B] to-[#996515] flex items-center justify-between px-6 z-20 border-b border-black/40 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),_0_2px_10px_rgba(0,0,0,0.3)] overflow-hidden rounded-t-[2.4rem]",
+        isDashboard ? "h-12" : "h-16"
       )}>
         <div className="flex flex-col">
-           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-wine italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
-           <span className="text-[14px] font-black uppercase tracking-widest text-mat-wine/40 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
+           <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#2C1E0F]/80 italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
+           <span className="text-[12px] md:text-[13px] font-black uppercase tracking-widest text-[#2C1E0F]/30 italic">ID-{profile.id?.slice(0,4)}</span>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
-              <span className="text-[12px] font-black uppercase text-mat-wine/40">Power Lvl</span>
-              <span className="mat-text-impact text-mat-wine text-3xl leading-none">{powerLevel}</span>
+              <span className="text-[10px] uppercase font-black text-[#2C1E0F]/30">Power</span>
+              <span className="text-2xl md:text-3xl font-black text-[#2C1E0F] tracking-tighter leading-none">{powerLevel}</span>
            </div>
            {onClose && (
-              <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
-                <X size={18} className="text-white" />
+              <button onClick={onClose} className="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/30 transition-colors border border-white/10">
+                <X size={16} className="text-white" />
               </button>
            )}
         </div>
       </div>
 
-      {/* 🖼️ HERO PORTRAIT AREA - MASSIVE UPSCALE (400% IMPACT) */}
+      {/* 🖼️ RECESSED PORTRAIT FRAME */}
       <div className={cn(
-        "relative min-h-0 mt-14 overflow-hidden border-b border-mat-gold/10 group-hover:brightness-105 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col",
-        isDashboard ? "flex-[0_0_45%]" : "flex-[0_0_68%]"
+        "relative min-h-0 overflow-hidden z-10 flex flex-col pt-1 px-1",
+        isDashboard ? "flex-[0_0_42%]" : "flex-[0_0_65%]"
       )}>
-        <div className="w-full h-full relative overflow-hidden flex-1 bg-mat-obsidian">
+        <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all">
           <img 
             src={profile.img} 
-            className="w-full h-full object-cover mat-gritty-filter scale-105 group-hover:scale-110 transition-transform duration-[2s]" 
+            className="w-full h-full object-cover grayscale-[20%] brightness-[0.85] group-hover:brightness-100 group-hover:scale-110 transition-all duration-[1.5s] ease-out" 
             alt={profile.name}
             loading="eager"
           />
+          <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40" />
         </div>
 
-        {/* 🏅 COLLECTIBLE RANK BADGE - TOP LEFT TUCKED */}
-        <div className="absolute top-6 left-6 z-30">
-           <div className="w-20 h-20 bg-mat-wine rounded-2xl flex flex-col items-center justify-center border border-mat-gold/20 shadow-xl scale-100 group-hover:rotate-0 transition-transform duration-500">
-              <span className="text-[10px] font-black text-mat-cream/40 uppercase tracking-tighter">Rank</span>
-              <span className="text-3xl font-black text-mat-gold italic -mt-1 leading-none">#{profile.absolute_rank || '--'}</span>
-           </div>
-        </div>
-        
-        {/* 🔘 CHARACTER THUMBNAIL - BOTTOM RIGHT TUCKED */}
-        <div className="absolute bottom-4 right-4 z-30 hidden md:block">
-           <div className="w-14 h-14 rounded-full border border-white/10 overflow-hidden shadow-2xl bg-mat-obsidian animate-pulse group-hover:animate-none">
-              <img src={profile.img} className="w-full h-full object-cover grayscale opacity-50" alt="thumb" />
+        {/* 🏅 RANK PLATE - PHYSICAL INSET */}
+        <div className="absolute top-4 left-4 z-30">
+           <div className="min-w-16 px-3 py-2 bg-neutral-800 rounded-xl flex flex-col items-center justify-center border-t border-white/5 border-b border-black shadow-2xl">
+              <span className="text-[8px] font-black text-white/30 uppercase">Rank</span>
+              <span className="text-2xl font-black text-mat-gold italic leading-none">#{profile.absolute_rank || '--'}</span>
            </div>
         </div>
 
-        {/* Status Badge */}
-        <div className="absolute top-8 right-8 z-20">
-           <div className="px-6 py-2 bg-mat-rose text-white rounded-full flex items-center gap-2 shadow-2xl border border-white/10">
-              <Crown size={16} fill="currentColor" />
-              <span className="text-[13px] font-black uppercase tracking-widest">{profile.status}</span>
+        {/* Level Badge - Tactile */}
+        <div className="absolute top-4 right-4 z-20">
+           <div className="px-4 py-1.5 bg-mat-rose-gold text-mat-wine rounded-full flex items-center gap-2 shadow-xl border border-white/20">
+              <Crown size={14} fill="currentColor" />
+              <span className="text-[11px] font-bold uppercase tracking-widest">{profile.status}</span>
            </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-cream via-mat-cream/60 to-transparent z-10">
-            <div className="flex items-center gap-3">
-               <div className="flex flex-col">
-                  <div className="flex items-center gap-3">
-                     <p className="font-display text-mat-gold text-5xl italic drop-shadow-sm tracking-tight leading-tight">
-                        {profile.name}
-                     </p>
-                     <VerificationBadge verified={profile.is_verified} />
-                  </div>
-                  <span className="text-[10px] uppercase font-black tracking-[0.3em] text-mat-slate/40 mt-1 italic">{archetype}</span>
+        <div className="absolute bottom-0 left-0 w-full p-4 md:p-6 bg-gradient-to-t from-black to-transparent z-10">
+            <div className="flex flex-col">
+               <div className="flex items-center gap-3">
+                  <h2 className="font-display text-white text-3xl md:text-4xl italic tracking-tighter leading-tight drop-shadow-md">
+                   {profile.name}
+                  </h2>
+                  <VerificationBadge verified={profile.is_verified} />
                </div>
+               <span className="text-[9px] uppercase font-black tracking-[0.4em] text-white/40 mt-1 italic">{archetype}</span>
             </div>
-           <p className="text-[14px] uppercase tracking-[0.5em] font-black text-mat-slate mt-2">
-             Age {profile.age} • {profile.city.toUpperCase()}
-           </p>
         </div>
       </div>
 
-      {/* 📜 CONSOLIDATED INTEL */}
+      {/* 📜 PHYSICAL INTEL PANEL - NO GLASS */}
       <div className={cn(
-        "flex-1 min-h-0 bg-mat-cream/95 backdrop-blur-xl flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar",
-        isDashboard ? "p-5" : "p-8"
+        "flex-1 min-h-0 bg-[#121212] flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar border-t-[1px] border-white/5",
+        isDashboard ? "p-4" : "p-8"
       )}>
         
-        {/* Bio Inlay */}
-        <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-6")}>
-           <p className="text-mat-slate text-[13px] leading-relaxed font-light line-clamp-2 italic">
+        {/* Bio Embossing */}
+        <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-4")}>
+           <p className="text-white/60 text-[12px] md:text-[13px] leading-relaxed font-normal line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
 
-        {/* 📊 STAT GRID (3 IN A ROW) */}
-        <div className={cn("grid grid-cols-3 gap-x-4", isDashboard ? "gap-y-3" : "gap-y-6")}>
+        {/* 📊 TACTILE STATS GRID */}
+        <div className={cn("grid grid-cols-3 gap-x-2 md:gap-x-4", isDashboard ? "gap-y-2" : "gap-y-6")}>
           {statItems.map((s, i) => (
             <Tooltip key={i}>
                <TooltipTrigger asChild>
-                  <div className="space-y-2 cursor-help group/stat">
+                  <div className="space-y-1.5 cursor-help group/stat">
                      <div className="flex items-center justify-between px-0.5">
-                        <span className="text-[11px] font-black uppercase tracking-wider text-mat-slate group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
-                        <span className="text-[13px] font-black text-mat-gold italic">{s.value}</span>
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-white/30 group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
+                        <span className="text-[11px] font-black text-mat-gold italic">{s.value}</span>
                      </div>
-                     <div className="w-full h-2 bg-mat-gold/10 rounded-full overflow-hidden border border-mat-gold/5">
+                     <div className="w-full h-1.5 bg-black rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]">
                         <motion.div 
                            initial={{ width: 0 }}
                            animate={{ width: `${s.value}%` }}
                            transition={{ delay: i * 0.1, duration: 0.8 }}
-                           className={cn("h-full bg-gradient-to-r shadow-sm", s.color)} 
+                           className={cn("h-full bg-gradient-to-r shadow-inner", s.color)} 
                         />
                      </div>
                   </div>
                </TooltipTrigger>
                <TooltipContent side="top">
-                  <p className="text-[11px] uppercase tracking-widest font-bold">{s.label}: {s.value}% POTENCY</p>
+                  <p className="text-[10px] uppercase tracking-widest font-bold">{s.label}: {s.value}%</p>
                </TooltipContent>
             </Tooltip>
           ))}
         </div>
 
-        {/* 📋 DOSSIER FOOTER */}
-        <div className={cn("grid grid-cols-2 gap-4 border-t border-mat-gold/20 pb-2 text-mat-slate", isDashboard ? "mt-4 pt-4" : "mt-8 pt-6")}>
-           <Tooltip>
-              <TooltipTrigger asChild>
-                 <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
-                       <Trophy size={18} />
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Tier</span>
-                       <span className="text-[13px] font-bold text-mat-slate uppercase truncate">{profile.tier}</span>
-                    </div>
-                 </div>
-              </TooltipTrigger>
-              <TooltipContent side="top">Assigned sanctuary capital tier</TooltipContent>
-           </Tooltip>
-           
-           <Tooltip>
-              <TooltipTrigger asChild>
-                 <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
-                       <MapPin size={18} />
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-[10px] uppercase font-black tracking-widest text-mat-slate/60">Stature</span>
-                       <span className="text-[12px] font-bold text-mat-slate uppercase">{profile.height_str}</span>
-                    </div>
-                 </div>
-              </TooltipTrigger>
-              <TooltipContent side="top">Physical identification profile</TooltipContent>
-           </Tooltip>
+        {/* 📋 SKEUOMORPHIC DOSSIER DATA */}
+        <div className={cn("grid grid-cols-2 gap-3 border-t border-white/5 pt-4 pb-2", isDashboard ? "mt-3" : "mt-8")}>
+            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner">
+               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
+                  <Trophy size={14} />
+               </div>
+               <div className="flex flex-col min-w-0">
+                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Tier</span>
+                  <span className="text-[11px] font-bold text-white/70 uppercase truncate">{profile.tier}</span>
+               </div>
+            </div>
+            
+            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner">
+               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
+                  <MapPin size={14} />
+               </div>
+               <div className="flex flex-col min-w-0">
+                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Height</span>
+                  <span className="text-[11px] font-bold text-white/70 uppercase">{profile.height_str}</span>
+               </div>
+            </div>
 
-           <Tooltip>
-              <TooltipTrigger asChild>
-                 <div className="flex items-center gap-3 col-span-2 cursor-help opacity-80 hover:opacity-100 transition-opacity">
-                    <div className="w-10 h-10 rounded-lg bg-mat-gold/5 flex items-center justify-center border border-mat-gold/10 text-mat-gold">
-                       <Lock size={18} />
-                    </div>
-                    <div className="flex flex-col">
-                       <span className="text-[10px] uppercase font-black tracking-widest text-mat-slate/60">Vocation</span>
-                       <span className="text-[12px] font-bold text-mat-slate italic truncate">{profile.vocation}</span>
-                    </div>
-                 </div>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Primary societal contribution archetype</TooltipContent>
-           </Tooltip>
+            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner col-span-2">
+               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
+                  <Lock size={14} />
+               </div>
+               <div className="flex flex-col min-w-0">
+                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Vocation</span>
+                  <span className="text-[11px] font-bold text-white/70 italic truncate">{profile.vocation}</span>
+               </div>
+            </div>
         </div>
 
-        {/* ⚡ ARTISTIC ENGAGEMENT MATRIX */}
+        {/* ⚡ PHYSICAL ACTION MATRIX */}
         {!isDashboard && (
-          <div className="flex items-center justify-center gap-6 pt-6">
-             
-             {/* Report Button */}
-             <Tooltip>
-                <TooltipTrigger>
-                   <Button 
-                     onPress={() => onAction?.('report')}
-                     isIconOnly 
-                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                   >
-                      <div className="flex items-center justify-center w-full h-full">
-                         <ShieldAlert size={20} />
-                      </div>
-                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">Report</TooltipContent>
-             </Tooltip>
-  
-             {/* Block Button */}
-             <Tooltip>
-                <TooltipTrigger>
-                   <Button 
-                     onPress={() => onAction?.('block')}
-                     isIconOnly 
-                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                   >
-                      <div className="flex items-center justify-center w-full h-full">
-                         <UserX size={20} />
-                      </div>
-                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">Block</TooltipContent>
-             </Tooltip>
-  
-             {/* PRIMARY Ping Button */}
-             <Tooltip>
-                <TooltipTrigger>
-                  <Button 
-                    onPress={() => onAction?.('ping')}
-                    isIconOnly
-                    className={cn(
-                      "w-16 h-16 min-w-0 rounded-full shadow-xl border-2 border-mat-gold/30 transition-all flex items-center justify-center p-0 scale-110",
-                      profile.is_verified 
-                        ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-cream" 
-                        : "bg-mat-cream text-mat-slate/20 border-mat-gold/10"
-                    )}
-                  >
-                      <div className="flex items-center justify-center w-full h-full">
-                        {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
-                      </div>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">Message</TooltipContent>
-             </Tooltip>
-  
-             {/* Never Button */}
-             <Tooltip>
-                <TooltipTrigger>
-                   <Button 
-                     onPress={() => onAction?.('never_show')}
-                     isIconOnly
-                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                   >
-                      <div className="flex items-center justify-center w-full h-full">
-                         <EyeOff size={18} />
-                      </div>
-                   </Button>
-                </TooltipTrigger>
-                <TooltipContent side="top">Hide From View</TooltipContent>
-             </Tooltip>
+          <div className="flex items-center justify-center gap-6 pt-6 border-t border-white/5 mt-4">
+             {[{ id: 'report', icon: ShieldAlert }, { id: 'block', icon: UserX }, { id: 'ping', icon: MessageSquarePlus, primary: true }, { id: 'never_show', icon: EyeOff }].map((btn) => (
+               <Tooltip key={btn.id}>
+                  <TooltipTrigger>
+                     <Button 
+                       onPress={() => onAction?.(btn.id)}
+                       isIconOnly 
+                       className={cn(
+                         "w-12 h-12 flex items-center justify-center rounded-2xl transition-all shadow-xl active:scale-95",
+                         btn.primary 
+                          ? "bg-mat-gold text-[#2C1E0F] border-t border-white/30 border-b-2 border-black/40 scale-125" 
+                          : "bg-neutral-800 text-white/30 border-t border-white/5 border-b border-black hover:text-white"
+                       )}
+                     >
+                        <btn.icon size={btn.primary ? 24 : 18} />
+                     </Button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top">{btn.id}</TooltipContent>
+               </Tooltip>
+             ))}
           </div>
         )}
       </div>
 
-      {/* DECORATIVE CROSSHAIR */}
-      {!isDashboard && (
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-mat-rose/10 z-0 pointer-events-none scale-150">
-           <Crosshair size={200} strokeWidth={0.3} />
-        </div>
-      )}
+      {/* Decorative Branding */}
+      <div className="absolute bottom-2 right-6 opacity-[0.05] pointer-events-none">
+         <span className="text-[40px] font-display text-white italic tracking-tighter mix-blend-overlay">MATRIARCH</span>
+      </div>
     </motion.div>
   );
 };
