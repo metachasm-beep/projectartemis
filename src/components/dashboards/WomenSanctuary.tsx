@@ -273,10 +273,4 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   );
 };
 
-export default WomenSanctuary;    }
-      `}</style>
-    </div>
-  );
-};
-
 export default WomenSanctuary;
