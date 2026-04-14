@@ -62,7 +62,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏰 Main Interface Layer */}
-      <main className="relative z-10 w-full h-full pt-28 pb-10 px-8 flex flex-col gap-12">
+      <main className="relative z-10 w-full h-full pt-20 pb-10 px-8 flex flex-col gap-6">
         {/* 🎭 Header Zone */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
            {profile?.photos?.[0] ? (
@@ -86,7 +86,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         </header>
 
         {/* 🕸️ Dashboard Grid: 12-Column Layout */}
-        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-5 lg:gap-6 pb-12">
+        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-4 pb-12">
           
           {/* 👁️ Discovery Zone (Insights) */}
           <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.1}>

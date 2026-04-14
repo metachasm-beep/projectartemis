@@ -68,7 +68,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       {isPremium && <div className="absolute inset-0 mat-card-holographic pointer-events-none z-10 opacity-30 mix-blend-overlay group-hover:opacity-50 transition-opacity" />}
       
       {/* 🏆 TRUMP CARD HEADER */}
-      <div className="absolute top-2 left-2 right-2 h-16 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl overflow-hidden rounded-t-[1.5rem]">
+      <div className={cn(
+        "absolute top-2 left-2 right-2 bg-mat-gold flex items-center justify-between px-6 z-20 border-b-4 border-mat-gold-dark shadow-2xl overflow-hidden rounded-t-[1.5rem]",
+        isDashboard ? "h-14" : "h-16"
+      )}>
         <div className="flex flex-col">
            <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-obsidian italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
            <span className="text-[14px] font-black uppercase tracking-widest text-mat-obsidian/70 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
@@ -87,7 +90,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 🖼️ HERO PORTRAIT AREA - MASSIVE UPSCALE (400% IMPACT) */}
-      <div className="relative flex-[0_0_68%] min-h-0 mt-14 overflow-hidden border-b-[6px] border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col">
+      <div className={cn(
+        "relative min-h-0 mt-14 overflow-hidden border-b-[6px] border-mat-gold group-hover:brightness-110 transition-all duration-700 rounded-t-[1.5rem] z-10 flex flex-col",
+        isDashboard ? "flex-[0_0_45%]" : "flex-[0_0_68%]"
+      )}>
         <div className="w-full h-full relative overflow-hidden flex-1 bg-mat-obsidian">
           <img 
             src={profile.img} 
@@ -134,17 +140,20 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* 📜 CONSOLIDATED INTEL */}
-      <div className="flex-1 min-h-0 bg-mat-obsidian/95 backdrop-blur-xl p-8 flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar">
+      <div className={cn(
+        "flex-1 min-h-0 bg-mat-obsidian/95 backdrop-blur-xl flex flex-col justify-between relative rounded-b-[2rem] z-20 overflow-y-auto custom-scrollbar",
+        isDashboard ? "p-5" : "p-8"
+      )}>
         
         {/* Bio Inlay */}
-        <div className="mb-6 flex-shrink-0">
+        <div className={cn("flex-shrink-0", isDashboard ? "mb-3" : "mb-6")}>
            <p className="text-mat-cream text-[14px] leading-relaxed font-light line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
 
         {/* 📊 STAT GRID (3 IN A ROW) */}
-        <div className="grid grid-cols-3 gap-x-4 gap-y-6">
+        <div className={cn("grid grid-cols-3 gap-x-4", isDashboard ? "gap-y-3" : "gap-y-6")}>
           {statItems.map((s, i) => (
             <div key={i} className="space-y-2">
                <div className="flex items-center justify-between px-0.5">
@@ -164,7 +173,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* 📋 DOSSIER FOOTER */}
-        <div className="mt-8 grid grid-cols-2 gap-4 border-t border-white/20 pt-6 pb-2 text-white">
+        <div className={cn("grid grid-cols-2 gap-4 border-t border-white/20 pb-2 text-white", isDashboard ? "mt-4 pt-4" : "mt-8 pt-6")}>
            <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
                  <Trophy size={18} />
@@ -269,9 +278,11 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       </div>
 
       {/* DECORATIVE CROSSHAIR */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
-         <Crosshair size={200} strokeWidth={0.3} />
-      </div>
+      {!isDashboard && (
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 text-mat-gold/5 z-0 pointer-events-none scale-150">
+           <Crosshair size={200} strokeWidth={0.3} />
+        </div>
+      )}
     </motion.div>
   );
 };

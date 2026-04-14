@@ -21,12 +21,12 @@ export const OracleWidget: React.FC<{ metrics: any; onBeginDiscovery?: () => voi
         </div>
         <div className="space-y-1">
           <div className="flex items-baseline gap-2">
-            <span className="text-7xl font-bold text-mat-wine italic tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+            <span className="text-6xl font-bold text-mat-wine italic tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
                {(resonance * 100).toFixed(0)}
             </span>
             <span className="text-mat-gold/60 text-sm font-mono tracking-widest">% MATCH</span>
           </div>
-          <p className="font-mono text-[12px] text-white/80 uppercase tracking-[0.2em]">Match Potential</p>
+          <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.2em]">Match Potential</p>
         </div>
       </div>
 
@@ -135,20 +135,20 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
 
   return (
     <div className="h-full flex flex-col justify-between py-1">
-      <div className="space-y-3">
+      <div className="space-y-1.5">
           <div className="flex items-center gap-3 text-white">
             <ShieldCheck size={18} strokeWidth={2} className="text-mat-gold" />
             <span className="font-mono text-[12px] uppercase tracking-[0.4em] font-black">Activity Rank</span>
           </div>
-          <h4 className="text-3xl font-bold italic text-white tracking-widest leading-none drop-shadow-lg" style={{ fontFamily: 'Playfair Display, serif' }}>
+          <h4 className="text-2xl font-bold italic text-white tracking-widest leading-none drop-shadow-lg" style={{ fontFamily: 'Playfair Display, serif' }}>
             My <span className="opacity-10 text-mat-gold">Standing.</span>
           </h4>
       </div>
       
-      <div className="space-y-4">
-        <div className="bg-mat-wine/5 rounded-3xl p-6 border border-white/5 shadow-inner">
-           <div className="flex items-center justify-between mb-4">
-              <div className="space-y-1">
+      <div className="space-y-2">
+        <div className="bg-mat-wine/5 rounded-3xl p-4 border border-white/5 shadow-inner">
+           <div className="flex items-center justify-between mb-2">
+              <div className="space-y-0.5">
                  <p className="font-mono text-[11px] text-white/60 uppercase tracking-[0.2em]">Global Rank</p>
                  <p className="text-mat-gold text-2xl font-bold italic leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>{rank}</p>
               </div>
@@ -163,7 +163,7 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
                 </div>
               </div>
            </div>
-           <p className="text-[11px] text-white/60 italic font-mono leading-tight uppercase tracking-tight">
+           <p className="text-[10px] text-white/60 italic font-mono leading-tight uppercase tracking-tight">
             Account verified. Status: {authorityScore > 50 ? 'ASCENDING' : 'SECURE'}.
            </p>
         </div>
