@@ -55,14 +55,12 @@ export const OracleWidget: React.FC<{ metrics: any; onBeginDiscovery?: () => voi
 export const SanctuaryWidget: React.FC<{ 
   metrics: any; 
   profile?: any; 
-  onShowFAQ?: () => void;
-  onShowVerification?: () => void;
-}> = ({ metrics, profile, onShowFAQ, onShowVerification }) => {
+}> = ({ metrics, profile }) => {
   const { vitality, circadianStatus, skinLuminance } = SkillOrchestrator.getVitalityMetrics(metrics?.sessionSeconds || 0);
 
   return (
     <div className="h-full flex flex-col justify-between py-2">
-      {/* 🏛️ Integrated Identity & Controls */}
+      {/* 🏛️ Integrated Identity (Pure Branding) */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -83,26 +81,10 @@ export const SanctuaryWidget: React.FC<{
                 </p>
              </div>
           </div>
-          
-          <div className="flex gap-2">
-            <button 
-              onClick={onShowFAQ}
-              className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white/30 hover:text-mat-gold hover:bg-white/10 transition-all group backdrop-blur-xl"
-            >
-               <HelpCircle size={18} className="group-hover:rotate-12 transition-transform" />
-            </button>
-            {!profile?.is_verified && (
-              <button 
-                onClick={onShowVerification}
-                className="w-10 h-10 rounded-xl bg-mat-gold/10 border border-mat-gold/20 flex items-center justify-center text-mat-gold/60 hover:text-mat-gold hover:bg-mat-gold/20 transition-all backdrop-blur-xl"
-              >
-                 <ShieldCheck size={18} />
-              </button>
-            )}
-          </div>
         </div>
 
         <div className="space-y-2">
+
            <div className="flex items-center gap-3">
              <p className="font-mono text-[9px] text-mat-gold/60 uppercase tracking-[0.5em]">Vitality Orbit</p>
              <span className="px-1.5 py-0 bg-mat-gold/10 border border-mat-gold/20 rounded text-[7px] text-mat-gold font-bold tracking-widest whitespace-nowrap">{circadianStatus}</span>

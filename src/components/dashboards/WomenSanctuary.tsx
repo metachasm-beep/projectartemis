@@ -160,7 +160,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         {/* 🚀 Floating Command Dock (Zero-Scroll Navigation) */}
         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
-          <Dock handleLogout={handleLogout} />
+          <Dock 
+            handleLogout={handleLogout} 
+            onShowFAQ={() => setShowFAQ(true)}
+            onShowVerification={!profile?.is_verified ? () => setShowVerification(true) : undefined}
+          />
         </div>
       </main>
 

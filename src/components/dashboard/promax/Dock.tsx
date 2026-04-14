@@ -6,7 +6,9 @@ import {
   MessageCircle, 
   User, 
   Settings, 
-  LogOut 
+  LogOut,
+  HelpCircle,
+  ShieldCheck
 } from 'lucide-react';
 
 interface DockIconProps {
@@ -42,7 +44,17 @@ const DockIcon: React.FC<DockIconProps> = ({ icon: Icon, label, mouseX, onClick 
   );
 };
 
-export const Dock: React.FC<{ handleLogout: () => void }> = ({ handleLogout }) => {
+interface DockProps {
+  handleLogout: () => void;
+  onShowFAQ?: () => void;
+  onShowVerification?: () => void;
+}
+
+export const Dock: React.FC<DockProps> = ({ 
+  handleLogout, 
+  onShowFAQ, 
+  onShowVerification 
+}) => {
   const mouseX = useMotionValue(Infinity);
 
   return (
@@ -56,8 +68,18 @@ export const Dock: React.FC<{ handleLogout: () => void }> = ({ handleLogout }) =
       <DockIcon icon={MessageCircle} label="Dialogs" mouseX={mouseX} />
       <DockIcon icon={User} label="Identity" mouseX={mouseX} />
       <DockIcon icon={Settings} label="Protocols" mouseX={mouseX} />
+      
       <div className="w-px h-8 bg-white/10 mx-2" />
+      
+      <DockIcon icon={HelpCircle} label="Sovereign Gnosis" mouseX={mouseX} onClick={onShowFAQ} />
+      {onShowVerification && (
+        <DockIcon icon={ShieldCheck} label="Identity Seal" mouseX={mouseX} onClick={onShowVerification} />
+      )}
+      
+      <div className="w-px h-8 bg-white/10 mx-2" />
+      
       <DockIcon icon={LogOut} label="Depart" mouseX={mouseX} onClick={handleLogout} />
     </motion.nav>
   );
 };
+
