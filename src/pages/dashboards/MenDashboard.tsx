@@ -21,8 +21,8 @@ import { turso } from '@/lib/turso';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
 import TrumpCard from '@/components/discovery/TrumpCard';
+import { ArchetypeBadge } from '@/components/discovery/ArchetypeBadge';
 import CircularGallery from '@/components/animations/CircularGallery';
-import { sanitizeBio } from '@/utils/trumpData';
 import { SEO_COPY } from '@/content/copy';
 import { SanctuaryService } from '@/services/sanctuary';
 import { cn } from "@/lib/utils";
@@ -37,14 +37,6 @@ interface MenDashboardProps {
   onNavigateToStore?: () => void;
   metrics?: { impression: number; visit: number; save: number };
 }
-
-// ─── LORE & MAPPING ───
-const VOCATION_ARCHETYPES: Record<string, { label: string; icon: string; description: string }> = {
-  'Architect': { label: 'The Architect', icon: '📐', description: 'Designer of sanctuary foundations.' },
-  'Strategist': { label: 'The Strategist', icon: '♟️', description: 'Master of resonance patterns.' },
-  'Aspirant': { label: 'The Aspirant', icon: '✨', description: 'One who seeks the sanctuary' },
-  'Imperial': { label: 'The Imperial', icon: '🏛️', description: 'High-standing resident.' },
-};
 
 // ─── AURA CALIBRATION COMPONENT ───
 const AuraMeter: React.FC<{ integrity: number }> = ({ integrity }) => {
@@ -286,6 +278,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <motion.p variants={maskReveal} className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold/60 mt-1">
                 Standing Protocol // Verified Admission
               </motion.p>
+              <motion.div variants={maskReveal} className="mt-4 flex justify-center">
+                 <ArchetypeBadge occupation={profile.occupation} size="sm" />
+              </motion.div>
             </header>
 
             <div className="flex-1 w-full flex flex-col items-center justify-center -space-y-16 overflow-hidden">
@@ -358,6 +353,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <motion.p variants={maskReveal} className="text-[12px] font-black uppercase tracking-[1em] text-mat-gold/40 mt-3 ml-4">
                 Matriarch Selection protocol
               </motion.p>
+              <motion.div variants={maskReveal} className="mt-6 flex justify-center w-full">
+                 <ArchetypeBadge occupation={profile.occupation} size="lg" />
+              </motion.div>
             </header>
             
             <div className="w-full max-w-7xl flex-1 flex flex-row items-center justify-center gap-16 px-8 overflow-hidden">
@@ -412,7 +410,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           animate={{ opacity: 1, y: 0 }} 
                           className="mat-glass-deep px-10 py-5 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center shadow-2xl"
                        >
-                          <span className="text-3xl font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
+                          <span className="text-3xl font-bold text-mat-bone italic tracking-tighter uppercase leading-none">
                             {gazeProfiles[activeGazeIndex]?.originalName.split(' ')[0]}
                           </span>
                           <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold mt-1">
@@ -433,7 +431,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 <div className="flex flex-col items-center mb-6">
                    <AuraMeter integrity={calculateIntegrity()} />
                    <div className="text-center mt-3">
-                      <p className="text-2xl font-bold italic text-mat-cream leading-none">{currentLevel.name}</p>
+                      <p className="text-2xl font-bold italic text-mat-bone leading-none">{currentLevel.name}</p>
                       <p className="text-[8px] uppercase tracking-widest text-white/40 mt-1">Sanctuary Standing Rank</p>
                    </div>
                 </div>
@@ -482,7 +480,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                    <div className="w-full">
                       <AuraMeter integrity={calculateIntegrity()} />
                       <div className="mt-8 space-y-2">
-                        <p className="text-4xl font-black italic text-mat-cream">{currentLevel.name}</p>
+                        <p className="text-4xl font-black italic text-mat-bone">{currentLevel.name}</p>
                         <p className="text-[10px] uppercase tracking-widest text-white/40">Sanctuary Standing</p>
                       </div>
                    </div>
@@ -500,7 +498,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                    <div className="space-y-10">
                       <div className="flex justify-between items-center">
                          <div>
-                            <h3 className="mat-text-fluid-huge text-mat-cream">Integrity Dial.</h3>
+                            <h3 className="mat-text-fluid-huge text-mat-bone">Integrity Dial.</h3>
                             <p className="text-[12px] uppercase tracking-widest text-white/40 mt-2">Core Calibration Metrics</p>
                          </div>
                          <Activity className="text-mat-gold/20 w-12 h-12" />
