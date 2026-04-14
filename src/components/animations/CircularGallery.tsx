@@ -686,7 +686,12 @@ class App {
     if (!this.isDown) return;
     const x = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const distance = (this.start - x) * (this.scrollSpeed * 0.025);
-    this.scroll.target = (this.scroll.position ?? 0) + distance;
+    
+    // 🏹 Unidirectional Stream: Block swiping back (negative distance)
+    const newTarget = (this.scroll.position ?? 0) + distance;
+    if (newTarget > this.scroll.target) {
+      this.scroll.target = newTarget;
+    }
   }
 
   onTouchUp(e: MouseEvent | TouchEvent) {
@@ -725,7 +730,12 @@ class App {
   onWheel(e: Event) {
     const wheelEvent = e as WheelEvent;
     const delta = wheelEvent.deltaY || (wheelEvent as any).wheelDelta || (wheelEvent as any).detail;
-    this.scroll.target += (delta > 0 ? this.scrollSpeed : -this.scrollSpeed) * 0.1;
+    
+    // 🏹 Unidirectional Stream: Only allow forward motion (delta > 0)
+    // Moving content right-to-left increases the target index.
+    if (delta > 0) {
+      this.scroll.target += this.scrollSpeed * 0.15;
+    }
     this.onCheckDebounce();
   }
 

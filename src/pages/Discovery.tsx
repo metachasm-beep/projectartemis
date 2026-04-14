@@ -27,7 +27,7 @@ export const Discovery: React.FC = () => {
         const targetRole = profile.role === 'woman' ? 'man' : 'woman';
         
         let query = `
-          SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion 
+          SELECT user_id, full_name, photos, city, date_of_birth, bio, is_verified, height, occupation, religion, absolute_rank 
           FROM profiles 
           WHERE role = ?
         `;
@@ -38,7 +38,7 @@ export const Discovery: React.FC = () => {
 
         query += `
           AND full_name NOT LIKE '%Paul%' 
-          ORDER BY created_at DESC 
+          ORDER BY COALESCE(absolute_rank, 99999) ASC, created_at DESC 
           LIMIT 200
         `;
 

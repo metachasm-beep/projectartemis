@@ -178,36 +178,38 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
         initial={{ y: 40, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 20, opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto mat-glass-deep rounded-[3.5rem] border border-white/20 shadow-2xl p-8 md:p-12 space-y-12 relative hide-scrollbar"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-black rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] p-8 md:p-12 space-y-12 relative hide-scrollbar selection:bg-mat-rose-gold selection:text-white"
       >
-        <div className="flex justify-between items-end border-b border-mat-rose/10 pb-8">
+        {/* Suggestion 1: Noir High-Contrast — Dramatic Starkness */}
+        <div className="absolute inset-0 bg-gradient-to-tr from-mat-noir via-transparent to-mat-wine/10 opacity-30 pointer-events-none" />
+        
+        <div className="relative z-10 flex justify-between items-end border-b border-white/10 pb-8">
            <div className="space-y-4">
               <div className="flex items-center gap-3">
-                 <Sparkles size={16} className="text-mat-rose animate-pulse" />
-                 <span className="text-[10px] font-bold uppercase tracking-[0.4em] text-mat-rose italic">Identity Enhancement</span>
+                 <Sparkles size={16} className="text-mat-rose-gold animate-pulse" />
+                 <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-rose-gold italic">Identity Enhancement Protocol</span>
               </div>
-              <h2 className="text-5xl font-bold text-mat-wine italic leading-tight" style={{fontFamily: '"Playfair Display", serif'}}>
-                Refine Your <br /><span className="text-mat-rose/30">Sanctuary.</span>
+              <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight" style={{fontFamily: '"Playfair Display", serif'}}>
+                Refine Your <br /><span className="text-white/40">Sanctuary.</span>
               </h2>
            </div>
-           <button onClick={onCancel} className="p-4 rounded-2xl bg-mat-rose/5 text-mat-wine/40 hover:text-mat-wine transition-all">
-              <X size={20} />
+           <button onClick={onCancel} className="p-4 rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all">
+              <X size={24} />
            </button>
         </div>
         
-        {/* ... Rest of existing form remains identical inside the glass card ... */}
-        <div className="grid grid-cols-1 gap-12">
+        <div className="relative z-10 grid grid-cols-1 gap-12">
             {/* Ported sections go here - keeping logic identical */}
           <section className="space-y-8">
              <div className="flex justify-between items-center">
                 <div className="flex items-center gap-4">
                    <Tooltip>
                       <TooltipTrigger>
-                         <Camera className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                         <Camera className="w-6 h-6 text-mat-rose-gold" strokeWidth={1} />
                       </TooltipTrigger>
                       <TooltipContent>Upload up to 6 high-quality photos to tell your story.</TooltipContent>
                    </Tooltip>
-                   <h3 className="text-[11px] font-bold uppercase tracking-widest text-mat-wine">Visual Narrative</h3>
+                   <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white">Visual Narrative</h3>
                 </div>
                 {profile.is_verified ? (
                    <div className="flex items-center gap-2 px-3 py-1 bg-mat-gold/10 border border-mat-gold/20 rounded-full">
@@ -292,16 +294,16 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              <div className="flex items-center gap-4">
                 <Tooltip>
                    <TooltipTrigger>
-                      <User className="w-6 h-6 text-mat-wine" strokeWidth={1.5} />
+                      <User className="w-6 h-6 text-mat-rose-gold" strokeWidth={1} />
                    </TooltipTrigger>
                    <TooltipContent>Share the core details of your life.</TooltipContent>
                 </Tooltip>
-                <h3 className="text-[11px] font-bold uppercase tracking-widest text-mat-wine">Foundational Roots</h3>
+                <h3 className="text-[11px] font-black uppercase tracking-[0.4em] text-white">Foundational Roots</h3>
              </div>
 
              <div className="space-y-6">
                 <div className="space-y-3">
-                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
                       Full Name
                       <Tooltip>
                          <TooltipTrigger>
@@ -314,12 +316,12 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       name="full_name"
                       value={formData.full_name}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-mat-cream border-mat-rose/20 text-mat-wine font-bold text-sm tracking-tight px-6 focus:border-mat-wine transition-all" 
+                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                    />
                 </div>
 
                 <div className="space-y-3">
-                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
                       Your Bio
                       <Tooltip>
                          <TooltipTrigger>
@@ -333,14 +335,14 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       value={sanitizeBio(formData.bio) || ''}
                       onChange={handleChange}
                       rows={5}
-                      className="w-full p-6 rounded-2xl bg-mat-cream border border-mat-rose/20 text-mat-wine font-bold text-sm tracking-tight focus:outline-none focus:border-mat-wine transition-all placeholder:text-mat-slate/20"
+                      className="w-full p-6 rounded-2xl bg-white/[0.03] border border-white/10 text-white font-bold text-base tracking-tight focus:outline-none focus:border-mat-rose-gold transition-all placeholder:text-white/10"
                       placeholder="TELL YOUR STORY..."
                    />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
                          Location
                          <MapPin size={12} className="opacity-40" />
                       </label>
@@ -348,12 +350,12 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                          name="city"
                          value={formData.city || ''}
                          onChange={handleChange}
-                         className="h-16 rounded-2xl bg-mat-cream border-mat-rose/20 text-mat-wine font-bold text-sm tracking-tight px-6" 
+                         className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                       />
                    </div>
 
                    <div className="space-y-3">
-                      <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4 flex items-center gap-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
                          Occupation
                          <Briefcase size={12} className="opacity-40" />
                       </label>
@@ -361,7 +363,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                          name="occupation"
                          value={formData.occupation || ''}
                          onChange={handleChange}
-                         className="h-16 rounded-2xl bg-mat-cream border-mat-rose/20 text-mat-wine font-bold text-sm tracking-tight px-6" 
+                         className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                       />
                    </div>
                 </div>
@@ -376,46 +378,43 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
 
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-3">
-                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4">Education</label>
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Education</label>
                    <Input 
                       name="education"
                       value={formData.education || ''}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-mat-cream border-mat-rose/20 text-mat-wine font-bold text-sm px-6" 
+                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base px-6 focus:border-mat-rose-gold" 
                    />
                 </div>
 
                 <div className="space-y-3">
-                   <label className="text-[10px] font-bold uppercase tracking-[0.2em] text-mat-rose/60 ml-4">Religion</label>
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4">Religion</label>
                    <Input 
                       name="religion"
                       value={formData.religion || ''}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-mat-cream border-mat-rose/20 text-mat-wine font-bold text-sm px-6" 
+                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base px-6 focus:border-mat-rose-gold" 
                    />
                 </div>
              </div>
           </section>
 
-          <section className="p-8 rounded-[2rem] bg-mat-wine/5 border border-mat-wine/10 space-y-6">
+          <section className="p-8 rounded-[2rem] bg-white/[0.02] border border-white/5 space-y-6">
              <div className="flex items-center gap-4">
                 <Tooltip>
                    <TooltipTrigger>
-                      <ShieldCheck size={20} className="text-mat-wine" />
+                      <ShieldCheck size={24} className="text-mat-rose-gold opacity-80" />
                    </TooltipTrigger>
                    <TooltipContent>Your role and verification status determine your standing in the sanctuary.</TooltipContent>
                 </Tooltip>
                 <div className="space-y-1">
-                   <span className="text-[9px] font-bold text-mat-wine/40 uppercase tracking-widest">Sanctuary Standing</span>
-                   <p className="text-sm font-bold text-mat-wine uppercase">Status: {profile.is_verified ? 'Verified Soul' : 'Awaiting Gaze'}</p>
+                   <span className="text-[9px] font-black text-white/20 uppercase tracking-[0.4em]">Sanctuary Registry Standing</span>
+                   <p className="text-sm font-black text-white uppercase tracking-widest leading-none">Status: {profile.is_verified ? 'Verified Sovereign' : 'Awaiting Gaze'}</p>
                 </div>
              </div>
              <div className="space-y-4">
-                <p className="text-[10px] font-medium text-mat-wine/40 italic leading-relaxed uppercase tracking-[0.2em]">
-                   * To ensure collective safety, unverified stories are ranked below verified initiates. Complete the Didit Protocol to elevate your resonance.
-                </p>
-                <p className="text-[10px] font-medium text-mat-wine/40 italic leading-relaxed uppercase tracking-widest">
-                   * Role and verification status are permanently indexed. Contact architect for elite status overrides.
+                <p className="text-[10px] font-medium text-white/30 italic leading-relaxed uppercase tracking-[0.2em]">
+                   * To ensure collective safety, unverified narratives are indexed below verified initiates. Seal your identity to elevate.
                 </p>
              </div>
           </section>
@@ -424,11 +423,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              <Button 
                 disabled={loading || success}
                 onClick={handleSave}
-                className="flex-1 h-20 rounded-[2.5rem] bg-mat-wine text-mat-cream font-bold uppercase tracking-[0.4em] text-[11px] transition-all hover:bg-mat-wine-soft shadow-mat-premium flex items-center justify-center gap-4"
+                className="flex-1 h-20 rounded-full bg-white text-black font-black uppercase tracking-[0.5em] text-[11px] transition-all hover:bg-mat-rose-gold hover:text-white shadow-[0_20px_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4"
              >
                 {loading ? (
                   <div className="flex gap-2">
-                     {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-mat-cream rounded-full animate-bounce" style={{animationDelay: `${i*0.1}s`}} />)}
+                     {[1,2,3].map(i => <div key={i} className="w-2 h-2 bg-black rounded-full animate-bounce" style={{animationDelay: `${i*0.1}s`}} />)}
                   </div>
                 ) : success ? (
                   <>
@@ -445,7 +444,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              
              <button 
                 onClick={onCancel}
-                className="h-20 px-12 rounded-[2.5rem] border border-mat-rose/20 text-mat-wine font-bold uppercase tracking-[0.4em] text-[9px] hover:bg-mat-rose/5 transition-all"
+                className="h-20 px-12 rounded-full border border-white/10 text-white/40 font-black uppercase tracking-[0.5em] text-[9px] hover:bg-white/5 hover:text-white transition-all shadow-inner"
              >
                 Retreat
              </button>
