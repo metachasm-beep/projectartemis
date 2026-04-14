@@ -154,6 +154,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
                     <div className="grid grid-cols-2 gap-4">
                       {(() => {
+                        const arc = SkillOrchestrator.getArchitectVisuals();
                         const stats = [
                           { label: 'Views', val: `${arc.gazeDepth}`, icon: Eye, color: 'text-white', tip: 'Total visual impressions' },
                           { label: 'Rating', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold', tip: 'Asset purity index' },
