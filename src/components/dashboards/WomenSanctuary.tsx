@@ -73,16 +73,16 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#FAF9F6] selection:bg-mat-gold selection:text-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#DED8D1] selection:bg-mat-gold selection:text-white">
       <TextureOverlay />
       
-      {/* 🏛️ Physical Canvas Surface (Warm Cream/Champagne) */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#FAF9F6] via-[#F5F1E9] to-[#EBE4D5]">
+      {/* 🏛️ Muted Suede Foundation (Matte Taupe) */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#E5E0D8] via-[#DED8D1] to-[#D1CBC3]">
         <div 
-          className="absolute inset-0 opacity-[0.4] mix-blend-multiply pointer-events-none"
+          className="absolute inset-0 opacity-[0.25] mix-blend-multiply pointer-events-none"
           style={{ filter: 'url(#grainy-texture)' }}
         />
-        <div className="absolute inset-0 shadow-[inset_0_0_150px_rgba(0,0,0,0.05)]" />
+        <div className="absolute inset-0 shadow-[inset_0_0_200px_rgba(0,0,0,0.08)]" />
       </div>
 
       {/* 🎞️ Global Post-Processing */}
@@ -93,11 +93,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         {/* 🎭 Header Zone (Compact Text Only) */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
             <div className="space-y-1">
-              <Badge variant="outline" className="px-4 py-1.5 border-mat-gold/20 text-mat-slate/60 text-[10px] uppercase tracking-[0.3em] font-bold rounded-full bg-white/40 shadow-sm backdrop-blur-xl">
+              <Badge variant="outline" className="px-4 py-1.5 border-mat-slate/10 text-mat-slate/40 text-[10px] uppercase tracking-[0.3em] font-bold rounded-full bg-white/20 shadow-none backdrop-blur-xl">
                 The Sanctuary Hub
               </Badge>
-               <h1 className="text-mat-slate font-display font-black text-5xl tracking-tighter leading-none mt-2 italic" style={{ fontFamily: 'Playfair Display, serif' }}>
-                Welcome, <span className="text-mat-gold">{profile?.full_name?.split(' ')[0] || 'User'}</span>.
+               <h1 className="text-mat-slate font-display font-normal text-6xl tracking-tighter leading-none mt-2" style={{ fontFamily: 'Italiana, serif' }}>
+                Welcome, <span className="text-mat-slate/60">{profile?.full_name?.split(' ')[0] || 'User'}</span>.
               </h1>
             </div>
         </header>
@@ -108,16 +108,19 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             
             {/* Left Column (Authority & Insights) */}
             <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-6 h-full">
-              <GlassCard className="row-span-6 bg-white/60 border-white shadow-[0_20px_50px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)]" delay={0.1}>
+              <GlassCard className="row-span-6 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.1}>
+                {/* 🧵 Tonal Stitching Motif */}
+                <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
                 <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
               </GlassCard>
-              <GlassCard className="row-span-6 bg-white/60 border-white shadow-[0_20px_50px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)]" delay={0.4}>
+              <GlassCard className="row-span-6 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.4}>
+                 <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
                  <InfluenceWidget metrics={metrics} />
               </GlassCard>
             </div>
 
             {/* Center Column (Hero Anchor) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden rounded-[3.5rem] border-8 border-white bg-white shadow-[0_30px_60px_rgba(0,0,0,0.12)] relative">
+            <div className="col-span-12 lg:col-span-4 row-span-12 h-full overflow-hidden rounded-[3.5rem] border-[12px] border-[#DED8D1] bg-white shadow-[0_40px_80px_rgba(0,0,0,0.1)] relative">
               <TrumpCard 
                  isDashboard
                  profile={{
@@ -140,13 +143,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
             {/* Right Column (Design & Security) */}
             <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-4 h-full">
-              <GlassCard className="row-span-8 bg-white/60 border-white shadow-[0_20px_50px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)]" delay={0.2}>
+              <GlassCard className="row-span-8 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.2}>
+                 <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
                  <ThreeAnchor quality="high" />
                  <div className="h-full flex flex-col justify-between relative z-10">
                     <div className="space-y-1">
-                       <p className="font-mono text-[10px] text-mat-gold font-bold uppercase tracking-[0.5em] mb-2">Sanctuary Overview</p>
-                        <h2 className="text-5xl font-display font-black text-mat-slate tracking-tighter leading-none italic" style={{ fontFamily: 'Playfair Display, serif' }}>
-                          Personal <span className="text-mat-gold">Space.</span>
+                       <p className="font-mono text-[10px] text-mat-slate/30 font-bold uppercase tracking-[0.5em] mb-2">Sanctuary Overview</p>
+                        <h2 className="text-6xl font-display font-normal text-mat-slate tracking-tighter leading-none" style={{ fontFamily: 'Italiana, serif' }}>
+                          Life <span className="opacity-40">Fabric.</span>
                         </h2>
                     </div>
 
@@ -164,15 +168,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                            <Tooltip key={i}>
                              <TooltipTrigger asChild>
                                <motion.div 
-                                 whileHover={{ y: -5, boxShadow: '0 15px 30px rgba(0,0,0,0.1)' }}
-                                 className="space-y-3 p-4 bg-white/80 rounded-[1.5rem] border border-white shadow-[0_10px_20px_rgba(0,0,0,0.04),inset_0_1px_1px_rgba(255,255,255,1)] cursor-help transition-all"
+                                 whileHover={{ scale: 1.02, backgroundColor: 'rgba(255, 255, 255, 0.4)' }}
+                                 className="space-y-3 p-4 bg-white/20 rounded-[1.2rem] border border-white/10 shadow-sm cursor-help transition-all"
                                >
-                                  <div className="w-10 h-10 bg-mat-ivory rounded-full flex items-center justify-center border border-mat-gold/10 shadow-inner">
-                                    <stat.icon size={18} className={cn("text-mat-gold")} strokeWidth={1.5} />
+                                  <div className="w-10 h-10 bg-mat-slate/5 rounded-full flex items-center justify-center border border-mat-slate/5">
+                                    <stat.icon size={18} className={cn("text-mat-slate/60")} strokeWidth={1.5} />
                                   </div>
                                   <div className="space-y-0.5">
-                                     <p className="text-2xl font-display font-bold text-mat-slate italic tracking-tighter" style={{ fontFamily: 'Playfair Display, serif' }}>{stat.val}</p>
-                                     <p className="font-sans text-[10px] text-mat-slate/40 uppercase tracking-[0.15em] font-bold">{stat.label}</p>
+                                     <p className="text-3xl font-display font-normal text-mat-slate tracking-tighter" style={{ fontFamily: 'Italiana, serif' }}>{stat.val}</p>
+                                     <p className="font-sans text-[9px] text-mat-slate/30 uppercase tracking-[0.1em] font-bold">{stat.label}</p>
                                   </div>
                                 </motion.div>
                              </TooltipTrigger>
@@ -186,24 +190,25 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   </div>
               </GlassCard>
 
-              <GlassCard className="row-span-4 bg-white/60 border-white shadow-[0_20px_50px_rgba(0,0,0,0.08),inset_0_1px_1px_rgba(255,255,255,1)]" delay={0.5}>
-                <div className="h-full flex flex-col justify-center px-4 space-y-4">
+              <GlassCard className="row-span-4 bg-white/30 border-mat-slate/5 shadow-[0_40px_80px_rgba(0,0,0,0.06),inset_0_1px_1px_rgba(255,255,255,0.4)] rounded-[2.5rem]" delay={0.5}>
+                <div className="absolute inset-3 border-2 border-dashed border-mat-slate/5 rounded-[1.8rem] pointer-events-none" />
+                <div className="h-full flex flex-col justify-center px-6 space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-mat-ivory rounded-2xl shadow-inner border border-mat-gold/10">
-                      <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
+                    <div className="p-3 bg-mat-slate/5 rounded-2xl border border-mat-slate/10 shadow-inner">
+                      <ShieldCheck size={20} className="text-mat-slate/40" strokeWidth={1.5} />
                     </div>
                     <div>
-                       <p className="font-sans text-[11px] text-mat-slate/40 uppercase tracking-[0.2em] font-bold">Safety Status</p>
-                       <p className="text-sm font-bold text-mat-slate tracking-widest leading-none mt-1 uppercase" style={{ fontFamily: 'Playfair Display, serif' }}>Protected Sanctuary</p>
+                       <p className="font-sans text-[11px] text-mat-slate/30 uppercase tracking-[0.2em] font-bold">Safety Level</p>
+                       <p className="text-sm font-normal text-mat-slate tracking-widest leading-none mt-1 uppercase" style={{ fontFamily: 'Italiana, serif' }}>Absolute Privacy</p>
                     </div>
                   </div>
                   
                   {!profile?.is_verified && (
                     <button 
                       onClick={() => setShowVerification(true)}
-                      className="w-full py-4 bg-mat-gold text-white text-[11px] font-bold uppercase tracking-[0.3em] rounded-[1.5rem] shadow-[0_10px_20px_rgba(212,175,55,0.2),inset_0_-4px_0_rgba(0,0,0,0.1)] active:shadow-inner active:translate-y-1 transition-all"
+                      className="w-full py-5 bg-mat-slate text-white text-[11px] font-bold uppercase tracking-[0.2em] rounded-[1.2rem] shadow-[0_20px_40px_rgba(0,0,0,0.1)] active:scale-[0.98] transition-all"
                     >
-                      Authenticate Account
+                      Verify Identity
                     </button>
                   )}
                 </div>
