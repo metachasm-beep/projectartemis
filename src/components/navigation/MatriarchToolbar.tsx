@@ -59,7 +59,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   if (activeTab === 'sovereign_browse') return null;
 
   return (
-    <div className="fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full bg-white/10 backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500">
+    <div className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500 ${activeTab === 'faq' ? 'bg-mat-obsidian/90' : 'bg-white/10'}`}>
         <div className="flex items-center gap-1">
           {navItems.map((item) => (
             <button
