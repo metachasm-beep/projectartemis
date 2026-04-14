@@ -158,10 +158,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         {/* ══ MAIN BODY ════════════════════════════════════ */}
         <TooltipProvider>
-          <div className="flex gap-4 flex-1 min-h-0 items-start">
+          <div className="flex gap-4 flex-1 min-h-0 items-stretch">
 
             {/* ── LEFT STATS (first 5) ─────────────────── */}
-            <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+            <div className="flex flex-col flex-1 min-w-0 h-full justify-evenly">
               {stats.slice(0, 5).map((stat, idx) => (
                 <motion.div
                   key={idx}
@@ -208,10 +208,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-              className={cn("w-56 shrink-0 h-full rounded-2xl overflow-hidden flex flex-col group/card", SkeuSurface)}
+              className={cn("flex-[4] shrink-0 h-full rounded-2xl overflow-hidden flex flex-col group/card", SkeuSurface)}
             >
               {/* Portrait */}
-              <div className="relative h-48 overflow-hidden shrink-0">
+              <div className="relative h-[48%] overflow-hidden shrink-0">
                 <img
                   src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=400"}
                   alt={profile?.full_name}
@@ -307,7 +307,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </motion.div>
 
             {/* ── RIGHT STATS (last 5) ─────────────────── */}
-            <div className="flex flex-col gap-2.5 flex-1 min-w-0">
+            <div className="flex flex-col flex-1 min-w-0 h-full justify-evenly">
               {stats.slice(5).map((stat, idx) => (
                 <motion.div
                   key={idx}
