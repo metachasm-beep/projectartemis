@@ -55,6 +55,17 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
   // Calculate total power level
   const powerLevel = Math.round((stats.charisma + stats.stamina + stats.intellect + stats.vibe + stats.social) / 5);
 
+  const VOCATIONS: Record<string, string> = {
+    'Architect': 'The Architect',
+    'Strategist': 'The Strategist',
+    'Imperial': 'The Imperial',
+    'Aspirant': 'The Aspirant',
+    'Director': 'The Visionary',
+    'Engineer': 'The Strategist',
+    'Creative': 'The Catalyst'
+  };
+  const archetype = VOCATIONS[profile.vocation] || profile.vocation || 'The Aspirant';
+
   return (
     <motion.div 
       initial={{ scale: 0.9, y: 30, opacity: 0 }}
@@ -73,13 +84,13 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         isDashboard ? "h-14" : "h-16"
       )}>
         <div className="flex flex-col">
-           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-cream italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
-           <span className="text-[14px] font-black uppercase tracking-widest text-mat-cream/70 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
+           <span className="text-[12px] font-black uppercase tracking-[0.3em] text-mat-wine italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
+           <span className="text-[14px] font-black uppercase tracking-widest text-mat-wine/40 italic">Series 01 // ID-{profile.id?.slice(0,4)}</span>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
-              <span className="text-[12px] font-black uppercase text-mat-cream/60">Power Lvl</span>
-              <span className="mat-text-impact text-mat-cream text-3xl leading-none">{powerLevel}</span>
+              <span className="text-[12px] font-black uppercase text-mat-wine/40">Power Lvl</span>
+              <span className="mat-text-impact text-mat-wine text-3xl leading-none">{powerLevel}</span>
            </div>
            {onClose && (
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
@@ -127,12 +138,17 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         <div className="absolute bottom-0 left-0 w-full p-8 bg-gradient-to-t from-mat-cream via-mat-cream/60 to-transparent z-10">
-           <div className="flex items-center gap-3">
-              <p className="font-display text-mat-gold text-5xl italic drop-shadow-sm tracking-tight leading-tight">
-                {profile.name}
-              </p>
-              <VerificationBadge verified={profile.is_verified} />
-           </div>
+            <div className="flex items-center gap-3">
+               <div className="flex flex-col">
+                  <div className="flex items-center gap-3">
+                     <p className="font-display text-mat-gold text-5xl italic drop-shadow-sm tracking-tight leading-tight">
+                        {profile.name}
+                     </p>
+                     <VerificationBadge verified={profile.is_verified} />
+                  </div>
+                  <span className="text-[10px] uppercase font-black tracking-[0.3em] text-mat-slate/40 mt-1 italic">{archetype}</span>
+               </div>
+            </div>
            <p className="text-[14px] uppercase tracking-[0.5em] font-black text-mat-slate mt-2">
              Age {profile.age} • {profile.city.toUpperCase()}
            </p>

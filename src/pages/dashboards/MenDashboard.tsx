@@ -36,6 +36,48 @@ interface MenDashboardProps {
   metrics?: { impression: number; visit: number; save: number };
 }
 
+// ─── LORE & MAPPING ───
+const VOCATION_ARCHETYPES: Record<string, { label: string; icon: string; description: string }> = {
+  'Architect': { label: 'The Architect', icon: '📐', description: 'Designer of sanctuary foundations.' },
+  'Strategist': { label: 'The Strategist', icon: '♟️', description: 'Master of resonance patterns.' },
+  'Aspirant': { label: 'The Aspirant', icon: '✨', description: 'One who seeks the sanctuary' },
+  'Imperial': { label: 'The Imperial', icon: '🏛️', description: 'High-standing resident.' },
+  // Default fallback logic in the component
+};
+
+// ─── AURA CALIBRATION COMPONENT ───
+const AuraMeter: React.FC<{ integrity: number }> = ({ integrity }) => {
+  const radius = 45;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (integrity / 100) * circumference;
+  
+  const auraColor = integrity > 80 ? 'var(--color-mat-rose-gold)' : 
+                    integrity > 50 ? 'var(--color-mat-gold)' : 
+                    '#444';
+
+  return (
+    <div className="relative w-32 h-32 flex items-center justify-center group/aura" style={{ '--aura-color': auraColor } as any}>
+      <svg className="w-full h-full -rotate-90">
+        <circle cx="64" cy="64" r={radius} fill="transparent" stroke="rgba(255,255,255,0.05)" strokeWidth="4" />
+        <motion.circle 
+          cx="64" cy="64" r={radius} fill="transparent" 
+          stroke={auraColor} strokeWidth="4" strokeLinecap="round"
+          className="aura-meter-ring"
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset: offset }}
+        />
+      </svg>
+      <div className={cn(
+        "absolute inset-4 rounded-full flex flex-col items-center justify-center transition-all duration-700",
+        integrity > 70 ? "aura-glow-rose" : "aura-glow-gold"
+      )}>
+        <span className="text-2xl font-black text-white leading-none italic">{integrity}%</span>
+        <span className="text-[7px] uppercase tracking-widest text-white/40 mt-1">Aura Level</span>
+      </div>
+    </div>
+  );
+};
+
 export const MenDashboard: React.FC<MenDashboardProps> = ({ 
   profile,
   status,
@@ -46,6 +88,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   metrics: externalMetrics
 }) => {
   const [absRank, setAbsRank] = useState<number | null>(null);
+  const [cityRank, setCityRank] = useState<number | null>(null);
   const [_totalMen, _setTotalMen] = useState<number>(0);
   const [isBumping, setIsBumping] = useState(false);
   const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
@@ -116,6 +159,17 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       const totalResult = await turso.execute("SELECT COUNT(*) as total FROM profiles WHERE role = 'man'", []);
       _setTotalMen(Number(totalResult.rows[0].total) || 1);
       setAbsRank(profile.absolute_rank || 0);
+
+      if (profile.city) {
+        const cityResult = await turso.execute(`
+          SELECT COUNT(*) + 1 as rank 
+          FROM profiles 
+          WHERE role = 'man' 
+          AND city = ? 
+          AND absolute_rank > ?
+        `, [profile.city, profile.absolute_rank || 0]);
+        setCityRank(Number(cityResult.rows[0].rank) || 1);
+      }
     } catch (err) {
       console.error("Rank ritual failure:", err);
     }
@@ -370,10 +424,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               <header className="overflow-hidden mb-6">
                 <motion.h1 
                   variants={maskReveal}
-                  className="text-[9px] font-black uppercase tracking-[0.6em] text-mat-gold/60 text-center px-4"
+                  className="mat-text-fluid-huge text-white/90 text-center px-4"
                 >
-                  Matriarch Dossier: Standing & Identity
+                  Standing & Identity Resonance
                 </motion.h1>
+                <motion.p
+                  variants={maskReveal}
+                  className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold/60 text-center mt-2"
+                >
+                  Matriarch Selection Protocol // Standing Verified
+                </motion.p>
               </header>
               <div className="flex-1 flex flex-col justify-center items-center px-4">
                  <motion.div 
@@ -441,14 +501,20 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
             </section>
           </>
         ) : (
-          <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col pt-16 md:pt-40 snap-start">
-            <header className="overflow-hidden mb-6 md:mb-12">
+          <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col pt-16 md:pt-40 snap-start relative">
+            <header className="overflow-hidden mb-8 md:mb-16">
               <motion.h1 
                 variants={maskReveal}
-                className="text-[9px] md:text-[12px] font-black uppercase tracking-[0.8em] md:tracking-[1.2em] text-mat-gold/60 text-center"
+                className="mat-text-fluid-huge text-white/90 text-center"
               >
-                Matriarch Dossier: Standing & Identity Resonance
+                Identity Resonance
               </motion.h1>
+              <motion.p 
+                variants={maskReveal}
+                className="text-[11px] font-black uppercase tracking-[1em] text-mat-gold/40 text-center mt-4"
+              >
+                Standing Protocol // Sanctuary Admission
+              </motion.p>
             </header>
             
             <motion.div 
@@ -638,23 +704,62 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           </>
         ) : (
           <section className="h-[100dvh] min-h-[100dvh] overflow-hidden flex flex-col justify-center py-6 md:py-12 snap-start">
-            <motion.div 
-              variants={containerStagger}
-              className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8"
-            >
-              {/* Bento Cell 1: Personal Standing */}
               <motion.div 
-                variants={cardSpring}
-                className="md:col-span-2 lg:col-span-2 mat-glass-deep p-6 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700"
+                variants={containerStagger}
+                className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8 min-h-[60vh]"
               >
-                 <div className="space-y-4 md:space-y-8">
-                    <div className="flex justify-between items-center">
-                       <div className="space-y-1 md:space-y-2">
-                          <h3 className="text-2xl md:text-4xl font-bold italic text-mat-wine">Integrity Dial.</h3>
-                          <p className="mat-text-label-pro">Profile calibration metrics</p>
-                       </div>
-                       <Activity className="text-mat-rose/40 w-8 h-8 group-hover:rotate-12 transition-transform" />
-                    </div>
+                {/* Bento Cell 1: Aura Calibration & Gaze Index */}
+                <motion.div 
+                  variants={cardSpring}
+                  className="md:col-span-1 lg:col-span-1 mat-glass-deep p-8 rounded-[3.5rem] border border-mat-gold/10 flex flex-col items-center justify-between text-center relative overflow-hidden group"
+                >
+                   <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-mat-gold/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                   
+                   <div className="space-y-6 w-full">
+                      <div className="flex flex-col items-center">
+                         <AuraMeter integrity={calculateIntegrity()} />
+                         <p className="mat-text-editorial-caps text-[8px] mt-4">Profile Resonance</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4 w-full pt-4 border-t border-mat-gold/5">
+                         <div className="flex flex-col items-center p-3 rounded-2xl bg-white/5 border border-white/5">
+                            <Eye className="w-3 h-3 text-mat-gold/60 mb-2" />
+                            <span className="text-[10px] uppercase font-black tracking-widest text-mat-gold/40">Gaze Index</span>
+                            <div className="relative mt-1">
+                               <span className={cn("text-lg font-black italic", (absRank || 100) > 50 ? "blur-[4px] opacity-40" : "text-white")}>
+                                 +{externalMetrics?.visit || 0}
+                               </span>
+                               {(absRank || 100) > 50 && (
+                                 <span className="absolute inset-0 flex items-center justify-center text-[8px] font-black uppercase text-mat-gold/60 tracking-tighter">Decryption Reqd</span>
+                               )}
+                            </div>
+                         </div>
+                         <div className="flex flex-col items-center p-3 rounded-2xl bg-white/5 border border-white/5">
+                            <Compass className="w-3 h-3 text-mat-rose/60 mb-2" />
+                            <span className="text-[10px] uppercase font-black tracking-widest text-mat-rose/40">Local League</span>
+                            <span className="text-lg font-black italic text-white mt-1">#{cityRank || '--'}</span>
+                         </div>
+                      </div>
+                   </div>
+
+                   <div className="w-full pt-6">
+                      <p className="text-[9px] uppercase font-black tracking-[0.2em] text-mat-gold/40">Sector Standing: {profile.city || 'Undisclosed'}</p>
+                   </div>
+                </motion.div>
+
+                {/* Bento Cell 2: Integrity Dial & Calibration */}
+                <motion.div 
+                  variants={cardSpring}
+                  className="md:col-span-2 lg:col-span-2 mat-glass-deep p-8 md:p-14 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between group hover:border-mat-rose/30 transition-all duration-700"
+                >
+                   <div className="space-y-8">
+                      <div className="flex justify-between items-center">
+                         <div className="space-y-2">
+                            <h3 className="mat-text-fluid-huge text-4xl text-mat-wine leading-none">Integrity Dial.</h3>
+                            <p className="mat-text-label-pro opacity-40">Profile calibration metrics</p>
+                         </div>
+                         <Activity className="text-mat-rose/30 w-10 h-10 group-hover:rotate-12 transition-transform" />
+                      </div>
                     <div className="grid grid-cols-2 gap-3 md:gap-6">
                        {[
                          { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
