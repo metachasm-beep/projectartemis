@@ -23,6 +23,7 @@ import { FAQ } from '@/components/FAQ';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
+import { Aurora } from '@/components/dashboard/promax/Aurora';
 import { OracleWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
 import { ThreeAnchor } from '@/components/dashboard/promax/ThreeAnchor';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
@@ -56,9 +57,16 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-cream selection:bg-mat-gold selection:text-white">
-      {/* 🌌 High-Performance Liquid Mesh Background */}
-      <LiquidMesh />
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-black selection:bg-indigo-500 selection:text-white">
+      {/* 🌌 High-Performance Aurora Background (Matrix Vibes) */}
+      <div className="absolute inset-0 z-0">
+        <Aurora 
+          colorStops={['#000000', '#1A1B4B', '#2E2D62']}
+          amplitude={1.2}
+          speed={0.5}
+          quality="high"
+        />
+      </div>
 
       {/* 🎞️ Global Post-Processing */}
       <PostProcessOverlay />
@@ -67,14 +75,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <main className="relative z-10 w-full h-full pt-20 pb-10 px-8 flex flex-col gap-6">
         {/* 🎭 Header Zone (Compact Text Only) */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
-           <div className="space-y-1">
-              <Badge variant="outline" className="px-4 py-1.5 border-mat-rose text-mat-rose text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-rose/5 backdrop-blur-md">
-                Status: Verified & Syncing
+            <div className="space-y-1">
+              <Badge variant="outline" className="px-4 py-1.5 border-indigo-500/50 text-indigo-400 text-[10px] uppercase tracking-[0.4em] font-black rounded-full bg-indigo-500/5 backdrop-blur-xl border-dashed">
+                PROTOCOL: Verified & Syncing
               </Badge>
-               <h1 className="text-mat-slate font-display italic text-3xl tracking-tighter leading-none">
-                Welcome back, {profile?.full_name?.split(' ')[0] || 'User'}.
+               <h1 className="text-white font-body font-black text-4xl tracking-tighter leading-none mt-2">
+                Welcome back, <span className="text-indigo-400">{profile?.full_name?.split(' ')[0] || 'User'}</span>.
               </h1>
-           </div>
+            </div>
         </header>
 
         {/* 🕸️ Dashboard Grid: Symmetrical 3-Column Layout (4-4-4) */}
@@ -82,11 +90,11 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
           <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-4 pb-12 overflow-hidden h-full">
             
             {/* Left Column (Authority & Insights) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-4 h-full">
-              <GlassCard className="row-span-6" delay={0.1}>
+            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-6 h-full">
+              <GlassCard className="row-span-6 bg-white/[0.02] border-white/5" delay={0.1}>
                 <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
               </GlassCard>
-              <GlassCard className="row-span-6" delay={0.4}>
+              <GlassCard className="row-span-6 bg-white/[0.02] border-white/5" delay={0.4}>
                  <InfluenceWidget metrics={metrics} />
               </GlassCard>
             </div>
@@ -115,13 +123,13 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
             {/* Right Column (Design & Security) */}
             <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-4 h-full">
-              <GlassCard className="row-span-8" delay={0.2}>
+              <GlassCard className="row-span-8 bg-white/[0.02] border-white/5" delay={0.2}>
                  <ThreeAnchor quality="high" />
                  <div className="h-full flex flex-col justify-between relative z-10">
                     <div className="space-y-1">
-                       <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
-                        <h2 className="text-5xl font-display italic text-mat-slate tracking-tighter leading-none">
-                          Design <span className="opacity-20 text-mat-gold">& Style.</span>
+                       <p className="font-mono text-[10px] text-indigo-400 font-black uppercase tracking-[0.5em] mb-2">Systems Overview</p>
+                        <h2 className="text-5xl font-body font-black text-white tracking-tighter leading-none">
+                          Design <span className="text-indigo-500">Core.</span>
                         </h2>
                     </div>
 
@@ -139,15 +147,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                            <Tooltip key={i}>
                              <TooltipTrigger asChild>
                                <motion.div 
-                                 whileHover={{ y: -3 }}
-                                 className="space-y-3 p-4 bg-mat-gold/5 rounded-2xl border border-mat-gold/10 backdrop-blur-md cursor-help"
+                                 whileHover={{ y: -3, backgroundColor: 'rgba(255, 255, 255, 0.05)' }}
+                                 className="space-y-3 p-4 bg-white/[0.03] rounded-2xl border border-white/5 backdrop-blur-md cursor-help transition-colors"
                                >
-                                  <div className="w-10 h-10 bg-mat-gold/10 rounded-xl flex items-center justify-center border border-mat-gold/10">
-                                    <stat.icon size={18} className={cn("text-mat-gold", stat.color.includes('rose') && "text-mat-rose")} strokeWidth={1.5} />
+                                  <div className="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20">
+                                    <stat.icon size={18} className={cn("text-indigo-400")} strokeWidth={1.5} />
                                   </div>
                                   <div className="space-y-0.5">
-                                     <p className="text-xl font-bold text-mat-slate italic tracking-tighter font-mono">{stat.val}</p>
-                                     <p className="font-mono text-[10px] text-mat-slate/80 uppercase tracking-[0.2em]">{stat.label}</p>
+                                     <p className="text-xl font-body font-black text-white italic tracking-tighter">{stat.val}</p>
+                                     <p className="font-mono text-[9px] text-white/40 uppercase tracking-[0.3em]">{stat.label}</p>
                                   </div>
                                 </motion.div>
                              </TooltipTrigger>
@@ -161,24 +169,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   </div>
               </GlassCard>
 
-              <GlassCard className="row-span-4" delay={0.5}>
+              <GlassCard className="row-span-4 bg-white/[0.02] border-white/5" delay={0.5}>
                 <div className="h-full flex flex-col justify-center px-4 space-y-4">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 bg-mat-gold/10 rounded-xl border border-mat-gold/20">
-                      <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
+                    <div className="p-3 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
+                      <ShieldCheck size={20} className="text-indigo-400" strokeWidth={1.5} />
                     </div>
                     <div>
-                       <p className="font-mono text-[11px] text-mat-slate/80 uppercase tracking-[0.4em]">Account Verification</p>
-                       <p className="text-sm font-bold italic text-mat-slate tracking-widest leading-none mt-1">Status: <span className="text-mat-gold uppercase font-black">Verified</span></p>
+                       <p className="font-mono text-[10px] text-white/40 uppercase tracking-[0.4em]">Protocol Status</p>
+                       <p className="text-sm font-black text-white tracking-widest leading-none mt-1">IDENTITY: <span className="text-indigo-400">SEALED</span></p>
                     </div>
                   </div>
                   
                   {!profile?.is_verified && (
                     <button 
                       onClick={() => setShowVerification(true)}
-                      className="w-full py-3 border-2 border-mat-gold text-mat-gold text-[11px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
+                      className="w-full py-3 bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-indigo-500/20 transition-all font-mono"
                     >
-                      Verify Now
+                      Authenticate
                     </button>
                   )}
                 </div>

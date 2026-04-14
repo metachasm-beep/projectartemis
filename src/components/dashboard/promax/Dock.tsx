@@ -34,10 +34,10 @@ const DockIcon: React.FC<DockIconProps> = ({ icon: Icon, label, mouseX, onClick 
       ref={ref}
       style={{ width }}
       onClick={onClick}
-      className="aspect-square rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-mat-gold hover:bg-white/10 transition-colors cursor-pointer relative group"
+      className="aspect-square rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-indigo-400 hover:bg-white/10 transition-colors cursor-pointer relative group"
     >
       <Icon size={20} strokeWidth={1.5} />
-      <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] text-mat-gold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap uppercase tracking-widest pointer-events-none font-bold">
+      <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap uppercase tracking-widest pointer-events-none font-bold">
         {label}
       </span>
     </motion.div>
