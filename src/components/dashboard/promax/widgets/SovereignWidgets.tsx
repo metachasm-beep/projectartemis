@@ -1,3 +1,5 @@
+import React from 'react';
+import { motion } from 'framer-motion';
 import { Activity, Sparkles, Compass, Eye, Star, Zap, ShieldCheck, HelpCircle } from 'lucide-react';
 import { SkillOrchestrator } from '@/services/SkillOrchestrator';
 
