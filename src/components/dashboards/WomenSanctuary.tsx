@@ -10,9 +10,10 @@ import {
   Eye,
   Star,
   Compass,
-  HelpCircle,
   X,
-  LayoutGrid
+  LayoutGrid,
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
@@ -23,7 +24,7 @@ import { FAQ } from '@/components/FAQ';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -42,9 +43,9 @@ interface WomenSanctuaryProps {
 }
 
 /**
- * 🏛️ Women's Sanctuary 3.0: Atelier Edition
- * Redesigned for a 'Modern, Sleek, Feminine' fashion aesthetic.
- * High-end editorial typography, Ivory/Noir/Rose Gold palette, and monumental scale.
+ * 🏛️ Women's Sanctuary 4.0: Chiaroscuro Atelier
+ * Ferrari editorial luxury meets Apple skeuomorphic depth.
+ * Ivory/Noir/Rose Gold, embossed bento tiles, cinematic portrait.
  */
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ 
   profile,
@@ -63,216 +64,250 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
     return `${mins}m`;
   };
 
+  /** 10 stats → 2 rows of 5 */
   const stats = [
-    { label: 'Profile Views', value: '4.2k', icon: <Eye size={18} /> },
-    { label: 'Trust Score', value: `${profile?.profile_completeness || 99}%`, icon: <ShieldCheck size={18} /> },
-    { label: 'Matches', value: metrics.matches || '0', icon: <Heart size={18} /> },
-    { label: 'Profiles Viewed', value: metrics.profilesViewed || '142', icon: <LayoutGrid size={18} /> },
-    { label: 'Interactions', value: metrics.profilesEngaged || '28', icon: <MessageCircle size={18} /> },
-    { label: 'Time Online', value: formatTime(metrics.sessionSeconds || 12400), icon: <Activity size={18} /> },
-    { label: 'Response Rate', value: metrics.responseRate || 'High', icon: <Sparkles size={18} /> },
-    { label: 'Vibe Rating', value: metrics.vibeRating || '9.8', icon: <Compass size={18} /> },
-    { label: 'Daily Streak', value: `${metrics.activeStreak || 12}d`, icon: <Zap size={18} /> },
-    { label: 'Security Level', value: metrics.safetyLevel || 'Elite', icon: <Star size={18} /> },
+    { label: 'Profile Views',   value: '4.2k',                                      icon: <Eye size={14} />,          accent: 'from-rose-100 to-rose-50' },
+    { label: 'Trust Score',     value: `${profile?.profile_completeness || 99}%`,    icon: <ShieldCheck size={14} />,  accent: 'from-amber-100 to-amber-50' },
+    { label: 'Matches',         value: String(metrics.matches || '0'),               icon: <Heart size={14} />,        accent: 'from-pink-100 to-pink-50' },
+    { label: 'Profiles Viewed', value: String(metrics.profilesViewed || '142'),      icon: <LayoutGrid size={14} />,   accent: 'from-violet-100 to-violet-50' },
+    { label: 'Interactions',    value: String(metrics.profilesEngaged || '28'),      icon: <MessageCircle size={14} />,accent: 'from-sky-100 to-sky-50' },
+    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 12400),  icon: <Activity size={14} />,     accent: 'from-emerald-100 to-emerald-50' },
+    { label: 'Response Rate',   value: metrics.responseRate || 'High',              icon: <Sparkles size={14} />,     accent: 'from-fuchsia-100 to-fuchsia-50' },
+    { label: 'Vibe Rating',     value: String(metrics.vibeRating || '9.8'),         icon: <Compass size={14} />,      accent: 'from-orange-100 to-orange-50' },
+    { label: 'Daily Streak',    value: `${metrics.activeStreak || 12}d`,            icon: <Zap size={14} />,          accent: 'from-yellow-100 to-yellow-50' },
+    { label: 'Security Level',  value: metrics.safetyLevel || 'Elite',             icon: <Star size={14} />,         accent: 'from-teal-100 to-teal-50' },
   ];
 
-  return (
-    <div className="relative w-full h-screen overflow-hidden bg-mat-ivory selection:bg-mat-rose-gold selection:text-white flex flex-col">
-      {/* 🌊 Liquid Foundation (Silk Drift) */}
-      <LiquidMesh />
+  const isVerified = profile?.is_verified;
 
-      {/* 🎞️ Global Post-Processing (Grain & Bloom) */}
+  return (
+    <div className="relative w-full h-screen overflow-hidden bg-[#f5f0ea] selection:bg-mat-rose-gold selection:text-white flex flex-col">
+      {/* 🌊 Liquid Foundation */}
+      <LiquidMesh />
       <PostProcessOverlay />
 
-      {/* 🏙️ The Haute Sanctuary Canvas */}
-      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-4 lg:px-16 lg:pt-4 min-h-0">
-        {/* ✨ Editorial Header: The Monumental Serif */}
-        <header className="flex flex-col md:flex-row justify-between items-end mb-4 gap-4 shrink-0">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+      {/* ══════════════════════════════════════════
+          🏛️  SANCTUARY CANVAS
+      ══════════════════════════════════════════ */}
+      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-3 lg:px-14 lg:pt-4 min-h-0 gap-4">
+
+        {/* ── HEADER ROW ─────────────────────────────── */}
+        <header className="flex flex-row items-start justify-between shrink-0 gap-4">
+          
+          {/* Left: Editorial Title */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="space-y-4"
+            transition={{ duration: 0.8 }}
+            className="space-y-1"
           >
-            <div className="flex items-center gap-4">
-               <span className="w-12 h-[1px] bg-mat-rose-gold" />
-               <h3 className="mat-text-editorial-caps">Sanctuary Alpha</h3>
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-[1px] bg-mat-rose-gold" />
+              <span className="mat-text-editorial-caps text-[8px] text-mat-noir/40 tracking-[0.25em]">Sanctuary Alpha</span>
             </div>
-            <h1 className="mat-text-editorial-huge text-6xl lg:text-8xl leading-none">
-              Sovereign <br className="hidden md:block" />
-              <span className="text-mat-rose-gold italic font-medium">Existence.</span>
+            <h1 className="mat-text-editorial-huge text-4xl lg:text-5xl text-mat-noir leading-none">
+              Sovereign <span className="text-mat-rose-gold italic font-medium">Existence.</span>
             </h1>
           </motion.div>
-          
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+
+          {/* Right: Avatars + Identity Protocol Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.2 }}
-            className="flex flex-col items-end gap-6"
+            transition={{ duration: 0.8, delay: 0.15 }}
+            className="flex items-center gap-3 shrink-0"
           >
-            <div className="flex -space-x-3">
+            {/* Cascaded member avatars */}
+            <div className="flex -space-x-2.5 items-center">
               {[
-                "1494790108377-be9c29b29330", 
-                "1534528741775-53994a69daeb", 
+                "1494790108377-be9c29b29330",
+                "1534528741775-53994a69daeb",
                 "1531746020798-e6953c6e8e04"
               ].map((id, i) => (
-                <div key={i} className="w-12 h-12 rounded-full border-2 border-mat-bone overflow-hidden shadow-2xl relative z-10 transition-transform hover:scale-110 hover:z-20 cursor-pointer">
-                  <img src={`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=100`} alt="Sanctuary Member" className="w-full h-full object-cover" />
+                <div key={i} className="w-9 h-9 rounded-full border-2 border-[#f5f0ea] overflow-hidden shadow-[0_2px_8px_rgba(0,0,0,0.15)] hover:scale-110 hover:z-10 transition-transform cursor-pointer relative z-0">
+                  <img
+                    src={`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=100`}
+                    alt="Sanctuary Member"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               ))}
-              <div className="w-12 h-12 rounded-full border-2 border-mat-bone bg-mat-cashmere flex items-center justify-center text-[10px] mat-text-editorial-caps text-mat-noir/40 z-0">
+              <div className="w-9 h-9 rounded-full border-2 border-[#f5f0ea] bg-[#e8e2d8] flex items-center justify-center text-[8px] mat-text-editorial-caps text-mat-noir/50 shadow-sm">
                 +1.2k
               </div>
             </div>
-            <div className="mat-text-body-chic text-right max-w-xs text-mat-noir/60">
-              A curated space for the feminine architectural mind. Authenticated at 99.4% purity.
+
+            {/* ── IDENTITY PROTOCOL: ~30% header width, inline status ── */}
+            <div
+              className={cn(
+                "flex items-center gap-2.5 px-4 py-2 rounded-full",
+                // Skeuomorphic raised pill
+                "bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d]",
+                "shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_12px_rgba(0,0,0,0.4),0_1px_3px_rgba(0,0,0,0.3)]",
+                "border border-[rgba(255,255,255,0.06)]",
+                "cursor-pointer hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_6px_20px_rgba(0,0,0,0.5)] transition-all duration-500"
+              )}
+              style={{ width: '30%', minWidth: 180 }}
+              onClick={!isVerified ? () => setShowVerification(true) : undefined}
+            >
+              <div className={cn(
+                "w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0",
+                isVerified
+                  ? "bg-mat-rose-gold/20 text-mat-rose-gold"
+                  : "bg-amber-500/20 text-amber-400"
+              )}>
+                {isVerified ? <CheckCircle2 size={13} /> : <AlertCircle size={13} />}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="mat-text-editorial-caps text-[6px] text-mat-rose-gold tracking-[0.3em] whitespace-nowrap">Identity Protocol</span>
+                <span className={cn("text-[10px] font-medium leading-none truncate", isVerified ? "text-white/80" : "text-amber-400/90")}>
+                  {isVerified ? "Sovereign Verified" : "Authenticate Now"}
+                </span>
+              </div>
+              {!isVerified && (
+                <div className="ml-auto flex-shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              )}
+              {isVerified && (
+                <div className="ml-auto flex-shrink-0 w-1.5 h-1.5 rounded-full bg-mat-rose-gold animate-pulse" />
+              )}
             </div>
           </motion.div>
         </header>
 
+        {/* ── MAIN GRID ──────────────────────────────── */}
         <TooltipProvider>
-          {/* 🧩 The Editorial Spread (Bento Grid) */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 pb-20">
-            
-            {/* 👗 Profile Portrait (The Hero Anchor) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 pb-16">
+
+            {/* ── PROFILE TRUMP CARD ─────────────────── */}
             <div className="md:col-span-3 h-full">
-              <GlassCard className="h-full p-0 flex flex-col group/card overflow-hidden shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.4),0_20px_40px_rgba(0,0,0,0.1)] border-white/20" delay={0.1} noPadding={true}>
-                <div className="relative h-[35%] overflow-hidden shrink-0">
+              <div className={cn(
+                "h-full rounded-2xl overflow-hidden flex flex-col group/card",
+                // Apple-style skeuomorphic card: raised surface
+                "bg-gradient-to-b from-[#fdfcfa] to-[#f0ece4]",
+                "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),inset_0_-1px_0_rgba(0,0,0,0.05),0_8px_24px_rgba(0,0,0,0.10),0_2px_6px_rgba(0,0,0,0.07)]",
+                "border border-[rgba(0,0,0,0.06)]"
+              )}>
+                {/* Portrait */}
+                <div className="relative h-[52%] overflow-hidden shrink-0">
                   <img 
                     src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"} 
                     alt={profile?.full_name} 
                     className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-105"
                   />
-                  <div className="absolute top-4 left-4">
-                     <div className="px-2 py-1 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full mat-text-editorial-caps text-[6px] text-white">
-                        Live Essence
-                     </div>
+                  {/* Vignette gradient */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                  <div className="absolute top-3 left-3">
+                    <span className="px-2.5 py-1 bg-white/15 backdrop-blur-lg border border-white/20 rounded-full mat-text-editorial-caps text-[6px] text-white shadow-sm">
+                      Live Essence
+                    </span>
                   </div>
                 </div>
-                
-                <div className="p-3 lg:p-4 flex flex-col justify-between flex-grow min-h-0 bg-white/5 backdrop-blur-md">
-                  <div className="space-y-0.5">
-                    <h2 className="mat-text-editorial-huge text-xl lg:text-2xl text-mat-noir leading-none">{profile?.full_name || 'User'}</h2>
-                    <p className="mat-text-editorial-caps text-mat-rose-gold text-[7px]">{profile?.city || 'The Sanctuary'}</p>
+
+                {/* Info panel */}
+                <div className="flex-grow p-4 flex flex-col justify-between bg-gradient-to-b from-transparent to-[#ede8e0]/30">
+                  <div>
+                    <h2 className="mat-text-editorial-huge text-xl text-mat-noir leading-none">{profile?.full_name || 'User'}</h2>
+                    <p className="mat-text-editorial-caps text-[7px] text-mat-rose-gold mt-0.5">{profile?.city || 'The Sanctuary'}</p>
                   </div>
-                  
-                  <div className="flex items-center gap-2 pt-2 shrink-0">
+                  <div className="flex items-center gap-2 mt-3">
                     <button 
                       onClick={() => setIsEditing(true)}
-                      className="flex-grow py-2 bg-mat-noir text-mat-bone mat-text-editorial-caps text-[8px] rounded-full hover:bg-mat-rose-gold transition-all duration-500 shadow-xl"
+                      className={cn(
+                        "flex-grow py-2 text-[8px] mat-text-editorial-caps rounded-full transition-all duration-500",
+                        "bg-gradient-to-b from-[#1a1a1a] to-[#0d0d0d] text-white",
+                        "shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_3px_8px_rgba(0,0,0,0.3)]",
+                        "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_5px_14px_rgba(0,0,0,0.4)] hover:from-mat-rose-gold hover:to-mat-rose-gold/80",
+                        "active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] active:scale-[0.98]"
+                      )}
                     >
                       Edit Profile
                     </button>
-                    <button className="w-8 h-8 rounded-full border border-mat-noir/10 flex items-center justify-center hover:bg-mat-noir hover:text-white transition-all">
-                       <LayoutGrid size={12} />
+                    <button className={cn(
+                      "w-8 h-8 rounded-full flex items-center justify-center transition-all",
+                      "bg-gradient-to-b from-white to-[#e8e2d8]",
+                      "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.12)]",
+                      "border border-[rgba(0,0,0,0.07)]",
+                      "hover:shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)] active:scale-[0.96] text-mat-noir/50"
+                    )}>
+                      <LayoutGrid size={12} />
                     </button>
                   </div>
                 </div>
-              </GlassCard>
+              </div>
             </div>
 
-            {/* 💎 The Skill Atelier (Metrics & Interaction) */}
-            <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-6 gap-2 h-full overflow-y-auto custom-scrollbar p-1">
+            {/* ── STATS: 5 columns × 2 rows ──────────── */}
+            <div className="md:col-span-9 grid grid-cols-5 grid-rows-2 gap-3 h-full">
               {stats.map((stat, idx) => (
-                <div key={idx} className="col-span-1">
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.2 + idx * 0.05 }}
-                    className={cn(
-                      "w-full h-11 px-3 flex items-center gap-2 group/stat relative overflow-hidden transition-all duration-500",
-                      "bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full",
-                      "shadow-[0_4px_12px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.2)]",
-                      "hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98]"
-                    )}
-                  >
-                    {/* Liquid Highlight Effect */}
-                    <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
-                    
-                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-mat-rose-gold/20 flex items-center justify-center text-mat-rose-gold transition-colors duration-500 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white">
-                      {React.cloneElement(stat.icon as React.ReactElement, { size: 12 })}
-                    </div>
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, y: 10, scale: 0.97 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ delay: 0.1 + idx * 0.04, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className={cn(
+                    "relative flex flex-col justify-between p-3 rounded-2xl overflow-hidden group/stat",
+                    "transition-all duration-300 cursor-default",
+                    // Skeuomorphic raised tile — Apple / Ferrari luxury material
+                    "bg-gradient-to-b from-[#fdfcfa] to-[#ece8e0]",
+                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(0,0,0,0.05),0_4px_10px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.05)]",
+                    "border border-[rgba(0,0,0,0.06)]",
+                    "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.90),0_6px_16px_rgba(0,0,0,0.12),0_2px_5px_rgba(0,0,0,0.06)]",
+                    "hover:translate-y-[-1px]",
+                    "active:shadow-[inset_0_2px_6px_rgba(0,0,0,0.12)] active:translate-y-0"
+                  )}
+                >
+                  {/* Accent colour wash (top-right corner glow) */}
+                  <div className={cn(
+                    "absolute -top-4 -right-4 w-16 h-16 rounded-full blur-2xl opacity-40 bg-gradient-to-br",
+                    stat.accent
+                  )} />
 
-                    <div className="flex flex-col items-start min-w-0">
-                      <p className="mat-text-editorial-huge text-[11px] text-mat-noir leading-none truncate">{stat.value}</p>
-                      <h3 className="mat-text-editorial-caps text-[5px] opacity-40 tracking-wider truncate uppercase">{stat.label}</h3>
-                    </div>
+                  {/* Icon chip */}
+                  <div className={cn(
+                    "w-7 h-7 rounded-xl flex items-center justify-center mb-2 shrink-0",
+                    "bg-gradient-to-br from-white to-[#ede8e0]",
+                    "shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_4px_rgba(0,0,0,0.10)]",
+                    "border border-[rgba(0,0,0,0.06)] text-mat-rose-gold",
+                    "group-hover/stat:bg-gradient-to-br group-hover/stat:from-mat-rose-gold/90 group-hover/stat:to-mat-rose-gold group-hover/stat:text-white group-hover/stat:border-mat-rose-gold/20 transition-all duration-500"
+                  )}>
+                    {stat.icon}
+                  </div>
 
-                    {/* 🌊 Thin Underline Progress Bar (Liquid Style) */}
-                    <div className="absolute bottom-1.5 left-10 right-3 h-[1px] bg-mat-noir/5 rounded-full overflow-hidden">
-                       <motion.div 
-                         initial={{ width: 0 }}
-                         animate={{ width: Math.random() * 40 + 60 + '%' }}
-                         transition={{ duration: 2, delay: 0.8 }}
-                         className="h-full bg-mat-rose-gold/40 shadow-[0_0_8px_rgba(183,110,121,0.2)]" 
-                       />
-                    </div>
-                  </motion.button>
-                </div>
+                  {/* Value & Label */}
+                  <div>
+                    <p className="mat-text-editorial-huge text-[15px] text-mat-noir leading-none">{stat.value}</p>
+                    <h3 className="mat-text-editorial-caps text-[5.5px] text-mat-noir/35 tracking-[0.2em] mt-0.5 uppercase">{stat.label}</h3>
+                  </div>
+
+                  {/* Thin progress underline */}
+                  <div className="absolute bottom-0 left-3 right-3 h-[1.5px] bg-mat-noir/5 rounded-full overflow-hidden">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${55 + Math.abs(Math.sin(idx * 1.3)) * 40}%` }}
+                      transition={{ duration: 1.8, delay: 0.5 + idx * 0.06 }}
+                      className="h-full bg-gradient-to-r from-mat-rose-gold/60 to-mat-rose-gold/20"
+                    />
+                  </div>
+                </motion.div>
               ))}
             </div>
+
           </div>
         </TooltipProvider>
 
-        {/* 🚀 Editorial Command Dock Container */}
-        <div className="fixed bottom-6 lg:bottom-10 left-1/2 -translate-x-1/2 z-50">
+        {/* ── COMMAND DOCK ───────────────────────────── */}
+        <div className="fixed bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2 z-50">
           <Dock 
             onShowFAQ={() => setShowFAQ(true)}
-            onShowVerification={!profile?.is_verified ? () => setShowVerification(true) : undefined}
+            onShowVerification={!isVerified ? () => setShowVerification(true) : undefined}
             hideLogout={true}
           />
         </div>
       </main>
 
-      {/* 🦢 Sticky Verification Bar (Floating System Registry) */}
-      <div className="fixed bottom-20 left-6 right-6 lg:left-16 lg:right-16 z-40">
-        <motion.div 
-          initial={{ y: 50, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.8 }}
-          className={cn(
-            "w-full bg-mat-noir px-4 py-1.5 flex flex-col md:flex-row items-center justify-between rounded-full gap-2",
-            "shadow-[0_10px_20px_rgba(0,0,0,0.2),inset_0_0.5px_1px_rgba(255,255,255,0.1)]",
-            "border border-white/5 relative overflow-hidden"
-          )}
-        >
-          <div className="flex items-center gap-3 relative z-10 text-white">
-            <div className="w-6 h-6 rounded-full bg-mat-rose-gold/20 flex items-center justify-center text-mat-rose-gold">
-               <ShieldCheck size={12} />
-            </div>
-            <div className="flex items-center gap-2">
-               <h3 className="mat-text-editorial-caps text-mat-rose-gold text-[6px] tracking-[0.3em] whitespace-nowrap">Identity Protocol</h3>
-               <div className="w-[1px] h-2 bg-white/10" />
-               <h2 className="mat-text-editorial text-[10px] text-mat-bone leading-tight">
-                  Status: <span className={profile?.is_verified ? "text-mat-rose-gold font-medium" : "text-white/40 italic"}>
-                    {profile?.is_verified ? "Verified" : "Action Required"}
-                  </span>
-               </h2>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3 relative z-10 w-full md:w-auto text-white">
-            {!profile?.is_verified ? (
-              <button 
-                onClick={() => setShowVerification(true)}
-                className="w-full md:w-auto px-4 py-1.5 bg-mat-rose-gold text-mat-bone mat-text-editorial-caps text-[7px] rounded-full hover:bg-white hover:text-mat-noir transition-all duration-700 active:scale-[0.98] shadow-lg"
-              >
-                Authenticate
-              </button>
-            ) : (
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-white/5 rounded-full border border-white/10">
-                 <div className="w-1 h-1 rounded-full bg-mat-rose-gold animate-pulse" />
-                 <span className="mat-text-editorial-caps text-[7px] text-white/60">Synchronized</span>
-              </div>
-            )}
-          </div>
-          
-          {/* Subtle Visual Accent */}
-          <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-mat-rose-gold opacity-10 blur-[80px]" />
-        </motion.div>
-      </div>
-
-      {/* 🧩 FAQ Editorial Modal */}
+      {/* ══════════════════════════════════════════
+          🧩 FAQ MODAL
+      ══════════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div 
@@ -282,32 +317,32 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             className="fixed inset-0 z-[100] flex items-center justify-center p-12 backdrop-blur-3xl bg-mat-noir/20"
             onClick={() => setShowFAQ(false)}
           >
-            <GlassCard className="w-full max-w-5xl p-0 h-auto max-h-[85vh] overflow-hidden rounded-[3rem]" delay={0} onClick={(e) => e.stopPropagation()}>
-               <button 
-                 onClick={() => setShowFAQ(false)}
-                 className="absolute top-10 right-10 w-14 h-14 bg-mat-noir/5 rounded-full flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold transition-all z-20"
-               >
-                 <X size={26} />
-               </button>
-               
-               <div className="p-12 lg:p-24 space-y-16 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                  <div className="space-y-6">
-                    <h3 className="mat-text-editorial-caps">The Oracle</h3>
-                    <h2 className="mat-text-editorial-huge text-7xl text-mat-noir leading-none">
-                      Sanctuary <span className="italic font-medium text-mat-rose-gold">Knowledge.</span>
-                    </h2>
-                  </div>
-                  
-                  <div className="pointer-events-auto prose max-w-none">
-                    <FAQ />
-                  </div>
-               </div>
+            <GlassCard className="w-full max-w-5xl p-0 h-auto max-h-[85vh] overflow-hidden rounded-[3rem]" delay={0} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <button 
+                onClick={() => setShowFAQ(false)}
+                className="absolute top-8 right-8 w-12 h-12 bg-mat-noir/5 rounded-full flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold transition-all z-20"
+              >
+                <X size={22} />
+              </button>
+              <div className="p-10 lg:p-20 space-y-12 overflow-y-auto max-h-[80vh] custom-scrollbar">
+                <div className="space-y-4">
+                  <h3 className="mat-text-editorial-caps">The Oracle</h3>
+                  <h2 className="mat-text-editorial-huge text-6xl text-mat-noir leading-none">
+                    Sanctuary <span className="italic font-medium text-mat-rose-gold">Knowledge.</span>
+                  </h2>
+                </div>
+                <div className="pointer-events-auto prose max-w-none">
+                  <FAQ />
+                </div>
+              </div>
             </GlassCard>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 🧩 Verification Editorial Modal */}
+      {/* ══════════════════════════════════════════
+          🧩 VERIFICATION MODAL
+      ══════════════════════════════════════════ */}
       <AnimatePresence>
         {showVerification && (
           <motion.div 
@@ -317,18 +352,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             className="fixed inset-0 z-[150] flex items-center justify-center p-12 bg-mat-noir/40 backdrop-blur-2xl" 
             onClick={() => setShowVerification(false)}
           >
-             <GlassCard className="w-full max-w-2xl p-0 rounded-[3rem]" delay={0} onClick={(e) => e.stopPropagation()}>
-                <button onClick={() => setShowVerification(false)} className="absolute top-10 right-10 text-mat-noir/20 hover:text-mat-rose-gold z-20"><X size={28} /></button>
-                <div className="p-16">
-                  <AadhaarVerification 
-                    userId={profile?.user_id} 
-                    onVerified={async () => {
-                       await refreshProfile();
-                       setShowVerification(false);
-                    }} 
-                  />
-                </div>
-             </GlassCard>
+            <GlassCard className="w-full max-w-2xl p-0 rounded-[3rem]" delay={0} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
+              <button onClick={() => setShowVerification(false)} className="absolute top-8 right-8 text-mat-noir/20 hover:text-mat-rose-gold z-20">
+                <X size={26} />
+              </button>
+              <div className="p-14">
+                <AadhaarVerification 
+                  userId={profile?.user_id} 
+                  onVerified={async () => {
+                    await refreshProfile();
+                    setShowVerification(false);
+                  }} 
+                />
+              </div>
+            </GlassCard>
           </motion.div>
         )}
       </AnimatePresence>

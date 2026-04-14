@@ -7,6 +7,7 @@ interface GlassCardProps {
   className?: string;
   delay?: number;
   noPadding?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
 /**
@@ -18,7 +19,8 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   children, 
   className,
   delay = 0,
-  noPadding = false
+  noPadding = false,
+  onClick
 }) => {
   return (
     <motion.div
@@ -33,6 +35,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
         "relative overflow-hidden group transition-all duration-700 bg-white/5 border border-white/10 rounded-[1.25rem]",
         className
       )}
+      onClick={onClick}
     >
       {/* 🧩 Static Glass Base (Backdrop blur) */}
       <div className="absolute inset-0 mat-glass-refraction z-0 pointer-events-none" />
