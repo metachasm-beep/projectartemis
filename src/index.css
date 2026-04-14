@@ -1,217 +1,111 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Inter:wght@300;400;500;600;700;800;900&family=Roboto+Condensed:wght@700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700;800;900&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* ─── Earthy Sanctuary Palette ───────────────────────────────── */
-  --color-mat-cream:       #FEF9F3;    /* Whipped Cream background        */
-  --color-mat-cream-deep:  #F5E6D3;    /* Slightly deeper parchment       */
-  --color-mat-rose:        #849483;    /* Sage Green Secondary            */
-  --color-mat-rose-deep:   #5D6B5D;    /* Deeper sage for hover           */
-  --color-mat-wine:        #5A4D41;    /* Deep Earth Accent               */
-  --color-mat-wine-soft:   #7A6D61;    /* Lighter brown text              */
-  --color-mat-gold:        #C96E50;    /* Terracotta Primary              */
-  --color-mat-gold-soft:   #E09D80;    /* Soft clay                       */
-  --color-mat-slate:       #2D2926;    /* Charcoal Wood Typography        */
-  --color-mat-fog:         #E5D9C4;    /* Borders & Dividers              */
-  --color-mat-petal:       #FFFFFF;    /* Pure White Surface              */
-  --color-mat-ivory:       #FFFBF7;    /* Warm milk glass                 */
-  --color-mat-obsidian:    #1A1715;    /* Night Soil                      */
+  /* ─── Prismatic Glass Palette ───────────────────────────────── */
+  --color-mat-black:       #030303;    /* Absolute Void                   */
+  --color-mat-glass:       rgba(255, 255, 255, 0.08); /* Frosted Surface  */
+  --color-mat-refraction:  rgba(255, 255, 255, 0.05); /* Edge Highlight   */
+  --color-mat-accent-rose: #FF4D8D;    /* Prismatic Pink                  */
+  --color-mat-accent-blue: #4D9FFF;    /* Prismatic Blue                  */
+  --color-mat-gold:        #C96E50;    /* Legacy Warmth                   */
+  --color-mat-ivory:       #FCFAFA;    /* Pure Bone                       */
 
-  /* ─── Typography (High-End Editorial) ─────────────────────────────────── */
-  --font-display: "Cormorant Garamond", serif;
-  --font-body:    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  /* ─── Typography (Liquid Evolution) ─────────────────────────────────── */
+  --font-display: "Fraunces", serif;    /* Editorial New Proxy            */
+  --font-body:    "Outfit", sans-serif; /* Satoshi Proxy                  */
 
   /* ─── Radii & Motion ─────────────────────────────────────────────────────── */
-  --radius-mat-xl:   42px;
-  --radius-mat-2xl:  64px;
+  --radius-mat-xl:   48px;
+  --radius-mat-2xl:  80px;
 
-  --shadow-mat-premium: 0 12px 64px rgba(123, 45, 66, 0.1);
-  --shadow-mat-rose:    0 12px 48px rgba(201, 160, 154, 0.3);
-  --shadow-mat-gold:    0 12px 48px rgba(191, 160, 106, 0.25);
+  --shadow-mat-prism: 0 32px 128px rgba(0, 0, 0, 0.2);
 
-  @keyframes mat-bloom {
-    0% { transform: scale(0.95); opacity: 0; filter: blur(20px); }
-    100% { transform: scale(1); opacity: 1; filter: blur(0); }
-  }
-  @keyframes mat-shimmer {
-    0% { background-position: -200% 0; }
-    100% { background-position: 200% 0; }
+  @keyframes mat-float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
   }
 
-  @keyframes mat-card-glint {
-    0% { background-position: -200% 0%; }
-    100% { background-position: 200% 0%; }
+  @keyframes mat-pulse-glass {
+    0% { backdrop-filter: blur(20px); }
+    50% { backdrop-filter: blur(40px); }
+    100% { backdrop-filter: blur(20px); }
   }
-
-  /* ─── Grid Extensions ─────────────────────────────────────────────────── */
-  --grid-template-rows-7: repeat(7, minmax(0, 1fr));
-  --grid-template-rows-8: repeat(8, minmax(0, 1fr));
-  --grid-template-rows-9: repeat(9, minmax(0, 1fr));
-  --grid-template-rows-10: repeat(10, minmax(0, 1fr));
-  --grid-template-rows-11: repeat(11, minmax(0, 1fr));
-  --grid-template-rows-12: repeat(12, minmax(0, 1fr));
 }
 
 @layer base {
   body {
-    background: var(--color-mat-cream);
+    background: var(--color-mat-white);
     background-attachment: fixed;
-    color: var(--color-mat-slate);
+    color: var(--color-mat-black);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
+    cursor: default;
   }
 
-  /* Custom Scrollbar — The Sanctuary Scroll */
-  .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+  .custom-scrollbar::-webkit-scrollbar { width: 4px; }
   .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
   .custom-scrollbar::-webkit-scrollbar-thumb { 
-    background: var(--color-mat-rose); 
+    background: rgba(0, 0, 0, 0.1); 
     border-radius: 10px; 
-    border: 2px solid var(--color-mat-cream);
   }
 }
 
 @layer components {
-  /* ─── Layout Utilities ──────────────────────────────────────────────────── */
-  .mat-container {
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+  /* ─── Prismatic Glass Architecture ───────────────────────────────────────── */
+  .mat-glass-refraction {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.12) 0%,
+      rgba(255, 255, 255, 0.04) 100%
+    );
+    backdrop-filter: blur(40px) saturate(160%);
+    -webkit-backdrop-filter: blur(40px) saturate(160%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 
+      0 24px 80px rgba(0, 0, 0, 0.1),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.1);
   }
-  @media (max-width: 640px) { .mat-container { padding-left: 1.25rem; padding-right: 1.25rem; } }
-  @media (min-width: 640px) { .mat-container { max-width: 640px; } }
-  @media (min-width: 768px) { .mat-container { max-width: 768px; } }
-  @media (min-width: 1024px) { .mat-container { max-width: 1024px; } }
-  @media (min-width: 1280px) { .mat-container { max-width: 1280px; } }
-  @media (min-width: 1536px) { .mat-container { max-width: 1440px; } }
 
-  .mat-section {
-    padding-top: 5rem;
-    padding-bottom: 5rem;
+  .mat-glass-prismatic {
+    background: linear-gradient(
+      165deg,
+      rgba(255, 255, 255, 0.1) 0%,
+      rgba(255, 255, 255, 0) 50%,
+      rgba(255, 255, 255, 0.05) 100%
+    );
+    backdrop-filter: blur(32px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
-  @media (min-width: 1024px) { .mat-section { padding-top: 8rem; padding-bottom: 8rem; } }
 
-  /* ─── The Sovereign Typography ───────────────────────────────────────────── */
-  .mat-text-display-pro {
+  /* ─── The Liquid Typography ───────────────────────────────────────────── */
+  .mat-text-editorial {
     font-family: var(--font-display);
-    font-weight: 800;
-    letter-spacing: -0.04em;
-    line-height: 0.95;
-    font-style: italic;
-    color: var(--color-mat-wine);
-    font-size: clamp(3rem, 15vw, 12rem); /* 💎 Fluid scaling for mobile-to-desktop */
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    color: var(--color-mat-black);
   }
-  
-  @media (max-width: 640px) {
-    .mat-text-display-pro { letter-spacing: -0.02em; }
+
+  .mat-text-satoshi {
+    font-family: var(--font-body);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.5;
   }
 
   .mat-text-label-pro {
-    font-size: clamp(8px, 1.5vw, 11px);
-    font-weight: 900;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.4em; /* 💎 High-tracking 'Aura' label */
-    color: var(--color-mat-wine);
+    letter-spacing: 0.3em;
     font-family: var(--font-body);
-    opacity: 0.6;
+    opacity: 0.5;
   }
 
-  /* Premium Glassmorphism & Liquid Effects */
-  .mat-glass-deep {
-    background: rgba(255, 251, 247, 0.9);
-    backdrop-filter: blur(64px) saturate(210%);
-    -webkit-backdrop-filter: blur(64px) saturate(210%);
-    border: 1px solid rgba(123, 45, 66, 0.1);
-    box-shadow: 
-      0 32px 128px rgba(123, 45, 66, 0.08),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.4);
-  }
-
-  .mat-glass-liquid {
-    background: linear-gradient(135deg, rgba(255, 251, 247, 0.8), rgba(255, 251, 247, 0.4));
-    backdrop-filter: blur(32px) saturate(180%);
-    -webkit-backdrop-filter: blur(32px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(123, 45, 66, 0.04);
-  }
-
-  /* Bento Layout */
-  .bento-grid {
-    display: grid;
-    gap: 1.25rem;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-  }
-  @media (min-width: 1024px) {
-    .bento-grid { gap: 2rem; }
-  }
-
-  @media (max-width: 1024px) {
-    .bento-grid {
-       grid-template-columns: 1fr;
-       gap: 1.5rem;
-    }
-    .bento-span-1, .bento-span-2, .bento-span-3, .bento-span-4, .bento-span-5, 
-    .bento-span-6, .bento-span-7, .bento-span-8, .bento-span-9, .bento-span-10, 
-    .bento-span-11, .bento-span-12 {
-       grid-column: span 1 / span 1;
-    }
-  }
-
-  .bento-item {
-    position: relative;
-    border-radius: 2.5rem;
-    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    overflow: hidden;
-  }
-
-  .bento-item:hover {
-    transform: translateY(-4px) scale(1.01);
-    box-shadow: 0 32px 100px rgba(0, 0, 0, 0.4);
-  }
-
-  /* Effects */
-  .mat-gold-foil {
-    background: linear-gradient(135deg, #86868B 0%, #B0B0B5 50%, #D2D2D7 100%);
-    background-size: 200% 200%;
-    animation: mat-shimmer 6s linear infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .mat-bloom-entry {
-     animation: mat-bloom 0.8s cubic-bezier(0.2, 0, 0, 1) forwards;
-  }
-
-  /* Sanctuary Masking */
-  .mask-horizontal {
-     mask-image: linear-gradient(to right, black 85%, transparent 100%);
-     -webkit-mask-image: linear-gradient(to right, black 85%, transparent 100%);
-  }
-
-  /* ─── Wrestling Card Utilities ─── */
-  .mat-card-holographic {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.3) 0%, 
-      rgba(255, 255, 255, 0.1) 25%, 
-      rgba(255, 255, 255, 0.3) 50%, 
-      rgba(255, 255, 255, 0.05) 75%, 
-      rgba(255, 255, 255, 0.3) 100%
-    );
-    background-size: 200% 100%;
-    animation: mat-card-glint 4s linear infinite;
-  }
-
-  .mat-gritty-filter {
-    filter: contrast(1.1) saturate(0.9) sepia(0.15) brightness(0.95);
-  }
-
-  .mat-text-impact {
-    font-family: 'Roboto Condensed', 'Impact', sans-serif;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: -0.02em;
-    line-height: 0.9;
+  /* ─── Motion Graphics ──────────────────────────────────────────────────── */
+  .animate-float {
+    animation: mat-float 8s ease-in-out infinite;
   }
 }

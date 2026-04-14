@@ -7,64 +7,96 @@ interface GlassCardProps {
   delay?: number;
 }
 
+/**
+ * 💎 GlassCard: High-Fidelity Refractive Container
+ * Implements 3D tilt, deep blur, and moving edge highlights
+ * for the 'Liquid Glassmorphism' aesthetic.
+ */
 export const GlassCard: React.FC<GlassCardProps> = ({ 
   children, 
   className = '',
   delay = 0 
 }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
+  const springConfig = { damping: 30, stiffness: 300 };
+  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [5, -5]), springConfig);
+  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-5, 5]), springConfig);
+
+  const smoothMouseX = useSpring(mouseX, springConfig);
+  const smoothMouseY = useSpring(mouseY, springConfig);
+
   const [isHovered, setIsHovered] = useState(false);
-
-  const springConfig = { damping: 25, stiffness: 200 };
-  const smoothX = useSpring(mouseX, springConfig);
-  const smoothY = useSpring(mouseY, springConfig);
-
-  const background = useTransform(
-    [smoothX, smoothY],
-    ([x, y]) => `radial-gradient(600px circle at ${x}px ${y}px, rgba(201, 110, 80, 0.1), transparent 40%)`
-  );
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    mouseX.set(e.clientX - rect.left);
-    mouseY.set(e.clientY - rect.top);
+    const width = rect.width;
+    const height = rect.height;
+    const mouseXPos = e.clientX - rect.left;
+    const mouseYPos = e.clientY - rect.top;
+
+    x.set(mouseXPos / width - 0.5);
+    y.set(mouseYPos / height - 0.5);
+    mouseX.set(mouseXPos);
+    mouseY.set(mouseYPos);
   };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    x.set(0);
+    y.set(0);
+  };
+
+  const glareBackground = useTransform(
+    [smoothMouseX, smoothMouseY],
+    ([xPos, yPos]) => `radial-gradient(400px circle at ${xPos}px ${yPos}px, rgba(255, 255, 255, 0.08), transparent 80%)`
+  );
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, scale: 0.98, y: 10 }}
+      animate={{ opacity: 1, scale: 1, y: 0 }}
       transition={{ duration: 0.8, delay, ease: [0.16, 1, 0.3, 1] }}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className={`relative overflow-hidden rounded-[2.5rem] border border-mat-gold/10 bg-mat-ivory/30 backdrop-blur-2xl shadow-xl transition-shadow duration-300 group ${className}`}
+      onMouseLeave={handleMouseLeave}
       style={{
-        boxShadow: isHovered ? '0 12px 48px rgba(90, 77, 65, 0.08)' : 'none'
+        rotateX,
+        rotateY,
+        perspective: 1000,
+        transformStyle: "preserve-3d",
       }}
+      className={`relative overflow-hidden group transition-all duration-700 ${className}`}
     >
-      {/* 🔮 Reactive Spectral Border */}
+      <div className="absolute inset-0 rounded-[2.5rem] mat-glass-refraction z-0" />
+      
+      {/* 🔮 Dynamic Glare Layer (Moves with cursor) */}
       <motion.div 
-        className="absolute inset-0 pointer-events-none z-0 opacity-40"
-        style={{ background }}
+        className="absolute inset-0 pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+        style={{ background: glareBackground }}
       />
       
-      {/* 🏗️ Industrial Grain Detail (High-Performance local noise) */}
+      {/* 🎞️ Micro-Grain Texture */}
       <div 
-        className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay" 
+        className="absolute inset-0 opacity-[0.02] pointer-events-none z-0" 
         style={{
           backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
         }}
       />
       
-      {/* 🌈 Edge Highlight */}
-      <div className="absolute inset-0 border border-white/5 rounded-[2.5rem] pointer-events-none" />
+      {/* 🌈 Prismatic Edge Reflection */}
+      <div className="absolute inset-0 border border-white/10 rounded-[2.5rem] pointer-events-none z-20 group-hover:border-white/20 transition-colors duration-500" />
 
-      <div className="relative z-10 p-8 h-full">
+      <motion.div 
+        style={{ transform: "translateZ(20px)" }}
+        className="relative z-30 p-8 h-full"
+      >
         {children}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };

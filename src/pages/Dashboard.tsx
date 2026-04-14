@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import { turso, tursoHelpers } from '@/lib/turso';
 import type { MatriarchProfile } from '../App';
 import { MenDashboard } from './dashboards/MenDashboard';
-import { WomenDashboard } from './dashboards/WomenDashboard';
+import { WomenSanctuary } from '@/components/dashboards/WomenSanctuary';
 import { AdminDashboard } from './dashboards/AdminDashboard';
 
 export const Dashboard: React.FC = () => {
@@ -133,15 +133,15 @@ export const Dashboard: React.FC = () => {
       <motion.div 
         animate={{ scale: [1, 1.15, 1] }}
         transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        className="p-1 rounded-full bg-gradient-to-tr from-mat-rose/30 to-mat-gold/30 shadow-mat-rose"
+        className="p-1 rounded-full bg-gradient-to-tr from-mat-accent-blue/30 to-mat-accent-rose/30 shadow-2xl"
       >
-        <div className="bg-mat-ivory rounded-full p-10 border border-mat-rose/20 shadow-xl">
-          <Heart className="w-16 h-16 text-mat-rose fill-mat-rose/10" strokeWidth={1} />
+        <div className="bg-white/40 backdrop-blur-3xl rounded-full p-10 border border-white/40">
+          <Heart className="w-16 h-16 text-mat-accent-blue fill-mat-accent-blue/10" strokeWidth={1} />
         </div>
       </motion.div>
       <div className="space-y-4 text-center">
-        <h3 className="text-[10px] font-bold uppercase tracking-[1em] text-mat-wine/40 animate-pulse">Synchronizing Protocol...</h3>
-        <p className="text-[9px] font-bold uppercase tracking-[0.5em] text-mat-slate/40 italic">Retrieving Sanctuary Status</p>
+        <h3 className="mat-text-label-pro text-mat-black/40 animate-pulse">Synchronizing Protocol...</h3>
+        <p className="mat-text-editorial italic text-xs text-mat-black/40">Retrieving Sanctuary Status</p>
       </div>
     </div>
   );
@@ -163,13 +163,18 @@ export const Dashboard: React.FC = () => {
   }
 
   return (
-    <WomenDashboard 
+    <WomenSanctuary 
       profile={profile} 
-      status={status} 
-      handleLogout={handleLogout} 
-      handleBoost={handleBoost} 
+      metrics={{
+        matches: status?.matches || 0,
+        sessionSeconds: 0 // Placeholder
+      }} 
+      setIsEditing={() => {}} // Placeholder for now
+      onBeginDiscovery={() => window.location.href = '/discovery'}
     />
   );
 };
+
+export default Dashboard;
 
 export default Dashboard;
