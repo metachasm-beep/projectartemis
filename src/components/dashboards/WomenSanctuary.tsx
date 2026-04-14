@@ -11,10 +11,10 @@ import {
   Star,
   Compass,
   HelpCircle,
-  X
+  X,
+  LayoutGrid
 } from 'lucide-react';
 
-import { Badge } from "@/components/ui/badge";
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
 import { GlassCard } from '@/components/dashboard/promax/GlassCard';
 import { Dock } from '@/components/dashboard/promax/Dock';
@@ -23,11 +23,7 @@ import { FAQ } from '@/components/FAQ';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
-import { OracleWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
-import { ThreeAnchor } from '@/components/dashboard/promax/ThreeAnchor';
-import { TrumpCard } from '@/components/discovery/TrumpCard';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
-import { SkillOrchestrator } from '@/services/SkillOrchestrator';
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -37,9 +33,9 @@ interface WomenSanctuaryProps {
 }
 
 /**
- * 🏛️ Women's Sanctuary 3.0: High-Fidelity Refractive Dashboard
- * Redesigned for the 'Liquid Glassmorphism' movement.
- * Features suspended animation, refractive glass layers, and editorial typography.
+ * 🏛️ Women's Sanctuary 3.0: Atelier Edition
+ * Redesigned for a 'Modern, Sleek, Feminine' fashion aesthetic.
+ * High-end editorial typography, Ivory/Noir/Rose Gold palette, and monumental scale.
  */
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ 
   profile,
@@ -51,162 +47,161 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const [showVerification, setShowVerification] = React.useState(false);
   const { refreshProfile } = useAuth();
 
+  const stats = [
+    { label: 'Gaze Depth', value: '4.2k', icon: <Eye size={20} /> },
+    { label: 'Asset Purity', value: '99.4%', icon: <Star size={20} /> },
+    { label: 'Resonance', value: 'Alpha', icon: <Zap size={20} /> },
+    { label: 'Stability', value: 'Stable', icon: <Activity size={20} /> },
+  ];
+
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-ivory selection:bg-mat-accent-blue selection:text-white">
-      {/* 🌊 Liquid Foundation */}
+    <div className="relative w-full min-h-screen overflow-x-hidden bg-mat-ivory selection:bg-mat-rose-gold selection:text-white">
+      {/* 🌊 Liquid Foundation (Silk Drift) */}
       <LiquidMesh />
 
-      {/* 🎞️ Global Post-Processing */}
+      {/* 🎞️ Global Post-Processing (Grain & Bloom) */}
       <PostProcessOverlay />
 
-      {/* 🏰 Main Sanctuary Layer */}
-      <main className="relative z-10 w-full h-full pt-20 pb-10 px-8 flex flex-col gap-6">
-        {/* 🎭 Editorial Header (Floating in flux) */}
-        <header className="absolute top-12 left-12 z-20">
-            <motion.div 
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, ease: "easeOut" }}
-              className="space-y-1"
-            >
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-[1px] bg-mat-black/10" />
-                <span className="mat-text-label-pro text-mat-black/40">Protocol Index 01</span>
+      {/* 🏙️ The Haute Sanctuary Canvas */}
+      <main className="relative z-10 w-full min-h-screen px-6 py-12 lg:px-24">
+        {/* ✨ Editorial Header: The Monumental Serif */}
+        <header className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-4">
+               <span className="w-12 h-[1px] bg-mat-rose-gold" />
+               <h3 className="mat-text-editorial-caps">Sanctuary Alpha</h3>
+            </div>
+            <h1 className="mat-text-editorial-huge text-8xl lg:text-[10rem]">
+              Sovereign <br />
+              <span className="text-mat-rose-gold italic font-medium">Existence.</span>
+            </h1>
+          </motion.div>
+          
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="flex flex-col items-end gap-6"
+          >
+            <div className="flex -space-x-3">
+              {[1, 2, 3].map((i) => (
+                <div key={i} className="w-12 h-12 rounded-full border-2 border-mat-bone overflow-hidden shadow-2xl">
+                  <img src={`https://images.unsplash.com/photo-${1500000000000 + i}?auto=format&fit=crop&q=80&w=100`} alt="Sanctuary Member" className="w-full h-full object-cover" />
+                </div>
+              ))}
+              <div className="w-12 h-12 rounded-full border-2 border-mat-bone bg-mat-cashmere flex items-center justify-center text-[10px] mat-text-editorial-caps text-mat-noir/40">
+                +1.2k
               </div>
-              <h1 className="mat-text-editorial font-light text-8xl tracking-tighter text-mat-black">
-                {profile?.full_name?.split(' ')[0] || 'User'}<span className="text-mat-accent-blue italic font-medium">.Live</span>
-              </h1>
-            </motion.div>
+            </div>
+            <div className="mat-text-body-chic text-right max-w-xs text-mat-noir/60">
+              A curated space for the feminine architectural mind. Authenticated at 99.4% purity.
+            </div>
+          </motion.div>
         </header>
 
-        {/* 🕸️ Sanctuary Grid: Refractive Bento Layout */}
-        <TooltipProvider delayDuration={0}>
-          <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-8 pb-12 overflow-hidden h-full mt-16 px-4">
+        <TooltipProvider>
+          {/* 🧩 The Editorial Spread (Bento Grid) */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-10 min-h-[800px]">
             
-            {/* Left Column (Authority & Sovereignty) */}
-            <div className="col-span-12 lg:col-span-3 row-span-12 grid grid-rows-12 gap-8 h-full">
-              <GlassCard className="row-span-7" delay={0.1}>
-                <div className="absolute top-8 left-8">
-                   <p className="mat-text-label-pro text-[9px] mb-2opacity-40">System_Oracle</p>
-                   <div className="w-8 h-[1px] bg-mat-black/20" />
+            {/* 👗 Profile Portrait (The Hero Anchor) */}
+            <div className="md:col-span-4 h-full">
+              <GlassCard className="h-full p-0 flex flex-col group/card" delay={0.1}>
+                <div className="relative h-[60%] overflow-hidden">
+                  <img 
+                    src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"} 
+                    alt={profile?.full_name} 
+                    className="w-full h-full object-cover transition-transform duration-1000 group-hover/card:scale-105"
+                  />
+                  <div className="absolute top-8 left-8">
+                     <div className="px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full mat-text-editorial-caps text-white">
+                        Live Essence
+                     </div>
+                  </div>
                 </div>
-                <div className="h-full pt-12">
-                   <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
+                
+                <div className="p-10 flex flex-col justify-between flex-grow">
+                  <div className="space-y-2">
+                    <h2 className="mat-text-editorial-huge text-5xl text-mat-noir">{profile?.full_name || 'User'}</h2>
+                    <p className="mat-text-editorial-caps text-mat-rose-gold">{profile?.city || 'The Sanctuary'}</p>
+                  </div>
+                  
+                  <div className="flex items-center gap-4 pt-8">
+                    <button 
+                      onClick={() => setIsEditing(true)}
+                      className="flex-grow py-5 bg-mat-noir text-mat-bone mat-text-editorial-caps text-[11px] rounded-full hover:bg-mat-rose-gold transition-all duration-500 shadow-xl"
+                    >
+                      Edit Profile
+                    </button>
+                    <button className="w-14 h-14 rounded-full border border-mat-noir/10 flex items-center justify-center hover:bg-mat-noir hover:text-white transition-all">
+                       <LayoutGrid size={20} />
+                    </button>
+                  </div>
                 </div>
-              </GlassCard>
-              <GlassCard className="row-span-5 bg-mat-accent-blue/5 border-mat-accent-blue/20" delay={0.4}>
-                 <div className="absolute top-0 right-0 p-6 text-mat-accent-blue/30 text-[9px] font-black font-body uppercase tracking-widest">STATUS_B.2</div>
-                 <InfluenceWidget metrics={metrics} />
               </GlassCard>
             </div>
 
-            {/* Center Column (Human Focus - The Focal Point) */}
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              className="col-span-12 lg:col-span-5 row-span-12 h-full relative"
-            >
-              <div className="absolute inset-0 rounded-[3.5rem] bg-white/40 backdrop-blur-3xl border border-white/50 shadow-2xl overflow-hidden">
-                <TrumpCard 
-                   isDashboard
-                   profile={{
-                     id: profile?.user_id || '0',
-                     name: profile?.full_name || 'Anonymous',
-                     age: profile?.age || 24,
-                     city: profile?.city || 'Delhi',
-                     img: profile?.photos?.[0] || '',
-                     status: profile?.tier || 'Aspirant',
-                     bio: profile?.bio || 'No bio available.',
-                     height_str: profile?.height || '5\'6"',
-                     vocation: profile?.vocation || 'Member',
-                     tier: profile?.tier || 'Aspirant',
-                     is_verified: profile?.is_verified,
-                     absolute_rank: (profile as any)?.absolute_rank,
-                     rank_tier: profile?.tier
-                   }} 
-                />
-                <div className="absolute bottom-0 left-0 w-full h-12 bg-white/20 backdrop-blur-md z-10 flex items-center justify-center border-t border-white/30">
-                   <span className="mat-text-label-pro text-mat-black/60 text-[9px]">Human_Focus.Refractive</span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Right Column (Metrics & Security) */}
-            <div className="col-span-12 lg:col-span-4 row-span-12 grid grid-rows-12 gap-8 h-full">
-              <GlassCard className="row-span-8" delay={0.2}>
-                 <div className="absolute top-0 right-0 p-8 z-0 opacity-10 blur-sm scale-125">
-                    <ThreeAnchor quality="high" />
-                 </div>
-                 <div className="h-full flex flex-col justify-between relative z-10">
-                    <div className="space-y-4">
-                        <p className="mat-text-label-pro text-mat-accent-blue">Registry Metadata</p>
-                        <h2 className="mat-text-editorial text-7xl font-light text-mat-black leading-[0.9] tracking-tighter">
-                          Vitality <br/><span className="italic font-medium text-mat-accent-blue">Index.</span>
-                        </h2>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      {(() => {
-                        const arc = SkillOrchestrator.getArchitectVisuals();
-                        const stats = [
-                          { label: 'Gaze', val: `${arc.gazeDepth}`, icon: Eye, tip: 'Visual focus depth' },
-                          { label: 'Asset', val: arc.assetPurity.toString(), icon: Star, tip: 'Purity score' },
-                          { label: 'Flux', val: arc.lightingStability, icon: Zap, tip: 'System resonance' },
-                          { label: 'State', val: 'STABLE', icon: Activity, tip: 'Refraction stability' },
-                        ];
-                        
-                        return stats.map((stat, i) => (
-                           <Tooltip key={i}>
-                             <TooltipTrigger asChild>
-                               <motion.div 
-                                 whileHover={{ backgroundColor: 'rgba(77, 159, 255, 0.1)', scale: 1.02 }}
-                                 className="space-y-4 p-6 bg-white/10 border border-white/20 rounded-3xl cursor-help transition-all group backdrop-blur-md"
-                               >
-                                  <div className="w-8 h-[1px] bg-mat-black/10 group-hover:bg-mat-accent-blue transition-colors" />
-                                  <div className="space-y-0.5">
-                                     <p className="mat-text-satoshi text-3xl font-medium tracking-tight text-mat-black">{stat.val}</p>
-                                     <p className="mat-text-label-pro text-[8px] group-hover:text-mat-accent-blue transition-colors">{stat.label}</p>
-                                  </div>
-                                </motion.div>
-                             </TooltipTrigger>
-                             <TooltipContent side="top">
-                               <p className="mat-text-label-pro text-[10px] lowercase">{stat.tip}</p>
-                             </TooltipContent>
-                           </Tooltip>
-                        ));
-                      })()}
-                    </div>
-                  </div>
-              </GlassCard>
-
-              <GlassCard className="row-span-4 bg-mat-accent-blue border-transparent text-white" delay={0.5}>
-                <div className="h-full flex flex-col justify-center px-8 space-y-6">
-                  <div className="flex items-center gap-6">
-                    <div className="p-4 bg-white/20 rounded-full backdrop-blur-md">
-                      <ShieldCheck size={28} className="text-white" strokeWidth={1} />
-                    </div>
+            {/* 💎 The Skill Atelier (Metrics & Interaction) */}
+            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-10">
+              {stats.map((stat, idx) => (
+                <div key={idx} className={idx === 0 ? "col-span-2 row-span-2" : "col-span-2"}>
+                  <GlassCard className="h-full p-10 flex flex-col justify-between group/stat" delay={0.2 + idx * 0.1}>
                     <div>
-                       <p className="mat-text-label-pro text-white/60 text-[9px]">Refractive.Security</p>
-                       <p className="mat-text-satoshi text-xl font-medium uppercase tracking-widest text-white leading-none">Identity Guard</p>
+                      <div className="w-12 h-12 rounded-full bg-mat-cashmere/50 flex items-center justify-center text-mat-rose-gold mb-6 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-500">
+                        {stat.icon}
+                      </div>
+                      <h3 className="mat-text-editorial-caps mb-2">{stat.label}</h3>
+                      <p className="mat-text-editorial-huge text-6xl text-mat-noir">{stat.value}</p>
                     </div>
-                  </div>
-                  
-                  {!profile?.is_verified && (
+                    
+                    <div className="pt-8">
+                       <p className="mat-text-body-chic text-xs">Synchronization Protocol Opt-in at 100%.</p>
+                       <div className="mt-4 h-1 w-full bg-mat-noir/5 rounded-full overflow-hidden">
+                          <motion.div 
+                            initial={{ width: 0 }}
+                            animate={{ width: '65%' }}
+                            transition={{ duration: 2, delay: 1 }}
+                            className="h-full bg-mat-rose-gold" 
+                          />
+                       </div>
+                    </div>
+                  </GlassCard>
+                </div>
+              ))}
+
+              {/* 🦢 System Authentication (Call to Action) */}
+              <GlassCard className="col-span-2 p-10 bg-mat-noir flex flex-col justify-between relative overflow-hidden" delay={0.6}>
+                <div className="relative z-10 space-y-4">
+                  <h3 className="mat-text-editorial-caps text-mat-rose-gold">Verification Hub</h3>
+                  <h2 className="mat-text-editorial-huge text-4xl text-mat-bone leading-tight">
+                    Sovereign <br />Identity.
+                  </h2>
+                </div>
+                
+                <div className="relative z-10 pt-8">
+                  {profile?.is_verified ? (
+                    <div className="mat-text-body-chic text-white/40 italic">System Identity Verified ✓</div>
+                  ) : (
                     <button 
                       onClick={() => setShowVerification(true)}
-                      className="w-full py-5 bg-white text-mat-accent-blue mat-text-label-pro text-[11px] rounded-2xl hover:bg-mat-black hover:text-white transition-all active:scale-[0.98] shadow-xl"
+                      className="w-full py-5 bg-mat-rose-gold text-mat-bone mat-text-editorial-caps text-[11px] rounded-full hover:bg-white hover:text-mat-noir transition-all duration-700 active:scale-[0.98] shadow-2xl"
                     >
                       Authenticate Presence
                     </button>
                   )}
                 </div>
+                {/* Visual Accent */}
+                <div className="absolute -bottom-12 -right-12 w-48 h-48 bg-mat-rose-gold opacity-10 blur-[80px]" />
               </GlassCard>
             </div>
           </div>
         </TooltipProvider>
 
-        {/* 🚀 Prismatic Command Dock */}
+        {/* 🚀 Editorial Command Dock */}
         <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
           <Dock 
             onShowFAQ={() => setShowFAQ(true)}
@@ -215,50 +210,56 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         </div>
       </main>
 
-      {/* 🧩 FAQ Refractive Modal */}
+      {/* 🧩 FAQ Editorial Modal */}
       <AnimatePresence>
-        {showFAQ && (
+        {showFAQ ? (
           <motion.div 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-6 lg:p-12 backdrop-blur-3xl bg-mat-black/20"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-12 backdrop-blur-3xl bg-mat-noir/20"
             onClick={() => setShowFAQ(false)}
           >
-            <GlassCard className="w-full max-w-4xl p-0 h-auto max-h-[85vh] overflow-hidden rounded-[4rem]" delay={0}>
+            <GlassCard className="w-full max-w-5xl p-0 h-auto max-h-[85vh] overflow-hidden rounded-[3rem]" delay={0} onClick={(e) => e.stopPropagation()}>
                <button 
                  onClick={() => setShowFAQ(false)}
-                 className="absolute top-10 right-10 w-12 h-12 bg-mat-black/5 rounded-full flex items-center justify-center text-mat-black/40 hover:text-mat-accent-blue transition-all z-20"
+                 className="absolute top-10 right-10 w-14 h-14 bg-mat-noir/5 rounded-full flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold transition-all z-20"
                >
-                 <X size={24} />
+                 <X size={26} />
                </button>
                
-               <div className="p-10 lg:p-20 space-y-12 overflow-y-auto max-h-[80vh] custom-scrollbar">
-                  <div className="space-y-4">
-                    <h2 className="mat-text-editorial text-6xl text-mat-black leading-tight">
-                      Sovereign <span className="italic font-medium text-mat-accent-blue">Knowledge.</span>
+               <div className="p-12 lg:p-24 space-y-16 overflow-y-auto max-h-[80vh] custom-scrollbar">
+                  <div className="space-y-6">
+                    <h3 className="mat-text-editorial-caps">The Oracle</h3>
+                    <h2 className="mat-text-editorial-huge text-7xl text-mat-noir leading-none">
+                      Sanctuary <span className="italic font-medium text-mat-rose-gold">Knowledge.</span>
                     </h2>
-                    <p className="mat-text-label-pro opacity-40">System Synchronization Protocol</p>
                   </div>
                   
-                  <div className="pointer-events-auto">
+                  <div className="pointer-events-auto prose max-w-none">
                     <FAQ />
                   </div>
                </div>
             </GlassCard>
           </motion.div>
-        )}
+        ) : null}
       </AnimatePresence>
 
-      {/* 🧩 Verification Refractive Modal */}
+      {/* 🧩 Verification Editorial Modal */}
       <AnimatePresence>
-        {showVerification && (
-          <div className="fixed inset-0 z-[150] flex items-center justify-center p-6 bg-mat-black/40 backdrop-blur-2xl" onClick={() => setShowVerification(false)}>
-             <GlassCard className="w-full max-w-xl p-0 rounded-[3.5rem]" delay={0}>
-                <button onClick={() => setShowVerification(false)} className="absolute top-8 right-8 text-mat-black/20 hover:text-mat-black z-20"><X size={24} /></button>
-                <div className="p-10">
+        {showVerification ? (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[150] flex items-center justify-center p-12 bg-mat-noir/40 backdrop-blur-2xl" 
+            onClick={() => setShowVerification(false)}
+          >
+             <GlassCard className="w-full max-w-2xl p-0 rounded-[3rem]" delay={0} onClick={(e) => e.stopPropagation()}>
+                <button onClick={() => setShowVerification(false)} className="absolute top-10 right-10 text-mat-noir/20 hover:text-mat-rose-gold z-20"><X size={28} /></button>
+                <div className="p-16">
                   <AadhaarVerification 
-                    userId={profile.user_id} 
+                    userId={profile?.user_id} 
                     onVerified={async () => {
                        await refreshProfile();
                        setShowVerification(false);
@@ -266,8 +267,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   />
                 </div>
              </GlassCard>
-          </div>
-        )}
+          </motion.div>
+        ) : null}
       </AnimatePresence>
     </div>
   );
