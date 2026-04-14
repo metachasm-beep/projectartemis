@@ -647,7 +647,7 @@ class App {
   ) {
     const defaultItems = [
       {
-        image: `https://picsum.photos/seed/1/800/600?grayscale`,
+        image: `https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=800&h=600&auto=format&fit=crop`,
         text: 'Sovereign'
       }
     ];

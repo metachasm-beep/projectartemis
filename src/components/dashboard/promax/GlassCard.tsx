@@ -32,13 +32,9 @@ export const GlassCard: React.FC<GlassCardProps> = ({
       {/* 🧩 Static Glass Base (Backdrop blur) */}
       <div className="absolute inset-0 mat-glass-refraction z-0 pointer-events-none" />
       
-      {/* 🔮 Dynamic Glare Layer - Handled as a moving blob for max performance */}
+      {/* 🔮 Dynamic Glare Layer - Handled as a static fade on hover for max performance */}
       <motion.div 
-        className="absolute w-[300px] h-[300px] bg-white opacity-0 group-hover:opacity-[0.05] rounded-full blur-[60px] pointer-events-none z-10 transition-opacity duration-300"
-        style={{ 
-          x: useTransform(smoothMouseX, (v) => v - 150), 
-          y: useTransform(smoothMouseY, (v) => v - 150) 
-        }}
+        className="absolute w-full h-full bg-white opacity-0 group-hover:opacity-[0.03] transition-opacity duration-500 pointer-events-none z-10"
       />
       
       {/* 🎞️ Micro-Grain Texture (Static) */}

@@ -1045,7 +1045,7 @@ class InfiniteGridMenu {
 
 const defaultItems: MenuItem[] = [
   {
-    image: 'https://picsum.photos/900/900?grayscale',
+    image: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=900&h=900&auto=format&fit=crop',
     link: 'https://google.com/',
     title: '',
     description: ''
