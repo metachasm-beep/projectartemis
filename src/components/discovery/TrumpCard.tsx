@@ -244,77 +244,79 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
 
         {/* ⚡ ARTISTIC ENGAGEMENT MATRIX */}
-        <div className="flex items-center justify-center gap-6 pt-6">
-           
-           {/* Report Button */}
-           <Tooltip>
-              <TooltipTrigger>
-                 <Button 
-                   onPress={() => onAction?.('report')}
-                   isIconOnly 
-                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                 >
-                    <div className="flex items-center justify-center w-full h-full">
-                       <ShieldAlert size={20} />
-                    </div>
-                 </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">Report</TooltipContent>
-           </Tooltip>
-
-           {/* Block Button */}
-           <Tooltip>
-              <TooltipTrigger>
-                 <Button 
-                   onPress={() => onAction?.('block')}
-                   isIconOnly 
-                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                 >
-                    <div className="flex items-center justify-center w-full h-full">
-                       <UserX size={20} />
-                    </div>
-                 </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">Block</TooltipContent>
-           </Tooltip>
-
-           {/* PRIMARY Ping Button */}
-           <Tooltip>
-              <TooltipTrigger>
-                <Button 
-                  onPress={() => onAction?.('ping')}
-                  isIconOnly
-                  className={cn(
-                    "w-16 h-16 min-w-0 rounded-full shadow-xl border-2 border-mat-gold/30 transition-all flex items-center justify-center p-0 scale-110",
-                    profile.is_verified 
-                      ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-cream" 
-                      : "bg-mat-cream text-mat-slate/20 border-mat-gold/10"
-                  )}
-                >
-                    <div className="flex items-center justify-center w-full h-full">
-                      {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
-                    </div>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">Message</TooltipContent>
-           </Tooltip>
-
-           {/* Never Button */}
-           <Tooltip>
-              <TooltipTrigger>
-                 <Button 
-                   onPress={() => onAction?.('never_show')}
-                   isIconOnly
-                   className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
-                 >
-                    <div className="flex items-center justify-center w-full h-full">
-                       <EyeOff size={18} />
-                    </div>
-                 </Button>
-              </TooltipTrigger>
-              <TooltipContent side="top">Hide From View</TooltipContent>
-           </Tooltip>
-        </div>
+        {!isDashboard && (
+          <div className="flex items-center justify-center gap-6 pt-6">
+             
+             {/* Report Button */}
+             <Tooltip>
+                <TooltipTrigger>
+                   <Button 
+                     onPress={() => onAction?.('report')}
+                     isIconOnly 
+                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
+                   >
+                      <div className="flex items-center justify-center w-full h-full">
+                         <ShieldAlert size={20} />
+                      </div>
+                   </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">Report</TooltipContent>
+             </Tooltip>
+  
+             {/* Block Button */}
+             <Tooltip>
+                <TooltipTrigger>
+                   <Button 
+                     onPress={() => onAction?.('block')}
+                     isIconOnly 
+                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
+                   >
+                      <div className="flex items-center justify-center w-full h-full">
+                         <UserX size={20} />
+                      </div>
+                   </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">Block</TooltipContent>
+             </Tooltip>
+  
+             {/* PRIMARY Ping Button */}
+             <Tooltip>
+                <TooltipTrigger>
+                  <Button 
+                    onPress={() => onAction?.('ping')}
+                    isIconOnly
+                    className={cn(
+                      "w-16 h-16 min-w-0 rounded-full shadow-xl border-2 border-mat-gold/30 transition-all flex items-center justify-center p-0 scale-110",
+                      profile.is_verified 
+                        ? "bg-gradient-to-br from-mat-gold to-mat-gold-dark text-mat-cream" 
+                        : "bg-mat-cream text-mat-slate/20 border-mat-gold/10"
+                    )}
+                  >
+                      <div className="flex items-center justify-center w-full h-full">
+                        {profile.is_verified ? <MessageSquarePlus size={32} /> : <Lock size={24} />}
+                      </div>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">Message</TooltipContent>
+             </Tooltip>
+  
+             {/* Never Button */}
+             <Tooltip>
+                <TooltipTrigger>
+                   <Button 
+                     onPress={() => onAction?.('never_show')}
+                     isIconOnly
+                     className="w-12 h-12 min-w-0 bg-mat-gold/5 border-2 border-mat-gold/20 text-mat-slate/40 hover:text-mat-slate hover:bg-mat-gold/10 transition-all rounded-full p-0 flex items-center justify-center shadow-md"
+                   >
+                      <div className="flex items-center justify-center w-full h-full">
+                         <EyeOff size={18} />
+                      </div>
+                   </Button>
+                </TooltipTrigger>
+                <TooltipContent side="top">Hide From View</TooltipContent>
+             </Tooltip>
+          </div>
+        )}
       </div>
 
       {/* DECORATIVE CROSSHAIR */}
