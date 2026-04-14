@@ -172,41 +172,42 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
 
             {/* 💎 The Skill Atelier (Metrics & Interaction) */}
-            <div className="md:col-span-9 grid grid-cols-4 md:grid-cols-10 gap-2 h-full overflow-y-auto custom-scrollbar p-1">
+            <div className="md:col-span-9 grid grid-cols-2 md:grid-cols-6 gap-2 h-full overflow-y-auto custom-scrollbar p-1">
               {stats.map((stat, idx) => (
                 <div key={idx} className="col-span-1">
-                  <GlassCard 
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ delay: 0.2 + idx * 0.05 }}
                     className={cn(
-                      "h-full p-2 flex flex-col justify-between group/stat overflow-hidden transition-all duration-500",
-                      "bg-white/10 backdrop-blur-2xl border border-white/20",
-                      "shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.4),0_4px_8px_rgba(0,0,0,0.05)]",
-                      "hover:shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.5),0_10px_20px_rgba(0,0,0,0.1)]",
-                      "hover:scale-[1.03] active:scale-[0.98] cursor-default"
-                    )} 
-                    delay={0.2 + idx * 0.05}
-                    noPadding={true}
+                      "w-full h-11 px-3 flex items-center gap-2 group/stat relative overflow-hidden transition-all duration-500",
+                      "bg-white/10 backdrop-blur-3xl border border-white/20 rounded-full",
+                      "shadow-[0_4px_12px_rgba(255,255,255,0.05),inset_0_1px_1px_rgba(255,255,255,0.2)]",
+                      "hover:bg-white/20 hover:scale-[1.02] active:scale-[0.98]"
+                    )}
                   >
-                    <div className="space-y-1.5">
-                      <div className="w-6 h-6 rounded-lg bg-mat-cashmere/30 flex items-center justify-center text-mat-rose-gold shadow-sm group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-700">
-                        {React.cloneElement(stat.icon as React.ReactElement, { size: 10 })}
-                      </div>
-                      <div className="space-y-0">
-                        <h3 className="mat-text-editorial-caps text-[5px] opacity-40 tracking-[0.2em]">{stat.label}</h3>
-                        <p className="mat-text-editorial-huge text-base text-mat-noir leading-none">{stat.value}</p>
-                      </div>
-                    </div>
+                    {/* Liquid Highlight Effect */}
+                    <div className="absolute top-0 left-0 w-full h-1/2 bg-gradient-to-b from-white/10 to-transparent pointer-events-none" />
                     
-                    <div className="pt-2 shrink-0">
-                       <div className="h-0.5 w-full bg-mat-noir/5 rounded-full overflow-hidden shadow-inner">
-                          <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: Math.random() * 40 + 60 + '%' }}
-                            transition={{ duration: 2, delay: 1 }}
-                            className="h-full bg-mat-rose-gold/30 shadow-[0_0_8px_rgba(183,110,121,0.3)]" 
-                          />
-                       </div>
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-mat-rose-gold/20 flex items-center justify-center text-mat-rose-gold transition-colors duration-500 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white">
+                      {React.cloneElement(stat.icon as React.ReactElement, { size: 12 })}
                     </div>
-                  </GlassCard>
+
+                    <div className="flex flex-col items-start min-w-0">
+                      <p className="mat-text-editorial-huge text-[11px] text-mat-noir leading-none truncate">{stat.value}</p>
+                      <h3 className="mat-text-editorial-caps text-[5px] opacity-40 tracking-wider truncate uppercase">{stat.label}</h3>
+                    </div>
+
+                    {/* 🌊 Thin Underline Progress Bar (Liquid Style) */}
+                    <div className="absolute bottom-1.5 left-10 right-3 h-[1px] bg-mat-noir/5 rounded-full overflow-hidden">
+                       <motion.div 
+                         initial={{ width: 0 }}
+                         animate={{ width: Math.random() * 40 + 60 + '%' }}
+                         transition={{ duration: 2, delay: 0.8 }}
+                         className="h-full bg-mat-rose-gold/40 shadow-[0_0_8px_rgba(183,110,121,0.2)]" 
+                       />
+                    </div>
+                  </motion.button>
                 </div>
               ))}
             </div>
