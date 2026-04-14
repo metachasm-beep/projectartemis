@@ -162,8 +162,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       )}>
         
         {/* Bio Inlay */}
-        <div className={cn("flex-shrink-0", isDashboard ? "mb-3" : "mb-6")}>
-           <p className="text-mat-slate text-[14px] leading-relaxed font-light line-clamp-2 italic">
+        <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-6")}>
+           <p className="text-mat-slate text-[13px] leading-relaxed font-light line-clamp-2 italic">
               "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
            </p>
         </div>
@@ -219,8 +219,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                        <MapPin size={18} />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Stature</span>
-                       <span className="text-[13px] font-bold text-mat-slate uppercase">{profile.height_str}</span>
+                       <span className="text-[10px] uppercase font-black tracking-widest text-mat-slate/60">Stature</span>
+                       <span className="text-[12px] font-bold text-mat-slate uppercase">{profile.height_str}</span>
                     </div>
                  </div>
               </TooltipTrigger>
@@ -234,8 +234,8 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                        <Lock size={18} />
                     </div>
                     <div className="flex flex-col">
-                       <span className="text-[11px] uppercase font-black tracking-widest text-mat-slate/60">Vocation</span>
-                       <span className="text-[13px] font-bold text-mat-slate italic truncate">{profile.vocation}</span>
+                       <span className="text-[10px] uppercase font-black tracking-widest text-mat-slate/60">Vocation</span>
+                       <span className="text-[12px] font-bold text-mat-slate italic truncate">{profile.vocation}</span>
                     </div>
                  </div>
               </TooltipTrigger>

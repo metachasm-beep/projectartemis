@@ -267,105 +267,39 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         {/* ─── FOLD ONE: IDENTITY & GAZE ─── */}
         {isMobile ? (
           <section className="h-[100dvh] min-h-[100dvh] pt-14 snap-start flex flex-col items-center">
-            <header className="overflow-hidden mb-2 text-center px-4">
+            <header className="overflow-hidden mb-4 text-center px-4">
               <motion.h1 
                 variants={maskReveal} 
-                className="text-4xl font-black text-white/90 italic tracking-tighter"
+                className="text-5xl font-light text-white italic tracking-tighter"
                 style={{ fontFamily: 'var(--font-display)' }}
               >
-                Identity Resonance
+                Identity Resonance.
               </motion.h1>
-              <motion.p variants={maskReveal} className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold/60 mt-1">
-                Standing Protocol // Verified Admission
+              <motion.p variants={maskReveal} className="text-[9px] font-medium uppercase tracking-[0.5em] text-mat-gold/40 mt-2">
+                Sanctuary Selection Protocol
               </motion.p>
               <motion.div variants={maskReveal} className="mt-4 flex justify-center">
                  <ArchetypeBadge occupation={profile.occupation} size="sm" />
               </motion.div>
             </header>
 
-            <div className="flex-1 w-full flex flex-col items-center justify-center -space-y-16 overflow-hidden">
-               <motion.div variants={cardSpring} className="w-full flex justify-center scale-[0.65] relative z-20 origin-center">
-                  <TrumpCard 
-                    isDashboard
-                    profile={{
-                      id: profile.user_id,
-                      user_id: profile.user_id,
-                      name: profile.full_name,
-                      age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
-                      city: profile.city || 'Undisclosed',
-                      img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
-                      status: currentLevel.name,
-                      bio: profile.bio || "Identity narrative not established.",
-                      height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
-                      vocation: profile.occupation || 'Aspirant',
-                      tier: currentLevel.name,
-                      is_verified: profile.is_verified,
-                      absolute_rank: absRank,
-                      rank_tier: currentLevel.id
-                    }} 
-                  />
-               </motion.div>
-
-               <div className="w-full h-[40vh] relative overflow-hidden z-10 scale-110">
-                  <div className="absolute inset-0 scale-110">
-                     {gazeProfiles.length > 0 && (
-                        <CircularGallery 
-                          items={gazeProfiles} 
-                          bend={0} 
-                          scrollSpeed={0.5} 
-                          autoScroll 
-                          autoScrollSpeed={0.05} 
-                          onCenterUpdate={setActiveGazeIndex} 
-                        />
-                     )}
-                  </div>
-                  <div className="absolute inset-x-0 bottom-4 flex justify-center z-[50]">
-                    <AnimatePresence mode="wait">
-                      <motion.div 
-                        key={activeGazeIndex} 
-                        initial={{ y: 20, opacity: 0 }} 
-                        animate={{ y: 0, opacity: 1 }} 
-                        exit={{ y: -10, opacity: 0 }} 
-                        className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/30 flex flex-col items-center"
-                      >
-                        <span className="text-lg font-bold text-mat-wine italic tracking-tighter uppercase leading-none">
-                          {gazeProfiles[activeGazeIndex]?.text}
-                        </span>
-                        <span className="text-[7px] font-black uppercase tracking-widest text-mat-gold">
-                          {gazeProfiles[activeGazeIndex]?.subText}
-                        </span>
-                      </motion.div>
-                    </AnimatePresence>
-                  </div>
+            <div className="flex-1 w-full relative flex flex-col items-center justify-center overflow-hidden">
+               {/* Background Halo */}
+               <div className="absolute inset-0 z-0 opacity-40 scale-125">
+                 {gazeProfiles.length > 0 && (
+                    <CircularGallery 
+                      items={gazeProfiles} 
+                      bend={0} 
+                      scrollSpeed={0.5} 
+                      autoScroll 
+                      autoScrollSpeed={0.03} 
+                      onCenterUpdate={setActiveGazeIndex} 
+                    />
+                 )}
                </div>
-            </div>
-          </section>
-        ) : (
-          <section className="h-[100dvh] min-h-[100dvh] pt-24 pb-8 snap-start flex flex-col items-center justify-center">
-            <header className="mb-8 text-center px-6">
-              <motion.h1 
-                variants={maskReveal} 
-                className="text-7xl lg:text-8xl font-black text-white/90 italic tracking-tighter"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Identity Resonance
-              </motion.h1>
-              <motion.p variants={maskReveal} className="text-[12px] font-black uppercase tracking-[1em] text-mat-gold/40 mt-3 ml-4">
-                Matriarch Selection protocol
-              </motion.p>
-              <motion.div variants={maskReveal} className="mt-6 flex justify-center w-full">
-                 <ArchetypeBadge occupation={profile.occupation} size="lg" />
-              </motion.div>
-            </header>
-            
-            <div className="w-full max-w-7xl flex-1 flex flex-row items-center justify-center gap-16 px-8 overflow-hidden">
-              <motion.div variants={cardSpring} className="w-1/2 h-full flex items-center justify-center">
-                 <motion.div 
-                    onMouseMove={handleParallax} 
-                    onMouseLeave={() => {x.set(0); y.set(0)}} 
-                    style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} 
-                    className="w-full max-w-[420px] scale-[0.85] origin-center"
-                 >
+
+               <motion.div variants={cardSpring} className="relative z-20 w-full flex justify-center max-h-[65vh] px-6">
+                  <div className="w-full max-w-[340px] h-full">
                     <TrumpCard 
                       isDashboard
                       profile={{
@@ -385,41 +319,113 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                         rank_tier: currentLevel.id
                       }} 
                     />
-                 </motion.div>
-              </motion.div>
+                  </div>
+               </motion.div>
 
-              <motion.div 
-                variants={cardSpring} 
-                className="w-1/2 h-[55vh] relative rounded-[3rem] overflow-hidden mat-glass border border-white/10 shadow-2xl"
+               <div className="relative z-30 mt-8">
+                  <AnimatePresence mode="wait">
+                    <motion.div 
+                      key={activeGazeIndex} 
+                      initial={{ y: 10, opacity: 0 }} 
+                      animate={{ y: 0, opacity: 1 }} 
+                      exit={{ y: -5, opacity: 0 }} 
+                      className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/20 flex flex-col items-center"
+                    >
+                      <span className="text-sm font-bold text-mat-bone italic tracking-widest uppercase leading-none">
+                        {gazeProfiles[activeGazeIndex]?.text}
+                      </span>
+                      <span className="text-[6px] font-black uppercase tracking-[0.3em] text-mat-gold/60 mt-1">
+                        {gazeProfiles[activeGazeIndex]?.subText}
+                      </span>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+            </div>
+          </section>
+        ) : (
+          <section className="h-[100dvh] min-h-[100dvh] pt-24 pb-8 snap-start flex flex-col items-center justify-center">
+            <header className="mb-12 text-center px-6">
+              <motion.h1 
+                variants={maskReveal} 
+                className="text-6xl lg:text-7xl font-light text-white italic tracking-tighter"
+                style={{ fontFamily: 'var(--font-display)' }}
               >
-                 {gazeProfiles.length > 0 && (
+                Identity Resonance.
+              </motion.h1>
+              <motion.p variants={maskReveal} className="text-[11px] font-medium uppercase tracking-[1.2em] text-mat-gold/30 mt-4 ml-6">
+                Sanctuary Selection Protocol
+              </motion.p>
+              <motion.div variants={maskReveal} className="mt-8 flex justify-center w-full">
+                 <ArchetypeBadge occupation={profile.occupation} size="lg" />
+              </motion.div>
+            </header>
+            
+            <div className="relative flex-1 w-full max-w-7xl flex items-center justify-center overflow-hidden">
+               {/* Background Gaze Ring */}
+               <div className="absolute inset-0 z-0 opacity-30 scale-110">
+                  {gazeProfiles.length > 0 && (
                     <CircularGallery 
                       items={gazeProfiles} 
-                      bend={0} 
-                      scrollSpeed={0.5} 
+                      bend={-0.1} // Subtle inverse bend for depth
+                      scrollSpeed={0.3} 
                       autoScroll 
-                      autoScrollSpeed={0.05} 
+                      autoScrollSpeed={0.02} 
                       onCenterUpdate={setActiveGazeIndex} 
                     />
-                 )}
-                 <div className="absolute inset-x-0 bottom-10 flex justify-center z-50">
+                  )}
+               </div>
+
+               {/* Central Hero Card */}
+               <motion.div 
+                  variants={cardSpring} 
+                  className="relative z-20 w-full max-w-[420px] h-full flex flex-col items-center justify-center p-4"
+               >
+                  <motion.div 
+                    onMouseMove={handleParallax} 
+                    onMouseLeave={() => {x.set(0); y.set(0)}} 
+                    style={{ rotateX, rotateY, transformStyle: "preserve-3d" }} 
+                    className="w-full max-h-[75vh] origin-center"
+                  >
+                    <TrumpCard 
+                      isDashboard
+                      profile={{
+                        id: profile.user_id,
+                        user_id: profile.user_id,
+                        name: profile.full_name,
+                        age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+                        city: profile.city || 'Undisclosed',
+                        img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+                        status: currentLevel.name,
+                        bio: profile.bio || "Identity narrative not established.",
+                        height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+                        vocation: profile.occupation || 'Aspirant',
+                        tier: currentLevel.name,
+                        is_verified: profile.is_verified,
+                        absolute_rank: absRank,
+                        rank_tier: currentLevel.id
+                      }} 
+                    />
+                  </motion.div>
+
+                  <div className="mt-10">
                     <AnimatePresence mode="wait">
                        <motion.div 
                           key={activeGazeIndex} 
-                          initial={{ opacity: 0, y: 10 }} 
+                          initial={{ opacity: 0, y: 15 }} 
                           animate={{ opacity: 1, y: 0 }} 
-                          className="mat-glass-deep px-10 py-5 rounded-[2.5rem] border-mat-gold/30 flex flex-col items-center shadow-2xl"
+                          exit={{ opacity: 0, y: -10 }}
+                          className="mat-glass-deep px-12 py-4 rounded-full border border-white/10 flex flex-col items-center shadow-2xl backdrop-blur-3xl"
                        >
-                          <span className="text-3xl font-bold text-mat-bone italic tracking-tighter uppercase leading-none">
+                          <span className="text-3xl font-light text-mat-bone italic tracking-tighter uppercase leading-none">
                             {gazeProfiles[activeGazeIndex]?.originalName.split(' ')[0]}
                           </span>
-                          <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold mt-1">
+                          <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-gold/60 mt-2">
                             {gazeProfiles[activeGazeIndex]?.subText}
                           </span>
                        </motion.div>
                     </AnimatePresence>
-                 </div>
-              </motion.div>
+                  </div>
+               </motion.div>
             </div>
           </section>
         )}
