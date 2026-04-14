@@ -2,6 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Activity, Sparkles, Compass, Eye, Star, Zap, ShieldCheck, HelpCircle } from 'lucide-react';
 import { SkillOrchestrator } from '@/services/SkillOrchestrator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 /**
  * 👁️ OracleWidget: The Insight Hub (Condensed)
@@ -15,17 +16,27 @@ export const OracleWidget: React.FC<{ metrics: any; onBeginDiscovery?: () => voi
         <div className="flex justify-between items-center text-white/40">
           <div className="flex items-center gap-2">
             <span className="font-mono text-[12px] tracking-[0.4em] uppercase font-black text-white">Discovery Status</span>
-            <span className="px-2 py-0.5 bg-mat-wine/30 border border-mat-wine/40 rounded text-[11px] text-mat-wine font-black tracking-widest">{vibeStatus}</span>
+            <Tooltip>
+               <TooltipTrigger asChild>
+                  <span className="px-2 py-0.5 bg-mat-wine/30 border border-mat-wine/40 rounded text-[11px] text-mat-wine font-black tracking-widest cursor-help">{vibeStatus}</span>
+               </TooltipTrigger>
+               <TooltipContent side="top">Current vibe alignment status</TooltipContent>
+            </Tooltip>
           </div>
           <Activity size={14} className="text-mat-wine animate-pulse" />
         </div>
         <div className="space-y-1">
-          <div className="flex items-baseline gap-2">
-            <span className="text-6xl font-bold text-mat-wine italic tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
-               {(resonance * 100).toFixed(0)}
-            </span>
-            <span className="text-mat-gold/60 text-sm font-mono tracking-widest">% MATCH</span>
-          </div>
+          <Tooltip>
+             <TooltipTrigger asChild>
+                <div className="flex items-baseline gap-2 cursor-help">
+                  <span className="text-6xl font-bold text-mat-wine italic tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+                     {(resonance * 100).toFixed(0)}
+                  </span>
+                  <span className="text-mat-gold/60 text-sm font-mono tracking-widest">% MATCH</span>
+                </div>
+             </TooltipTrigger>
+             <TooltipContent side="right">Real-time resonance score with the sanctuary network</TooltipContent>
+          </Tooltip>
           <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.2em]">Match Potential</p>
         </div>
       </div>
@@ -147,28 +158,37 @@ export const InfluenceWidget: React.FC<{ metrics: any }> = ({ metrics }) => {
       
       <div className="space-y-2">
         <div className="bg-mat-wine/5 rounded-3xl p-4 border border-white/5 shadow-inner">
-           <div className="flex items-center justify-between mb-2">
-              <div className="space-y-0.5">
-                 <p className="font-mono text-[11px] text-white/60 uppercase tracking-[0.2em]">Global Rank</p>
-                 <p className="text-mat-gold text-2xl font-bold italic leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>{rank}</p>
-              </div>
-              <div className="text-right">
-                <p className="text-[12px] font-mono text-mat-gold font-black">{authorityScore.toFixed(0)}%</p>
-                <div className="w-10 h-1 bg-mat-gold/20 rounded-full mt-1 overflow-hidden">
-                   <motion.div 
-                     initial={{ width: 0 }}
-                     animate={{ width: `${authorityScore}%` }}
-                     className="h-full bg-mat-gold"
-                   />
-                </div>
-              </div>
-           </div>
-           <p className="text-[10px] text-white/60 italic font-mono leading-tight uppercase tracking-tight">
-            Account verified. Status: {authorityScore > 50 ? 'ASCENDING' : 'SECURE'}.
-           </p>
-        </div>
+               <div className="flex items-center justify-between mb-2">
+                  <Tooltip>
+                     <TooltipTrigger asChild>
+                        <div className="space-y-0.5 cursor-help">
+                           <p className="font-mono text-[11px] text-white/60 uppercase tracking-[0.2em]">Global Rank</p>
+                           <p className="text-mat-gold text-2xl font-bold italic leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>{rank}</p>
+                        </div>
+                     </TooltipTrigger>
+                     <TooltipContent side="top">Your absolute position in the Matriarch League</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                     <TooltipTrigger asChild>
+                        <div className="text-right cursor-help">
+                          <p className="text-[12px] font-mono text-mat-gold font-black">{authorityScore.toFixed(0)}%</p>
+                          <div className="w-10 h-1 bg-mat-gold/20 rounded-full mt-1 overflow-hidden">
+                             <motion.div 
+                               initial={{ width: 0 }}
+                               animate={{ width: `${authorityScore}%` }}
+                               className="h-full bg-mat-gold"
+                             />
+                          </div>
+                        </div>
+                     </TooltipTrigger>
+                     <TooltipContent side="left">Dynamic influence score based on engagement quality</TooltipContent>
+                  </Tooltip>
+               </div>
+               <p className="text-[10px] text-white/60 italic font-mono leading-tight uppercase tracking-tight">
+                Account verified. Status: {authorityScore > 50 ? 'ASCENDING' : 'SECURE'}.
+               </p>
+            </div>
       </div>
     </div>
   );
 };
-

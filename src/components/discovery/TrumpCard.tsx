@@ -155,52 +155,76 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         {/* 📊 STAT GRID (3 IN A ROW) */}
         <div className={cn("grid grid-cols-3 gap-x-4", isDashboard ? "gap-y-3" : "gap-y-6")}>
           {statItems.map((s, i) => (
-            <div key={i} className="space-y-2">
-               <div className="flex items-center justify-between px-0.5">
-                  <span className="text-[11px] font-black uppercase tracking-wider text-white">{s.label}</span>
-                  <span className="text-[13px] font-black text-mat-gold italic">{s.value}</span>
-               </div>
-               <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden border border-white/10">
-                  <motion.div 
-                     initial={{ width: 0 }}
-                     animate={{ width: `${s.value}%` }}
-                     transition={{ delay: i * 0.1, duration: 0.8 }}
-                     className={cn("h-full bg-gradient-to-r shadow-[0_0_10px_rgba(255,255,255,0.1)]", s.color)} 
-                  />
-               </div>
-            </div>
+            <Tooltip key={i}>
+               <TooltipTrigger asChild>
+                  <div className="space-y-2 cursor-help group/stat">
+                     <div className="flex items-center justify-between px-0.5">
+                        <span className="text-[11px] font-black uppercase tracking-wider text-white group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
+                        <span className="text-[13px] font-black text-mat-gold italic">{s.value}</span>
+                     </div>
+                     <div className="w-full h-2 bg-white/10 rounded-full overflow-hidden border border-white/10">
+                        <motion.div 
+                           initial={{ width: 0 }}
+                           animate={{ width: `${s.value}%` }}
+                           transition={{ delay: i * 0.1, duration: 0.8 }}
+                           className={cn("h-full bg-gradient-to-r shadow-[0_0_10px_rgba(255,255,255,0.1)]", s.color)} 
+                        />
+                     </div>
+                  </div>
+               </TooltipTrigger>
+               <TooltipContent side="top">
+                  <p className="text-[11px] uppercase tracking-widest font-bold">{s.label}: {s.value}% POTENCY</p>
+               </TooltipContent>
+            </Tooltip>
           ))}
         </div>
 
         {/* 📋 DOSSIER FOOTER */}
         <div className={cn("grid grid-cols-2 gap-4 border-t border-white/20 pb-2 text-white", isDashboard ? "mt-4 pt-4" : "mt-8 pt-6")}>
-           <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
-                 <Trophy size={18} />
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Capital Tier</span>
-                 <span className="text-[13px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
-              </div>
-           </div>
-           <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
-                 <MapPin size={18} />
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Stature</span>
-                 <span className="text-[13px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
-              </div>
-           </div>
-           <div className="flex items-center gap-3 col-span-2">
-              <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
-                 <Lock size={18} />
-              </div>
-              <div className="flex flex-col">
-                 <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Core Vocation</span>
-                 <span className="text-[13px] font-bold text-mat-cream italic truncate">{profile.vocation}</span>
-              </div>
-           </div>
+           <Tooltip>
+              <TooltipTrigger asChild>
+                 <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                       <Trophy size={18} />
+                    </div>
+                    <div className="flex flex-col">
+                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Tier</span>
+                       <span className="text-[13px] font-bold text-mat-cream uppercase truncate">{profile.tier}</span>
+                    </div>
+                 </div>
+              </TooltipTrigger>
+              <TooltipContent side="top">Assigned sanctuary capital tier</TooltipContent>
+           </Tooltip>
+           
+           <Tooltip>
+              <TooltipTrigger asChild>
+                 <div className="flex items-center gap-3 cursor-help opacity-80 hover:opacity-100 transition-opacity">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                       <MapPin size={18} />
+                    </div>
+                    <div className="flex flex-col">
+                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Stature</span>
+                       <span className="text-[13px] font-bold text-mat-cream uppercase">{profile.height_str}</span>
+                    </div>
+                 </div>
+              </TooltipTrigger>
+              <TooltipContent side="top">Physical identification profile</TooltipContent>
+           </Tooltip>
+
+           <Tooltip>
+              <TooltipTrigger asChild>
+                 <div className="flex items-center gap-3 col-span-2 cursor-help opacity-80 hover:opacity-100 transition-opacity">
+                    <div className="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center border border-white/10 text-mat-gold">
+                       <Lock size={18} />
+                    </div>
+                    <div className="flex flex-col">
+                       <span className="text-[11px] uppercase font-black tracking-widest text-white/60">Vocation</span>
+                       <span className="text-[13px] font-bold text-mat-cream italic truncate">{profile.vocation}</span>
+                    </div>
+                 </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Primary societal contribution archetype</TooltipContent>
+           </Tooltip>
         </div>
 
         {/* ⚡ ARTISTIC ENGAGEMENT MATRIX */}

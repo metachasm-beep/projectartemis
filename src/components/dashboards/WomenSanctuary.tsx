@@ -25,6 +25,7 @@ import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOve
 import { OracleWidget, InfluenceWidget } from '@/components/dashboard/promax/widgets/SovereignWidgets';
 import { ThreeAnchor } from '@/components/dashboard/promax/ThreeAnchor';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { SkillOrchestrator } from '@/services/SkillOrchestrator';
 
 interface WomenSanctuaryProps {
@@ -63,18 +64,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
       {/* 🏰 Main Interface Layer */}
       <main className="relative z-10 w-full h-full pt-20 pb-10 px-8 flex flex-col gap-6">
-        {/* 🎭 Header Zone */}
+        {/* 🎭 Header Zone (Compact Text Only) */}
         <header className="absolute top-10 left-10 z-20 flex items-center gap-6">
-           {profile?.photos?.[0] ? (
-             <div className="relative w-32 h-32 rounded-3xl overflow-hidden border-4 border-mat-gold shadow-[0_0_50px_rgba(212,175,55,0.4)]">
-                <img src={profile.photos[0]} alt="User" className="w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/40 to-transparent mix-blend-overlay"></div>
-             </div>
-           ) : (
-             <div className="w-32 h-32 rounded-3xl bg-white/5 border-2 border-white/10 flex items-center justify-center backdrop-blur-md">
-                <span className="font-mono text-mat-gold text-[14px] font-black tracking-[0.5em] uppercase">ID</span>
-             </div>
-           )}
            <div className="space-y-1">
               <Badge variant="outline" className="px-4 py-1.5 border-mat-gold text-mat-gold text-[12px] uppercase tracking-[0.4em] font-black rounded-lg bg-mat-gold/10 backdrop-blur-md">
                 Status: Verified & Syncing
@@ -85,54 +76,21 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
            </div>
         </header>
 
-        {/* 🕸️ Dashboard Grid: 12-Column Layout */}
-        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-4 pb-12">
+        {/* 🕸️ Dashboard Grid: Symmetrical 3-Column Layout (4-4-4) */}
+        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-4 pb-12 overflow-hidden">
           
-          {/* 👁️ Discovery Zone (Insights) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.1}>
-            <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
-          </GlassCard>
+          {/* Left Column (Authority & Insights) */}
+          <div className="col-span-12 lg:col-span-4 grid grid-rows-12 gap-4 h-full">
+            <GlassCard className="row-span-6" delay={0.1}>
+              <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
+            </GlassCard>
+            <GlassCard className="row-span-6" delay={0.4}>
+               <InfluenceWidget metrics={metrics} />
+            </GlassCard>
+          </div>
 
-          {/* 🏛️ Design Zone (Results) */}
-          <GlassCard className="col-span-12 lg:col-span-8 row-span-4" delay={0.2}>
-             <ThreeAnchor quality="high" />
-             <div className="h-full flex flex-col justify-between relative z-10">
-                <div className="space-y-1">
-                   <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
-                   <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
-                     Design <span className="opacity-10 text-mat-gold">& Style.</span>
-                   </h2>
-                </div>
-
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                  {(() => {
-                    const arc = SkillOrchestrator.getArchitectVisuals();
-                    return [
-                      { label: 'Views', val: `${arc.gazeDepth}`, icon: Eye, color: 'text-white' },
-                      { label: 'Rating', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold' },
-                      { label: 'Quality', val: arc.lightingStability, icon: Zap, color: 'text-mat-rose' },
-                      { label: 'System', val: 'STABLE', icon: Activity, color: 'text-mat-gold' },
-                    ].map((stat, i) => (
-                      <motion.div 
-                        key={i} 
-                        whileHover={{ y: -3 }}
-                        className="space-y-3"
-                      >
-                         <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md">
-                           <stat.icon size={20} className={stat.color} strokeWidth={1.5} />
-                         </div>
-                         <div className="space-y-0.5">
-                            <p className="text-2xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
-                            <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.2em]">{stat.label}</p>
-                         </div>
-                       </motion.div>
-                    ));
-                  })()}
-                </div>
-              </div>
-          </GlassCard>
-
-          <div className="col-span-12 lg:col-span-4 row-span-8 overflow-hidden rounded-[3.5rem] border border-white/10 glass-surface shadow-2xl">
+          {/* Center Column (Hero Anchor) */}
+          <div className="col-span-12 lg:col-span-4 h-full overflow-hidden rounded-[3.5rem] border border-white/10 glass-surface shadow-2xl">
             <TrumpCard 
                isDashboard
                profile={{
@@ -153,34 +111,77 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             />
           </div>
 
-          {/* 📜 Activity Zone (Performance) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.4}>
-             <InfluenceWidget metrics={metrics} />
-          </GlassCard>
+          {/* Right Column (Design & Security) */}
+          <div className="col-span-12 lg:col-span-4 grid grid-rows-12 gap-4 h-full">
+            <GlassCard className="row-span-8" delay={0.2}>
+               <ThreeAnchor quality="high" />
+               <div className="h-full flex flex-col justify-between relative z-10">
+                  <div className="space-y-1">
+                     <p className="font-mono text-[13px] text-mat-wine font-black uppercase tracking-[0.4em] mb-1">Visual Overview</p>
+                     <h2 className="text-5xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+                       Design <span className="opacity-10 text-mat-gold">& Style.</span>
+                     </h2>
+                  </div>
 
-          {/* 🛡️ Account Zone (Security) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-2" delay={0.5}>
-            <div className="h-full flex items-center justify-between px-2">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-mat-gold/10 rounded-xl border border-mat-gold/20">
-                  <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
+                  <div className="grid grid-cols-2 gap-4">
+                    {(() => {
+                      const arc = SkillOrchestrator.getArchitectVisuals();
+                      const stats = [
+                        { label: 'Views', val: `${arc.gazeDepth}`, icon: Eye, color: 'text-white', tip: 'Total visual impressions' },
+                        { label: 'Rating', val: arc.assetPurity.toString(), icon: Star, color: 'text-mat-gold', tip: 'Asset purity index' },
+                        { label: 'Quality', val: arc.lightingStability, icon: Zap, color: 'text-mat-rose', tip: 'Lighting & consistency stability' },
+                        { label: 'System', val: 'STABLE', icon: Activity, color: 'text-mat-gold', tip: 'Real-time rendering status' },
+                      ];
+                      
+                      return stats.map((stat, i) => (
+                        <Tooltip key={i}>
+                          <TooltipTrigger asChild>
+                            <motion.div 
+                              whileHover={{ y: -3 }}
+                              className="space-y-3 p-4 bg-white/5 rounded-2xl border border-white/10 backdrop-blur-md cursor-help"
+                            >
+                               <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
+                                 <stat.icon size={18} className={stat.color} strokeWidth={1.5} />
+                               </div>
+                               <div className="space-y-0.5">
+                                  <p className="text-xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
+                                  <p className="font-mono text-[10px] text-white/80 uppercase tracking-[0.2em]">{stat.label}</p>
+                               </div>
+                             </motion.div>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p className="text-[11px] uppercase tracking-widest font-bold">{stat.tip}</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      ));
+                    })()}
+                  </div>
                 </div>
-                <div>
-                   <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.4em]">Account Verification</p>
-                   <p className="text-sm font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">VERIFIED</span></p>
+            </GlassCard>
+
+            <GlassCard className="row-span-4" delay={0.5}>
+              <div className="h-full flex flex-col justify-center px-4 space-y-4">
+                <div className="flex items-center gap-4">
+                  <div className="p-3 bg-mat-gold/10 rounded-xl border border-mat-gold/20">
+                    <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
+                  </div>
+                  <div>
+                     <p className="font-mono text-[11px] text-white/80 uppercase tracking-[0.4em]">Account Verification</p>
+                     <p className="text-sm font-bold italic text-white tracking-widest leading-none mt-1">Status: <span className="text-mat-gold uppercase font-black">Verified</span></p>
+                  </div>
                 </div>
+                
+                {!profile?.is_verified && (
+                  <button 
+                    onClick={() => setShowVerification(true)}
+                    className="w-full py-3 border-2 border-mat-gold text-mat-gold text-[11px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
+                  >
+                    Verify Now
+                  </button>
+                )}
               </div>
-              
-              {!profile?.is_verified && (
-                <button 
-                  onClick={() => setShowVerification(true)}
-                  className="px-6 py-3 border-2 border-mat-gold text-mat-gold text-[11px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
-                >
-                  Verify Now
-                </button>
-              )}
-            </div>
-          </GlassCard>
+            </GlassCard>
+          </div>
         </div>
 
         {/* 🚀 Floating Command Dock (Zero-Scroll Navigation) */}
