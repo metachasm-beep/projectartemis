@@ -56,7 +56,7 @@ const Gurgaon: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl mat-text-display-pro text-white mb-8 italic"
+            className="mat-text-fluid-huge text-white mb-8 italic"
           >
             Gurgaon's Corporate <br /><span className="text-mat-rose/80">Elite Sanctuary.</span>
           </motion.h1>
@@ -76,7 +76,7 @@ const Gurgaon: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-24 items-center">
           <div>
             <span className="text-mat-rose uppercase tracking-[0.3em] text-[10px] font-black mb-6 block">Elite Presence</span>
-            <h2 className="text-5xl md:text-7xl mat-text-display-pro mb-8 italic">Professionals <span className="text-mat-rose/40">Only.</span></h2>
+            <h2 className="mat-text-fluid-huge text-5xl md:text-7xl mb-8 italic">Professionals <span className="text-mat-rose/40">Only.</span></h2>
             <p className="text-xl text-mat-wine/60 font-light leading-relaxed mb-12">
               Our Gurgaon directory is strictly limited to verified CXOs, founders, and consultants across NCR. We implement a rigorous vetting protocol that excludes any non-verified intent.
             </p>

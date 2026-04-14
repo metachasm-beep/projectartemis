@@ -17,6 +17,8 @@ const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
 ];
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <nav className="fixed top-0 w-full z-[200] px-4 md:px-8 py-4 md:py-8 flex items-center justify-between pointer-events-none">
       <div className="pointer-events-auto">
@@ -29,6 +31,21 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden lg:block italic">Journal Archive</span>
         </motion.button>
       </div>
+      
+      {/* Mobile Toggle */}
+      <div className="pointer-events-auto md:hidden">
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white"
+        >
+          <div className="space-y-1">
+            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? 'opacity-0' : ''}`} />
+            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+          </div>
+        </button>
+      </div>
+
       <div className="pointer-events-auto hidden md:flex items-center gap-12">
         {NAV_LINKS.map(link => (
           link.scroll ? (
@@ -62,6 +79,38 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           Join Sanctuary
         </motion.a>
       </div>
+
+      {/* Mobile Drawer */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[-1] flex flex-col items-center justify-center gap-8 md:hidden"
+          >
+            {NAV_LINKS.map(link => (
+              <button
+                key={link.label}
+                onClick={() => {
+                   if (link.scroll) document.getElementById(link.scroll!)?.scrollIntoView({ behavior: 'smooth' });
+                   else if (link.href) window.open(link.href, '_blank');
+                   setIsOpen(false);
+                }}
+                className="text-2xl font-black tracking-[0.4em] text-white/40 uppercase hover:text-rose-500 transition-all"
+              >
+                {link.label}
+              </button>
+            ))}
+            <a 
+              href="https://matriarchindia.com" 
+              className="mt-8 px-12 py-4 rounded-full border border-rose-500 text-rose-500 font-black uppercase tracking-[0.3em] text-[10px]"
+            >
+              Join Sanctuary
+            </a>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 };

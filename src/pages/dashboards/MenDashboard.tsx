@@ -309,15 +309,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian snap-y snap-mandatory overflow-y-auto overflow-x-hidden h-screen"
     >
-      {/* 🛠️ TOP BAR ACTIONS */}
-      <div className="fixed top-8 right-8 z-[100] flex items-center gap-4">
-        <button 
-          onClick={onOpenSettings}
-          className="w-12 h-12 rounded-full bg-white/5 text-white/40 border border-white/10 flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all shadow-2xl backdrop-blur-md"
-        >
-          <Settings size={20} />
-        </button>
-      </div>
+
       {/* ─── IMMERSIVE DUAL-FOLD BACKGROUND ─── */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none select-none">
         
@@ -549,7 +541,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                >
                   <div className="flex justify-between items-center mb-6">
                      <div className="space-y-1">
-                        <h3 className="text-2xl font-bold italic text-mat-wine">Integrity Dial.</h3>
+                        <h3 className="mat-text-fluid-huge text-mat-wine">Integrity Dial.</h3>
                         <p className="text-[10px] uppercase tracking-widest text-mat-slate/40">Calibration Metrics</p>
                      </div>
                      <Activity className="text-mat-rose/30 w-6 h-6" />
@@ -591,7 +583,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   <div className="absolute inset-0 bg-gradient-to-br from-mat-wine/30 via-transparent to-transparent pointer-events-none" />
                   <div className="relative z-10 space-y-6">
                      <div className="space-y-1">
-                        <h4 className="text-3xl font-bold italic">Augment Aura.</h4>
+                        <h4 className="mat-text-fluid-huge text-mat-cream italic">Augment Aura.</h4>
                         <p className="text-mat-cream/40 text-[9px] font-bold uppercase tracking-widest">Ascend the sanctuary ladder.</p>
                      </div>
                      <div className="py-4">

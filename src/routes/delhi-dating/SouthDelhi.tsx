@@ -57,7 +57,7 @@ const SouthDelhi: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl mat-text-display-pro text-white mb-8 italic"
+            className="mat-text-fluid-huge text-white mb-8 italic"
           >
             Safe Dating for <br /><span className="text-mat-rose/80">Verified Professionals.</span>
           </motion.h1>
@@ -102,7 +102,7 @@ const SouthDelhi: React.FC = () => {
           <div className="relative z-10 grid md:grid-cols-2 gap-16 items-center">
             <div>
               <span className="text-mat-rose uppercase tracking-[0.3em] text-[10px] font-black mb-6 block">Our Commitment</span>
-              <h2 className="text-5xl md:text-7xl mat-text-display-pro mb-8 italic">Safety <span className="text-mat-rose/40">First.</span></h2>
+              <h2 className="mat-text-fluid-huge text-5xl md:text-7xl mb-8 italic">Safety <span className="text-mat-rose/40">First.</span></h2>
               <div className="space-y-8">
                 <div className="flex gap-6">
                   <div className="w-12 h-12 rounded-full bg-mat-rose/20 flex items-center justify-center flex-shrink-0">

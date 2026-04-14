@@ -29,9 +29,10 @@ interface EditProfileProps {
   profile: MatriarchProfile;
   onUpdate: (updatedProfile: MatriarchProfile) => void;
   onCancel: () => void;
+  onOpenSettings: () => void;
 }
 
-export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onCancel }) => {
+export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onCancel, onOpenSettings }) => {
   const [formData, setFormData] = useState<MatriarchProfile>({ ...profile });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -448,6 +449,13 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
              >
                 Retreat
              </button>
+
+              <button 
+                 onClick={onOpenSettings}
+                 className="h-20 px-12 rounded-full border border-dashed border-white/20 text-white/60 font-black uppercase tracking-[0.4em] text-[9px] hover:bg-white/5 hover:text-white transition-all hover:border-white/40"
+              >
+                 Account Protocol
+              </button>
           </div>
 
           {error && (

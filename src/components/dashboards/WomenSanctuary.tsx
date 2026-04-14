@@ -135,9 +135,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
               {/* Migrated Dock Actions */}
               <div className="flex items-center gap-1.5 mr-2">
-                <button onClick={onOpenSettings} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
-                  <Settings size={14} />
-                </button>
                 <button onClick={() => setShowFAQ(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
                   <HelpCircle size={14} />
                 </button>
@@ -199,7 +196,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                 {/* Top Identity Block */}
                 <div className="flex justify-between items-start">
                   <div>
-                    <h2 className="mat-text-editorial-huge font-serif tracking-tighter text-5xl md:text-6xl lg:text-7xl drop-shadow-2xl leading-none">
+                    <h2 className="mat-text-fluid-huge drop-shadow-2xl leading-none">
                       {profile?.full_name || 'Sovereign'}
                     </h2>
                     <div className="flex items-center gap-3 mt-4">
@@ -285,7 +282,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   >
                     <div className="flex flex-col min-w-0 pr-4">
                       <h3 className="mat-text-editorial-caps text-[7px] md:text-[8px] text-mat-noir/40 tracking-[0.25em] lg:tracking-[0.3em] uppercase mb-1.5">{stat.label}</h3>
-                      <p className="mat-text-editorial-huge font-serif italic font-light text-3xl lg:text-4xl text-mat-noir leading-none">{stat.value}</p>
+                      <p className="mat-text-fluid-huge font-light text-mat-noir leading-none">{stat.value}</p>
                     </div>
                     <div className={cn(
                       "w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_8px_rgba(0,0,0,0.05)] text-mat-rose-gold transition-all duration-500",

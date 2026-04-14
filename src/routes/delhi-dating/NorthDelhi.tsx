@@ -51,7 +51,7 @@ const NorthDelhi: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-6xl md:text-8xl mat-text-display-pro mb-8 italic"
+            className="mat-text-fluid-huge mb-8 italic"
           >
             The Perfect <br /><span className="text-mat-rose/60 font-black">First Date Guide.</span>
           </motion.h1>
@@ -122,7 +122,7 @@ const NorthDelhi: React.FC = () => {
           </div>
           <div className="order-1 md:order-2">
             <Shield className="w-12 h-12 text-mat-rose mb-8" strokeWidth={1} />
-            <h2 className="text-5xl mat-text-display-pro mb-8 italic">North Delhi <span className="text-mat-rose/40">Trust Loop.</span></h2>
+            <h2 className="mat-text-fluid-huge mb-8 italic">North Delhi <span className="text-mat-rose/40">Trust Loop.</span></h2>
             <p className="text-lg text-mat-wine/60 font-light leading-relaxed mb-12">
               Every profile matching in North Delhi is audited by the Matriarch Selection Engine. We ensure that your dating experience in the district is built on a foundation of verified intent and government-backed ID synchronization.
             </p>

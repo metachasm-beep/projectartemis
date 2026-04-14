@@ -35,7 +35,7 @@ export const DashboardLayout: React.FC = () => {
       animate={{ opacity: 1 }} 
       className={cn(
         "min-h-screen transition-colors duration-1000",
-        isImmersive ? "bg-mat-obsidian pt-0" : "bg-mat-cream pt-24 md:pt-32 pb-16"
+        isImmersive ? "bg-mat-obsidian pt-0" : "bg-mat-cream pt-20 md:pt-32 pb-16 mat-safe-pt"
       )}
     >
       <MatriarchToolbar 
@@ -77,7 +77,7 @@ export const DashboardLayout: React.FC = () => {
                   <div className="space-y-12">
                      <div className="text-center space-y-4">
                         <Badge variant="outline" className="px-5 py-2 border-mat-rose/20 text-mat-rose text-[9px] font-bold uppercase tracking-[0.4em] rounded-full bg-mat-rose/5">Resonance History</Badge>
-                        <h1 className="text-6xl md:text-8xl mat-text-display-pro text-mat-wine italic">Sanctuary <br /><span className="text-mat-rose/20">Dialogues.</span></h1>
+                        <h1 className="mat-text-fluid-huge text-mat-wine italic">Sanctuary <br /><span className="text-mat-rose/20">Dialogues.</span></h1>
                      </div>
                      <SanctuaryInbox 
                         currentUserId={profile?.user_id || ''} 

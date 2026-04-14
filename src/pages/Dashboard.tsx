@@ -214,6 +214,10 @@ export const Dashboard: React.FC = () => {
               setIsEditing(false);
             }}
             onCancel={() => setIsEditing(false)}
+            onOpenSettings={() => {
+              setIsEditing(false);
+              setIsSettingsOpen(true);
+            }}
           />
         )}
       </AnimatePresence>
