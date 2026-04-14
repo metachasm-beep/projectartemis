@@ -101,9 +101,9 @@ export const MenDossier: React.FC<MenDossierProps> = ({
 
   return (
     <div className="w-full bg-mat-obsidian text-mat-cream min-h-screen pb-32">
-      {isBrowsingLeaderboard && (
+      {isBrowsingLeaderboard ? (
         <Leaderboard onClose={() => setIsBrowsingLeaderboard(false)} myRank={sanctuaryRank} />
-      )}
+      ) : null}
       
       {/* ─── SCENE 1: THE MONOLITHIC HERO ─── */}
       <div className="relative w-full h-[75vh] md:h-[90vh] overflow-hidden">
@@ -141,7 +141,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
              
              <h1 className="mat-text-display-pro text-mat-cream leading-[0.8] tracking-tighter text-[4rem] sm:text-[6rem] md:text-[8rem] lg:text-[10rem]">
                 {firstName} <br />
-                {lastName && <span className="text-mat-cream/40 italic font-light">{lastName}</span>}
+                {lastName ? <span className="text-mat-cream/40 italic font-light">{lastName}</span> : null}
              </h1>
           </div>
         </motion.div>
@@ -164,7 +164,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
               <div>
                  <div className="flex items-center justify-between mb-6">
                     <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/50 italic">Sanctuary Rank</p>
-                    {isTopPercentile && <span className="text-[8px] bg-mat-gold/10 text-mat-gold px-2 py-1 rounded">Top Identity</span>}
+                    {isTopPercentile ? <span className="text-[8px] bg-mat-gold/10 text-mat-gold px-2 py-1 rounded">Top Identity</span> : null}
                  </div>
                  <div className="flex items-baseline gap-2">
                     <span className="text-3xl text-mat-gold italic font-bold">#</span>
@@ -180,7 +180,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
               {/* AURA Wallet & Tiered Jump Action */}
               <div className="p-8 border border-mat-rose/20 bg-mat-wine/5 rounded-[2rem] space-y-6 shadow-[0_0_30px_rgba(114,47,55,0.05)] relative overflow-hidden text-white">
                  {/* Visual Hook Overlay */}
-                 {leapFeedback && (
+                 {leapFeedback ? (
                     <motion.div 
                        initial={{ opacity: 0 }}
                        animate={{ opacity: 1 }}
@@ -190,7 +190,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                          {leapFeedback}
                        </p>
                     </motion.div>
-                 )}
+                 ) : null}
                  <div className="flex justify-between items-center mb-6">
                     <div className="flex items-center gap-3">
                        <div className="w-10 h-10 bg-mat-wine/20 rounded-full flex items-center justify-center text-mat-rose">
@@ -258,7 +258,7 @@ export const MenDossier: React.FC<MenDossierProps> = ({
            {/* The Treasury (Token Purchase) */}
            <div className="col-span-1 lg:col-span-8 lg:col-start-6">
               <div className="p-8 md:p-12 border border-white/5 bg-white/[0.02] rounded-[3rem] space-y-8 relative overflow-hidden backdrop-blur-sm h-full">
-                 <div className="absolute top-0 right-0 w-64 h-64 bg-mat-gold/5 blur-[100px] rounded-full mix-blend-screen pointer-events-none" />
+                 <div className="absolute top-0 right-0 w-64 h-64 bg-mat-gold/5 blur-3xl rounded-full pointer-events-none" />
                  
                  <div className="space-y-2 relative z-10 mb-12">
                     <h3 className="text-3xl md:text-4xl font-bold italic text-white leading-tight">{SEO_COPY.men.dossier.treasury.title_pre} <span className="text-mat-gold/60">{SEO_COPY.men.dossier.treasury.title_highlight}</span></h3>
@@ -281,11 +281,11 @@ export const MenDossier: React.FC<MenDossierProps> = ({
                         }}
                         className="group w-full flex flex-col justify-between p-6 rounded-[2rem] border border-white/10 bg-white/5 hover:bg-white/10 hover:border-mat-gold/30 transition-all duration-500 text-left relative overflow-hidden"
                       >
-                         {bundle.saving && (
+                         {bundle.saving ? (
                             <div className="absolute top-4 right-4 bg-mat-gold/10 text-mat-gold text-[8px] font-black uppercase tracking-widest px-2 py-1 rounded">
                                {bundle.saving}
                             </div>
-                         )}
+                         ) : null}
                          <div className="mb-8">
                             <span className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em]">{bundle.name}</span>
                             <div className="flex items-baseline gap-2 mt-2">

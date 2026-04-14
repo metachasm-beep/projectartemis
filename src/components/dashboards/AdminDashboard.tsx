@@ -141,7 +141,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
   return (
     <div className="space-y-12 pb-24">
       {/* 🛡️ SOVEREIGN CONFIRMATION MODAL */}
-      {itemToDelete && createPortal(
+      {itemToDelete ? createPortal(
         <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 bg-mat-wine/60 backdrop-blur-md animate-in fade-in duration-300">
           <div className="bg-white p-8 rounded-[2rem] max-w-md w-full border-2 border-mat-wine/20 shadow-2xl animate-in zoom-in-95 duration-300">
             <ShieldAlert className="w-12 h-12 text-mat-wine mb-4" />
@@ -168,18 +168,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
           </div>
         </div>,
         document.body
-      )}
+      ) : null}
 
       {/* 🛡️ SOVEREIGN TRANSMISSION MODAL */}
       <AnimatePresence>
-        {messageTarget && (
+        {messageTarget ? (
           <DirectMessageModal 
             userId={messageTarget.id}
             userName={messageTarget.name}
             onClose={() => setMessageTarget(null)}
             onSuccess={() => {}}
           />
-        )}
+        ) : null}
       </AnimatePresence>
 
       {/* 🚀 SOVEREIGN COMMAND HEADER */}
@@ -264,9 +264,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
               className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 relative ${dashboardTab === t ? 'border-mat-wine text-mat-wine' : 'border-transparent text-mat-wine/30 hover:text-mat-wine'}`}
             >
                {t}
-               {t === 'TITHE' && pendingClaimsCount > 0 && (
+               {t === 'TITHE' && pendingClaimsCount > 0 ? (
                   <span className="absolute -top-1 -right-4 w-2 h-2 rounded-full bg-mat-rose shadow-[0_0_8px_#d41243] animate-pulse" />
-               )}
+               ) : null}
             </button>
          ))}
       </div>
@@ -396,16 +396,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                               ) : (p.full_name?.[0] || '?')}
                                          </div>
                                      </div>
-                                    {p.is_verified && (
+                                    {p.is_verified ? (
                                        <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-mat-rose/10">
                                           <BadgeCheck className="w-4 h-4 text-blue-500" fill="currentColor" stroke="white" />
                                        </div>
-                                    )}
+                                    ) : null}
                                  </div>
                                  <div className="space-y-0.5 max-w-[180px]">
                                    <div className="font-bold text-mat-wine italic tracking-tight flex items-center gap-2 truncate">
                                       {p.full_name}
-                                      {p.user_id.includes('dummy') && <span className="text-[7px] border border-mat-rose/20 px-1 rounded uppercase font-black text-mat-rose/40">Dummy</span>}
+                                      {p.user_id.includes('dummy') ? <span className="text-[7px] border border-mat-rose/20 px-1 rounded uppercase font-black text-mat-rose/40">Dummy</span> : null}
                                    </div>
                                    <div className="text-[9px] text-mat-slate/40 font-mono tracking-tighter uppercase flex items-center gap-1.5 truncate">
                                       <Globe size={8} className="shrink-0" /> {p.city || 'PARTS_UNKNOWN'}
@@ -445,7 +445,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                               </td>
                               <td className="px-8 py-5 text-right">
                                  <div className="flex justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                                    {p.payment_status === 'PENDING' && (
+                                    {p.payment_status === 'PENDING' ? (
                                        <div className="flex gap-1.5 mr-2 pr-2 border-r border-mat-rose/10">
                                           <button 
                                             onClick={() => handlePaymentApprove(p.user_id)}
@@ -456,7 +456,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                             className="px-3 py-1 bg-red-500/10 text-red-500 border border-red-500/20 rounded-lg text-[8px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all"
                                           >NO</button>
                                        </div>
-                                    )}
+                                    ) : null}
                                     <button 
                                       onClick={() => setMessageTarget({ id: p.user_id, name: p.full_name })}
                                       className="p-2.5 hover:bg-mat-wine/5 text-mat-wine rounded-xl transition-colors border border-transparent hover:border-mat-rose/10"
@@ -483,11 +483,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                            </motion.tr>
                         ))}
                      </AnimatePresence>
-                     {!loading && profiles.length === 0 && (
+                     {!loading && profiles.length === 0 ? (
                         <tr>
                            <td colSpan={5} className="text-center py-24 text-mat-slate/30 uppercase tracking-[0.3em] font-black text-[10px]">Matrix Empty: No nodes found.</td>
                         </tr>
-                     )}
+                     ) : null}
                   </tbody>
                </table>
             </div>

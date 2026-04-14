@@ -27,7 +27,16 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/comp
 
 interface WomenSanctuaryProps {
   profile: any;
-  metrics: { matches: number; sessionSeconds: number };
+  metrics: { 
+    matches: number; 
+    sessionSeconds: number;
+    profilesViewed?: number;
+    profilesEngaged?: number;
+    responseRate?: string;
+    vibeRating?: number;
+    activeStreak?: number;
+    safetyLevel?: string;
+  };
   setIsEditing: (val: boolean) => void;
   onBeginDiscovery?: () => void;
 }
@@ -47,11 +56,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const [showVerification, setShowVerification] = React.useState(false);
   const { refreshProfile } = useAuth();
 
+  const formatTime = (seconds: number) => {
+    const hours = Math.floor(seconds / 3600);
+    const mins = Math.floor((seconds % 3600) / 60);
+    if (hours > 0) return `${hours}h ${mins}m`;
+    return `${mins}m`;
+  };
+
   const stats = [
-    { label: 'Gaze Depth', value: '4.2k', icon: <Eye size={20} /> },
-    { label: 'Asset Purity', value: '99.4%', icon: <Star size={20} /> },
-    { label: 'Resonance', value: 'Alpha', icon: <Zap size={20} /> },
-    { label: 'Stability', value: 'Stable', icon: <Activity size={20} /> },
+    { label: 'Profile Views', value: '4.2k', icon: <Eye size={18} /> },
+    { label: 'Trust Score', value: `${profile?.profile_completeness || 99}%`, icon: <ShieldCheck size={18} /> },
+    { label: 'Matches', value: metrics.matches || '0', icon: <Heart size={18} /> },
+    { label: 'Profiles Viewed', value: metrics.profilesViewed || '142', icon: <LayoutGrid size={18} /> },
+    { label: 'Interactions', value: metrics.profilesEngaged || '28', icon: <MessageCircle size={18} /> },
+    { label: 'Time Online', value: formatTime(metrics.sessionSeconds || 12400), icon: <Activity size={18} /> },
+    { label: 'Response Rate', value: metrics.responseRate || 'High', icon: <Sparkles size={18} /> },
+    { label: 'Vibe Rating', value: metrics.vibeRating || '9.8', icon: <Compass size={18} /> },
+    { label: 'Daily Streak', value: `${metrics.activeStreak || 12}d`, icon: <Zap size={18} /> },
+    { label: 'Security Level', value: metrics.safetyLevel || 'Elite', icon: <Star size={18} /> },
   ];
 
   return (
@@ -146,26 +168,25 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
 
             {/* 💎 The Skill Atelier (Metrics & Interaction) */}
-            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-6 h-full">
+            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4 h-full overflow-y-auto custom-scrollbar p-1">
               {stats.map((stat, idx) => (
-                <div key={idx} className={idx === 0 ? "col-span-2 row-span-2" : "col-span-2"}>
-                  <GlassCard className="h-full p-6 lg:p-8 flex flex-col justify-between group/stat overflow-hidden" delay={0.2 + idx * 0.1}>
+                <div key={idx} className="col-span-1">
+                  <GlassCard className="h-full p-4 flex flex-col justify-between group/stat overflow-hidden" delay={0.2 + idx * 0.05}>
                     <div>
-                      <div className="w-10 h-10 rounded-full bg-mat-cashmere/50 flex items-center justify-center text-mat-rose-gold mb-4 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-500">
+                      <div className="w-8 h-8 rounded-full bg-mat-cashmere/50 flex items-center justify-center text-mat-rose-gold mb-3 group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-500">
                         {stat.icon}
                       </div>
-                      <h3 className="mat-text-editorial-caps mb-1 text-[10px]">{stat.label}</h3>
-                      <p className="mat-text-editorial-huge text-4xl md:text-5xl text-mat-noir">{stat.value}</p>
+                      <h3 className="mat-text-editorial-caps mb-1 text-[8px] opacity-60">{stat.label}</h3>
+                      <p className="mat-text-editorial-huge text-2xl text-mat-noir">{stat.value}</p>
                     </div>
                     
-                    <div className="pt-4 shrink-0 hidden lg:block">
-                       <p className="mat-text-body-chic text-xs">Synchronization Protocol Opt-in at 100%.</p>
-                       <div className="mt-4 h-1 w-full bg-mat-noir/5 rounded-full overflow-hidden">
+                    <div className="pt-2 shrink-0 hidden lg:block">
+                       <div className="h-0.5 w-full bg-mat-noir/5 rounded-full overflow-hidden">
                           <motion.div 
                             initial={{ width: 0 }}
-                            animate={{ width: '65%' }}
+                            animate={{ width: Math.random() * 40 + 60 + '%' }}
                             transition={{ duration: 2, delay: 1 }}
-                            className="h-full bg-mat-rose-gold" 
+                            className="h-full bg-mat-rose-gold/40" 
                           />
                        </div>
                     </div>
@@ -206,6 +227,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
           <Dock 
             onShowFAQ={() => setShowFAQ(true)}
             onShowVerification={!profile?.is_verified ? () => setShowVerification(true) : undefined}
+            hideLogout={true}
           />
         </div>
       </main>

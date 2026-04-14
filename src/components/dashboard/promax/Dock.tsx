@@ -53,6 +53,7 @@ const DockIcon: React.FC<DockIconProps> = ({ icon: Icon, label, mouseX, onClick 
 interface DockProps {
   onShowFAQ?: () => void;
   onShowVerification?: () => void;
+  hideLogout?: boolean;
 }
 
 /**
@@ -60,7 +61,8 @@ interface DockProps {
  */
 export const Dock: React.FC<DockProps> = ({ 
   onShowFAQ, 
-  onShowVerification 
+  onShowVerification,
+  hideLogout = false
 }) => {
   const mouseX = useMotionValue(Infinity);
 
@@ -79,9 +81,12 @@ export const Dock: React.FC<DockProps> = ({
         <DockIcon icon={ShieldCheck} label="Identity.Seal" mouseX={mouseX} onClick={onShowVerification} />
       )}
       
-      <div className="w-[1px] h-8 bg-mat-black/5 mx-1" />
-      
-      <DockIcon icon={LogOut} label="Session.Egress" mouseX={mouseX} onClick={() => window.location.href = '/signin'} />
+      {!hideLogout && (
+        <>
+          <div className="w-[1px] h-8 bg-mat-black/5 mx-1" />
+          <DockIcon icon={LogOut} label="Session.Egress" mouseX={mouseX} onClick={() => window.location.href = '/signin'} />
+        </>
+      )}
     </motion.nav>
   );
 };
