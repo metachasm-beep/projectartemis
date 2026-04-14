@@ -11,6 +11,7 @@ import { AdminDashboard } from '@/components/dashboards/AdminDashboard';
 import PictureManager from '@/components/dashboards/PictureManager';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { Leaderboard } from '@/components/discovery/Leaderboard';
+import { FAQSection } from '@/components/FAQSection';
 import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
@@ -108,6 +109,12 @@ export const DashboardLayout: React.FC = () => {
           {activeTab === 'leaderboard' && (
              <motion.div key="leaderboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                 <Leaderboard />
+             </motion.div>
+          )}
+
+          {activeTab === 'faq' && (
+             <motion.div key="faq" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
+                <FAQSection />
              </motion.div>
           )}
 

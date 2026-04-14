@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy, Search } from 'lucide-react';
+import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy, Search, HelpCircle } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { turso } from '@/lib/turso';
@@ -44,7 +44,10 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
       : []
     ),
     { id: 'messages' as const, label: 'Messages', icon: MessageCircle },
-    ...(profile?.role !== 'woman' ? [{ id: 'store' as const, label: 'Buy Aura', icon: Wallet }] : []),
+    ...(profile?.role !== 'woman' ? [
+      { id: 'store' as const, label: 'Buy Aura', icon: Wallet },
+      { id: 'faq' as const, label: 'Manual', icon: HelpCircle }
+    ] : []),
   ];
 
   const handleAdminToggle = (role: 'man' | 'woman' | 'admin') => {
