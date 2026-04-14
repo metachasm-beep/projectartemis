@@ -10,7 +10,8 @@ import {
   Eye,
   Camera,
   Compass,
-  Sparkles
+  Sparkles,
+  Settings
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
@@ -28,6 +29,7 @@ interface MenDashboardProps {
   profile: MatriarchProfile;
   status: any;
   handleLogout?: () => void;
+  onOpenSettings: () => void;
   refreshProfile: () => Promise<void>;
   setIsEditing?: (val: boolean) => void;
   onNavigateToStore?: () => void;
@@ -39,6 +41,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   status,
   refreshProfile,
   setIsEditing,
+  onOpenSettings,
   onNavigateToStore,
   metrics: externalMetrics
 }) => {
@@ -306,6 +309,15 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       animate="animate"
       className="relative isolate min-h-screen bg-mat-obsidian snap-y snap-mandatory overflow-y-auto overflow-x-hidden h-screen"
     >
+      {/* 🛠️ TOP BAR ACTIONS */}
+      <div className="fixed top-8 right-8 z-[100] flex items-center gap-4">
+        <button 
+          onClick={onOpenSettings}
+          className="w-12 h-12 rounded-full bg-white/5 text-white/40 border border-white/10 flex items-center justify-center hover:bg-white hover:text-black hover:scale-105 transition-all shadow-2xl backdrop-blur-md"
+        >
+          <Settings size={20} />
+        </button>
+      </div>
       {/* ─── IMMERSIVE DUAL-FOLD BACKGROUND ─── */}
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none select-none">
         

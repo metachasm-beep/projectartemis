@@ -8,6 +8,7 @@ import { MenDashboard } from './dashboards/MenDashboard';
 import { WomenSanctuary } from '@/components/dashboards/WomenSanctuary';
 import { AdminDashboard } from './dashboards/AdminDashboard';
 import { EditProfile } from '@/components/EditProfile';
+import { GeneralSettings } from '@/components/GeneralSettings';
 import { AnimatePresence } from 'framer-motion';
 
 export const Dashboard: React.FC = () => {
@@ -15,6 +16,7 @@ export const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<MatriarchProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     const watchdog = setTimeout(() => {
@@ -173,6 +175,7 @@ export const Dashboard: React.FC = () => {
         profile={profile} 
         status={status} 
         handleLogout={handleLogout} 
+        onOpenSettings={() => setIsSettingsOpen(true)}
       />
     );
   }
@@ -198,6 +201,7 @@ export const Dashboard: React.FC = () => {
           safetyLevel: status?.safetyLevel
         }} 
         setIsEditing={setIsEditing}
+        onOpenSettings={() => setIsSettingsOpen(true)}
         onBeginDiscovery={() => window.location.href = '/discovery'}
       />
 
@@ -213,6 +217,13 @@ export const Dashboard: React.FC = () => {
           />
         )}
       </AnimatePresence>
+
+      <GeneralSettings 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        profile={profile}
+        onLogout={handleLogout}
+      />
     </>
   );
 };

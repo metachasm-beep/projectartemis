@@ -49,6 +49,7 @@ interface WomenSanctuaryProps {
     safetyLevel?: string;
   };
   setIsEditing: (val: boolean) => void;
+  onOpenSettings: () => void;
   onBeginDiscovery?: () => void;
 }
 
@@ -60,6 +61,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   profile,
   metrics, 
   setIsEditing,
+  onOpenSettings,
   onBeginDiscovery 
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);
@@ -133,7 +135,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
               {/* Migrated Dock Actions */}
               <div className="flex items-center gap-1.5 mr-2">
-                <button onClick={() => setIsEditing(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
+                <button onClick={onOpenSettings} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
                   <Settings size={14} />
                 </button>
                 <button onClick={() => setShowFAQ(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">

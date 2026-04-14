@@ -178,7 +178,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
         initial={{ y: 40, opacity: 0, scale: 0.95 }}
         animate={{ y: 0, opacity: 1, scale: 1 }}
         exit={{ y: 20, opacity: 0, scale: 0.95 }}
-        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-black rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] p-8 md:p-12 space-y-12 relative hide-scrollbar selection:bg-mat-rose-gold selection:text-white"
+        className="w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#000000] rounded-[3.5rem] border border-white/10 shadow-[0_0_100px_rgba(0,0,0,1)] p-8 md:p-12 space-y-12 relative hide-scrollbar selection:bg-mat-rose-gold selection:text-white"
       >
         {/* Suggestion 1: Noir High-Contrast — Dramatic Starkness */}
         <div className="absolute inset-0 bg-gradient-to-tr from-mat-noir via-transparent to-mat-wine/10 opacity-30 pointer-events-none" />
@@ -189,8 +189,8 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                  <Sparkles size={16} className="text-mat-rose-gold animate-pulse" />
                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-rose-gold italic">Identity Enhancement Protocol</span>
               </div>
-              <h2 className="text-5xl font-black text-white italic tracking-tighter leading-tight" style={{fontFamily: '"Playfair Display", serif'}}>
-                Refine Your <br /><span className="text-white/40">Sanctuary.</span>
+              <h2 className="text-5xl font-black text-white italic tracking-tight leading-tight" style={{fontFamily: 'var(--font-display)'}}>
+                Refine Your <br /><span className="text-white/60">Sanctuary.</span>
               </h2>
            </div>
            <button onClick={onCancel} className="p-4 rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all">
@@ -245,7 +245,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
 
                  {profile.is_verified && (
                     <div className="col-span-full p-6 rounded-3xl bg-mat-gold/5 border border-mat-gold/10 flex flex-col items-center text-center space-y-3">
-                       <ShieldCheck size={32} className="text-mat-gold opacity-40" />
+                       <ShieldCheck size={32} className="text-mat-gold opacity-80" />
                        <div className="space-y-1">
                           <p className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em]">Biometric Shield Active</p>
                           <p className="text-[9px] font-medium text-mat-gold/60 uppercase leading-relaxed max-w-[280px]">
@@ -303,11 +303,11 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
 
              <div className="space-y-6">
                 <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
                       Full Name
                       <Tooltip>
                          <TooltipTrigger>
-                            <Info size={12} className="opacity-40" />
+                            <Info size={12} className="opacity-80" />
                          </TooltipTrigger>
                          <TooltipContent>How you will be addressed within the sanctuary.</TooltipContent>
                       </Tooltip>
@@ -316,16 +316,16 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       name="full_name"
                       value={formData.full_name}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
+                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                    />
                 </div>
 
                 <div className="space-y-3">
-                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
                       Your Bio
                       <Tooltip>
                          <TooltipTrigger>
-                            <Info size={12} className="opacity-40" />
+                            <Info size={12} className="opacity-80" />
                          </TooltipTrigger>
                          <TooltipContent>A poetic summary of who you are and what you seek.</TooltipContent>
                       </Tooltip>
@@ -335,35 +335,35 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       value={sanitizeBio(formData.bio) || ''}
                       onChange={handleChange}
                       rows={5}
-                      className="w-full p-6 rounded-2xl bg-white/[0.03] border border-white/10 text-white font-bold text-base tracking-tight focus:outline-none focus:border-mat-rose-gold transition-all placeholder:text-white/10"
+                      className="w-full p-6 rounded-2xl bg-white/[0.06] border border-white/30 text-white font-black text-lg tracking-tight focus:outline-none focus:border-mat-rose-gold transition-all placeholder:text-white/10"
                       placeholder="TELL YOUR STORY..."
                    />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
                          Location
-                         <MapPin size={12} className="opacity-40" />
+                         <MapPin size={12} className="opacity-80" />
                       </label>
                       <Input 
                          name="city"
                          value={formData.city || ''}
                          onChange={handleChange}
-                         className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
+                         className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                       />
                    </div>
 
                    <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 ml-4 flex items-center gap-2">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4 flex items-center gap-2">
                          Occupation
-                         <Briefcase size={12} className="opacity-40" />
+                         <Briefcase size={12} className="opacity-80" />
                       </label>
                       <Input 
                          name="occupation"
                          value={formData.occupation || ''}
                          onChange={handleChange}
-                         className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
+                         className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg tracking-tight px-6 focus:border-mat-rose-gold transition-all" 
                       />
                    </div>
                 </div>
@@ -383,7 +383,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       name="education"
                       value={formData.education || ''}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base px-6 focus:border-mat-rose-gold" 
+                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" 
                    />
                 </div>
 
@@ -393,7 +393,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                       name="religion"
                       value={formData.religion || ''}
                       onChange={handleChange}
-                      className="h-16 rounded-2xl bg-white/[0.03] border-white/10 text-white font-bold text-base px-6 focus:border-mat-rose-gold" 
+                      className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" 
                    />
                 </div>
              </div>
