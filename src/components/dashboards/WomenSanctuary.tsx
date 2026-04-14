@@ -85,9 +85,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏙️ The Haute Sanctuary Canvas */}
-      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-6 lg:px-24 lg:pt-8 min-h-0">
+      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-4 lg:px-16 lg:pt-4 min-h-0">
         {/* ✨ Editorial Header: The Monumental Serif */}
-        <header className="flex flex-col md:flex-row justify-between items-end mb-6 gap-4 shrink-0">
+        <header className="flex flex-col md:flex-row justify-between items-end mb-4 gap-4 shrink-0">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -132,12 +132,12 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         <TooltipProvider>
           {/* 🧩 The Editorial Spread (Bento Grid) */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 flex-1 min-h-0 pb-32">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-1 min-h-0 pb-20">
             
             {/* 👗 Profile Portrait (The Hero Anchor) */}
             <div className="md:col-span-4 h-full">
               <GlassCard className="h-full p-0 flex flex-col group/card overflow-hidden shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.4),0_20px_40px_rgba(0,0,0,0.1)] border-white/20" delay={0.1}>
-                <div className="relative h-[45%] overflow-hidden shrink-0">
+                <div className="relative h-[40%] overflow-hidden shrink-0">
                   <img 
                     src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=600"} 
                     alt={profile?.full_name} 
@@ -150,21 +150,21 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                   </div>
                 </div>
                 
-                <div className="p-6 lg:p-8 flex flex-col justify-between flex-grow min-h-0 bg-white/5 backdrop-blur-md">
+                <div className="p-5 lg:p-6 flex flex-col justify-between flex-grow min-h-0 bg-white/5 backdrop-blur-md">
                   <div className="space-y-1">
-                    <h2 className="mat-text-editorial-huge text-4xl text-mat-noir">{profile?.full_name || 'User'}</h2>
-                    <p className="mat-text-editorial-caps text-mat-rose-gold text-xs">{profile?.city || 'The Sanctuary'}</p>
+                    <h2 className="mat-text-editorial-huge text-3xl lg:text-4xl text-mat-noir">{profile?.full_name || 'User'}</h2>
+                    <p className="mat-text-editorial-caps text-mat-rose-gold text-[10px]">{profile?.city || 'The Sanctuary'}</p>
                   </div>
                   
-                  <div className="flex items-center gap-4 pt-4 shrink-0">
+                  <div className="flex items-center gap-3 pt-4 shrink-0">
                     <button 
                       onClick={() => setIsEditing(true)}
-                      className="flex-grow py-5 bg-mat-noir text-mat-bone mat-text-editorial-caps text-[11px] rounded-full hover:bg-mat-rose-gold transition-all duration-500 shadow-xl"
+                      className="flex-grow py-4 bg-mat-noir text-mat-bone mat-text-editorial-caps text-[10px] rounded-full hover:bg-mat-rose-gold transition-all duration-500 shadow-xl"
                     >
                       Edit Profile
                     </button>
-                    <button className="w-14 h-14 rounded-full border border-mat-noir/10 flex items-center justify-center hover:bg-mat-noir hover:text-white transition-all">
-                       <LayoutGrid size={20} />
+                    <button className="w-12 h-12 rounded-full border border-mat-noir/10 flex items-center justify-center hover:bg-mat-noir hover:text-white transition-all">
+                       <LayoutGrid size={18} />
                     </button>
                   </div>
                 </div>
@@ -172,26 +172,26 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             </div>
 
             {/* 💎 The Skill Atelier (Metrics & Interaction) */}
-            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-5 gap-3 h-full overflow-y-auto custom-scrollbar p-2">
+            <div className="md:col-span-8 grid grid-cols-2 md:grid-cols-5 gap-3 h-full overflow-y-auto custom-scrollbar p-1">
               {stats.map((stat, idx) => (
                 <div key={idx} className="col-span-1">
                   <GlassCard 
                     className={cn(
-                      "h-full p-4 flex flex-col justify-between group/stat overflow-hidden transition-all duration-500",
+                      "h-full p-3 flex flex-col justify-between group/stat overflow-hidden transition-all duration-500",
                       "bg-white/10 backdrop-blur-2xl border border-white/20",
-                      "shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.4),0_10px_20px_rgba(0,0,0,0.1)]",
-                      "hover:shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.5),0_20px_40px_rgba(0,0,0,0.15)]",
+                      "shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.4),0_8px_16px_rgba(0,0,0,0.08)]",
+                      "hover:shadow-[inset_0_1.5px_2px_rgba(255,255,255,0.5),0_15px_30px_rgba(0,0,0,0.12)]",
                       "hover:scale-[1.03] active:scale-[0.98] cursor-default"
                     )} 
                     delay={0.2 + idx * 0.05}
                   >
-                    <div className="space-y-3">
-                      <div className="w-9 h-9 rounded-2xl bg-mat-cashmere/30 flex items-center justify-center text-mat-rose-gold shadow-sm group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-700">
-                        {stat.icon}
+                    <div className="space-y-2">
+                      <div className="w-8 h-8 rounded-xl bg-mat-cashmere/30 flex items-center justify-center text-mat-rose-gold shadow-sm group-hover/stat:bg-mat-rose-gold group-hover/stat:text-white transition-all duration-700">
+                        {React.cloneElement(stat.icon as React.ReactElement, { size: 16 })}
                       </div>
                       <div className="space-y-0.5">
-                        <h3 className="mat-text-editorial-caps text-[7px] opacity-40 tracking-[0.2em]">{stat.label}</h3>
-                        <p className="mat-text-editorial-huge text-2xl text-mat-noir leading-none">{stat.value}</p>
+                        <h3 className="mat-text-editorial-caps text-[6px] opacity-40 tracking-[0.2em]">{stat.label}</h3>
+                        <p className="mat-text-editorial-huge text-xl text-mat-noir leading-none">{stat.value}</p>
                       </div>
                     </div>
                     
@@ -223,26 +223,27 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       </main>
 
       {/* 🦢 Sticky Verification Bar (Floating System Registry) */}
-      <div className="fixed bottom-28 left-6 right-6 lg:left-24 lg:right-24 z-40">
+      <div className="fixed bottom-24 left-6 right-6 lg:left-16 lg:right-16 z-40">
         <motion.div 
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.8 }}
           className={cn(
-            "w-full bg-mat-noir p-4 lg:px-8 lg:py-4 flex flex-col md:flex-row items-center justify-between rounded-[2rem] gap-4",
-            "shadow-[0_20px_50px_rgba(0,0,0,0.3),inset_0_1px_1px_rgba(255,255,255,0.1)]",
+            "w-full bg-mat-noir px-6 py-2.5 flex flex-col md:flex-row items-center justify-between rounded-full gap-4",
+            "shadow-[0_15px_30px_rgba(0,0,0,0.25),inset_0_1px_1px_rgba(255,255,255,0.1)]",
             "border border-white/5 relative overflow-hidden"
           )}
         >
-          <div className="flex items-center gap-6 relative z-10">
-            <div className="w-10 h-10 rounded-full bg-mat-rose-gold/20 flex items-center justify-center text-mat-rose-gold">
-               <ShieldCheck size={20} />
+          <div className="flex items-center gap-4 relative z-10 text-white">
+            <div className="w-8 h-8 rounded-full bg-mat-rose-gold/20 flex items-center justify-center text-mat-rose-gold">
+               <ShieldCheck size={16} />
             </div>
-            <div className="space-y-0.5">
-               <h3 className="mat-text-editorial-caps text-mat-rose-gold text-[8px] tracking-[0.3em]">Identity Protocol</h3>
-               <h2 className="mat-text-editorial text-xl text-mat-bone leading-tight">
+            <div className="flex items-center gap-3">
+               <h3 className="mat-text-editorial-caps text-mat-rose-gold text-[7px] tracking-[0.3em] whitespace-nowrap">Identity Protocol</h3>
+               <div className="w-[1px] h-3 bg-white/10" />
+               <h2 className="mat-text-editorial text-sm text-mat-bone leading-tight">
                   Status: <span className={profile?.is_verified ? "text-mat-rose-gold font-medium" : "text-white/40 italic"}>
-                    {profile?.is_verified ? "Sovereign Verified" : "Verification Required"}
+                    {profile?.is_verified ? "Sovereign Verified" : "Action Required"}
                   </span>
                </h2>
             </div>
@@ -252,14 +253,14 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             {!profile?.is_verified ? (
               <button 
                 onClick={() => setShowVerification(true)}
-                className="w-full md:w-auto px-10 py-3 bg-mat-rose-gold text-mat-bone mat-text-editorial-caps text-[10px] rounded-full hover:bg-white hover:text-mat-noir transition-all duration-700 active:scale-[0.98] shadow-xl"
+                className="w-full md:w-auto px-6 py-2 bg-mat-rose-gold text-mat-bone mat-text-editorial-caps text-[9px] rounded-full hover:bg-white hover:text-mat-noir transition-all duration-700 active:scale-[0.98] shadow-lg"
               >
                 Authenticate Presence
               </button>
             ) : (
-              <div className="flex items-center gap-2 px-6 py-3 bg-white/5 rounded-full border border-white/10">
-                 <div className="w-1.5 h-1.5 rounded-full bg-mat-rose-gold animate-pulse" />
-                 <span className="mat-text-editorial-caps text-[9px] text-white/60">System Synchronized</span>
+              <div className="flex items-center gap-2 px-4 py-1.5 bg-white/5 rounded-full border border-white/10">
+                 <div className="w-1 h-1 rounded-full bg-mat-rose-gold animate-pulse" />
+                 <span className="mat-text-editorial-caps text-[8px] text-white/60">System Synchronized</span>
               </div>
             )}
           </div>
