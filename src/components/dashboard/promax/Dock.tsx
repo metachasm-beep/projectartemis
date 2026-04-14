@@ -34,10 +34,10 @@ const DockIcon: React.FC<DockIconProps> = ({ icon: Icon, label, mouseX, onClick 
       ref={ref}
       style={{ width }}
       onClick={onClick}
-      className="aspect-square rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-indigo-400 hover:bg-white/10 transition-colors cursor-pointer relative group"
+      className="aspect-square rounded-full bg-white/80 border border-white flex items-center justify-center text-mat-slate/40 hover:text-mat-gold hover:bg-white transition-colors cursor-pointer relative group shadow-[0_4px_10px_rgba(0,0,0,0.05),inset_0_1px_1px_rgba(255,255,255,1)]"
     >
       <Icon size={20} strokeWidth={1.5} />
-      <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-black/80 backdrop-blur-md border border-white/10 rounded-lg text-[10px] text-indigo-400 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap uppercase tracking-widest pointer-events-none font-bold">
+      <span className="absolute -top-10 left-1/2 -translate-x-1/2 px-3 py-1 bg-mat-ivory/90 backdrop-blur-md border border-mat-gold/20 rounded-lg text-[10px] text-mat-gold opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap uppercase tracking-widest pointer-events-none font-bold shadow-sm">
         {label}
       </span>
     </motion.div>
@@ -59,11 +59,11 @@ export const Dock: React.FC<DockProps> = ({
     <motion.nav 
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
-      className="flex items-center gap-4 p-4 rounded-[2.5rem] bg-black/40 backdrop-blur-3xl border border-white/10 shadow-2xl"
+      className="flex items-center gap-4 p-4 rounded-[2.5rem] bg-white/60 backdrop-blur-3xl border border-white shadow-[0_30px_60px_rgba(0,0,0,0.1),inset_0_1px_1px_rgba(255,255,255,1)]"
     >
       <DockIcon icon={Settings} label="Settings" mouseX={mouseX} />
       
-      <div className="w-px h-8 bg-white/10 mx-2" />
+      <div className="w-px h-8 bg-mat-gold/10 mx-2" />
       
       <DockIcon icon={HelpCircle} label="Support" mouseX={mouseX} onClick={onShowFAQ} />
       {onShowVerification && (
