@@ -69,68 +69,28 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <PostProcessOverlay />
 
       {/* 🏰 Main Interface Layer */}
-      <main className="relative z-10 w-full h-full p-8 lg:p-12 flex flex-col gap-8">
+      <main className="relative z-10 w-full h-full p-6 lg:p-10 flex flex-col gap-6">
         
-        {/* 🏛️ Top Header: Sovereign Branding */}
-        <header className="flex justify-between items-end mb-4">
-          <div className="flex items-center gap-6">
-            {profile?.photos?.[0] ? (
-              <div className="relative w-20 h-20 rounded-full overflow-hidden border-2 border-mat-gold/30 shadow-[0_0_30px_rgba(212,175,55,0.15)] flex-shrink-0">
-                 <img src={profile.photos[0]} alt="Sovereign Profile" className="w-full h-full object-cover" />
-                 <div className="absolute inset-0 bg-gradient-to-tr from-mat-wine/40 to-transparent mix-blend-overlay"></div>
-              </div>
-            ) : (
-              <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0 backdrop-blur-md">
-                 <span className="font-mono text-mat-gold/50 text-[10px] tracking-widest">ID</span>
-              </div>
-            )}
-            
-            <div className="space-y-2">
-              <Badge variant="outline" className="px-5 py-2 border-mat-gold/20 text-mat-gold rounded-full bg-mat-gold/5 font-mono text-[9px] uppercase tracking-[0.3em] backdrop-blur-md">
-                Registry: Elite Sanctum Verified [PROTOCOL_v2.0]
-              </Badge>
-              <h1 className="text-6xl font-bold text-mat-cream tracking-tighter italic leading-none drop-shadow-2xl" style={{ fontFamily: 'Playfair Display, serif' }}>
-                Sovereign Presence<span className="text-mat-gold font-sans">.</span>
-              </h1>
-            </div>
-          </div>
+        {/* 🕸️ The Sovereign Matrix: 12-Column Grid (Squeezed for Zero-Scroll) */}
+        <div className="flex-1 grid grid-cols-12 grid-rows-12 gap-5 lg:gap-6 pb-20">
           
-          <div className="flex items-center gap-8">
-            <div className="text-right hidden lg:block">
-              <p className="font-mono text-[9px] text-white/30 uppercase tracking-[0.4em]">Logged Identity</p>
-              <p className="text-mat-cream font-bold italic text-lg leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>
-                {profile?.full_name || 'ANONYMOUS_PRESENCE'}
-              </p>
-            </div>
-            <button 
-               onClick={() => setShowFAQ(true)}
-               className="w-14 h-14 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-mat-gold hover:bg-white/10 transition-all group backdrop-blur-xl"
-            >
-               <HelpCircle size={22} className="group-hover:rotate-12 transition-transform" />
-            </button>
-          </div>
-        </header>
-
-        {/* 🕸️ The Sovereign Matrix: 12-Column Grid */}
-        <div className="flex-1 grid grid-cols-12 grid-rows-6 gap-6 lg:gap-8 pb-16">
-          
-          {/* 👁️ Zone 1: The Oracle (Top-Left / Insight) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-3" delay={0.1}>
+          {/* 👁️ Zone 1: The Oracle (Insight) */}
+          <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.1}>
             <OracleWidget metrics={metrics} onBeginDiscovery={onBeginDiscovery} />
           </GlassCard>
 
-          {/* 🏛️ Zone 2: The Architect (Top-Right / Vision) */}
-          <GlassCard className="col-span-12 lg:col-span-8 row-span-2" delay={0.2}>
+          {/* 🏛️ Zone 2: The Architect (Vision) */}
+          <GlassCard className="col-span-12 lg:col-span-8 row-span-4" delay={0.2}>
              <ThreeAnchor quality="high" />
              <div className="h-full flex flex-col justify-between relative z-10">
-                <div className="space-y-2">
-                   <p className="font-mono text-[10px] text-mat-wine uppercase tracking-[0.6em] mb-2">Vision Matrix</p>
-                   <h2 className="text-7xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
+                <div className="space-y-1">
+                   <p className="font-mono text-[9px] text-mat-wine uppercase tracking-[0.6em] mb-1">Vision Matrix</p>
+                   <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'Playfair Display, serif' }}>
                      Aesthetic <span className="opacity-10 text-mat-gold">Sovereignty.</span>
                    </h2>
                 </div>
 
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
                   {(() => {
                     const arc = SkillOrchestrator.getArchitectVisuals();
                     return [
@@ -141,15 +101,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                     ].map((stat, i) => (
                       <motion.div 
                         key={i} 
-                        whileHover={{ y: -5 }}
-                        className="space-y-4"
+                        whileHover={{ y: -3 }}
+                        className="space-y-3"
                       >
-                         <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 backdrop-blur-md">
-                           <stat.icon size={22} className={stat.color} strokeWidth={1.5} />
+                         <div className="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center border border-white/10 backdrop-blur-md">
+                           <stat.icon size={20} className={stat.color} strokeWidth={1.5} />
                          </div>
-                         <div className="space-y-1">
-                            <p className="text-3xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
-                            <p className="font-mono text-[9px] opacity-30 uppercase tracking-[0.2em]">{stat.label}</p>
+                         <div className="space-y-0.5">
+                            <p className="text-2xl font-bold text-white italic tracking-tighter font-mono">{stat.val}</p>
+                            <p className="font-mono text-[8px] opacity-30 uppercase tracking-[0.2em]">{stat.label}</p>
                          </div>
                       </motion.div>
                     ));
@@ -158,35 +118,40 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
           </GlassCard>
 
-          {/* 🌿 Zone 3: The Sanctuary (Middle-Right / Harmony) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-4" delay={0.3}>
-            <SanctuaryWidget metrics={metrics} />
+          {/* 🌿 Zone 3: The Sanctuary (Identity Hub) */}
+          <GlassCard className="col-span-12 lg:col-span-4 row-span-8" delay={0.3}>
+            <SanctuaryWidget 
+               metrics={metrics} 
+               profile={profile}
+               onShowFAQ={() => setShowFAQ(true)}
+               onShowVerification={() => setShowVerification(true)}
+            />
           </GlassCard>
 
-          {/* 📜 Zone 4: The Influence (Bottom-Left / Authority) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-3" delay={0.4}>
+          {/* 📜 Zone 4: The Influence (Authority) */}
+          <GlassCard className="col-span-12 lg:col-span-4 row-span-6" delay={0.4}>
              <InfluenceWidget metrics={metrics} />
           </GlassCard>
 
-          {/* 🛡️ Zone 5: Registry Integrity (Bottom-Right / Command) */}
-          <GlassCard className="col-span-12 lg:col-span-4 row-span-1" delay={0.5}>
-            <div className="h-full flex items-center justify-between">
-              <div className="flex items-center gap-6">
-                <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20">
-                  <ShieldCheck size={24} className="text-mat-gold" strokeWidth={1.5} />
+          {/* 🛡️ Zone 5: Registry Integrity (Command) */}
+          <GlassCard className="col-span-12 lg:col-span-4 row-span-2" delay={0.5}>
+            <div className="h-full flex items-center justify-between px-2">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-mat-gold/10 rounded-xl border border-mat-gold/20">
+                  <ShieldCheck size={20} className="text-mat-gold" strokeWidth={1.5} />
                 </div>
                 <div>
-                   <p className="font-mono text-[9px] text-white/30 uppercase tracking-[0.5em]">Registry Integrity</p>
-                   <p className="text-sm font-bold italic text-white tracking-widest">Protocol: <span className="text-mat-gold">STABLE</span></p>
+                   <p className="font-mono text-[8px] text-white/30 uppercase tracking-[0.5em]">Integrity Protocol</p>
+                   <p className="text-xs font-bold italic text-white tracking-widest">Status: <span className="text-mat-gold">STABLE</span></p>
                 </div>
               </div>
               
               {!profile?.is_verified && (
                 <button 
                   onClick={() => setShowVerification(true)}
-                  className="px-6 py-3 border border-mat-gold/20 text-mat-gold text-[9px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
+                  className="px-5 py-2.5 border border-mat-gold/20 text-mat-gold text-[8px] font-black uppercase tracking-[0.3em] rounded-full hover:bg-mat-gold/10 transition-all font-mono"
                 >
-                  Apply Protocol
+                  Apply
                 </button>
               )}
             </div>
