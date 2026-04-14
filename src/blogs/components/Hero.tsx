@@ -44,7 +44,7 @@ const Hero: React.FC = () => {
           transition={{ delay: 0.4, duration: 1, ease: "easeOut" }}
         >
           <BlurText 
-            text="Late-night reflections on love, intimacy, and the modern dating protocol."
+            text="Reflections on love, intimacy, and the modern dating protocol"
             delay={30}
             animateBy="words"
             direction="bottom"
