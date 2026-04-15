@@ -86,6 +86,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
 
   /* ── Engagement stats ── */
+  const stats = [
     /* --- Updated Stats Matrix (Real Data Only) --- */
     { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50', description: "Total number of seekers who have engaged with your dossier." },
     { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50', description: "Profile integrity score based on dossier completeness." },
