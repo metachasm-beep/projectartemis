@@ -8,10 +8,10 @@ import StarBorder from '../../components/bits/StarBorder';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#030303]">
-      <div className="absolute inset-0 opacity-40">
+    <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#FFFDF9]">
+      <div className="absolute inset-0 opacity-20">
         <LightRays 
-          raysColor="#FFFFFF" 
+          raysColor="#F5F1E8" 
           raysSpeed={0.3}
           lightSpread={1.5}
           rayLength={2}
@@ -19,7 +19,7 @@ const Hero: React.FC = () => {
         />
       </div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#030303]/40 to-[#030303] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FFFDF9]/40 to-[#FFFDF9] pointer-events-none" />
 
       <div className="relative z-10 text-center px-4 max-w-6xl">
         <motion.div
@@ -33,7 +33,7 @@ const Hero: React.FC = () => {
             maxIterations={20}
             animateOn="view"
             revealDirection="center"
-            className="text-2xl sm:text-5xl md:text-9xl font-black tracking-tighter text-white select-none leading-none"
+            className="text-2xl sm:text-5xl md:text-9xl font-black tracking-tighter text-[#3C2F2F] select-none leading-none"
             parentClassName="mb-4 md:mb-6 px-4 w-full block"
           />
         </motion.div>
@@ -48,7 +48,7 @@ const Hero: React.FC = () => {
             delay={30}
             animateBy="words"
             direction="bottom"
-            className="text-base md:text-3xl text-white/50 font-light max-w-2xl mx-auto leading-tight italic px-4"
+            className="text-base md:text-3xl text-[#3C2F2F]/60 font-light max-w-2xl mx-auto leading-tight italic px-4"
           />
         </motion.div>
 
@@ -60,7 +60,7 @@ const Hero: React.FC = () => {
         >
           <motion.div 
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 bg-white/5 backdrop-blur-xl text-white/40 text-xs font-black uppercase tracking-[0.4em] hover:text-white hover:border-white/20 transition-all cursor-pointer group shadow-2xl shadow-rose-500/5"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[#3C2F2F]/10 bg-[#3C2F2F]/5 backdrop-blur-xl text-[#3C2F2F]/40 text-xs font-black uppercase tracking-[0.4em] hover:text-[#3C2F2F] hover:border-[#3C2F2F]/20 transition-all cursor-pointer group shadow-2xl shadow-rose-500/5"
           >
             Scroll to Explore
             <motion.span
@@ -75,11 +75,11 @@ const Hero: React.FC = () => {
           <a href="https://matriarchindia.com">
             <StarBorder
               as="div"
-              color="#F0A3EA"
+              color="#D4AF37"
               speed="4s"
               className="rounded-full"
             >
-              <button className="px-10 py-4 rounded-full text-white font-black uppercase tracking-[0.3em] text-[11px] bg-black hover:bg-white/5 transition-all border-none">
+              <button className="px-10 py-4 rounded-full text-white font-black uppercase tracking-[0.3em] text-[11px] bg-[#3C2F2F] hover:bg-[#3C2F2F]/90 transition-all border-none">
                 Back to Sanctuary
               </button>
             </StarBorder>
@@ -92,14 +92,14 @@ const Hero: React.FC = () => {
         <div className="flex items-center gap-6 group">
           <div className="h-[2px] w-24 bg-rose-500 origin-left group-hover:scale-x-150 transition-transform duration-700" />
           <div className="space-y-1">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20">Frequency // 2026</p>
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/40">Obsidian Edition</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#3C2F2F]/30">Frequency // 2026</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-rose-500/50">Rose Ivory Edition</p>
           </div>
         </div>
       </div>
 
       <div className="absolute bottom-16 right-12 z-10 hidden lg:block text-right">
-        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-2">Sanctuary Standing</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.5em] text-[#3C2F2F]/30 mb-2">Sanctuary Standing</p>
         <div className="flex gap-1 justify-end">
           {[1, 2, 3, 4, 5].map(i => (
             <div key={i} className="w-1 h-1 bg-rose-500/20 rounded-full" />

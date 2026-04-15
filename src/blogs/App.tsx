@@ -25,10 +25,10 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
         <motion.button
           whileHover={{ scale: 1.05 }}
           onClick={onArchiveClick}
-          className="text-white text-xl md:text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
+          className="text-[#3C2F2F] text-xl md:text-3xl font-black tracking-tighter hover:text-rose-500 transition-colors flex items-center gap-1"
         >
           MATRIARCH<span className="text-rose-500">.</span>
-          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-white/20 mt-2 ml-4 hidden lg:block italic">Journal Archive</span>
+          <span className="text-[10px] font-black tracking-[0.4em] uppercase text-[#3C2F2F]/20 mt-2 ml-4 hidden lg:block italic">Journal Archive</span>
         </motion.button>
       </div>
       
@@ -36,12 +36,12 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
       <div className="pointer-events-auto md:hidden">
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white"
+          className="w-10 h-10 rounded-full bg-[#3C2F2F]/5 border border-[#3C2F2F]/10 flex items-center justify-center text-[#3C2F2F]"
         >
           <div className="space-y-1">
-            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
-            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? 'opacity-0' : ''}`} />
-            <div className={`w-4 h-0.5 bg-white transition-all ${isOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
+            <div className={`w-4 h-0.5 bg-[#3C2F2F] transition-all ${isOpen ? 'rotate-45 translate-y-1.5' : ''}`} />
+            <div className={`w-4 h-0.5 bg-[#3C2F2F] transition-all ${isOpen ? 'opacity-0' : ''}`} />
+            <div className={`w-4 h-0.5 bg-[#3C2F2F] transition-all ${isOpen ? '-rotate-45 -translate-y-1.5' : ''}`} />
           </div>
         </button>
       </div>
@@ -52,7 +52,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
             <button
               key={link.label}
               onClick={() => document.getElementById(link.scroll!)?.scrollIntoView({ behavior: 'smooth' })}
-              className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] bg-transparent border-0 cursor-pointer"
+              className="text-[9px] font-black tracking-[0.5em] text-[#3C2F2F]/40 uppercase hover:text-[#3C2F2F] transition-all hover:tracking-[0.7em] bg-transparent border-0 cursor-pointer"
             >
               {link.label}
             </button>
@@ -62,7 +62,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
               href={link.href}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[9px] font-black tracking-[0.5em] text-white/30 uppercase hover:text-white transition-all hover:tracking-[0.7em] no-underline"
+              className="text-[9px] font-black tracking-[0.5em] text-[#3C2F2F]/40 uppercase hover:text-[#3C2F2F] transition-all hover:tracking-[0.7em] no-underline"
             >
               {link.label}
             </a>
@@ -74,7 +74,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
           rel="noopener noreferrer"
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
-          className="px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-2xl text-[9px] md:text-[10px] font-black tracking-widest text-white uppercase cursor-pointer hover:bg-rose-500 hover:border-rose-500 transition-all shadow-xl shadow-rose-500/10 no-underline"
+          className="px-4 md:px-6 py-1.5 md:py-2 rounded-full border border-[#3C2F2F]/10 bg-[#3C2F2F]/5 backdrop-blur-2xl text-[9px] md:text-[10px] font-black tracking-widest text-[#3C2F2F] uppercase cursor-pointer hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all shadow-xl shadow-rose-500/5 no-underline"
         >
           Join Sanctuary
         </motion.a>
@@ -87,7 +87,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="fixed inset-0 bg-black/95 backdrop-blur-2xl z-[-1] flex flex-col items-center justify-center gap-8 md:hidden"
+            className="fixed inset-0 bg-[#FFFDF9]/98 backdrop-blur-3xl z-[-1] flex flex-col items-center justify-center gap-8 md:hidden shadow-2xl"
           >
             {NAV_LINKS.map(link => (
               <button
@@ -97,7 +97,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
                    else if (link.href) window.open(link.href, '_blank');
                    setIsOpen(false);
                 }}
-                className="text-2xl font-black tracking-[0.4em] text-white/40 uppercase hover:text-rose-500 transition-all"
+                className="text-2xl font-black tracking-[0.4em] text-[#3C2F2F]/30 uppercase hover:text-rose-500 transition-all"
               >
                 {link.label}
               </button>
@@ -132,17 +132,17 @@ const Footer: React.FC<{ onManifestoClick: () => void }> = ({ onManifestoClick }
   };
 
   return (
-    <footer className="py-3 px-8 border-t border-black/10 bg-white">
-      <div className="max-w-6xl mx-auto flex items-center justify-between gap-4">
-        <span className="text-[8px] font-medium text-black/30 tracking-[0.35em] uppercase">
+    <footer className="py-4 px-8 border-t border-[#3C2F2F]/5 bg-[#FDFBF7]">
+      <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
+        <span className="text-[9px] font-bold text-[#3C2F2F]/40 tracking-[0.35em] uppercase">
           © 2026 Matriarch Protocol · Secretum Meum Mihi
         </span>
-        <div className="flex gap-3">
+        <div className="flex gap-4">
           {['Archive', 'Manifesto', 'Instagram'].map(item => (
             <button
               key={item}
               onClick={() => handleFooterLink(item)}
-              className="text-[8px] font-black uppercase tracking-widest text-black/25 hover:text-black/60 transition-colors cursor-pointer bg-transparent border-0"
+              className="text-[9px] font-black uppercase tracking-widest text-[#3C2F2F]/30 hover:text-rose-500 transition-colors cursor-pointer bg-transparent border-0"
             >
               {item}
             </button>
@@ -213,16 +213,16 @@ const App: React.FC = () => {
   useEffect(() => { window.scrollTo(0, 0); }, [selectedPostId]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#030303] selection:bg-rose-500 selection:text-white overflow-x-hidden">
+    <div ref={containerRef} className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
       <SplashCursor />
 
       {/* Ambient background — parallaxed */}
       <motion.div
         style={{ y: bgY }}
-        className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-50"
+        className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30"
       >
-        <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,_rgba(123,45,66,0.05)_0%,_transparent_50%)]" />
-        <div className="absolute top-[20%] right-[-5%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_50%_50%,_rgba(191,160,106,0.03)_0%,_transparent_50%)]" />
+        <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,_rgba(244,63,94,0.08)_0%,_transparent_50%)]" />
+        <div className="absolute top-[20%] right-[-5%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.06)_0%,_transparent_50%)]" />
       </motion.div>
 
       {/* Success toast */}
@@ -312,8 +312,8 @@ const App: React.FC = () => {
                     transition={{ duration: 1, ease: 'circOut' }}
                     className="h-[1px] w-40 bg-gradient-to-r from-transparent via-rose-500 to-transparent mx-auto"
                   />
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.8em] text-white/20 italic">The Collective Frequency</h2>
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/40">Archives // Sorted by Recency</p>
+                  <h2 className="text-[11px] font-black uppercase tracking-[0.8em] text-[#3C2F2F]/20 italic">The Collective Frequency</h2>
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/50">Archives // Sorted by Recency</p>
                 </motion.div>
               </section>
 
@@ -326,9 +326,9 @@ const App: React.FC = () => {
                 <motion.div style={{ y: archiveY }} className="max-w-7xl mx-auto">
                   <BlogGrid posts={allPosts} onSelect={(id) => setSelectedPostId(id)} />
 
-                  <div className="mt-20 flex flex-col items-center gap-4 text-white/10 uppercase font-black text-[9px] tracking-[0.5em]">
+                  <div className="mt-20 flex flex-col items-center gap-4 text-[#3C2F2F]/20 uppercase font-black text-[9px] tracking-[0.5em]">
                     <span>End of Archive</span>
-                    <div className="w-px h-16 bg-gradient-to-b from-white/10 to-transparent" />
+                    <div className="w-px h-16 bg-gradient-to-b from-[#3C2F2F]/20 to-transparent" />
                   </div>
                 </motion.div>
               </section>

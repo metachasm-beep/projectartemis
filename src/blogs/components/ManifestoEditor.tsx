@@ -79,23 +79,23 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-[#030303]/95 backdrop-blur-2xl"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-[#FFFDF9]/95 backdrop-blur-3xl"
         >
           <motion.div 
             initial={{ y: 20, opacity: 0, scale: 0.95 }}
             animate={{ y: 0, opacity: 1, scale: 1 }}
             exit={{ y: 20, opacity: 0, scale: 0.95 }}
-            className="w-full max-w-5xl bg-white/5 border border-white/10 rounded-[3rem] overflow-hidden flex flex-col max-h-[90vh] shadow-2xl shadow-rose-500/10"
+            className="w-full max-w-5xl bg-[#FFFDF9] border border-[#3C2F2F]/10 rounded-[3rem] overflow-hidden flex flex-col max-h-[90vh] shadow-2xl shadow-[#3C2F2F]/10"
           >
             {/* Header */}
-            <div className="p-8 border-b border-white/10 flex justify-between items-center bg-white/5">
+            <div className="p-8 border-b border-[#3C2F2F]/10 flex justify-between items-center bg-[#3C2F2F]/[0.03]">
               <div>
-                <h2 className="text-3xl font-black text-white tracking-tighter italic">New <span className="text-rose-500">Manifesto</span></h2>
-                <p className="text-[10px] uppercase tracking-[0.3em] text-white/40 font-bold mt-1">Adding your frequency to the sanctuary</p>
+                <h2 className="text-3xl font-black text-[#3C2F2F] tracking-tighter italic">New <span className="text-rose-500">Manifesto</span></h2>
+                <p className="text-[10px] uppercase tracking-[0.3em] text-[#3C2F2F]/40 font-bold mt-1">Adding your frequency to the sanctuary</p>
               </div>
               <button 
                 onClick={onClose}
-                className="p-3 rounded-full hover:bg-white/10 transition-all text-white/40 hover:text-white"
+                className="p-3 rounded-full hover:bg-[#3C2F2F]/5 transition-all text-[#3C2F2F]/40 hover:text-[#3C2F2F]"
               >
                 <X size={24} />
               </button>
@@ -116,13 +116,13 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
 
               {/* Title Input */}
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/30">Manifesto Title</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#3C2F2F]/30">Manifesto Title</label>
                 <input 
                   type="text"
                   placeholder="The Architecture of..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-transparent border-none text-5xl md:text-6xl font-black text-white placeholder:text-white/5 focus:ring-0 selection:bg-rose-500 p-0 outline-none leading-none tracking-tighter"
+                  className="w-full bg-transparent border-none text-5xl md:text-6xl font-black text-[#3C2F2F] placeholder:text-[#3C2F2F]/5 focus:ring-0 selection:bg-rose-500/10 selection:text-rose-500 p-0 outline-none leading-none tracking-tighter"
                 />
               </div>
 
@@ -130,7 +130,7 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div 
                   onClick={() => fileInputRef.current?.click()}
-                  className="relative aspect-video rounded-[2rem] border-2 border-dashed border-white/10 hover:border-rose-500/40 hover:bg-rose-500/5 transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-4 group"
+                  className="relative aspect-video rounded-[2rem] border-2 border-dashed border-[#3C2F2F]/10 hover:border-rose-500/40 hover:bg-rose-500/5 transition-all cursor-pointer overflow-hidden flex flex-col items-center justify-center gap-4 group"
                 >
                   {imageUrl ? (
                     <>
@@ -143,12 +143,12 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
                     </>
                   ) : (
                     <>
-                      <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center text-white/20 group-hover:text-rose-500 group-hover:bg-rose-500/10 transition-all">
+                      <div className="w-16 h-16 rounded-full bg-[#3C2F2F]/5 flex items-center justify-center text-[#3C2F2F]/20 group-hover:text-rose-500 group-hover:bg-rose-500/10 transition-all">
                         {isUploading ? <Loader2 className="animate-spin" size={32} /> : <ImageIcon size={32} />}
                       </div>
                       <div className="text-center">
-                        <p className="text-xs font-black uppercase tracking-widest text-white/40 group-hover:text-white transition-colors">Hero Image</p>
-                        <p className="text-[10px] text-white/20 mt-1 uppercase tracking-tighter">Click to upload to CloudinaryVault</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-[#3C2F2F]/40 group-hover:text-[#3C2F2F] transition-colors">Hero Image</p>
+                        <p className="text-[10px] text-[#3C2F2F]/20 mt-1 uppercase tracking-tighter">Click to upload to CloudinaryVault</p>
                       </div>
                     </>
                   )}
@@ -161,9 +161,9 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
                   />
                 </div>
 
-                <div className="bg-white/5 rounded-[2rem] p-8 border border-white/5 space-y-4 flex flex-col justify-center">
-                  <h4 className="text-white font-black italic tracking-tight text-xl">Visual Resonance</h4>
-                  <p className="text-sm text-white/40 leading-relaxed">
+                <div className="bg-[#3C2F2F]/[0.02] rounded-[2rem] p-8 border border-[#3C2F2F]/5 space-y-4 flex flex-col justify-center">
+                  <h4 className="text-[#3C2F2F] font-black italic tracking-tight text-xl">Visual Resonance</h4>
+                  <p className="text-sm text-[#3C2F2F]/50 leading-relaxed font-medium">
                     Select a high-fidelity image that reflects the tone of your entry. Your image will be securely hosted on the Matriarch Cloudinary cluster.
                   </p>
                   <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-rose-500/60">
@@ -175,32 +175,32 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
 
               {/* Content Area */}
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-white/30">The Reflection (Markdown Supported)</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#3C2F2F]/30">The Reflection (Markdown Supported)</label>
                 <textarea 
                   placeholder="In the silence of the sanctuary..."
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="w-full bg-white/5 border border-white/5 rounded-[2rem] p-8 min-h-[400px] text-white/70 text-lg leading-relaxed focus:bg-white/10 focus:border-white/20 transition-all outline-none resize-none selection:bg-rose-500"
+                  className="w-full bg-[#3C2F2F]/[0.02] border border-[#3C2F2F]/5 rounded-[2rem] p-8 min-h-[400px] text-[#3C2F2F]/80 text-lg leading-relaxed font-medium focus:bg-[#3C2F2F]/[0.04] focus:border-[#3C2F2F]/10 transition-all outline-none resize-none selection:bg-rose-500/10 selection:text-rose-500"
                 ></textarea>
               </div>
             </div>
 
             {/* Footer */}
-            <div className="p-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 bg-white/5">
+            <div className="p-8 border-t border-[#3C2F2F]/10 flex flex-col md:flex-row justify-between items-center gap-6 bg-[#3C2F2F]/[0.03]">
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full border border-white/10 overflow-hidden bg-rose-500/10">
+                <div className="w-10 h-10 rounded-full border border-[#3C2F2F]/10 overflow-hidden bg-rose-500/5">
                    <img src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <p className="text-white text-xs font-bold leading-none">{user?.full_name || 'Sanctuary Aspirant'}</p>
-                  <p className="text-[9px] uppercase tracking-widest text-white/30 mt-1">Verified Identity Protocol</p>
+                  <p className="text-[#3C2F2F] text-xs font-bold leading-none">{user?.full_name || 'Sanctuary Aspirant'}</p>
+                  <p className="text-[9px] uppercase tracking-widest text-[#3C2F2F]/30 mt-1">Verified Identity Protocol</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-4 w-full md:w-auto">
                 <button 
                   onClick={onClose}
-                  className="flex-1 md:flex-none py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-[0.2em] text-white/40 hover:text-white transition-all"
+                  className="flex-1 md:flex-none py-4 px-8 rounded-2xl font-black text-xs uppercase tracking-[0.2em] text-[#3C2F2F]/40 hover:text-[#3C2F2F] transition-all"
                 >
                   Save Draft
                 </button>

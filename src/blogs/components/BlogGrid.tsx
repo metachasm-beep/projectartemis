@@ -23,10 +23,10 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
     title: post.title,
     description: post.excerpt ?? '',
     label: post.category,
-    color: '#07000f',
+    color: '#FDFBF7',
     content: post.image ? (
       <div
-        className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-cover bg-center opacity-60 group-hover:opacity-80 transition-opacity"
+        className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity brightness-[0.98]"
         style={{ backgroundImage: `url(${post.image})` }}
       />
     ) : null,
@@ -37,7 +37,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
     <div className="w-full">
       {/* Category Filter */}
       <div className="flex flex-col items-center mb-16">
-        <div className="flex flex-wrap gap-3 justify-center bg-white/[0.03] backdrop-blur-3xl p-2 rounded-full border border-white/5 shadow-2xl">
+        <div className="flex flex-wrap gap-3 justify-center bg-[#3C2F2F]/[0.03] backdrop-blur-3xl p-2 rounded-full border border-[#3C2F2F]/5 shadow-xl">
           {CATEGORIES.map(category => (
             <motion.button
               key={category}
@@ -47,7 +47,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
               className={`px-7 py-2 rounded-full text-[10px] font-black tracking-[0.2em] uppercase transition-all ${
                 activeCategory === category
                   ? 'bg-rose-500 text-white shadow-lg shadow-rose-500/20'
-                  : 'text-white/30 hover:text-white'
+                  : 'text-[#3C2F2F]/40 hover:text-[#3C2F2F]'
               }`}
             >
               {category}
@@ -85,8 +85,8 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
             animate={{ opacity: 1 }}
             className="py-60 text-center"
           >
-            <p className="text-white/10 text-2xl font-black tracking-[0.4em] uppercase italic">Archives Depleted</p>
-            <p className="text-white/5 text-xs font-medium tracking-widest mt-4">Select another frequency to continue.</p>
+            <p className="text-[#3C2F2F]/20 text-2xl font-black tracking-[0.4em] uppercase italic">Archives Depleted</p>
+            <p className="text-[#3C2F2F]/10 text-xs font-medium tracking-widest mt-4">Select another frequency to continue.</p>
           </motion.div>
         )}
       </AnimatePresence>
