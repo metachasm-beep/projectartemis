@@ -72,7 +72,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       exit={{ scale: 0.95, opacity: 0 }}
       className={cn(
         "relative bg-[#1A1A1A] border-l-[1px] border-t-[1px] border-white/10 border-r-[2px] border-b-[2px] border-black/60 rounded-[2.5rem] shadow-[0_40px_120px_rgba(0,0,0,0.8),_inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden flex flex-col group p-[1px] select-none",
-        isDashboard ? "w-full max-h-[100%] aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] min-h-[750px]"
+        isDashboard ? "w-full h-full aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] h-[85vh] md:min-h-[750px] max-h-[900px]"
       )}
     >
       {/* 🧬 Material Texture Overlay (Carbon/Noise) */}

@@ -99,24 +99,24 @@ export const Discovery: React.FC = () => {
       <AnimatePresence>
          {isUnverifiedWoman && !showVerificationModal && (
             <motion.div 
-              initial={{ y: 100 }}
+              initial={{ y: -100 }}
               animate={{ y: 0 }}
-              exit={{ y: 100 }}
-              className="fixed bottom-6 left-3 right-3 md:left-0 md:right-0 z-[120] bg-mat-wine/95 backdrop-blur-xl border border-mat-gold/30 md:border-t-0 md:border-b px-3 sm:px-6 py-3 flex items-center justify-between shadow-2xl rounded-2xl md:rounded-none"
+              exit={{ y: -100 }}
+              className="fixed top-24 left-3 right-3 md:top-auto md:bottom-6 md:left-0 md:right-0 z-[120] bg-mat-wine/95 backdrop-blur-xl border border-mat-gold/30 md:border-t-0 md:border-b px-3 sm:px-6 py-1.5 md:py-3 flex items-center justify-between shadow-2xl rounded-2xl md:rounded-none"
             >
-               <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 rounded-full bg-mat-gold/10 border border-mat-gold/30 flex items-center justify-center">
-                     <ShieldAlert className="text-mat-gold w-5 h-5" />
+               <div className="flex items-center gap-3 md:gap-4">
+                  <div className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-mat-gold/10 border border-mat-gold/30 flex items-center justify-center">
+                     <ShieldAlert className="text-mat-gold w-4 h-4 md:w-5 md:h-5" />
                   </div>
                    <div className="flex flex-col min-w-0">
                      <span className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em] hidden sm:block">{SEO_COPY.discovery.banner.title}</span>
                      <p className="text-[9px] text-white/60 uppercase tracking-widest leading-none mt-1 hidden sm:block">{SEO_COPY.discovery.banner.desc}</p>
-                     <p className="text-[10px] text-mat-gold font-bold uppercase tracking-widest sm:hidden truncate">Identity Protocol</p>
+                     <p className="text-[9px] md:text-[10px] text-mat-gold font-bold uppercase tracking-widest sm:hidden truncate">Identity Protocol</p>
                   </div>
                </div>
                <button 
                  onClick={() => setShowVerificationModal(true)}
-                 className="px-4 sm:px-6 py-2 bg-mat-gold text-mat-obsidian text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-all flex items-center gap-2 shrink-0"
+                 className="px-3 md:px-6 py-1.5 md:py-2 bg-mat-gold text-mat-obsidian text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-all flex items-center gap-2 shrink-0"
                >
                   Secure Identity <ArrowRight size={10} />
                </button>
@@ -139,8 +139,8 @@ export const Discovery: React.FC = () => {
               <CircularGallery 
                 items={GALLERY_ITEMS} 
                 bend={0} 
-                scrollSpeed={0.6}
-                scrollEase={0.2}
+                scrollSpeed={1.8}
+                scrollEase={0.8}
                 textColor="#D4AF37" 
                 onSelect={handleSelect}
                 onCenterUpdate={setActiveGazeIndex}
@@ -205,29 +205,38 @@ export const Discovery: React.FC = () => {
       )}
 
       {/* 🎯 CONSOLIDATED PROFILE FOCUS (Single Card Focal Point) */}
-      <AnimatePresence>
-        {selectedProfile && !showVerificationModal && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div               initial={{ opacity: 0 }}
-               animate={{ opacity: 1 }}
-               exit={{ opacity: 0 }}
+       <AnimatePresence>
+         {selectedProfile && !showVerificationModal && (
+           <div className="fixed inset-0 z-[120] flex items-center justify-center p-3 md:p-4 overflow-hidden">
+             <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedProfile(null)}
+                className="absolute inset-0 bg-mat-obsidian/95 backdrop-blur-2xl"
+              />
+             
+             {/* Global Close Button for better mobile reachability */}
+             <button 
                onClick={() => setSelectedProfile(null)}
-               className="absolute inset-0 bg-mat-obsidian/90 backdrop-blur-xl"
-             />
-            
-            <motion.div 
-              layoutId={`card-${selectedProfile.id}`}
-              className="relative z-10 w-full max-w-[420px] flex justify-center items-center"
-            >
-               <TrumpCard 
-                 profile={selectedProfile} 
-                 onClose={() => setSelectedProfile(null)}
-                 onAction={(type) => handleAction(type, selectedProfile)}
-               />
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+               className="absolute top-6 right-6 z-[130] w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all active:scale-90"
+             >
+                <X size={20} />
+             </button>
+
+             <motion.div 
+               layoutId={`card-${selectedProfile.id}`}
+               className="relative z-10 w-full max-w-[420px] flex justify-center items-center max-h-[92vh]"
+             >
+                <TrumpCard 
+                  profile={selectedProfile} 
+                  onClose={() => setSelectedProfile(null)}
+                  onAction={(type) => handleAction(type, selectedProfile)}
+                />
+             </motion.div>
+           </div>
+         )}
+       </AnimatePresence>
 
       {/* 🌊 AMBIENT ATMOSPHERE */}
       <div className="absolute inset-0 pointer-events-none">
