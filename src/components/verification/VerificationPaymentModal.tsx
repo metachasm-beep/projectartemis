@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, Copy, ArrowRight, Loader2, CheckCircle2, X } from 'lucide-react';
+import { ShieldCheck, Copy, ArrowRight, Loader2, CheckCircle2, X, HelpCircle, Info } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { api } from '@/services/api';
 
@@ -15,6 +15,7 @@ export const VerificationPaymentModal: React.FC<VerificationPaymentModalProps> =
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [copied, setCopied] = useState(false);
+  const [showHelp, setShowHelp] = useState(false);
 
   const upiId = 'matriarch@ptyes';
   const amount = 49; // Default verification fee
@@ -104,24 +105,39 @@ export const VerificationPaymentModal: React.FC<VerificationPaymentModalProps> =
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="relative">
-              <input 
-                type="text" 
-                maxLength={12}
-                value={utr}
-                onChange={(e) => { setUtr(e.target.value.replace(/\D/g, '')); setStatus('idle'); }}
-                placeholder="Enter 12-digit UTR"
-                disabled={status === 'loading' || status === 'success'}
-                className="w-full bg-black/40 border-2 border-white/10 focus:border-mat-gold rounded-2xl py-4 pl-6 pr-14 text-white font-mono tracking-[0.2em] outline-none transition-all"
-              />
+            <div className="flex items-center gap-3">
               <button 
-                type="submit"
-                disabled={utr.length < 12 || status === 'loading' || status === 'success'}
-                className="absolute right-2 top-2 bottom-2 px-4 bg-mat-gold text-mat-obsidian rounded-xl disabled:opacity-20 hover:bg-white transition-all flex items-center justify-center font-bold"
+                type="button"
+                onClick={() => setShowHelp(true)}
+                className="w-14 h-14 shrink-0 bg-white/5 border border-white/10 rounded-2xl flex items-center justify-center text-mat-gold hover:bg-white/10 transition-all"
+                title="How to find UTR?"
               >
-                {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} strokeWidth={3} />}
+                <HelpCircle size={24} />
               </button>
+              
+              <div className="relative flex-1">
+                <input 
+                  type="text" 
+                  maxLength={12}
+                  value={utr}
+                  onChange={(e) => { setUtr(e.target.value.replace(/\D/g, '')); setStatus('idle'); }}
+                  placeholder="12-digit UTR"
+                  disabled={status === 'loading' || status === 'success'}
+                  className="w-full bg-black/40 border-2 border-white/10 focus:border-mat-gold rounded-2xl py-4 pl-6 pr-14 text-white font-mono tracking-[0.2em] outline-none transition-all"
+                />
+                <button 
+                  type="submit"
+                  disabled={utr.length < 12 || status === 'loading' || status === 'success'}
+                  className="absolute right-2 top-2 bottom-2 px-4 bg-mat-gold text-mat-obsidian rounded-xl disabled:opacity-20 hover:bg-white transition-all flex items-center justify-center font-bold"
+                >
+                  {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} strokeWidth={3} />}
+                </button>
+              </div>
             </div>
+            
+            <p className="text-[9px] text-white/30 uppercase tracking-[0.2em] font-medium px-2">
+              Enter the 12-digit Ref/UTR number from your payment confirmation.
+            </p>
           </form>
 
           <AnimatePresence mode="wait">
@@ -139,6 +155,58 @@ export const VerificationPaymentModal: React.FC<VerificationPaymentModalProps> =
           </AnimatePresence>
         </div>
       </motion.div>
+
+      {/* ── Help Modal Coverage ── */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHelp(false)}
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="relative w-full max-w-sm bg-[#161617] border border-white/10 rounded-[2.5rem] p-8 space-y-6 shadow-2xl"
+            >
+              <div className="flex items-center gap-4 text-mat-gold">
+                <div className="w-10 h-10 rounded-full bg-mat-gold/10 flex items-center justify-center">
+                  <Info size={20} />
+                </div>
+                <h3 className="text-xl font-bold italic uppercase tracking-tight">Identity Help</h3>
+              </div>
+
+              <div className="space-y-6 text-sm leading-relaxed text-white/60">
+                <div className="space-y-2">
+                  <p className="text-white font-bold text-xs uppercase tracking-widest">Step 1: Payment</p>
+                  <p>Open your UPI app (GPay, PhonePe, Paytm) and pay ₹{amount} to <span className="text-mat-gold font-mono">{upiId}</span>.</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-white font-bold text-xs uppercase tracking-widest">Step 2: Finding UTR</p>
+                  <p>Look for a 12-digit number labeled as <span className="text-white">UTR</span>, <span className="text-white">Ref No</span>, or <span className="text-white">Bank Reference</span> in your transaction history or SMS.</p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-white font-bold text-xs uppercase tracking-widest">Step 3: Submission</p>
+                  <p>Paste that 12-digit code into the box. Once the Admin verifies it, your link will be delivered.</p>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowHelp(false)}
+                className="w-full py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-bold uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all"
+              >
+                Understood
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

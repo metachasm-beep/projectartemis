@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, CheckCircle2, Copy, Loader2,
-  Zap, Crown, Sparkles, TrendingUp, ShieldCheck, ChevronRight
+  Zap, Crown, Sparkles, TrendingUp, ShieldCheck, ChevronRight, HelpCircle, Info, ArrowRight, CheckCircle2, Copy, Loader2
 } from 'lucide-react';
 
 // ─── TIER CONFIG ───────────────────────────────────────────────────────────────
@@ -58,6 +57,7 @@ export const PaymentScreen: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [copied, setCopied] = useState(false);
   const [leapResult, setLeapResult] = useState<number | null>(null);
+  const [showHelp, setShowHelp] = useState(false);
 
   const upiId = 'matriarch@ptyes';
   const city = profile?.city || 'Delhi';
@@ -234,23 +234,40 @@ export const PaymentScreen: React.FC = () => {
           </div>
 
           <form onSubmit={handleClaim} className="flex-1 flex flex-col gap-6">
-            <div className="relative">
-              <input
-                type="text"
-                maxLength={12}
-                value={utr}
-                onChange={(e) => { setUtr(e.target.value.replace(/\D/g, '')); setStatus('idle'); }}
-                placeholder="Enter 12-digit UTR"
-                disabled={status === 'loading' || status === 'success'}
-                className="w-full bg-mat-ivory/60 border-2 border-mat-rose/10 focus:border-mat-wine rounded-2xl py-5 pl-6 pr-16 text-mat-wine text-sm font-mono tracking-[0.3em] placeholder:text-mat-slate/20 placeholder:font-sans placeholder:tracking-normal outline-none transition-all"
-              />
-              <button
-                type="submit"
-                disabled={utr.length < 12 || status === 'loading' || status === 'success'}
-                className="absolute right-3 top-3 bottom-3 px-4 bg-mat-wine text-white rounded-xl disabled:opacity-20 hover:bg-mat-wine-soft transition-all flex items-center"
-              >
-                {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
-              </button>
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <button 
+                  type="button"
+                  onClick={() => setShowHelp(true)}
+                  className="w-14 h-14 shrink-0 bg-mat-ivory/60 border border-mat-rose/10 rounded-2xl flex items-center justify-center text-mat-wine hover:bg-mat-ivory transition-all"
+                  title="How to find UTR?"
+                >
+                  <HelpCircle size={22} />
+                </button>
+                
+                <div className="relative flex-1">
+                  <input
+                    type="text"
+                    maxLength={12}
+                    value={utr}
+                    onChange={(e) => { setUtr(e.target.value.replace(/\D/g, '')); setStatus('idle'); }}
+                    placeholder="12-digit UTR"
+                    disabled={status === 'loading' || status === 'success'}
+                    className="w-full bg-mat-ivory/60 border-2 border-mat-rose/10 focus:border-mat-wine rounded-2xl py-5 pl-6 pr-14 text-mat-wine text-sm font-mono tracking-[0.3em] outline-none transition-all placeholder:tracking-normal"
+                  />
+                  <button
+                    type="submit"
+                    disabled={utr.length < 12 || status === 'loading' || status === 'success'}
+                    className="absolute right-2 top-2 bottom-2 px-4 bg-mat-wine text-white rounded-xl disabled:opacity-20 hover:bg-mat-wine-soft transition-all flex items-center"
+                  >
+                    {status === 'loading' ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
+                  </button>
+                </div>
+              </div>
+              
+              <p className="text-[10px] text-mat-slate/40 uppercase tracking-widest font-bold px-1 leading-relaxed">
+                Enter the 12-digit Ref/UTR number from your bank confirmation.
+              </p>
             </div>
 
             <AnimatePresence>
@@ -296,6 +313,58 @@ export const PaymentScreen: React.FC = () => {
           Matriarch // Pay Once, Rise Permanently
         </p>
       </div>
+
+      {/* ── Help Modal Coverage ── */}
+      <AnimatePresence>
+        {showHelp && (
+          <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowHelp(false)}
+              className="absolute inset-0 bg-mat-obsidian/80 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-sm bg-mat-cream border border-mat-rose/10 rounded-[2.5rem] p-8 space-y-6 shadow-2xl"
+            >
+              <div className="flex items-center gap-4 text-mat-wine">
+                <div className="w-10 h-10 rounded-full bg-mat-rose/10 flex items-center justify-center">
+                  <Info size={20} />
+                </div>
+                <h3 className="text-xl font-bold italic uppercase tracking-tight">Purchase Help</h3>
+              </div>
+
+              <div className="space-y-6 text-sm leading-relaxed text-mat-slate/60">
+                <div className="space-y-2">
+                  <p className="text-mat-wine font-bold text-xs uppercase tracking-widest">Step 1: Payment</p>
+                  <p>Open your UPI app and pay the exact amount to <span className="text-mat-wine font-mono">{upiId}</span>.</p>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-mat-wine font-bold text-xs uppercase tracking-widest">Step 2: Finding UTR</p>
+                  <p>Look for a 12-digit number (UTR, Ref No, or Bank Reference) in your transaction history or SMS confirmation.</p>
+                </div>
+
+                <div className="space-y-2">
+                  <p className="text-mat-wine font-bold text-xs uppercase tracking-widest">Step 3: Validation</p>
+                  <p>Submit that 12-digit code. Once verified by the Admin, your Aura will be credited.</p>
+                </div>
+              </div>
+
+              <button 
+                onClick={() => setShowHelp(false)}
+                className="w-full py-4 bg-mat-wine text-white rounded-2xl font-bold uppercase tracking-widest text-[10px] hover:bg-mat-wine-soft transition-all"
+              >
+                Understood
+              </button>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
