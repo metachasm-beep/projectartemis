@@ -107,7 +107,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <LiquidMesh />
       <PostProcessOverlay />
 
-      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-3 lg:px-14 lg:pt-4 min-h-0 gap-3">
+      <main className="relative z-10 w-full flex-1 flex flex-col px-6 pt-20 lg:px-14 lg:pt-4 min-h-0 gap-3">
 
         {/* ══ HEADER ══════════════════════════════════════ */}
         <header className="relative z-50 flex flex-row items-center justify-between shrink-0 gap-6">
@@ -115,7 +115,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             initial={{ opacity: 0, y: 14 }} 
             animate={{ opacity: 1, y: 0 }} 
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} 
-            className="space-y-0.5"
+            className="space-y-0.5 hidden md:block"
           >
             <div className="flex items-center gap-3">
               <span className="w-7 h-[1px] bg-mat-rose-gold opacity-60" />
@@ -133,7 +133,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
             className="flex items-center gap-4 lg:gap-6 shrink-0"
           >
             {/* Cascaded avatars — Clickable Hitbox Fix */}
-            <div className="flex -space-x-2.5 items-center">
+            <div className="hidden md:flex -space-x-2.5 items-center">
               {["1494790108377-be9c29b29330","1534528741775-53994a69daeb","1531746020798-e6953c6e8e04"].map((id, i) => (
                 <motion.div 
                   key={i} 
@@ -211,7 +211,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
 
               {/* Editorial Content Overlay */}
-              <div className="relative z-10 p-8 md:p-12 lg:p-14 w-full h-full flex flex-col justify-between text-white max-w-[85%] lg:max-w-4xl">
+              <div className="relative z-10 p-5 md:p-14 w-full h-full flex flex-col justify-between text-white max-w-[95%] md:max-w-4xl">
                 
                 {/* Top Identity Block */}
                 <div className="flex justify-between items-start">
@@ -238,24 +238,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                 </div>
 
                 {/* Bottom Footer Block */}
-                <div className="flex flex-col gap-8 md:gap-10">
-                  <p className="text-white/90 font-serif italic font-light text-sm md:text-base lg:text-lg max-w-2xl leading-relaxed border-l-[3px] border-mat-rose-gold pl-5 drop-shadow-md">
+                <div className="flex flex-col gap-4 md:gap-10">
+                  <p className="text-white/90 font-serif italic font-light text-[12px] md:text-base lg:text-lg max-w-2xl leading-relaxed border-l-[2px] md:border-l-[3px] border-mat-rose-gold pl-4 md:pl-5 drop-shadow-md line-clamp-2 md:line-clamp-none">
                     "{bio}"
                   </p>
                   
                   <div className="flex flex-wrap items-center justify-between gap-6">
                     {/* Meta Data Row */}
-                    <div className="flex flex-wrap items-center gap-6 md:gap-12">
+                    <div className="flex flex-wrap items-center gap-4 md:gap-12">
                       {[
-                        { icon: <MapPin size={16} />,        label: 'Location',    value: profile?.city || 'Delhi' },
-                        { icon: <Briefcase size={16} />,     label: 'Profession',  value: occupation },
-                        { icon: <GraduationCap size={16} />, label: 'Education',   value: education },
+                        { icon: <MapPin size={14} />,        label: 'Location',    value: profile?.city || 'Delhi' },
+                        { icon: <Briefcase size={14} />,     label: 'Profession',  value: occupation },
+                        { icon: <GraduationCap size={14} />, label: 'Education',   value: education },
                       ].map((row, i) => (
-                        <div key={i} className="flex items-center gap-3 group/meta">
+                        <div key={i} className={cn("items-center gap-2 group/meta", i > 0 ? "hidden md:flex" : "flex")}>
                           <span className="text-mat-rose-gold/80 group-hover/meta:text-white transition-colors">{row.icon}</span>
                           <div className="flex flex-col">
-                            <span className="mat-text-editorial-caps text-[7px] text-white/50 tracking-wider uppercase mb-0.5">{row.label}</span>
-                            <span className="text-xs md:text-sm text-white/90 font-medium drop-shadow-sm">{row.value}</span>
+                            <span className="mat-text-editorial-caps text-[6px] text-white/50 tracking-wider uppercase mb-0.5">{row.label}</span>
+                            <span className="text-[10px] md:text-sm text-white/90 font-medium drop-shadow-sm">{row.value}</span>
                           </div>
                         </div>
                       ))}
@@ -291,22 +291,22 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               {/* Subtle accent light */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 blur-3xl rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-12 gap-y-10 lg:gap-x-16 lg:gap-y-12 w-full relative z-10 px-4">
-                {stats.map((stat, idx) => (
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 md:gap-x-16 gap-y-4 md:gap-y-12 w-full relative z-10 px-4">
+                {stats.filter((_, idx) => idx === 0 || idx === 1 || idx === 2 || idx === 9).map((stat, idx) => (
                   <motion.div
                     key={idx}
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.1 + idx * 0.04, duration: 0.5 }}
-                    className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-5 hover:border-mat-rose-gold/50"
+                    className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-3 md:pl-5 hover:border-mat-rose-gold/50"
                   >
-                    <div className="flex items-center gap-2 mb-2 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
-                      {React.cloneElement(stat.icon as React.ReactElement, { size: 14, strokeWidth: 1.5 })}
-                      <h3 className="mat-text-editorial-caps text-[10px] tracking-[0.25em] uppercase font-bold">
+                    <div className="flex items-center gap-2 mb-1 md:mb-2 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
+                      {React.cloneElement(stat.icon as React.ReactElement, { size: 12, strokeWidth: 1.5 })}
+                      <h3 className="mat-text-editorial-caps text-[8px] md:text-[10px] tracking-[0.25em] uppercase font-bold">
                         {stat.label}
                       </h3>
                     </div>
-                    <p className="text-2xl lg:text-3xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                    <p className="text-xl md:text-3xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
                       {stat.value}
                     </p>
                   </motion.div>
@@ -321,7 +321,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-3xl bg-white"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-xl bg-white"
             onClick={() => setShowFAQ(false)}
           >
             <div 
