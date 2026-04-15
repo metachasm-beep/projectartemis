@@ -7,6 +7,7 @@ interface GlassCardProps {
   className?: string;
   delay?: number;
   noPadding?: boolean;
+  allowOverflow?: boolean;
   onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 }
 
@@ -32,7 +33,8 @@ export const GlassCard: React.FC<GlassCardProps> = ({
         ease: [0.16, 1, 0.3, 1] 
       }}
       className={cn(
-        "relative overflow-hidden group transition-all duration-700 bg-white/5 border border-white/10 rounded-[1.25rem]",
+        "relative group transition-all duration-700 bg-white/5 border border-white/10 rounded-[1.25rem]",
+        !allowOverflow && "overflow-hidden",
         className
       )}
       onClick={onClick}

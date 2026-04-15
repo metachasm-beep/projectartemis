@@ -167,33 +167,30 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                 </div>
                 
                 <div className="space-y-2">
-                   <p className="mat-text-label-pro text-[10px] text-mat-rose uppercase tracking-[0.4em]">Live Matrix</p>
-                   <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'var(--font-display)' }}>
-                     Connection <span className="opacity-20 text-mat-gold">Arch.</span>
-                   </h2>
-                </div>
-
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                  {[
-                    { label: 'New Seekers', val: status?.matches || 0, icon: Activity, color: 'text-white' },
-                    { label: 'Active Dialogs', val: status?.profilesEngaged || 0, icon: MessageCircle, color: 'text-mat-rose' },
-                    { label: 'Admiration Index', val: status?.profilesViewed || 0, icon: Eye, color: 'text-white/40' },
-                    { label: 'Status Rank', val: status?.safetyLevel || 'Elite', icon: Star, color: 'text-mat-gold' },
-                  ].map((stat, i) => (
-                    <motion.div 
-                      key={i} 
-                      whileHover={{ y: -5 }}
-                      className="space-y-3"
-                    >
-                       <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
-                         <stat.icon size={16} className={stat.color} strokeWidth={1.5} />
-                       </div>
-                       <div className="space-y-1">
-                          <p className="text-xl font-bold text-white italic tracking-tight">{stat.val}</p>
-                          <p className="mat-text-label-pro text-xs opacity-80 uppercase tracking-widest text-white/90">{stat.label}</p>
-                       </div>
-                    </motion.div>
-                  ))}
+                  <p className="mat-text-label-pro text-[10px] text-mat-rose uppercase tracking-[0.4em]">Live Matrix</p>
+                  <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                    Connection <span className="opacity-20 text-mat-gold">Arch.</span>
+                  </h2>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[
+                      { label: 'New Seekers', val: status?.matches || 0, icon: Activity, color: 'text-white' },
+                      { label: 'Active Dialogs', val: status?.profilesEngaged || 0, icon: MessageCircle, color: 'text-mat-rose' },
+                      { label: 'Admiration Index', val: status?.profilesViewed || 0, icon: Eye, color: 'text-white/40' },
+                      { label: 'Status Rank', val: status?.safetyLevel || 'Elite', icon: Star, color: 'text-mat-gold' },
+                    ].map((stat, i) => (
+                      <GlassCard key={i} delay={0.1 + i * 0.1} allowOverflow noPadding className="p-6">
+                        <div className="flex flex-col h-full justify-between items-start gap-4">
+                          <div className="w-11 h-11 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shrink-0">
+                            <stat.icon size={18} className={stat.color} strokeWidth={1.5} />
+                          </div>
+                          <div className="space-y-1.5 overflow-visible">
+                            <p className="text-2xl font-bold text-white italic tracking-tight leading-relaxed">{stat.val}</p>
+                            <p className="mat-text-label-pro text-sm opacity-90 uppercase tracking-[0.2em] font-medium text-white/95">{stat.label}</p>
+                          </div>
+                        </div>
+                      </GlassCard>
+                    ))}
+                  </div>
                 </div>
               </div>
             </GlassCard>
@@ -201,40 +198,40 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
             {/* Bottom Split: Metric Harmony */}
             <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-[250px]">
               
-              <GlassCard className="h-full" delay={0.4}>
+              <GlassCard className="h-full" delay={0.4} allowOverflow>
                 <div className="h-full flex flex-col justify-between">
                   <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                       <p className="mat-text-label-pro text-sm text-mat-gold uppercase tracking-widest font-bold">Resonance</p>
-                       <h3 className="text-xl font-bold italic text-white leading-normal">Harmony Index.</h3>
+                    <div className="space-y-2">
+                       <p className="mat-text-label-pro text-sm text-mat-gold uppercase tracking-widest font-bold">Resonance Index</p>
+                       <h3 className="text-2xl font-bold italic text-white leading-relaxed">Harmony Index.</h3>
                     </div>
-                    <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20">
+                    <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20 flex-shrink-0">
                       <Compass className="text-mat-gold w-6 h-6 animate-spin-slow" strokeWidth={1} />
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 py-1">
-                     <span className="text-3xl lg:text-4xl font-bold text-mat-cream tracking-normal italic leading-normal" style={{ fontFamily: 'var(--font-display)' }}>
+                  <div className="flex items-center gap-5 py-2">
+                     <span className="text-4xl lg:text-5xl font-bold text-mat-cream tracking-normal italic leading-relaxed" style={{ fontFamily: 'var(--font-display)' }}>
                         {Math.round(status?.rank_score || 0)}
                      </span>
-                     <p className="text-[11px] text-white/50 italic max-w-[160px] leading-tight">Strategic frequency alignment verified in local sector.</p>
+                     <p className="text-xs text-white/60 italic max-w-[160px] leading-relaxed">Strategic frequency alignment verified in local sector.</p>
                   </div>
                 </div>
               </GlassCard>
 
-              <GlassCard className="h-full" delay={0.5}>
+              <GlassCard className="h-full" delay={0.5} allowOverflow>
                  <div className="h-full flex flex-col justify-between">
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-3 text-white/60">
-                          <ShieldCheck size={20} strokeWidth={1.5} />
-                          <span className="mat-text-label-pro text-sm uppercase tracking-widest font-black text-mat-gold">Registry Audit</span>
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4 text-white/60">
+                          <ShieldCheck size={24} strokeWidth={1.5} className="text-mat-gold" />
+                          <span className="mat-text-label-pro text-sm uppercase tracking-widest font-black text-white/90">Registry Audit</span>
                         </div>
-                        <h4 className="text-lg lg:text-xl font-bold italic text-white/70 leading-normal">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
+                        <h4 className="text-xl lg:text-2xl font-bold italic text-white/80 leading-relaxed">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
                     </div>
                     
-                    <div className="bg-black/40 rounded-[2rem] p-6 border border-white/5 flex items-center justify-between mt-2">
-                       <div className="space-y-1 py-1">
-                          <p className="mat-text-label-pro text-[13px] text-white/70 uppercase tracking-widest leading-normal">Last Audit Protocol</p>
-                          <p className="text-mat-gold text-sm font-bold italic">Active | 3h Ago</p>
+                    <div className="bg-black/40 rounded-[2.5rem] p-7 border border-white/5 flex items-center justify-between mt-4">
+                       <div className="space-y-2 py-1">
+                          <p className="mat-text-label-pro text-sm text-white/60 uppercase tracking-widest leading-normal">Last Audit Protocol</p>
+                          <p className="text-mat-gold text-base font-bold italic">Active | 3h Ago</p>
                        </div>
                        <motion.div 
                          initial={{ rotate: 0 }}
