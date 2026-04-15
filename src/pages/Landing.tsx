@@ -9,7 +9,6 @@ import LandscapeProtocolFold from "@/components/landing/LandscapeProtocolFold";
 import MeritFold from "@/components/landing/MeritFold";
 import SystemIntegrityFold from "@/components/landing/SystemIntegrityFold";
 import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
-import SecurityFold from "@/components/landing/SecurityFold";
 import Footer from "@/components/landing/Footer";
 import MatriarchLogo from "@/components/MatriarchLogo";
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
@@ -146,7 +145,6 @@ const LandingPage: React.FC = () => {
           <SystemIntegrityFold />
           <MeritFold />
           <SelectionMatrixFold />
-          <SecurityFold />
           
           <Footer />
         </div>
