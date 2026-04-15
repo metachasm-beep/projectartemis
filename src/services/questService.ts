@@ -1,12 +1,12 @@
-import { api } from '@/lib/api';
+import { api } from './api';
 
 export interface Quest {
   id: string;
   title: string;
   description: string;
   objective_type: 'journal' | 'profile' | 'discovery' | 'daily_login';
-  aura_reward: int;
-  rank_reward: float;
+  aura_reward: number;
+  rank_reward: number;
   is_daily: boolean;
   status: 'available' | 'in_progress' | 'completed';
   progress_pct: number;
