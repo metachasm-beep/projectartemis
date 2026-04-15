@@ -59,7 +59,7 @@ export const PaymentScreen: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [leapResult, setLeapResult] = useState<number | null>(null);
 
-  const upiId = import.meta.env.VITE_UPI_ID || 'matriarch@ybl';
+  const upiId = 'matriarch@ptyes';
   const city = profile?.city || 'Delhi';
   const userRef = user?.id ? `MTRCH_${user.id.substring(0, 8).toUpperCase()}` : 'GUEST';
   const upiUrl = `upi://pay?pa=${upiId}&pn=Matriarch&am=${selectedTier.amount}&cu=INR&tn=MTRCH_${selectedTier.id.toUpperCase()}_${userRef}`;
@@ -263,7 +263,7 @@ export const PaymentScreen: React.FC = () => {
               {status === 'pending' && (
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="p-5 bg-amber-500/10 border border-amber-500/20 rounded-2xl text-amber-600 text-xs leading-relaxed space-y-2">
                   <p className="font-bold">⏳ Verification Pending</p>
-                  <p>Your UTR has been logged. Once our systems detect the transaction, your rank jump will be activated instantly — no further action required.</p>
+                  <p>Your UTR has been logged. Once the Admin manually verifies the transaction, your rank jump will be activated and you will be notified in your Inbox.</p>
                 </motion.div>
               )}
 

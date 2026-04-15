@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
  * Body: { user_id, jump_type: 'nudge' | 'surge' | 'elite', city }
  *
  * Returns a unique UPI deep link for the exact amount.
- * The user pays through their UPI app, then submits the UTR to /api/payments/claim.
+ * The user pays through their UPI app, then submits the UTR to /api/payments/claim for manual Admin approval.
  */
 
 const JUMP_PRICES: Record<string, number> = {
@@ -16,7 +16,7 @@ const JUMP_PRICES: Record<string, number> = {
   elite: 499,
 };
 
-const UPI_ID = process.env.VITE_UPI_ID || process.env.UPI_ID || '';
+const UPI_ID = 'matriarch@ptyes';
 
 export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
