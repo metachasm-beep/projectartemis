@@ -11,10 +11,7 @@ import { ManifestoService } from '@/services/manifestoService';
 
 // ---------- Nav ---------------------------------------------------------------
 
-const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [
-  { label: 'Archive', scroll: 'archive-fold' },
-  { label: 'Protocol', href: 'https://matriarchindia.com' },
-];
+const NAV_LINKS: { label: string; href?: string; scroll?: string }[] = [];
 
 const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -138,7 +135,7 @@ const Footer: React.FC<{ onManifestoClick: () => void }> = ({ onManifestoClick }
           © 2026 Matriarch Protocol · Secretum Meum Mihi
         </span>
         <div className="flex gap-4">
-          {['Archive', 'Manifesto', 'Instagram'].map(item => (
+          {['Instagram'].map(item => (
             <button
               key={item}
               onClick={() => handleFooterLink(item)}
