@@ -514,8 +514,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                               </button>
                             </TooltipTrigger>
                             <TooltipContent side="top" className="max-w-[200px] bg-mat-obsidian border-mat-gold/20 text-[10px] p-3">
-                              <p className="font-bold mb-1 text-mat-gold">Dossier Calibration</p>
-                              <p>Syncs your profile completeness (Bio, Verification, Photos) to your Rank. Higher integrity grants a significant standing bonus.</p>
+                              <p className="font-bold mb-1 text-mat-gold text-center uppercase tracking-tighter italic">Protocol Logic</p>
+                              <p className="text-center opacity-70">Calculates your Dossier Integrity (Verification + Profile Depth) and applies it as a permanent standing multiplier to your Absolute Rank.</p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -602,7 +602,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           </TooltipTrigger>
                           <TooltipContent side="top" className="max-w-[250px] bg-mat-obsidian border-mat-gold/20 text-xs p-4">
                             <p className="font-bold mb-2 text-mat-gold uppercase tracking-widest">Protocol Logic</p>
-                            <p className="opacity-60 leading-relaxed italic">Calculates your Dossier Integrity (Verification + Profile Depth) and applies as a permanent standing multiplier to your Absolute Rank.</p>
+                            <p className="opacity-60 leading-relaxed italic">Calculates your Dossier Integrity (Verification + Profile Depth) and applies it as a permanent standing multiplier to your Absolute Rank.</p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
