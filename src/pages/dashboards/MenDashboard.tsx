@@ -266,80 +266,71 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
       <div className="max-w-[1600px] mx-auto px-4">
         {/* ─── FOLD ONE: IDENTITY & GAZE ─── */}
         {isMobile ? (
-          <section className="h-[100dvh] min-h-[100dvh] pt-14 snap-start flex flex-col items-center">
-            <header className="overflow-hidden mb-4 text-center px-4">
-              <motion.h1 
-                variants={maskReveal} 
-                className="text-5xl font-light text-white italic tracking-tighter"
-                style={{ fontFamily: 'var(--font-display)' }}
-              >
-                Identity Resonance.
-              </motion.h1>
-              <motion.p variants={maskReveal} className="text-[9px] font-medium uppercase tracking-[0.5em] text-mat-gold/40 mt-2">
-                Sanctuary Selection Protocol
-              </motion.p>
-              <motion.div variants={maskReveal} className="mt-4 flex justify-center">
-                 <ArchetypeBadge occupation={profile.occupation} size="sm" />
-              </motion.div>
-            </header>
+          <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden">
+            {/* Full-screen Circular Gallery Background */}
+            <div className="absolute inset-0 z-0">
+              {gazeProfiles.length > 0 && (
+                <CircularGallery 
+                  items={gazeProfiles} 
+                  bend={0} 
+                  scrollSpeed={0.5} 
+                  autoScroll 
+                  autoScrollSpeed={0.03} 
+                  onCenterUpdate={setActiveGazeIndex} 
+                />
+              )}
+              {/* Dark overlay for card legibility */}
+              <div className="absolute inset-0 bg-black/40" />
+            </div>
 
-            <div className="flex-1 w-full relative flex flex-col items-center justify-center overflow-hidden">
-               {/* Background Halo */}
-               <div className="absolute inset-0 z-0 opacity-40 scale-125">
-                 {gazeProfiles.length > 0 && (
-                    <CircularGallery 
-                      items={gazeProfiles} 
-                      bend={0} 
-                      scrollSpeed={0.5} 
-                      autoScroll 
-                      autoScrollSpeed={0.03} 
-                      onCenterUpdate={setActiveGazeIndex} 
-                    />
-                 )}
-               </div>
+            {/* Archetype Badge — top anchor */}
+            <motion.div variants={maskReveal} className="relative z-20 mb-6 flex justify-center">
+              <ArchetypeBadge occupation={profile.occupation} size="sm" />
+            </motion.div>
 
-               <motion.div variants={cardSpring} className="relative z-20 w-full flex justify-center max-h-[65vh] px-6">
-                  <div className="w-full max-w-[340px] h-full">
-                    <TrumpCard 
-                      isDashboard
-                      profile={{
-                        id: profile.user_id,
-                        user_id: profile.user_id,
-                        name: profile.full_name,
-                        age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
-                        city: profile.city || 'Undisclosed',
-                        img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
-                        status: currentLevel.name,
-                        bio: profile.bio || "Identity narrative not established.",
-                        height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
-                        vocation: profile.occupation || 'Aspirant',
-                        tier: currentLevel.name,
-                        is_verified: profile.is_verified,
-                        absolute_rank: absRank,
-                        rank_tier: currentLevel.id
-                      }} 
-                    />
-                  </div>
-               </motion.div>
+            {/* Trump Card — 50% reduced footprint */}
+            <motion.div variants={cardSpring} className="relative z-20 flex justify-center">
+              <div className="w-[170px]">
+                <TrumpCard 
+                  isDashboard
+                  profile={{
+                    id: profile.user_id,
+                    user_id: profile.user_id,
+                    name: profile.full_name,
+                    age: profile.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : 25,
+                    city: profile.city || 'Undisclosed',
+                    img: (profile.photos && profile.photos[0]) || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`,
+                    status: currentLevel.name,
+                    bio: profile.bio || "Identity narrative not established.",
+                    height_str: profile.height ? `${Math.floor(profile.height / 12)}'${profile.height % 12}"` : "5'10\"",
+                    vocation: profile.occupation || 'Aspirant',
+                    tier: currentLevel.name,
+                    is_verified: profile.is_verified,
+                    absolute_rank: absRank,
+                    rank_tier: currentLevel.id
+                  }} 
+                />
+              </div>
+            </motion.div>
 
-               <div className="relative z-30 mt-8">
-                  <AnimatePresence mode="wait">
-                    <motion.div 
-                      key={activeGazeIndex} 
-                      initial={{ y: 10, opacity: 0 }} 
-                      animate={{ y: 0, opacity: 1 }} 
-                      exit={{ y: -5, opacity: 0 }} 
-                      className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/20 flex flex-col items-center"
-                    >
-                      <span className="text-sm font-bold text-mat-bone italic tracking-widest uppercase leading-none">
-                        {gazeProfiles[activeGazeIndex]?.text}
-                      </span>
-                      <span className="text-[6px] font-black uppercase tracking-[0.3em] text-mat-gold/60 mt-1">
-                        {gazeProfiles[activeGazeIndex]?.subText}
-                      </span>
-                    </motion.div>
-                  </AnimatePresence>
-                </div>
+            {/* Active Identity Pill */}
+            <div className="relative z-20 mt-6">
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={activeGazeIndex} 
+                  initial={{ y: 10, opacity: 0 }} 
+                  animate={{ y: 0, opacity: 1 }} 
+                  exit={{ y: -5, opacity: 0 }} 
+                  className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/20 flex flex-col items-center"
+                >
+                  <span className="text-sm font-bold text-mat-bone italic tracking-widest uppercase leading-none">
+                    {gazeProfiles[activeGazeIndex]?.text}
+                  </span>
+                  <span className="text-[6px] font-black uppercase tracking-[0.3em] text-mat-gold/60 mt-1">
+                    {gazeProfiles[activeGazeIndex]?.subText}
+                  </span>
+                </motion.div>
+              </AnimatePresence>
             </div>
           </section>
         ) : (

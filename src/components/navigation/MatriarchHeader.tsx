@@ -26,13 +26,13 @@ export const MatriarchHeader: React.FC = () => {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-black/5">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-black/60 backdrop-blur-xl border-b border-white/10">
         <div className="mat-container h-16 flex items-center justify-between">
           <MatriarchLogo className="scale-75 origin-left" />
           
           <button 
             onClick={() => setIsOpen(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-lg bg-black/5 border border-black/5 text-black/60 hover:text-black transition-all"
+            className="w-10 h-10 flex items-center justify-center rounded-lg bg-white/10 border border-white/10 text-white/60 hover:text-white transition-all"
           >
             <Menu size={20} />
           </button>
