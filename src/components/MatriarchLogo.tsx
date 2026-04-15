@@ -12,13 +12,13 @@ export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnl
     <div className={cn("flex flex-col items-center gap-2 select-none", className)}>
       <div className="relative flex items-center justify-center">
         <Crown 
-          className="w-10 h-10 text-mat-gold" 
-          strokeWidth={1}
+          className="w-10 h-10 text-mat-rose-gold" 
+          strokeWidth={1.5}
         />
       </div>
       
       {!iconOnly && (
-        <span className="font-royal text-3xl font-light tracking-[0.2em] text-mat-slate whitespace-nowrap">
+        <span className="font-royal text-3xl font-bold tracking-[0.2em] text-mat-rose-gold whitespace-nowrap">
           MATRIARCH
         </span>
       )}

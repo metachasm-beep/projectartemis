@@ -125,7 +125,7 @@ const LandingPage: React.FC = () => {
           opacity: isMobile ? logoOpacity : desktopOpacity,
           scale: logoScale,
         }}
-        className="fixed left-1/2 top-[34dvh] md:top-8 z-[100] -translate-x-1/2 pointer-events-none origin-center"
+        className="fixed left-1/2 top-12 md:top-8 z-[100] -translate-x-1/2 pointer-events-none origin-center"
       >
         <MatriarchLogo className="transition-transform duration-300" />
       </motion.div>
