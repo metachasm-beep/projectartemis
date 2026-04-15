@@ -153,11 +153,13 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       )}>
         
         {/* Bio Embossing */}
-        <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-4")}>
-           <p className="text-white/60 text-[12px] md:text-[13px] leading-relaxed font-normal line-clamp-2 italic">
-              "{sanitizeBio(profile.bio) || "Identity narrative not established."}"
-           </p>
-        </div>
+        {sanitizeBio(profile.bio) && (
+          <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-4")}>
+             <p className="text-white/60 text-[12px] md:text-[13px] leading-relaxed font-normal line-clamp-2 italic">
+                "{sanitizeBio(profile.bio)}"
+             </p>
+          </div>
+        )}
 
         {/* 📊 TACTILE STATS GRID */}
         <div className={cn("grid grid-cols-3 gap-x-2 md:gap-x-4", isDashboard ? "gap-y-2" : "gap-y-6")}>
