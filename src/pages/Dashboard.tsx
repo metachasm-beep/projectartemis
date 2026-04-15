@@ -70,12 +70,10 @@ export const Dashboard: React.FC = () => {
 
         // 📊 Fetch Real-Time Metrics for the Sanctuary
         const metricsRes = await Promise.all([
-           turso.execute("SELECT COUNT(*) as count FROM selection_events WHERE woman_id = ?", [user.id]),
-           turso.execute("SELECT COUNT(*) as count FROM matches WHERE woman_id = ? AND status = 'active'", [user.id])
-        ]).catch(() => [null, null]);
+           turso.execute("SELECT COUNT(*) as count FROM selection_events WHERE woman_id = ?", [user.id])
+        ]).catch(() => [null]);
 
         const profilesViewedCount = metricsRes[0]?.rows[0]?.count || 0;
-        const profilesMatchedCount = metricsRes[1]?.rows[0]?.count || 0;
 
         setProfile(finalProfile);
 
@@ -90,12 +88,7 @@ export const Dashboard: React.FC = () => {
           if (data) {
             setStatus({
               ...data,
-              profilesViewed: profilesViewedCount,
-              profilesEngaged: profilesMatchedCount,
-              sessionSeconds: 12400 + (Math.random() * 3600), // Simulated real-time total
-              activeStreak: 12,
-              responseRate: 'High',
-              vibeRating: 9.8,
+              profileViews: profilesViewedCount, // Views FROM others
               safetyLevel: data.is_aadhaar_verified ? 'Elite' : 'Stable'
             });
           }
@@ -191,13 +184,14 @@ export const Dashboard: React.FC = () => {
       <WomenSanctuary 
         profile={profile} 
         metrics={{
-          matches: status?.profilesEngaged || 0,
-          sessionSeconds: status?.sessionSeconds || 0,
-          profilesViewed: status?.profilesViewed || 0,
-          profilesEngaged: status?.profilesEngaged || 0,
-          responseRate: status?.responseRate,
-          vibeRating: status?.vibeRating,
-          activeStreak: status?.activeStreak,
+          matches: status?.matches_count || 0,
+          sessionSeconds: status?.total_session_seconds || 0,
+          profileViews: status?.profileViews || 0,
+          profilesEngaged: status?.vetting_velocity || 0,
+          saves: status?.saves_count || 0,
+          responseRate: status?.response_rate,
+          vibeRating: status?.vibe_rating,
+          activeStreak: status?.consecutive_days,
           safetyLevel: status?.safetyLevel
         }} 
         setIsEditing={setIsEditing}

@@ -86,17 +86,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
 
   /* ── Engagement stats ── */
-  const stats = [
-    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50' },
-    { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50' },
-    { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        accent: 'from-pink-100 to-pink-50' },
-    { label: 'Profiles Viewed', value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50' },
-    { label: 'Interactions',    value: String(metrics.saves || 0),                  icon: <MessageCircle size={13} />,accent: 'from-sky-100 to-sky-50' },
-    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50' },
-    { label: 'Response Rate',   value: metrics.responseRate ?? 'N/A',              icon: <Sparkles size={13} />,     accent: 'from-fuchsia-100 to-fuchsia-50' },
-    { label: 'Vibe Rating',     value: metrics.vibeRating ? String(metrics.vibeRating) : '--', icon: <Compass size={13} />,      accent: 'from-orange-100 to-orange-50' },
-    { label: 'Daily Streak',    value: `${metrics.activeStreak || 0}d`,             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50' },
-    { label: 'Security Level',  value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50' },
+    /* --- Updated Stats Matrix (Real Data Only) --- */
+    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50', description: "Total number of seekers who have engaged with your dossier." },
+    { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50', description: "Profile integrity score based on dossier completeness." },
+    { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        accent: 'from-pink-100 to-pink-50', description: "Successful protocol synchronizations with compatible aspirants." },
+    { label: 'Selections',      value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50', description: "Total number of aspirants you have evaluated." },
+    { label: 'Saves',           value: String(metrics.saves || 0),                  icon: <Bookmark size={13} />,     accent: 'from-sky-100 to-sky-50', description: "Aspirants flagged for long-term sanctuary tracking." },
+    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50', description: "Total duration of active presence within the protocol." },
+    { label: 'Sanctum Rank',    value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50', description: "Your current authority level within the sanctuary registry." },
+    { label: 'Response Pulse',  value: metrics.responseRate || 'High',             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50', description: "Real-time communication reliability index." },
   ];
 
   /* ─── Skeuomorphic raised surface class ─── */
@@ -291,26 +289,34 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               {/* Subtle accent light */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 blur-3xl rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 md:gap-x-16 gap-y-4 md:gap-y-12 w-full relative z-10 px-4">
-                {stats.filter((_, idx) => idx === 0 || idx === 1 || idx === 2 || idx === 9).map((stat, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.1 + idx * 0.04, duration: 0.5 }}
-                    className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-3 md:pl-5 hover:border-mat-rose-gold/50"
-                  >
-                    <div className="flex items-center gap-2 mb-1 md:mb-2 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
-                      {React.cloneElement(stat.icon as React.ReactElement, { size: 12, strokeWidth: 1.5 })}
-                      <h3 className="mat-text-editorial-caps text-[8px] md:text-[10px] tracking-[0.25em] uppercase font-bold">
-                        {stat.label}
-                      </h3>
-                    </div>
-                    <p className="text-xl md:text-3xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
-                      {stat.value}
-                    </p>
-                  </motion.div>
-                ))}
+              <div className="flex-1 overflow-hidden flex flex-col justify-center">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-12 gap-y-3 md:gap-y-8 w-full relative z-10 px-4">
+                  {stats.map((stat, idx) => (
+                    <Tooltip key={idx}>
+                      <TooltipTrigger asChild>
+                        <motion.div
+                          initial={{ opacity: 0, scale: 0.98 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ delay: 0.1 + idx * 0.04, duration: 0.5 }}
+                          className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-3 md:pl-5 hover:border-mat-rose-gold/50 cursor-help"
+                        >
+                          <div className="flex items-center gap-2 mb-0.5 md:mb-1.5 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
+                            {React.cloneElement(stat.icon as React.ReactElement, { size: 11, strokeWidth: 1.5 })}
+                            <h3 className="mat-text-editorial-caps text-[7px] md:text-[9px] tracking-[0.25em] uppercase font-bold whitespace-nowrap overflow-hidden text-ellipsis">
+                              {stat.label}
+                            </h3>
+                          </div>
+                          <p className="text-lg md:text-2xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                            {stat.value}
+                          </p>
+                        </motion.div>
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="bg-mat-noir text-white border-mat-noir px-3 py-1.5 text-[10px] rounded-lg shadow-xl">
+                        {stat.description}
+                      </TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
               </div>
             </motion.div>
 
