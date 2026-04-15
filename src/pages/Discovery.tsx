@@ -102,23 +102,23 @@ export const Discovery: React.FC = () => {
               initial={{ y: 100 }}
               animate={{ y: 0 }}
               exit={{ y: 100 }}
-              className="fixed bottom-6 left-4 right-4 z-[120] bg-mat-wine/95 backdrop-blur-xl border border-mat-gold/30 px-6 py-4 flex items-center justify-between shadow-2xl rounded-3xl"
+              className="fixed bottom-6 left-3 right-3 md:left-0 md:right-0 z-[120] bg-mat-wine/95 backdrop-blur-xl border border-mat-gold/30 md:border-t-0 md:border-b px-3 sm:px-6 py-3 flex items-center justify-between shadow-2xl rounded-2xl md:rounded-none"
             >
                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-mat-gold/10 border border-mat-gold/30 flex items-center justify-center">
                      <ShieldAlert className="text-mat-gold w-5 h-5" />
                   </div>
-                   <div className="flex flex-col">
+                   <div className="flex flex-col min-w-0">
                      <span className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em] hidden sm:block">{SEO_COPY.discovery.banner.title}</span>
                      <p className="text-[9px] text-white/60 uppercase tracking-widest leading-none mt-1 hidden sm:block">{SEO_COPY.discovery.banner.desc}</p>
-                     <p className="text-[10px] text-mat-gold font-bold uppercase tracking-widest sm:hidden">Identity Verification Required</p>
+                     <p className="text-[10px] text-mat-gold font-bold uppercase tracking-widest sm:hidden truncate">Identity Protocol</p>
                   </div>
                </div>
                <button 
                  onClick={() => setShowVerificationModal(true)}
-                 className="px-6 py-2 bg-mat-gold text-mat-obsidian text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-all flex items-center gap-2"
+                 className="px-4 sm:px-6 py-2 bg-mat-gold text-mat-obsidian text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] rounded-full hover:bg-white transition-all flex items-center gap-2 shrink-0"
                >
-                  Secure Identity <ArrowRight size={12} />
+                  Secure Identity <ArrowRight size={10} />
                </button>
             </motion.div>
          )}
@@ -192,7 +192,7 @@ export const Discovery: React.FC = () => {
 
       {/* 🏛️ UI OVERLAY: HUD */}
       {!showVerificationModal && (
-        <div className="absolute top-10 left-10 z-20 pointer-events-none">
+        <div className="absolute top-10 left-10 z-20 pointer-events-none hidden md:block">
            <motion.div 
              initial={{ x: -20, opacity: 0 }}
              animate={{ x: 0, opacity: 1 }}
