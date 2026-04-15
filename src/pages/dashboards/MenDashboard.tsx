@@ -461,6 +461,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
         {/* ─── FOLD TWO: SANCTUARY INTELLIGENCE ─── */}
         {isMobile ? (
+          <>
           <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
               <motion.div variants={cardSpring} className="mat-glass-deep p-6 rounded-[2.5rem] border border-mat-rose/10 flex flex-col max-h-[85vh] overflow-y-auto no-scrollbar">
                 <div className="flex flex-col items-center mb-6">
@@ -553,6 +554,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 <QuestBoard refreshProfile={refreshProfile} />
              </div>
           </section>
+          </>
         ) : (
           <section className="h-[100dvh] min-h-[100dvh] py-20 snap-start flex flex-col justify-center">
              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
