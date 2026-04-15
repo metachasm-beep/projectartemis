@@ -16,7 +16,8 @@ import {
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
-import { VerificationPrompt } from "@/components/VerificationPrompt";
+import { AadhaarVerification } from "@/components/AadhaarVerification";
+import { X } from "lucide-react";
 import { turso } from '@/lib/turso';
 import { motion, AnimatePresence, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 import type { MatriarchProfile } from '@/types';
@@ -86,6 +87,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [isBumping, setIsBumping] = useState(false);
   const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
 
   const calculateIntegrity = () => {
      let score = 0;
@@ -263,7 +265,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         </motion.div>
       </div>
 
-      <div className="max-w-[1600px] mx-auto px-4">
+      <div className="max-w-[1600px] mx-auto px-0 md:px-4">
         {/* ─── FOLD ONE: IDENTITY & GAZE ─── */}
         {isMobile ? (
           <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden">
@@ -331,6 +333,15 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   </span>
                 </motion.div>
               </AnimatePresence>
+              
+              {!profile.is_verified && (
+                <button 
+                  onClick={() => setShowVerificationModal(true)}
+                  className="mt-6 text-[9px] text-white/50 hover:text-white font-bold uppercase tracking-widest underline decoration-white/20 underline-offset-4 transition-all"
+                >
+                  Verify to unlock Full Sanctuary Access
+                </button>
+              )}
             </div>
           </section>
         ) : (
@@ -528,6 +539,45 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
         )}
 
       </div>
+
+      {/* Verification Modal Overlay */}
+      <AnimatePresence>
+        {showVerificationModal && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowVerificationModal(false)}
+              className="absolute inset-0 bg-black/90 backdrop-blur-2xl"
+            />
+            
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative w-full max-w-lg z-10"
+            >
+              <button 
+                onClick={() => setShowVerificationModal(false)}
+                className="absolute -top-6 -right-6 w-12 h-12 bg-black/40 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-all z-20"
+              >
+                <X size={24} />
+              </button>
+              
+              <div className="max-h-[90vh] overflow-y-auto rounded-[3.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] bg-[#0F0F10] border border-white/10 no-scrollbar">
+                <AadhaarVerification 
+                  userId={profile.user_id} 
+                  onVerified={() => {
+                    refreshProfile();
+                    setShowVerificationModal(false);
+                  }} 
+                />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
