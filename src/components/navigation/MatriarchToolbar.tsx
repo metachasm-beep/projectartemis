@@ -59,19 +59,19 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
   if (activeTab === 'sovereign_browse') return null;
 
   return (
-    <div className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[100] w-auto max-w-[95%] px-3 py-2 rounded-full backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-2 transition-all duration-500 ${
+      <div className={`fixed top-4 md:top-6 left-1/2 -translate-x-1/2 z-[1000] w-auto max-w-[95%] px-2 py-1.5 md:px-3 md:py-2 rounded-full backdrop-blur-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/20 flex items-center gap-1 md:gap-2 transition-all duration-500 ${
       activeTab === 'faq' 
         ? 'bg-mat-obsidian/90' 
         : profile?.role === 'woman' 
           ? 'bg-mat-cream/95 border-mat-gold/40 shadow-[0_20px_40px_rgba(0,0,0,0.2)]' 
           : 'bg-white/10'
     }`}>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-0.5 md:gap-1">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id as Extract<typeof activeTab, string>)}
-              className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all duration-300 group relative ${
+              className={`flex items-center gap-2 px-3.5 py-2.5 md:px-5 md:py-3 rounded-full transition-all duration-300 group relative ${
                 activeTab === item.id 
                 ? 'bg-mat-gold text-mat-obsidian shadow-xl' 
                 : profile?.role === 'woman'

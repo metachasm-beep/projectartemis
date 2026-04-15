@@ -154,7 +154,7 @@ export const SeekerBrowse: React.FC = () => {
                              <button 
                               onClick={(e) => handleToggleShortlist(e, profile.user_id)} 
                               className={cn(
-                                "p-5 rounded-full backdrop-blur-3xl border border-white/10 transition-all active:scale-95 shadow-2xl",
+                                "p-5 rounded-full backdrop-blur-xl border border-white/10 transition-all active:scale-95 shadow-2xl",
                                 shortlisted.has(profile.user_id) ? "bg-mat-gold text-mat-wine" : "bg-black/60 text-mat-cream hover:bg-white/10"
                               )}
                              >
@@ -168,7 +168,7 @@ export const SeekerBrowse: React.FC = () => {
 
                        <Tooltip>
                           <TooltipTrigger asChild>
-                             <div className="p-5 rounded-full bg-black/60 backdrop-blur-3xl border border-white/10 text-mat-cream">
+                             <div className="p-5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-mat-cream">
                                 <Info size={20} />
                              </div>
                           </TooltipTrigger>
@@ -196,7 +196,7 @@ export const SeekerBrowse: React.FC = () => {
         <AnimatePresence>
           {selectedProfile && (
              <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProfile(null)} className="absolute inset-0 bg-mat-wine/98 backdrop-blur-3xl" />
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setSelectedProfile(null)} className="absolute inset-0 bg-mat-wine/98 backdrop-blur-md" />
                 <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 40 }} className="relative w-full max-w-7xl h-[90vh] bg-mat-cream rounded-[4rem] overflow-hidden flex flex-col md:flex-row shadow-mat-premium border border-mat-rose/10">
                    <button onClick={() => setSelectedProfile(null)} className="absolute top-12 right-12 z-[110] p-6 rounded-full bg-mat-wine text-mat-cream shadow-2xl hover:scale-110 active:scale-90 transition-all font-black"><X size={28} /></button>
                    
@@ -218,6 +218,10 @@ export const SeekerBrowse: React.FC = () => {
                             <Badge variant="outline">Station Archive</Badge>
                          </div>
                          <h2 className="text-8xl md:text-[10rem] mat-text-display-pro text-mat-wine italic leading-[0.85]">{selectedProfile.full_name}</h2>
+                         <div className="flex items-center gap-2 md:gap-3">
+                            <Sparkles size={14} className="text-mat-gold animate-pulse" />
+                            <span className="text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-mat-cream hidden md:block">Premium Browse</span>
+                         </div>
                          <div className="flex items-center gap-6 text-mat-slate/40 text-[12px] font-black uppercase tracking-[0.6em] italic">
                             <span>Age {selectedProfile.age}</span>
                             <div className="w-1.5 h-1.5 rounded-full bg-mat-rose/20" />

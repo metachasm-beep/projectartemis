@@ -198,7 +198,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                         <motion.div 
                            initial={false} 
                            animate={{ scale: status === 'matching' ? 1.2 : 0, opacity: status === 'matching' ? 1 : 0 }}
-                           className="p-8 rounded-full bg-mat-gold/20 backdrop-blur-3xl text-mat-gold"
+                           className="p-8 rounded-full bg-mat-gold/20 backdrop-blur-xl text-mat-gold"
                         >
                            <Sparkles size={48} className="animate-spin" />
                         </motion.div>
@@ -208,7 +208,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                               <motion.div 
                                 initial={{ scale: 0, opacity: 0 }}
                                 animate={{ scale: 1, opacity: 1 }}
-                                className="p-8 rounded-full bg-mat-rose backdrop-blur-3xl text-mat-cream shadow-mat-premium"
+                                className="p-8 rounded-full bg-mat-rose backdrop-blur-xl text-mat-cream shadow-mat-premium"
                               >
                                  <Heart size={48} fill="currentColor" />
                               </motion.div>

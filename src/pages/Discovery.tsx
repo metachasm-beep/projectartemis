@@ -99,18 +99,19 @@ export const Discovery: React.FC = () => {
       <AnimatePresence>
          {isUnverifiedWoman && !showVerificationModal && (
             <motion.div 
-              initial={{ y: -100 }}
+              initial={{ y: 100 }}
               animate={{ y: 0 }}
-              exit={{ y: -100 }}
-              className="absolute top-0 left-0 right-0 z-[110] bg-mat-wine/95 backdrop-blur-xl border-b border-mat-gold/30 px-6 py-3 flex items-center justify-between shadow-2xl"
+              exit={{ y: 100 }}
+              className="fixed bottom-6 left-4 right-4 z-[120] bg-mat-wine/95 backdrop-blur-xl border border-mat-gold/30 px-6 py-4 flex items-center justify-between shadow-2xl rounded-3xl"
             >
                <div className="flex items-center gap-4">
                   <div className="w-10 h-10 rounded-full bg-mat-gold/10 border border-mat-gold/30 flex items-center justify-center">
                      <ShieldAlert className="text-mat-gold w-5 h-5" />
                   </div>
-                  <div className="flex flex-col">
-                     <span className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em]">{SEO_COPY.discovery.banner.title}</span>
-                     <p className="text-[9px] text-white/60 uppercase tracking-widest leading-none mt-1">{SEO_COPY.discovery.banner.desc}</p>
+                   <div className="flex flex-col">
+                     <span className="text-[10px] font-black text-mat-gold uppercase tracking-[0.2em] hidden sm:block">{SEO_COPY.discovery.banner.title}</span>
+                     <p className="text-[9px] text-white/60 uppercase tracking-widest leading-none mt-1 hidden sm:block">{SEO_COPY.discovery.banner.desc}</p>
+                     <p className="text-[10px] text-mat-gold font-bold uppercase tracking-widest sm:hidden">Identity Verification Required</p>
                   </div>
                </div>
                <button 
@@ -167,11 +168,11 @@ export const Discovery: React.FC = () => {
           ) : (
             <motion.div 
               key="verification"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              className="h-full w-full flex items-center justify-center bg-black/40 backdrop-blur-3xl z-[120]"
-            >
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               exit={{ opacity: 0, scale: 1.05 }}
+               className="h-full w-full flex items-center justify-center bg-black/40 backdrop-blur-xl z-[120]"
+             >
                <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-[3rem] border border-mat-gold/30 bg-[#0A0A0B] shadow-[0_50px_100px_rgba(0,0,0,0.8)] relative mt-16">
                   <button 
                     onClick={() => setShowVerificationModal(false)}
@@ -207,13 +208,12 @@ export const Discovery: React.FC = () => {
       <AnimatePresence>
         {selectedProfile && !showVerificationModal && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedProfile(null)}
-              className="absolute inset-0 bg-mat-obsidian/90 backdrop-blur-3xl"
-            />
+            <motion.div               initial={{ opacity: 0 }}
+               animate={{ opacity: 1 }}
+               exit={{ opacity: 0 }}
+               onClick={() => setSelectedProfile(null)}
+               className="absolute inset-0 bg-mat-obsidian/90 backdrop-blur-xl"
+             />
             
             <motion.div 
               layoutId={`card-${selectedProfile.id}`}
