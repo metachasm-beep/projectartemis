@@ -96,10 +96,10 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-6xl font-bold text-mat-wine italic tracking-tighter leading-none">{status?.points || 0}</span>
+                      <span className="text-5xl font-bold text-mat-wine italic tracking-tighter leading-none">{status?.points || 0}</span>
                       <span className="text-mat-gold/60 text-lg font-black animate-pulse">Hz</span>
                     </div>
-                    <p className="mat-text-label-pro text-[10px] opacity-40 uppercase tracking-[0.2em]">Radiance Potential</p>
+                    <p className="mat-text-label-pro text-[11px] opacity-60 uppercase tracking-[0.2em] text-white">Radiance Potential</p>
                   </div>
                 </div>
 
@@ -183,14 +183,14 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                     <motion.div 
                       key={i} 
                       whileHover={{ y: -5 }}
-                      className="space-y-4"
+                      className="space-y-3"
                     >
-                       <div className="w-12 h-12 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10">
-                         <stat.icon size={20} className={stat.color} strokeWidth={1.5} />
+                       <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
+                         <stat.icon size={16} className={stat.color} strokeWidth={1.5} />
                        </div>
-                       <div className="space-y-1">
-                          <p className="text-2xl font-bold text-white italic tracking-tighter">{stat.val}</p>
-                          <p className="mat-text-label-pro text-[9px] opacity-40 uppercase tracking-[0.2em]">{stat.label}</p>
+                       <div className="space-y-0.5">
+                          <p className="text-lg font-bold text-white italic tracking-tight leading-none">{stat.val}</p>
+                          <p className="mat-text-label-pro text-[11px] opacity-70 uppercase tracking-[0.15em] text-white/80 leading-tight">{stat.label}</p>
                        </div>
                     </motion.div>
                   ))}
@@ -213,7 +213,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                     </div>
                   </div>
                   <div className="flex items-baseline gap-4">
-                     <span className="text-7xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                     <span className="text-5xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
                         {Math.round(status?.rank_score || 0)}
                      </span>
                      <p className="text-[10px] text-white/30 italic max-w-[150px] leading-tight">Strategic frequency alignment verified in local sector.</p>

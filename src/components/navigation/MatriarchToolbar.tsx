@@ -121,7 +121,11 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
 
           <button
             onClick={onLogout}
-            className="p-3 rounded-full bg-white/10 text-mat-bone/60 transition-all hover:text-mat-rose hover:bg-white/20 group"
+            className={`p-3 rounded-full transition-all group ${
+              profile?.role === 'woman' 
+                ? 'bg-black/5 text-mat-obsidian/60 hover:text-mat-obsidian hover:bg-black/10' 
+                : 'bg-white/10 text-mat-bone/60 hover:text-mat-bone hover:bg-white/20'
+            }`}
           >
             <LogOut size={16} className="group-hover:translate-x-1 transition-transform" />
           </button>
