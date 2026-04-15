@@ -19,6 +19,7 @@ import { Aurora } from '@/components/dashboard/promax/Aurora';
 import { GlassCard } from '@/components/dashboard/promax/GlassCard';
 import { Dock } from '@/components/dashboard/promax/Dock';
 import { FAQ } from '@/components/FAQ';
+import { useGeolocation } from '@/hooks/useGeolocation';
 
 interface WomenDashboardProps {
   profile: any;
@@ -39,6 +40,9 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
   handleBoost 
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);
+
+  // 🛰️ Geolocation Resonance - Once per session
+  useGeolocation(profile?.user_id);
 
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-obsidian selection:bg-mat-wine selection:text-white">

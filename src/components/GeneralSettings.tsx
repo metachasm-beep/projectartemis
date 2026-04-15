@@ -9,10 +9,10 @@ import {
   ChevronRight,
   ShieldCheck,
   User,
-  Zap,
-  Eye,
-  Smartphone
+  Smartphone,
+  Compass
 } from 'lucide-react';
+import { SanctuaryService } from '@/services/sanctuary';
 import { Switch } from '@/components/ui/switch';
 import { Button } from '@/components/ui/button';
 
@@ -133,6 +133,37 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({
                         <div className="flex items-center justify-between py-6 border-b border-black/5">
                           <span className="text-[11px] font-black text-black/40 uppercase tracking-widest">Aura Harvested</span>
                           <span className="font-bold text-black italic">Rank #{profile?.absolute_rank || '--'}</span>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="space-y-8">
+                      <div className="flex items-center gap-4 text-black/40">
+                        <Compass size={20} />
+                        <h3 className="text-[14px] font-black uppercase tracking-[0.4em]">Regional Resonance</h3>
+                      </div>
+                      
+                      <div className="space-y-6">
+                        <div className="flex items-center justify-between p-6 border border-black/5 hover:border-black/20 transition-all rounded-2xl group">
+                          <div className="space-y-1">
+                            <p className="font-bold text-black group-hover:italic transition-all">Distance Protocol</p>
+                            <p className="text-[11px] text-black/40 uppercase tracking-widest font-medium">Toggle between Metric/Imperial Units</p>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className={cn("text-[10px] font-black uppercase tracking-tighter", (profile?.measurement_unit || 'km') === 'km' ? "text-black" : "text-black/20")}>KM</span>
+                            <Switch 
+                              checked={(profile?.measurement_unit || 'km') === 'mi'} 
+                              onCheckedChange={async (checked) => {
+                                if (!profile?.user_id) return;
+                                await SanctuaryService.updateMeasurementUnit(profile.user_id, checked ? 'mi' : 'km');
+                                // Force a page reload or state update if necessary, 
+                                // but for now, we rely on the next profile refresh.
+                                window.location.reload(); 
+                              }}
+                              className="data-[state=checked]:bg-black" 
+                            />
+                            <span className={cn("text-[10px] font-black uppercase tracking-tighter", (profile?.measurement_unit || 'km') === 'mi' ? "text-black" : "text-black/20")}>MI</span>
+                          </div>
                         </div>
                       </div>
                     </section>

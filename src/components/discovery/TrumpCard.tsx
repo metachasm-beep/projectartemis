@@ -13,6 +13,7 @@ import {
   Crosshair
 } from 'lucide-react';
 import { mapToTrumpStats, sanitizeBio } from '@/utils/trumpData';
+import { SanctuaryService } from '@/services/sanctuary';
 import { Button } from '@heroui/react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { VerificationBadge } from '@/components/verification/VerificationBadge';
@@ -34,15 +35,29 @@ interface TrumpCardProps {
     is_verified?: boolean;
     absolute_rank?: number | null;
     rank_tier?: string;
+    latitude?: number | null;
+    longitude?: number | null;
   };
+  currentUserLocation?: { latitude: number; longitude: number } | null;
+  measurementUnit?: 'km' | 'mi';
   onClose?: () => void;
   onAction?: (type: string) => void;
   isDashboard?: boolean;
 }
 
-export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction, isDashboard }) => {
+export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocation, measurementUnit = 'km', onClose, onAction, isDashboard }) => {
   const stats = mapToTrumpStats(profile);
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
+
+  const distance = (profile.latitude && profile.longitude && currentUserLocation) 
+    ? SanctuaryService.calculateDistance(
+        currentUserLocation.latitude, 
+        currentUserLocation.longitude, 
+        profile.latitude, 
+        profile.longitude,
+        measurementUnit
+      )
+    : null;
 
   const statItems = [
     { label: 'CHARISMA', value: stats.charisma, color: 'from-orange-600 to-orange-400' },
@@ -208,8 +223,15 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                   <MapPin size={11} className="md:size-[14px]" />
                </div>
                <div className="flex flex-col min-w-0">
-                  <span className="text-[6px] md:text-[8px] uppercase font-black tracking-widest text-white/20">Height</span>
-                  <span className="text-[9px] md:text-[11px] font-bold text-white/70 uppercase truncate">{profile.height_str}</span>
+                  <span className="text-[6px] md:text-[8px] uppercase font-black tracking-widest text-white/20">Location</span>
+                  <span className="text-[9px] md:text-[11px] font-bold text-white/70 uppercase truncate">
+                    {profile.city}
+                    {distance !== null && (
+                      <span className="ml-1 text-mat-gold font-black italic">
+                        • {distance > 1 ? Math.round(distance) : distance.toFixed(1)} {measurementUnit}
+                      </span>
+                    )}
+                  </span>
                </div>
             </div>
 

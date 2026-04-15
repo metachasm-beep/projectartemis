@@ -1,1 +1,1 @@
-from . import health, legal, verification, discovery, rank, auth, communication, safety, admin, media
+from . import health, legal, verification, discovery, rank, auth, communication, safety, admin, media, quests

@@ -8,12 +8,14 @@ import { ShieldAlert, ArrowRight, Lock, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { SEO_COPY } from '@/content/copy';
+import { DiscoveryService } from '@/services/discoveryService';
 
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
   const [aspirants, setAspirants] = useState<any[]>([]);
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [viewedProfileIds] = useState(new Set<string>());
 
   const { profile, refreshProfile } = useAuth();
   
@@ -74,7 +76,14 @@ export const Discovery: React.FC = () => {
 
   const handleSelect = useCallback((index: number) => {
     if (aspirants.length > 0) {
-      setSelectedProfile(aspirants[index % aspirants.length]);
+      const target = aspirants[index % aspirants.length];
+      setSelectedProfile(target);
+      
+      // 🔮 Log 'View' for The Queue (Once per session per profile)
+      if (profile?.role === 'woman' && !viewedProfileIds.has(target.id)) {
+        viewedProfileIds.add(target.id);
+        DiscoveryService.recordAction(target.id, 'view');
+      }
     }
   }, [aspirants]);
 

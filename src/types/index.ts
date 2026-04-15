@@ -42,6 +42,9 @@ export interface MatriarchProfile {
   };
   created_at: string;
   updated_at?: string;
+  latitude?: number;
+  longitude?: number;
+  measurement_unit?: 'km' | 'mi';
 }
 
 export interface SanctuaryContextType {

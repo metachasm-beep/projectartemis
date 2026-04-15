@@ -37,6 +37,31 @@ CREATE TABLE IF NOT EXISTS male_rank_profiles (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 🛡️ The Invitation Registry: For secure, multi-use entry protocols.
+CREATE TABLE IF NOT EXISTS invite_codes (
+    code TEXT PRIMARY KEY,
+    creator_id TEXT NOT NULL REFERENCES profiles(user_id),
+    max_uses INTEGER DEFAULT 1,
+    current_uses INTEGER DEFAULT 0,
+    is_used BOOLEAN DEFAULT 0,
+    expires_at DATETIME,
+    used_at DATETIME,
+    used_by_id TEXT, -- For single-use codes
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 🔗 The Standalone Referral Ledger: Audit trail for merit-born connections.
+-- Implements DAG logic: no circular referrals allowed.
+CREATE TABLE IF NOT EXISTS referral_ledger (
+    id TEXT PRIMARY KEY,
+    referrer_id TEXT NOT NULL REFERENCES profiles(user_id),
+    referee_id TEXT NOT NULL REFERENCES profiles(user_id),
+    invite_code TEXT REFERENCES invite_codes(code),
+    points_awarded INTEGER DEFAULT 100,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(referrer_id, referee_id)
+);
+
 -- Administrative Reports/Audit Logs
 CREATE TABLE IF NOT EXISTS reports (
     id TEXT PRIMARY KEY,
@@ -115,4 +140,27 @@ CREATE TABLE IF NOT EXISTS messages (
     content TEXT NOT NULL,
     message_type TEXT NOT NULL DEFAULT 'text',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 🏆 Proof of Merit: Quests and Achievements
+CREATE TABLE IF NOT EXISTS quests (
+    id TEXT PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT,
+    objective_type TEXT NOT NULL, -- 'journal', 'profile', 'discovery', 'daily_login'
+    aura_reward INTEGER DEFAULT 10,
+    rank_reward REAL DEFAULT 5.0,
+    is_daily BOOLEAN DEFAULT 0,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS user_quests (
+    user_id TEXT NOT NULL REFERENCES profiles(user_id) ON DELETE CASCADE,
+    quest_id TEXT NOT NULL REFERENCES quests(id) ON DELETE CASCADE,
+    status TEXT DEFAULT 'available', -- 'available', 'in_progress', 'completed'
+    progress_pct REAL DEFAULT 0.0,
+    last_synced_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    completed_at DATETIME,
+    refresh_at DATETIME, -- For daily quests
+    PRIMARY KEY (user_id, quest_id)
 );

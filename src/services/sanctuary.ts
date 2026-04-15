@@ -331,5 +331,42 @@ export const SanctuaryService = {
       args: [id, actorId, targetId]
     });
     return true;
+  },
+
+  /**
+   * 🗺️ Proximity Protocol: Persistence and calibration of geographical resonance.
+   */
+  updateLocation: async (userId: string, latitude: number, longitude: number) => {
+    await turso.execute({
+      sql: "UPDATE profiles SET latitude = ?, longitude = ?, updated_at = ? WHERE user_id = ?",
+      args: [latitude, longitude, new Date().toISOString(), userId]
+    });
+    return true;
+  },
+
+  updateMeasurementUnit: async (userId: string, unit: 'km' | 'mi') => {
+    await turso.execute({
+      sql: "UPDATE profiles SET measurement_unit = ?, updated_at = ? WHERE user_id = ?",
+      args: [unit, new Date().toISOString(), userId]
+    });
+    return true;
+  },
+
+  /**
+   * 📐 Haversine Formula: Calculates the great-circle distance between two points.
+   * Returns distance in the requested unit.
+   */
+  calculateDistance: (lat1: number, lon1: number, lat2: number, lon2: number, unit: 'km' | 'mi' = 'km') => {
+    const R = unit === 'km' ? 6371 : 3958.8; // Radius of the Earth
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const d = R * c;
+    return d;
   }
 };
+

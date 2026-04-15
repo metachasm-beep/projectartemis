@@ -35,7 +35,10 @@ import { ArchetypeBadge } from '@/components/discovery/ArchetypeBadge';
 import CircularGallery from '@/components/animations/CircularGallery';
 import { SEO_COPY } from '@/content/copy';
 import { SanctuaryService } from '@/services/sanctuary';
+import { useGeolocation } from '@/hooks/useGeolocation';
 import { cn } from "@/lib/utils";
+import { QuestBoard } from '@/components/dashboards/QuestBoard';
+import { QueueStatus } from '@/components/dashboards/QueueStatus';
 
 interface MenDashboardProps {
   profile: MatriarchProfile;
@@ -98,6 +101,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success'>('idle');
+
+  // 🛰️ Geolocation Resonance - Once per session
+  const { location } = useGeolocation(profile?.user_id);
 
   const calculateIntegrity = () => {
      let score = 0;
@@ -322,9 +328,12 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     vocation: profile.occupation || 'Aspirant',
                     tier: currentLevel.name,
                     is_verified: profile.is_verified,
-                    absolute_rank: absRank,
-                    rank_tier: currentLevel.id
+                    rank_tier: currentLevel.id,
+                    latitude: profile.latitude,
+                    longitude: profile.longitude
                   }} 
+                  currentUserLocation={location}
+                  measurementUnit={profile.measurement_unit || 'km'}
                 />
               </div>
             </motion.div>
@@ -418,8 +427,12 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                         tier: currentLevel.name,
                         is_verified: profile.is_verified,
                         absolute_rank: absRank,
-                        rank_tier: currentLevel.id
+                        rank_tier: currentLevel.id,
+                        latitude: profile.latitude,
+                        longitude: profile.longitude
                       }} 
+                      currentUserLocation={location}
+                      measurementUnit={profile.measurement_unit || 'km'}
                     />
                   </motion.div>
 
@@ -515,9 +528,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                             </TooltipTrigger>
                             <TooltipContent 
                               side="top" 
-                              align="end"
+                              align="center"
                               sideOffset={8}
-                              className="max-w-[180px] bg-mat-obsidian/95 border-mat-gold/20 text-[9px] p-4 shadow-2xl backdrop-blur-xl"
+                              className="max-w-[280px] bg-mat-obsidian/95 border-mat-gold/20 text-[9px] p-5 shadow-2xl backdrop-blur-xl"
                             >
                               <p className="text-center text-mat-gold font-medium italic leading-relaxed">
                                 "Completing your profile and getting verified boosts your rank power, helping you climb higher in global standings."
@@ -528,8 +541,17 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                       </TooltipProvider>
                    </div>
                    <p className="text-[8px] text-center text-white/40 uppercase tracking-tighter italic">Absolute Standing: <span className="text-mat-gold font-bold">#{absRank || '--'}</span> of {_totalMen}</p>
+                   <div className="pt-8 flex justify-center border-t border-white/5 mt-6 px-4">
+                      <QueueStatus />
+                   </div>
                 </div>
              </motion.div>
+          </section>
+
+          <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
+             <div className="h-full py-20 flex flex-col max-w-lg mx-auto w-full">
+                <QuestBoard refreshProfile={refreshProfile} />
+             </div>
           </section>
         ) : (
           <section className="h-[100dvh] min-h-[100dvh] py-20 snap-start flex flex-col justify-center">
@@ -608,9 +630,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           </TooltipTrigger>
                           <TooltipContent 
                             side="top" 
-                            align="end"
+                            align="center"
                             sideOffset={10}
-                            className="max-w-[240px] bg-mat-obsidian/95 border-mat-gold/20 text-[11px] p-5 shadow-2xl backdrop-blur-xl"
+                            className="max-w-[320px] bg-mat-obsidian/95 border-mat-gold/20 text-[11px] p-6 shadow-2xl backdrop-blur-xl"
                           >
                             <p className="text-mat-gold font-medium leading-relaxed italic text-center">
                               "Completing your profile and getting verified boosts your rank power, helping you climb higher in global standings."
@@ -621,6 +643,36 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     </TooltipProvider>
                   </div>
               </motion.div>
+            </div>
+          </section>
+        )}
+
+        {/* ─── FOLD THREE: THE PATH TO HONOR ─── */}
+        {!isMobile && (
+          <section className="h-[100dvh] min-h-[100dvh] py-24 snap-start flex flex-col items-center justify-center">
+            <div className="max-w-[1400px] w-full grid grid-cols-1 lg:grid-cols-2 gap-24 items-center px-10">
+              <div className="space-y-8">
+                 <h2 className="text-8xl font-light text-mat-bone italic tracking-tighter leading-[0.85]">
+                    The Path to <br/> 
+                    <span className="text-mat-gold font-black uppercase not-italic tracking-[0.2em] text-5xl">Sovereignty.</span>
+                 </h2>
+                 <p className="text-sm text-white/40 leading-relaxed max-w-md uppercase tracking-[0.4em]">
+                    Perform the daily rituals of the Protocol. Every journal entry and verification elevates your Standing.
+                 </p>
+                 <div className="flex gap-6 items-center pt-8">
+                    <div className="mat-glass-deep px-8 py-5 rounded-[2rem] border border-white/5">
+                       <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-2 tracking-[0.3em]">Tier</p>
+                       <p className="text-xl font-bold text-white uppercase tracking-widest italic">{currentLevel.name}</p>
+                    </div>
+                    <div className="mat-glass-deep px-8 py-5 rounded-[2rem] border border-white/5">
+                       <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-2 tracking-[0.3em]">Power</p>
+                       <p className="text-xl font-bold text-white uppercase tracking-widest italic">+{calculateIntegrity()} Standing</p>
+                    </div>
+                 </div>
+              </div>
+              <div className="mat-glass-deep p-12 rounded-[3.5rem] border border-white/10 shadow-mat-premium h-[700px] overflow-hidden">
+                 <QuestBoard refreshProfile={refreshProfile} />
+              </div>
             </div>
           </section>
         )}

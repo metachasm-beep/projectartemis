@@ -16,6 +16,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from './ui/card';
 import SafetyActions from './common/SafetyActions';
 import { SanctuaryService } from '@/services/sanctuary';
+import { useGeolocation } from '@/hooks/useGeolocation';
 
 /**
  * 🍷 PREMIUM DISCOVERY: Minimalist Profile Browsing
@@ -35,6 +36,8 @@ interface Profile {
   is_verified: boolean;
   absolute_rank?: number;
   rank_score?: number;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) => {
@@ -46,6 +49,9 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
   const [matchingStatus, setMatchingStatus] = useState<Record<string, 'idle' | 'matching' | 'success'>>({});
   const [engagementProfile, setEngagementProfile] = useState<Profile | null>(null);
   
+  // 🛰️ Geolocation Resonance - Once per session
+  const { location: myLocation } = useGeolocation(myProfile?.user_id);
+  
   const loader = useRef(null);
   const LIMIT = 12;
 
@@ -54,7 +60,7 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
     try {
       const targetRole = myProfile?.role === 'woman' ? 'man' : 'woman';
       const res = await turso.execute({
-        sql: `SELECT user_id, full_name, date_of_birth, city, photos, bio, occupation, height, is_verified, absolute_rank, rank_score
+        sql: `SELECT user_id, full_name, date_of_birth, city, photos, bio, occupation, height, is_verified, absolute_rank, rank_score, latitude, longitude
               FROM profiles
               WHERE role = ? AND onboarding_status = 'COMPLETED' AND (is_active IS NULL OR is_active = 1)
               ORDER BY COALESCE(absolute_rank, 9999) ASC
@@ -184,8 +190,19 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
                           )}
                         </div>
                         {profile.city && (
-                          <div className="flex items-center gap-1.5 text-[9px] text-white/40 uppercase tracking-widest">
+                          <div className="flex items-center gap-1.5 text-[9px] text-white/40 uppercase tracking-widest truncate">
                             <MapPin size={9} /> {profile.city}
+                            {profile.latitude && profile.longitude && myLocation && (
+                              <span className="text-mat-gold font-black ml-1">
+                                • {Math.round(SanctuaryService.calculateDistance(
+                                    myLocation.latitude, 
+                                    myLocation.longitude, 
+                                    profile.latitude, 
+                                    profile.longitude,
+                                    myProfile?.measurement_unit || 'km'
+                                  ))} {myProfile?.measurement_unit || 'km'} away
+                              </span>
+                            )}
                           </div>
                         )}
                         {profile.occupation && (
