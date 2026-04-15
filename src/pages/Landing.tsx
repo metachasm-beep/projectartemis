@@ -25,9 +25,10 @@ const LandingPage: React.FC = () => {
     container: mainRef,
   });
 
-  // Dynamic Logo transitions
-  const logoOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
-  const logoScale = useTransform(scrollYProgress, [0, 0.08], [1, 0.9]);
+  // Dynamic Logo transitions: STRICT First-Fold Visibility Only
+  // With 8 folds, 1/8 = 0.125. We fade out exactly at the transition.
+  const logoOpacity = useTransform(scrollYProgress, [0, 0.08, 0.12, 1], [1, 1, 0, 0]);
+  const logoScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.95]);
   
   // Mobile-specific X transition - strictly centered for Hero
   const [isMobile, setIsMobile] = useState(false);
