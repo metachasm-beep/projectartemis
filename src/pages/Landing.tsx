@@ -24,9 +24,9 @@ const LandingPage: React.FC = () => {
     container: mainRef,
   });
 
-  // Dynamic Logo Transitions: Hero -> Navigation Hook
-  const logoScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.65]);
-  const logoY = useTransform(scrollYProgress, [0, 0.1], [24, 16]);
+  // Dynamic Logo Transitions: Gradual drift across the entire scroll
+  const logoScale = useTransform(scrollYProgress, [0, 1], [1, 0.55]);
+  const logoY = useTransform(scrollYProgress, [0, 1], [24, 12]);
   
   // Mobile-specific X transition (Center -> Top Right) - only applied if mobile
   const [isMobile, setIsMobile] = useState(false);
@@ -37,11 +37,11 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const mobileX = useTransform(scrollYProgress, [0, 0.15], ["0%", isMobile ? "40vw" : "0%"]);
-  const mobileTranslateX = useTransform(scrollYProgress, [0, 0.15], ["-50%", "-50%"]); // Keep center anchor
+  const mobileX = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "44vw" : "0%"]);
+  const mobileTranslateX = useTransform(scrollYProgress, [0, 1], ["-50%", "-50%"]); // Keep center anchor
 
   // Desktop stays centered but scales down
-  const desktopScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.7]);
+  const desktopScale = useTransform(scrollYProgress, [0, 1], [1, 0.75]);
 
   // Check session on mount
   React.useEffect(() => {
@@ -131,7 +131,7 @@ const LandingPage: React.FC = () => {
         }}
         className="fixed left-1/2 top-6 z-[100] pointer-events-none origin-center"
       >
-        <MatriarchLogo className="transition-transform duration-300" />
+        <MatriarchLogo iconOnly={isMobile} className="transition-transform duration-300" />
       </motion.div>
 
       {/* 1. Global Cinematic Texture */}
