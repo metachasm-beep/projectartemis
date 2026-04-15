@@ -3,7 +3,7 @@ import Hero from './components/Hero';
 import BlogGrid from './components/BlogGrid';
 import BlogPostView from './components/BlogPostView';
 import { BLOG_POSTS } from './data/posts';
-import { motion, useScroll, useSpring, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import SplashCursor from './components/bits/SplashCursor';
 import ManifestoEditor from './components/ManifestoEditor';
 import { PenTool, CheckCircle, ArrowDown } from 'lucide-react';
@@ -165,25 +165,6 @@ const App: React.FC = () => {
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [dynamicPosts, setDynamicPosts] = useState<any[]>([]);
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const heroRef = useRef<HTMLElement>(null);
-  const archiveRef = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ['start start', 'end end'] });
-
-  const scaleX = useSpring(scrollYProgress, { stiffness: 100, damping: 30, restDelta: 0.001 });
-
-  // --- Per-section parallax using dedicated scroll hooks ---
-  const { scrollYProgress: heroProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
-  const { scrollYProgress: archiveProgress } = useScroll({ target: archiveRef, offset: ['start end', 'end start'] });
-
-  const heroY = useTransform(heroProgress, [0, 1], ['0%', '25%']);
-  const heroScale = useTransform(heroProgress, [0, 1], [1, 1.05]);
-  const archiveY = useTransform(archiveProgress, [0, 1], ['4%', '-4%']);
-
-  // Global ambient background drift
-  const bgY = useTransform(scrollYProgress, [0, 1], ['0%', '18%']);
-
   const allPosts = useMemo(() => {
     const combined = [...BLOG_POSTS];
     dynamicPosts.forEach(dp => {
@@ -213,17 +194,14 @@ const App: React.FC = () => {
   useEffect(() => { window.scrollTo(0, 0); }, [selectedPostId]);
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
+    <div className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
       <SplashCursor />
 
-      {/* Ambient background — parallaxed */}
-      <motion.div
-        style={{ y: bgY }}
-        className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30"
-      >
+      {/* Ambient background */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
         <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,_rgba(244,63,94,0.08)_0%,_transparent_50%)]" />
         <div className="absolute top-[20%] right-[-5%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.06)_0%,_transparent_50%)]" />
-      </motion.div>
+      </div>
 
       {/* Success toast */}
       <AnimatePresence>
@@ -261,9 +239,6 @@ const App: React.FC = () => {
         </motion.button>
       )}
 
-      {/* Scroll progress bar */}
-      <motion.div className="fixed top-0 left-0 right-0 h-[1px] bg-rose-500 z-[200] origin-left" style={{ scaleX }} />
-
       <Navbar onArchiveClick={() => setSelectedPostId(null)} />
 
       <main className="relative z-10">
@@ -273,18 +248,12 @@ const App: React.FC = () => {
           ) : (
             <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
 
-              {/* ── FOLD 1: Hero ─────────────────────────────────────────── */}
               <section
-                ref={heroRef}
                 className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden"
               >
-                {/* Parallaxed hero inner */}
-                <motion.div
-                  style={{ y: heroY, scale: heroScale }}
-                  className="absolute inset-0 flex items-center justify-center"
-                >
+                <div className="absolute inset-0 flex items-center justify-center">
                   <Hero />
-                </motion.div>
+                </div>
 
                 {/* Scroll hint */}
                 <motion.div
@@ -317,20 +286,18 @@ const App: React.FC = () => {
                 </motion.div>
               </section>
 
-              {/* ── FOLD 3: Archive (MagicBento) ─────────────────────────── */}
               <section
                 id="archive-fold"
-                ref={archiveRef}
                 className="relative min-h-screen w-full py-16 px-6 overflow-hidden"
               >
-                <motion.div style={{ y: archiveY }} className="max-w-7xl mx-auto">
+                <div className="max-w-7xl mx-auto">
                   <BlogGrid posts={allPosts} onSelect={(id) => setSelectedPostId(id)} />
 
                   <div className="mt-20 flex flex-col items-center gap-4 text-[#3C2F2F]/20 uppercase font-black text-[9px] tracking-[0.5em]">
                     <span>End of Archive</span>
                     <div className="w-px h-16 bg-gradient-to-b from-[#3C2F2F]/20 to-transparent" />
                   </div>
-                </motion.div>
+                </div>
               </section>
 
             </motion.div>
@@ -339,16 +306,6 @@ const App: React.FC = () => {
       </main>
 
       {!selectedPost && <Footer onManifestoClick={() => setIsEditorOpen(true)} />}
-
-      {/* Film grain overlay */}
-      <div className="fixed inset-0 pointer-events-none z-[100] opacity-[0.035] mix-blend-overlay">
-        <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-          <filter id="bgn">
-            <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-          </filter>
-          <rect width="100%" height="100%" filter="url(#bgn)" />
-        </svg>
-      </div>
     </div>
   );
 };

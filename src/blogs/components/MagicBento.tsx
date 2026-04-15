@@ -182,74 +182,7 @@ const ParticleCard: React.FC<ParticleCardProps> = ({
   );
 };
 
-// ----- GlobalSpotlight -----------------------------------------------------
-
-const GlobalSpotlight: React.FC<{
-  gridRef: React.RefObject<HTMLDivElement | null>;
-  spotlightRadius: number;
-  glowColor: string;
-}> = ({ gridRef, spotlightRadius, glowColor }) => {
-  const slRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!gridRef.current) return;
-
-    const spotlight = document.createElement('div');
-    spotlight.style.cssText = `
-      position:fixed;width:${spotlightRadius * 2}px;height:${spotlightRadius * 2}px;border-radius:50%;pointer-events:none;
-      background:radial-gradient(circle,rgba(${glowColor},0.18)0%,rgba(${glowColor},0.09)15%,rgba(${glowColor},0.04)30%,transparent 70%);
-      z-index:200;opacity:0;transform:translate(-50%,-50%);mix-blend-mode:screen;
-    `;
-    document.body.appendChild(spotlight);
-    slRef.current = spotlight;
-
-    const { proximity, fadeDistance } = getSpotlightValues(spotlightRadius);
-
-    const onMove = (e: MouseEvent) => {
-      if (!slRef.current || !gridRef.current) return;
-      const section = gridRef.current.closest('.mb-bento-section');
-      const rect = section?.getBoundingClientRect();
-      const inside = rect && e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
-
-      const cards = gridRef.current.querySelectorAll('.mb-card');
-
-      if (!inside) {
-        gsap.to(slRef.current, { opacity: 0, duration: 0.3, ease: 'power2.out' });
-        cards.forEach(c => (c as HTMLElement).style.setProperty('--glow-intensity', '0'));
-        return;
-      }
-
-      let minDist = Infinity;
-      cards.forEach(c => {
-        const cr = (c as HTMLElement).getBoundingClientRect();
-        const cx = cr.left + cr.width / 2, cy = cr.top + cr.height / 2;
-        const dist = Math.max(0, Math.hypot(e.clientX - cx, e.clientY - cy) - Math.max(cr.width, cr.height) / 2);
-        minDist = Math.min(minDist, dist);
-        const intensity = dist <= proximity ? 1 : dist <= fadeDistance ? (fadeDistance - dist) / (fadeDistance - proximity) : 0;
-        setCardGlow(c as HTMLElement, e.clientX, e.clientY, intensity, spotlightRadius);
-      });
-
-      gsap.to(slRef.current, { left: e.clientX, top: e.clientY, duration: 0.1, ease: 'power2.out' });
-      const op = minDist <= proximity ? 0.9 : minDist <= fadeDistance ? ((fadeDistance - minDist) / (fadeDistance - proximity)) * 0.9 : 0;
-      gsap.to(slRef.current, { opacity: op, duration: op > 0 ? 0.2 : 0.5, ease: 'power2.out' });
-    };
-
-    const onLeave = () => {
-      gridRef.current?.querySelectorAll('.mb-card').forEach(c => (c as HTMLElement).style.setProperty('--glow-intensity', '0'));
-      if (slRef.current) gsap.to(slRef.current, { opacity: 0, duration: 0.3, ease: 'power2.out' });
-    };
-
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('mouseleave', onLeave);
-    return () => {
-      document.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseleave', onLeave);
-      slRef.current?.parentNode?.removeChild(slRef.current);
-    };
-  }, [gridRef, spotlightRadius, glowColor]);
-
-  return null;
-};
+// GlobalSpotlight removed for performance optimization
 
 // ----- MagicBento (main export) --------------------------------------------
 
@@ -276,37 +209,16 @@ const MagicBento: React.FC<MagicBentoProps> = ({
 
   const shouldDisable = isMobile;
 
-  const cardBase = `mb-card flex flex-col justify-between relative p-6 rounded-2xl border border-solid font-light overflow-hidden transition-all duration-300 cursor-pointer hover:-translate-y-0.5 ${enableBorderGlow ? 'mb-card--glow' : ''}`;
+  const cardBase = `mb-card flex flex-col justify-between relative p-6 rounded-2xl border border-solid font-light overflow-hidden transition-all duration-300 cursor-pointer hover:bg-[#3C2F2F]/5`;
 
   const cardStyle = (color?: string) => ({
     backgroundColor: color ?? '#FDFBF7',
     borderColor: 'rgba(60, 47, 47, 0.08)',
     color: '#3C2F2F',
-    '--glow-x': '50%',
-    '--glow-y': '50%',
-    '--glow-intensity': '0',
-    '--glow-radius': `${spotlightRadius}px`,
   } as React.CSSProperties);
 
   return (
     <>
-      <style>{`
-        .mb-card--glow::after {
-          content:'';position:absolute;inset:0;padding:5px;
-          background:radial-gradient(var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-            rgba(${glowColor}, calc(var(--glow-intensity) * 0.8)) 0%,
-            rgba(${glowColor}, calc(var(--glow-intensity) * 0.35)) 35%,
-            transparent 65%);
-          border-radius:inherit;
-          -webkit-mask:linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-          -webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
-          mask-composite:exclude;pointer-events:none;z-index:1;
-        }
-        .mb-card--glow:hover { box-shadow:0 12px 40px rgba(60,47,47,0.06),0 0 40px rgba(${glowColor},0.08); }
-      `}</style>
-
-      <GlobalSpotlight gridRef={gridRef} spotlightRadius={spotlightRadius} glowColor={glowColor} />
-
       <div ref={gridRef} className={`mb-bento-section ${className}`}>
         <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
           {cards.map((card, i) => {
