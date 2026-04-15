@@ -193,8 +193,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank, isInl
 
       {/* Footer Branding */}
       {!isInline && (
-        <footer className="absolute bottom-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-20">
+        <footer className="absolute bottom-10 left-1/2 -translate-x-1/2 pointer-events-none opacity-20 text-center space-y-2">
            <p className="text-[10px] font-black uppercase tracking-[1em] text-white">The Matriarch Protocol</p>
+           <p className="text-[7px] font-black uppercase tracking-[0.2em] text-white italic">Matriarch is a trademark of METACHASM (OPC) PRIVATE LIMITED.</p>
         </footer>
       )}
     </motion.div>

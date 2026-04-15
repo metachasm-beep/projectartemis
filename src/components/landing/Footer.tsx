@@ -43,7 +43,10 @@ const Footer: React.FC = () => {
 
         {/* Bottom: Copyright & Meta */}
         <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4 pt-4 border-t border-mat-gold/10">
-          <p className="text-[7px] text-mat-slate/30 tracking-[0.4em] uppercase">© {currentYear} Matriarch Protocol. All Standing Reserved.</p>
+          <p className="text-[7px] text-mat-slate/30 tracking-[0.4em] uppercase">
+            © {currentYear} Matriarch Protocol. All Standing Reserved. <br className="md:hidden" />
+            Matriarch is a trademark of METACHASM (OPC) PRIVATE LIMITED.
+          </p>
           <div className="flex gap-4 text-[7px] text-mat-slate/20 uppercase tracking-[0.2em]">
             <span>Delhi / Gurgaon / NCR</span>
             <span>Est. 2026</span>

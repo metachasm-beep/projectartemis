@@ -307,10 +307,12 @@ export const PaymentScreen: React.FC = () => {
         </div>
       </div>
 
-      {/* ── Footer Divider ── */}
-      <div className="py-20 text-center">
+      <div className="py-20 text-center space-y-4">
         <p className="text-[11px] font-black uppercase tracking-[1.5em] opacity-10 text-mat-wine pointer-events-none select-none">
           Matriarch // Pay Once, Rise Permanently
+        </p>
+        <p className="text-[7px] font-black uppercase tracking-[0.4em] opacity-20 text-mat-wine pointer-events-none select-none">
+          Matriarch is a trademark of METACHASM (OPC) PRIVATE LIMITED.
         </p>
       </div>
 

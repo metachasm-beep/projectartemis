@@ -165,6 +165,7 @@ export const GeneralSettings: React.FC<GeneralSettingsProps> = ({
                 <div className="flex flex-col items-center justify-center space-y-4 pt-24 opacity-20">
                   <div className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" />
                   <p className="text-[9px] font-black uppercase tracking-[0.4em] text-black">Matriarch Governance Protocol v5.0.1</p>
+                  <p className="text-[7px] font-black uppercase tracking-[0.2em] text-black italic">Matriarch is a trademark of METACHASM (OPC) PRIVATE LIMITED.</p>
                 </div>
               </div>
             </div>

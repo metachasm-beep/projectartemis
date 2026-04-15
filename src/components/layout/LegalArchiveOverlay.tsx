@@ -508,9 +508,9 @@ const LegalArchiveOverlay: React.FC<ContentOverlayProps> = ({ slug, onClose }) =
                 </div>
              </div>
 
-             {/* Footer Cell integration */}
-             <div className="px-12 py-8 bg-mat-obsidian/20 text-center border-t border-white/5">
+             <div className="px-12 py-8 bg-mat-obsidian/20 text-center border-t border-white/5 space-y-2">
                 <p className="text-[9px] font-black uppercase tracking-[1.2rem] text-mat-gold/40">Imperial Archive Sealed // Registry 0.1</p>
+                <p className="text-[7px] font-black uppercase tracking-[0.4em] text-white/20">Matriarch is a trademark of METACHASM (OPC) PRIVATE LIMITED.</p>
              </div>
           </div>
 
