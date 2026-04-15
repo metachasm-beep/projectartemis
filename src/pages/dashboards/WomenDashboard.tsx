@@ -188,9 +188,9 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                        <div className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center border border-white/10">
                          <stat.icon size={16} className={stat.color} strokeWidth={1.5} />
                        </div>
-                       <div className="space-y-0.5">
-                          <p className="text-lg font-bold text-white italic tracking-tight leading-none">{stat.val}</p>
-                          <p className="mat-text-label-pro text-[11px] opacity-70 uppercase tracking-[0.15em] text-white/80 leading-tight">{stat.label}</p>
+                       <div className="space-y-1">
+                          <p className="text-xl font-bold text-white italic tracking-tight">{stat.val}</p>
+                          <p className="mat-text-label-pro text-xs opacity-80 uppercase tracking-widest text-white/90">{stat.label}</p>
                        </div>
                     </motion.div>
                   ))}
@@ -204,16 +204,16 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               <GlassCard className="h-full" delay={0.4}>
                 <div className="h-full flex flex-col justify-between">
                   <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                       <p className="mat-text-label-pro text-[12px] text-mat-gold uppercase tracking-[0.3em]">Resonance</p>
-                       <h3 className="text-2xl font-bold italic text-white leading-none">Harmony Index.</h3>
+                    <div className="space-y-1">
+                       <p className="mat-text-label-pro text-sm text-mat-gold uppercase tracking-widest font-bold">Resonance</p>
+                       <h3 className="text-xl font-bold italic text-white leading-normal">Harmony Index.</h3>
                     </div>
                     <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20">
                       <Compass className="text-mat-gold w-6 h-6 animate-spin-slow" strokeWidth={1} />
                     </div>
                   </div>
-                  <div className="flex items-baseline gap-4">
-                     <span className="text-4xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                  <div className="flex items-center gap-4 py-1">
+                     <span className="text-3xl lg:text-4xl font-bold text-mat-cream tracking-normal italic leading-normal" style={{ fontFamily: 'var(--font-display)' }}>
                         {Math.round(status?.rank_score || 0)}
                      </span>
                      <p className="text-[11px] text-white/50 italic max-w-[160px] leading-tight">Strategic frequency alignment verified in local sector.</p>
@@ -224,17 +224,17 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
               <GlassCard className="h-full" delay={0.5}>
                  <div className="h-full flex flex-col justify-between">
                     <div className="space-y-4">
-                        <div className="flex items-center gap-4 text-white/60">
-                          <ShieldCheck size={20} strokeWidth={1} />
-                          <span className="mat-text-label-pro text-[12px] uppercase tracking-[0.3em] font-black">Registry Audit</span>
+                        <div className="flex items-center gap-3 text-white/60">
+                          <ShieldCheck size={20} strokeWidth={1.5} />
+                          <span className="mat-text-label-pro text-sm uppercase tracking-widest font-black text-mat-gold">Registry Audit</span>
                         </div>
-                        <h4 className="text-xl font-bold italic text-white/60 leading-tight">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
+                        <h4 className="text-lg lg:text-xl font-bold italic text-white/70 leading-normal">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
                     </div>
                     
-                    <div className="bg-black/40 rounded-[2rem] p-6 border border-white/5 flex items-center justify-between">
-                       <div className="space-y-1.5">
-                          <p className="mat-text-label-pro text-[11px] text-white/60 uppercase tracking-[0.2em] leading-none">Last Audit Protocol</p>
-                          <p className="text-mat-gold text-[13px] font-bold italic">Active | 3h Ago</p>
+                    <div className="bg-black/40 rounded-[2rem] p-6 border border-white/5 flex items-center justify-between mt-2">
+                       <div className="space-y-1 py-1">
+                          <p className="mat-text-label-pro text-[13px] text-white/70 uppercase tracking-widest leading-normal">Last Audit Protocol</p>
+                          <p className="text-mat-gold text-sm font-bold italic">Active | 3h Ago</p>
                        </div>
                        <motion.div 
                          initial={{ rotate: 0 }}
