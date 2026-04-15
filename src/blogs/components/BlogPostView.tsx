@@ -63,8 +63,8 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
         <header className="mb-16">
           <div className="flex items-center gap-4 mb-6 text-rose-500 text-xs font-bold uppercase tracking-[0.3em]">
             <span>{post.category}</span>
-            <span className="w-1.5 h-[1px] bg-[#3C2F2F]/10" />
-            <span className="text-[#3C2F2F]/40">{post.date}</span>
+            <span className="w-1.5 h-[1px] bg-[#3C2F2F]/20" />
+            <span className="text-[#3C2F2F]/50">{post.date}</span>
           </div>
 
           <h1 className="text-4xl md:text-7xl text-[#3C2F2F] font-black tracking-tighter leading-none mb-8">
@@ -87,14 +87,14 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
             />
             <div>
               <p className="text-[#3C2F2F] font-bold text-sm tracking-tight">{author?.name ?? 'Matriarch Editorial'}</p>
-              <p className="text-[#3C2F2F]/40 text-[10px] uppercase tracking-widest">{author?.vocation} • {author?.city}</p>
+              <p className="text-[#3C2F2F]/50 text-[10px] uppercase tracking-widest leading-none">{author?.vocation} • {author?.city}</p>
             </div>
           </div>
         </header>
 
         {/* Hero Image */}
         {post.image && (
-          <div className="relative aspect-video md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-12 md:mb-16 border border-white/5">
+          <div className="relative aspect-video md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-12 md:mb-16 border border-[#3C2F2F]/10">
             <img
               src={post.image}
               alt={post.title}

@@ -116,13 +116,13 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
 
               {/* Title Input */}
               <div className="space-y-4">
-                <label className="text-[10px] font-black uppercase tracking-widest text-[#3C2F2F]/30">Manifesto Title</label>
+                <label className="text-[10px] font-black uppercase tracking-widest text-[#3C2F2F]/40">Manifesto Title</label>
                 <input 
                   type="text"
                   placeholder="The Architecture of..."
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  className="w-full bg-transparent border-none text-5xl md:text-6xl font-black text-[#3C2F2F] placeholder:text-[#3C2F2F]/5 focus:ring-0 selection:bg-rose-500/10 selection:text-rose-500 p-0 outline-none leading-none tracking-tighter"
+                  className="w-full bg-transparent border-none text-5xl md:text-6xl font-black text-[#3C2F2F] placeholder:text-[#3C2F2F]/25 focus:ring-0 selection:bg-rose-500/10 selection:text-rose-500 p-0 outline-none leading-none tracking-tighter"
                 />
               </div>
 
@@ -147,8 +147,8 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
                         {isUploading ? <Loader2 className="animate-spin" size={32} /> : <ImageIcon size={32} />}
                       </div>
                       <div className="text-center">
-                        <p className="text-xs font-black uppercase tracking-widest text-[#3C2F2F]/40 group-hover:text-[#3C2F2F] transition-colors">Hero Image</p>
-                        <p className="text-[10px] text-[#3C2F2F]/20 mt-1 uppercase tracking-tighter">Click to upload to CloudinaryVault</p>
+                        <p className="text-xs font-black uppercase tracking-widest text-[#3C2F2F]/50 group-hover:text-[#3C2F2F] transition-colors">Hero Image</p>
+                        <p className="text-[10px] text-[#3C2F2F]/30 mt-1 uppercase tracking-tighter">Click to upload to CloudinaryVault</p>
                       </div>
                     </>
                   )}

@@ -279,9 +279,9 @@ const MagicBento: React.FC<MagicBentoProps> = ({
   const cardBase = `mb-card flex flex-col justify-between relative p-6 rounded-2xl border border-solid font-light overflow-hidden transition-all duration-300 cursor-pointer hover:-translate-y-0.5 ${enableBorderGlow ? 'mb-card--glow' : ''}`;
 
   const cardStyle = (color?: string) => ({
-    backgroundColor: color ?? '#0a0005',
-    borderColor: '#2a1f3d',
-    color: '#fff',
+    backgroundColor: color ?? '#FDFBF7',
+    borderColor: 'rgba(60, 47, 47, 0.08)',
+    color: '#3C2F2F',
     '--glow-x': '50%',
     '--glow-y': '50%',
     '--glow-intensity': '0',
@@ -302,7 +302,7 @@ const MagicBento: React.FC<MagicBentoProps> = ({
           -webkit-mask-composite:xor;mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
           mask-composite:exclude;pointer-events:none;z-index:1;
         }
-        .mb-card--glow:hover { box-shadow:0 8px 30px rgba(0,0,0,0.4),0 0 40px rgba(${glowColor},0.15); }
+        .mb-card--glow:hover { box-shadow:0 12px 40px rgba(60,47,47,0.06),0 0 40px rgba(${glowColor},0.08); }
       `}</style>
 
       <GlobalSpotlight gridRef={gridRef} spotlightRadius={spotlightRadius} glowColor={glowColor} />
@@ -328,11 +328,11 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                   disableAnimations={shouldDisable}
                   onClick={card.onClick}
                 >
-                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-400/60">{card.label}</span>
+                  <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-500/60">{card.label}</span>
                   {card.content && <div className="flex-1">{card.content}</div>}
                   <div>
-                    <h3 className="text-lg font-black tracking-tight text-white mb-2 leading-tight">{card.title}</h3>
-                    <p className="text-xs text-white/70 leading-relaxed line-clamp-3">{card.description}</p>
+                    <h3 className="text-lg font-black tracking-tight text-[#3C2F2F] mb-2 leading-tight">{card.title}</h3>
+                    <p className="text-xs text-[#3C2F2F]/60 leading-relaxed font-medium line-clamp-3">{card.description}</p>
                   </div>
                 </ParticleCard>
               );
@@ -345,11 +345,11 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                 style={cardStyle(card.color)}
                 onClick={card.onClick}
               >
-                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-400/60">{card.label}</span>
+                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-500/60">{card.label}</span>
                 {card.content && <div className="flex-1">{card.content}</div>}
                 <div>
-                  <h3 className="text-lg font-black tracking-tight text-white mb-2 leading-tight">{card.title}</h3>
-                  <p className="text-xs text-white/40 leading-relaxed line-clamp-3">{card.description}</p>
+                  <h3 className="text-lg font-black tracking-tight text-[#3C2F2F] mb-2 leading-tight">{card.title}</h3>
+                  <p className="text-xs text-[#3C2F2F]/50 leading-relaxed font-medium line-clamp-3">{card.description}</p>
                 </div>
               </div>
             );
