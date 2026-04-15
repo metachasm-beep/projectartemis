@@ -46,12 +46,7 @@ const HeroFold: React.FC = () => {
       className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-mat-cream"
     >
       {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
-      <motion.div 
-        style={{ opacity: logoOpacity }}
-        className="fixed top-6 md:top-8 left-1/2 -translate-x-1/2 z-0 pointer-events-none"
-      >
-        <MatriarchLogo className="scale-100 md:scale-150" />
-      </motion.div>
+
 
       {/* 2. Parallax Background Slideshow */}
       <motion.div style={{ scale: backgroundScale }} className="absolute inset-0 z-0">

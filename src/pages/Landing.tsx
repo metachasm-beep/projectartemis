@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
 import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
@@ -11,10 +11,37 @@ import SystemIntegrityFold from "@/components/landing/SystemIntegrityFold";
 import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
 import SecurityFold from "@/components/landing/SecurityFold";
 import Footer from "@/components/landing/Footer";
+import MatriarchLogo from "@/components/MatriarchLogo";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 const LandingPage: React.FC = () => {
+  const mainRef = useRef<HTMLDivElement>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+
+  const { scrollYProgress } = useScroll({
+    container: mainRef,
+  });
+
+  // Dynamic Logo Transitions: Hero -> Navigation Hook
+  const logoScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.65]);
+  const logoY = useTransform(scrollYProgress, [0, 0.1], [24, 16]);
+  
+  // Mobile-specific X transition (Center -> Top Right) - only applied if mobile
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const mobileX = useTransform(scrollYProgress, [0, 0.15], ["0%", isMobile ? "40vw" : "0%"]);
+  const mobileTranslateX = useTransform(scrollYProgress, [0, 0.15], ["-50%", "-50%"]); // Keep center anchor
+
+  // Desktop stays centered but scales down
+  const desktopScale = useTransform(scrollYProgress, [0, 0.1], [1, 0.7]);
 
   // Check session on mount
   React.useEffect(() => {
@@ -90,7 +117,23 @@ const LandingPage: React.FC = () => {
   };
 
   return (
-    <main className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-cream selection:bg-mat-gold/20 selection:text-mat-slate">
+    <main 
+      ref={mainRef}
+      className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-cream selection:bg-mat-gold/20 selection:text-mat-slate"
+    >
+      {/* 🔮 Dynamic Persistent Logo (Mobile: Top-Right Transition) */}
+      <motion.div 
+        style={{ 
+          scale: logoScale,
+          y: logoY,
+          x: mobileX,
+          translateX: mobileTranslateX
+        }}
+        className="fixed left-1/2 top-6 z-[100] pointer-events-none origin-center"
+      >
+        <MatriarchLogo className="transition-transform duration-300" />
+      </motion.div>
+
       {/* 1. Global Cinematic Texture */}
       <GrainOverlay />
       
