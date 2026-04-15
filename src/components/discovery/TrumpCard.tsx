@@ -86,7 +86,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         isDashboard ? "h-12" : "h-16"
       )}>
         <div className="flex flex-col">
-           <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#2C1E0F]/80 italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
            <div className="mt-1 flex items-center">
               <VerificationBadge 
                 verified={profile.is_verified} 
@@ -95,10 +94,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            </div>
         </div>
         <div className="flex items-center gap-4">
-           <div className="flex flex-col items-end">
-              <span className="text-[10px] uppercase font-black text-[#2C1E0F]/30">Power</span>
-              <span className="text-2xl md:text-3xl font-black text-[#2C1E0F] tracking-tighter leading-none">{powerLevel}</span>
-           </div>
            {onClose && (
               <button onClick={onClose} className="w-8 h-8 rounded-full bg-black/20 flex items-center justify-center hover:bg-black/30 transition-colors border border-white/10">
                 <X size={16} className="text-white" />
@@ -130,13 +125,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
            </div>
         </div>
 
-        {/* Level Badge - Tactile */}
-        <div className="absolute top-4 right-4 z-20">
-           <div className="px-3 md:px-4 py-1 md:py-1.5 bg-mat-rose-gold text-mat-wine rounded-full flex items-center gap-1.5 md:gap-2 shadow-xl border border-white/20">
-              <Crown size={12} className="md:size-[14px]" fill="currentColor" />
-              <span className="text-[9px] md:text-[11px] font-bold uppercase tracking-widest">{profile.status}</span>
-           </div>
-        </div>
+
 
         <div className="absolute bottom-4 md:bottom-0 left-0 w-full p-4 md:p-6 bg-gradient-to-t from-black to-transparent z-10 hidden md:block">
             <div className="flex flex-col">

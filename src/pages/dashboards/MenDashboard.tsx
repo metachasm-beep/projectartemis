@@ -12,8 +12,17 @@ import {
   Compass,
   Sparkles,
   Settings,
-  ArrowRight
+  ArrowRight,
+  HelpCircle,
+  Loader2
 } from 'lucide-react';
+
+import { 
+  Tooltip, 
+  TooltipContent, 
+  TooltipProvider, 
+  TooltipTrigger 
+} from "@/components/ui/tooltip";
 
 import { Badge } from "@/components/ui/badge";
 import { VerificationPaymentModal } from "@/components/verification/VerificationPaymentModal";
@@ -88,6 +97,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [gazeProfiles, setGazeProfiles] = useState<any[]>([]);
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success'>('idle');
 
   const calculateIntegrity = () => {
      let score = 0;
@@ -160,14 +170,18 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   }, [fetchGaze, fetchRank]);
 
   const handleSyncIntegrity = async () => {
-    setIsBumping(true);
+    setSyncStatus('syncing');
     try {
       const integrity = calculateIntegrity();
       await SanctuaryService.syncIntegrityBonus(profile.user_id, integrity);
       await refreshProfile();
       await fetchRank();
-    } catch (err) { console.error("Integrity Calibration Failure:", err); }
-    finally { setIsBumping(false); }
+      setSyncStatus('success');
+      setTimeout(() => setSyncStatus('idle'), 3000);
+    } catch (err) { 
+      console.error("Integrity Calibration Failure:", err); 
+      setSyncStatus('idle');
+    }
   };
 
   const handleBumpRank = async (percent: number) => {
@@ -337,9 +351,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               {!profile.is_verified && (
                 <button 
                   onClick={() => setShowVerificationModal(true)}
-                  className="mt-6 text-[9px] text-white/50 hover:text-white font-bold uppercase tracking-widest underline decoration-white/20 underline-offset-4 transition-all"
+                  className="mt-6 mat-glass-deep px-8 py-3 rounded-full border border-mat-gold/20 text-[10px] text-mat-bone font-black uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
                 >
-                  Verify to unlock Full Sanctuary Access
+                  Verify to unlock
                 </button>
               )}
             </div>
@@ -474,8 +488,38 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
                 <div className="pt-6 space-y-4">
                    <div className="flex gap-2">
-                      <button onClick={() => setIsEditing?.(true)} className="flex-1 py-3.5 border border-white/20 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Edit Dossier</button>
-                      <button onClick={handleSyncIntegrity} className="flex-1 py-3.5 bg-mat-gold text-black rounded-xl text-[10px] font-bold uppercase tracking-widest">Sync Status</button>
+                      <button onClick={() => setIsEditing?.(true)} className="flex-1 py-3.5 border border-white/20 text-white rounded-xl text-[10px] font-bold uppercase tracking-widest">Edit Profile</button>
+                      <TooltipProvider>
+                        <div className="flex-1 relative flex items-center gap-1 group">
+                          <button 
+                            onClick={handleSyncIntegrity} 
+                            disabled={syncStatus === 'syncing'}
+                            className="flex-1 py-3.5 bg-mat-gold text-black rounded-xl text-[10px] font-bold uppercase tracking-widest flex items-center justify-center gap-2"
+                          >
+                            {syncStatus === 'syncing' ? (
+                              <>
+                                <Loader2 size={12} className="animate-spin" />
+                                <span>Recalibrating...</span>
+                              </>
+                            ) : syncStatus === 'success' ? (
+                              <span>Synced!</span>
+                            ) : (
+                              <span>Sync Status</span>
+                            )}
+                          </button>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button className="p-1 text-white/20 hover:text-mat-gold transition-colors">
+                                <HelpCircle size={14} />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-[200px] bg-mat-obsidian border-mat-gold/20 text-[10px] p-3">
+                              <p className="font-bold mb-1 text-mat-gold">Dossier Calibration</p>
+                              <p>Syncs your profile completeness (Bio, Verification, Photos) to your Rank. Higher integrity grants a significant standing bonus.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </div>
+                      </TooltipProvider>
                    </div>
                    <p className="text-[8px] text-center text-white/40 uppercase tracking-tighter italic">Absolute Standing: <span className="text-mat-gold font-bold">#{absRank || '--'}</span> of {_totalMen}</p>
                 </div>
@@ -502,7 +546,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                          <p className="text-2xl font-black italic text-mat-gold">#{cityRank || '--'}</p>
                       </div>
                    </div>
-                </motion.div>                   <motion.div variants={cardSpring} className="col-span-1 md:col-span-2 mat-glass-deep p-12 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between">
+                </motion.div>
+                <motion.div variants={cardSpring} className="col-span-1 md:col-span-2 mat-glass-deep p-12 rounded-[3.5rem] border border-mat-rose/10 flex flex-col justify-between">
                    <div className="space-y-10">
                       <div className="flex justify-between items-center">
                          <div>
@@ -529,10 +574,40 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                          ))}
                       </div>
                    </div>
-                 <div className="flex gap-4 mt-10">
-                    <button onClick={() => setIsEditing?.(true)} className="flex-1 py-5 border border-white/20 text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Edit dossier</button>
-                    <button onClick={handleSyncIntegrity} className="flex-1 py-5 bg-mat-gold text-black rounded-2xl font-bold uppercase tracking-widest shadow-mat-premium hover:opacity-90 transition-all">Recalibrate standing</button>
-                 </div>
+                  <div className="flex gap-4 mt-10">
+                    <button onClick={() => setIsEditing?.(true)} className="flex-1 py-5 border border-white/20 text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Edit Profile</button>
+                    <TooltipProvider>
+                      <div className="flex-1 flex items-center gap-2">
+                        <button 
+                          onClick={handleSyncIntegrity} 
+                          disabled={syncStatus === 'syncing'}
+                          className="flex-1 py-5 bg-mat-gold text-black rounded-2xl font-bold uppercase tracking-widest shadow-mat-premium hover:opacity-90 transition-all flex items-center justify-center gap-3"
+                        >
+                          {syncStatus === 'syncing' ? (
+                            <>
+                              <Loader2 size={18} className="animate-spin" />
+                              <span>Recalibrating...</span>
+                            </>
+                          ) : syncStatus === 'success' ? (
+                            <span>Standing Synchronized!</span>
+                          ) : (
+                            <span>Recalibrate standing</span>
+                          )}
+                        </button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button className="p-2 text-white/20 hover:text-mat-gold transition-colors">
+                              <HelpCircle size={20} />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="max-w-[250px] bg-mat-obsidian border-mat-gold/20 text-xs p-4">
+                            <p className="font-bold mb-2 text-mat-gold uppercase tracking-widest">Protocol Logic</p>
+                            <p className="opacity-60 leading-relaxed italic">Calculates your Dossier Integrity (Verification + Profile Depth) and applies as a permanent standing multiplier to your Absolute Rank.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                    </TooltipProvider>
+                  </div>
               </motion.div>
             </div>
           </section>
