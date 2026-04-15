@@ -495,11 +495,11 @@ class Media {
     
     if (isMobile) {
       this.plane.scale.x = this.viewport.width * 0.7; // Thinner
-      this.plane.scale.y = this.viewport.height * 0.75; // Taller
+      this.plane.scale.y = this.viewport.height * 0.65; // Taller
       this.padding = 0.8;
       this.scale = 1;
     } else {
-      this.scale = this.screen.height / 1200; // Adjusted scale
+      this.scale = this.screen.height / 1400; // Adjusted scale for breathing room
       this.plane.scale.y = (this.viewport.height * (900 * this.scale)) / this.screen.height;
       this.plane.scale.x = this.plane.scale.y / 1.5; // Strictly 2:3 Card Ratio
       this.padding = 2;
