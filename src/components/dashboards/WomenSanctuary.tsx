@@ -110,58 +110,80 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-3 lg:px-14 lg:pt-4 min-h-0 gap-3">
 
         {/* ══ HEADER ══════════════════════════════════════ */}
-        <header className="flex flex-row items-start justify-between shrink-0 gap-4">
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="space-y-0.5">
+        <header className="relative z-50 flex flex-row items-center justify-between shrink-0 gap-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 14 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }} 
+            className="space-y-0.5"
+          >
             <div className="flex items-center gap-3">
-              <span className="w-7 h-[1px] bg-mat-rose-gold" />
+              <span className="w-7 h-[1px] bg-mat-rose-gold opacity-60" />
               <span className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-[0.25em]">Sanctuary Alpha</span>
             </div>
-            <h1 className="mat-text-editorial-huge text-4xl lg:text-5xl text-mat-noir leading-none">
+            <h1 className="mat-text-editorial-huge text-4xl lg:text-5xl text-mat-noir leading-none tracking-tight">
               Sovereign <span className="text-mat-rose-gold italic font-medium">Existence.</span>
             </h1>
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.12 }} className="flex items-center gap-3 shrink-0">
-            {/* Cascaded avatars */}
-            <div className="flex -space-x-2.5">
+          <motion.div 
+            initial={{ opacity: 0, y: 14 }} 
+            animate={{ opacity: 1, y: 0 }} 
+            transition={{ duration: 0.7, delay: 0.12, ease: [0.16, 1, 0.3, 1] }} 
+            className="flex items-center gap-4 lg:gap-6 shrink-0"
+          >
+            {/* Cascaded avatars — Clickable Hitbox Fix */}
+            <div className="flex -space-x-2.5 items-center">
               {["1494790108377-be9c29b29330","1534528741775-53994a69daeb","1531746020798-e6953c6e8e04"].map((id, i) => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-[#f5f0ea] overflow-hidden shadow-md hover:scale-110 hover:z-10 transition-transform cursor-pointer relative">
+                <motion.div 
+                  key={i} 
+                  whileHover={{ y: -3, scale: 1.1, zIndex: 20 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-8 h-8 rounded-full border-2 border-[#f5f0ea] overflow-hidden shadow-md cursor-pointer relative transition-zIndex duration-200"
+                >
                   <img src={`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&q=80&w=80`} alt="Member" className="w-full h-full object-cover" />
-                </div>
+                </motion.div>
               ))}
-              <div className="w-8 h-8 rounded-full border-2 border-[#f5f0ea] bg-[#e8e2d8] flex items-center justify-center text-[7px] mat-text-editorial-caps text-mat-noir/50 shadow-sm">+1.2k</div>
+              <div className="w-8 h-8 rounded-full border-2 border-[#f5f0ea] bg-[#e8e2d8] flex items-center justify-center text-[7px] mat-text-editorial-caps text-mat-noir/50 shadow-sm z-0 ring-1 ring-black/5">+1.2k</div>
             </div>
-              {/* Migrated Dock Actions */}
-              <div className="flex items-center gap-1.5 mr-2">
-                <button onClick={() => setShowFAQ(true)} className="w-9 h-9 rounded-full bg-white/50 backdrop-blur-xl border border-white/60 shadow-[0_2px_8px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white hover:scale-105 transition-all">
-                  <HelpCircle size={14} />
-                </button>
-              </div>
 
-            {/* Identity Protocol pill — ~30% header width */}
-            <button
+            {/* Header Actions */}
+            <div className="flex items-center gap-3">
+              <motion.button 
+                whileHover={{ y: -2, scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowFAQ(true)} 
+                className="w-9 h-9 rounded-full bg-white/60 backdrop-blur-xl border border-white/80 shadow-[0_4px_12px_rgba(0,0,0,0.05),inset_0_1px_0_rgba(255,255,255,1)] flex items-center justify-center text-mat-noir/40 hover:text-mat-rose-gold hover:bg-white transition-all duration-300"
+              >
+                <HelpCircle size={14} />
+              </motion.button>
+            </div>
+
+            <motion.button
+              whileHover={{ y: -1, shadow: "0 8px 25px rgba(0,0,0,0.5)" }}
+              whileTap={{ scale: 0.98 }}
               onClick={!isVerified ? () => setShowVerification(true) : undefined}
-              style={{ minWidth: 190 }}
+              style={{ minWidth: 200 }}
               className={cn(
-                "flex items-center gap-2.5 px-4 py-2 rounded-full transition-all duration-400",
-                "bg-gradient-to-b from-[#1c1c1c] to-[#0e0e0e]",
-                "shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_4px_14px_rgba(0,0,0,0.45)]",
-                "border border-[rgba(255,255,255,0.05)]",
-                !isVerified && "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_6px_20px_rgba(0,0,0,0.55)] cursor-pointer",
+                "flex items-center gap-3 px-5 py-2.5 rounded-full transition-all duration-500",
+                "bg-gradient-to-b from-[#1c1c1c] to-[#0a0a0a]",
+                "shadow-[inset_0_1px_0_rgba(255,255,255,0.1),0_5px_15px_rgba(0,0,0,0.4)]",
+                "border border-[rgba(255,255,255,0.08)]",
+                !isVerified && "cursor-pointer",
                 isVerified && "cursor-default"
               )}
             >
-              <div className={cn("w-6 h-6 rounded-full flex items-center justify-center shrink-0", isVerified ? "bg-mat-rose-gold/20 text-mat-rose-gold" : "bg-amber-500/20 text-amber-400")}>
-                {isVerified ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
+              <div className={cn("w-7 h-7 rounded-full flex items-center justify-center shrink-0 shadow-inner", isVerified ? "bg-mat-rose-gold/20 text-mat-rose-gold" : "bg-amber-500/20 text-amber-400")}>
+                {isVerified ? <CheckCircle2 size={13} /> : <AlertCircle size={13} />}
               </div>
               <div className="flex flex-col items-start min-w-0">
-                <span className="mat-text-editorial-caps text-[6px] text-mat-rose-gold tracking-[0.3em] whitespace-nowrap">Identity Protocol</span>
-                <span className={cn("text-[10px] font-medium leading-tight truncate", isVerified ? "text-white/70" : "text-amber-400")}>
+                <span className="mat-text-editorial-caps text-[6px] text-mat-rose-gold/80 tracking-[0.4em] whitespace-nowrap uppercase font-black">Identity Protocol</span>
+                <span className={cn("text-[11px] font-medium leading-tight truncate tracking-tight", isVerified ? "text-white/80" : "text-amber-400/90")}>
                   {isVerified ? "Sovereign Verified" : "Authenticate Now"}
                 </span>
               </div>
-              <div className={cn("ml-auto shrink-0 w-1.5 h-1.5 rounded-full animate-pulse", isVerified ? "bg-mat-rose-gold" : "bg-amber-400")} />
-            </button>
+              <div className={cn("ml-auto shrink-0 w-2 h-2 rounded-full", isVerified ? "bg-mat-rose-gold shadow-[0_0_10px_rgba(183,110,121,0.6)]" : "bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)] animate-pulse")} />
+            </motion.button>
           </motion.div>
         </header>
 
