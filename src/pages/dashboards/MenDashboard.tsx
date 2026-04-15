@@ -515,9 +515,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                             </TooltipTrigger>
                             <TooltipContent 
                               side="top" 
-                              align="center"
+                              align="end"
                               sideOffset={8}
-                              collisionPadding={20}
                               className="max-w-[180px] bg-mat-obsidian/95 border-mat-gold/20 text-[9px] p-4 shadow-2xl backdrop-blur-xl"
                             >
                               <p className="text-center text-mat-gold font-medium italic leading-relaxed">
@@ -609,9 +608,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                           </TooltipTrigger>
                           <TooltipContent 
                             side="top" 
-                            align="center"
+                            align="end"
                             sideOffset={10}
-                            collisionPadding={20}
                             className="max-w-[240px] bg-mat-obsidian/95 border-mat-gold/20 text-[11px] p-5 shadow-2xl backdrop-blur-xl"
                           >
                             <p className="text-mat-gold font-medium leading-relaxed italic text-center">

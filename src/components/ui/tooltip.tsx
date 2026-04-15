@@ -37,27 +37,39 @@ export const TooltipTrigger: React.FC<{ children: React.ReactNode; asChild?: boo
 };
 
 export const TooltipContent: React.FC<{ 
-  children: React.ReactNode; 
-  side?: 'top' | 'bottom' | 'left' | 'right'; 
+  align?: 'start' | 'center' | 'end';
   className?: string 
 }> = ({ 
   children, 
   side = 'top',
+  align = 'center',
   className = ""
 }) => {
   const context = useContext(TooltipContext);
   if (!context) throw new Error("TooltipContent must be used within a Tooltip component.");
 
+  const alignStyles = {
+    start: 'left-0',
+    center: 'left-1/2 -translate-x-1/2',
+    end: 'right-0'
+  };
+
   const positionClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-3',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-3',
+    top: cn('bottom-full mb-3', alignStyles[align]),
+    bottom: cn('top-full mt-3', alignStyles[align]),
     left: 'right-full top-1/2 -translate-y-1/2 mr-3',
     right: 'left-full top-1/2 -translate-y-1/2 ml-3'
   };
 
+  const arrowStyles = {
+    start: 'left-4',
+    center: 'left-1/2 -translate-x-1/2',
+    end: 'right-4'
+  };
+
   const arrowClasses = {
-    top: 'top-full left-1/2 -translate-x-1/2 border-t-mat-wine',
-    bottom: 'bottom-full left-1/2 -translate-x-1/2 border-b-mat-wine',
+    top: cn('top-full border-t-mat-wine', arrowStyles[align]),
+    bottom: cn('bottom-full border-b-mat-wine', arrowStyles[align]),
     left: 'left-full top-1/2 -translate-y-1/2 border-l-mat-wine',
     right: 'right-full top-1/2 -translate-y-1/2 border-r-mat-wine'
   };
@@ -71,7 +83,7 @@ export const TooltipContent: React.FC<{
           exit={{ opacity: 0, scale: 0.95, y: side === 'top' ? 5 : side === 'bottom' ? -5 : 0 }}
           transition={{ duration: 0.2, ease: "easeOut" }}
           className={cn(
-            "absolute z-[200] px-4 py-2 bg-mat-wine text-mat-cream text-[10px] font-bold uppercase tracking-widest whitespace-nowrap rounded-xl shadow-mat-premium pointer-events-none",
+            "absolute z-[200] px-4 py-2 bg-mat-wine text-mat-cream text-[10px] font-bold uppercase tracking-widest rounded-xl shadow-mat-premium pointer-events-none whitespace-normal",
             positionClasses[side],
             className
           )}
