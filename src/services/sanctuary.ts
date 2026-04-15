@@ -89,7 +89,7 @@ export const SanctuaryService = {
   getSovereignMetrics: async (womanId: string) => {
     const [matchRes, sessionRes, viewsRes, savesRes, interactionsRes] = await Promise.all([
        turso.execute({ sql: "SELECT COUNT(*) as count FROM matches WHERE woman_user_id = ?", args: [womanId] }),
-       turso.execute({ sql: "SELECT total_session_seconds, consecutive_days, profile_completeness FROM profiles WHERE user_id = ?", args: [womanId] }),
+       turso.execute({ sql: "SELECT total_session_seconds, consecutive_days FROM profiles WHERE user_id = ?", args: [womanId] }),
        turso.execute({ sql: "SELECT COUNT(*) as count FROM profile_analytics WHERE woman_user_id = ? AND metric_type = 'impression'", args: [womanId] }), // Her profile views
        turso.execute({ sql: "SELECT COUNT(*) as count FROM shortlists WHERE woman_user_id = ?", args: [womanId] }), // Profiles she saved
        turso.execute({ sql: "SELECT COUNT(*) as count FROM profile_analytics WHERE woman_user_id = ? AND metric_type = 'visit'", args: [womanId] }) // Visits tracking
@@ -102,7 +102,7 @@ export const SanctuaryService = {
        profileViews: Number(viewsRes.rows[0]?.count || 0),
        profilesEngaged: Number(interactionsRes.rows[0]?.count || 0),
        saves: Number(savesRes.rows[0]?.count || 0),
-       profileCompleteness: Number(sessionRes.rows[0]?.profile_completeness || 94)
+       profileCompleteness: 94 // Defaulting until column is provisioned
     };
   },
 

@@ -4,7 +4,7 @@ import CircularGallery from '@/components/animations/CircularGallery';
 import { turso } from '@/lib/turso';
 import { TrumpCard } from '@/components/discovery/TrumpCard';
 import { useAuth } from '@/hooks/useAuth';
-import { ShieldAlert, ArrowRight, Lock } from 'lucide-react';
+import { ShieldAlert, ArrowRight, Lock, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { SEO_COPY } from '@/content/copy';
