@@ -12,23 +12,33 @@ import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
 import SecurityFold from "@/components/landing/SecurityFold";
 import Footer from "@/components/landing/Footer";
 import MatriarchLogo from "@/components/MatriarchLogo";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useRef } from "react";
 
 const LandingPage: React.FC = () => {
   const mainRef = useRef<HTMLDivElement>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [hideLogoText, setHideLogoText] = useState(false);
 
   const { scrollYProgress } = useScroll({
     container: mainRef,
+  });
+
+  // Track scroll for icon-only transition (Mobile specific)
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (window.innerWidth < 768) {
+      setHideLogoText(latest > 0.08);
+    } else {
+      setHideLogoText(false);
+    }
   });
 
   // Dynamic Logo Transitions: Gradual drift across the entire scroll
   const logoScale = useTransform(scrollYProgress, [0, 1], [1, 0.55]);
   const logoY = useTransform(scrollYProgress, [0, 1], [24, 12]);
   
-  // Mobile-specific X transition (Center -> Top Right) - only applied if mobile
+  // Mobile-specific X transition (Top Left -> Top Right) - only applied if mobile
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -37,8 +47,8 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const mobileX = useTransform(scrollYProgress, [0, 1], ["0%", isMobile ? "44vw" : "0%"]);
-  const mobileTranslateX = useTransform(scrollYProgress, [0, 1], ["-50%", "-50%"]); // Keep center anchor
+  const mobileX = useTransform(scrollYProgress, [0, 1], [isMobile ? "-42vw" : "0%", isMobile ? "44vw" : "0%"]);
+  const mobileTranslateX = useTransform(scrollYProgress, [0, 1], ["-50%", "-50%"]); 
 
   // Desktop stays centered but scales down
   const desktopScale = useTransform(scrollYProgress, [0, 1], [1, 0.75]);
@@ -131,7 +141,7 @@ const LandingPage: React.FC = () => {
         }}
         className="fixed left-1/2 top-6 z-[100] pointer-events-none origin-center"
       >
-        <MatriarchLogo iconOnly={isMobile} className="transition-transform duration-300" />
+        <MatriarchLogo iconOnly={hideLogoText} className="transition-transform duration-300" />
       </motion.div>
 
       {/* 1. Global Cinematic Texture */}
