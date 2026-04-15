@@ -71,6 +71,25 @@ const FAQ_DATA = [
         a: "Sanctuary absence leads to resonance loss. Beyond a 3-day grace period, your rank score decays by 2% daily. Regular activity (Gazing/Messaging) ensures your status remains active and locked."
       }
     ]
+  },
+  {
+    category: "IV. Merit Rituals & The Queue",
+    icon: Activity,
+    color: "text-mat-rose",
+    items: [
+      {
+        q: "What is 'The Queue' status?",
+        a: "A real-time indicator of visibility. It displays the unique count of Sovereigns (women) who have currently Viewed or Saved your profile. This is physical proof that you are being considered in the Sanctuary."
+      },
+      {
+        q: "How do I earn Aura via Quests?",
+        a: "Merit Quests are daily rituals designed to calibrate your resonance. Complete journal entries or profile updates to harvest 🟡 Aura tokens. Your effort is tracked atomistically—even partial progress earns rewards."
+      },
+      {
+        q: "What does 'Processing Standing' mean?",
+        a: "If your queue is empty, the Protocol enters a baseline activity state. During this time, the Architect is calibrating your resonance across the Sanctuary. Increased Merit score will trigger active consideration."
+      }
+    ]
   }
 ];
 
@@ -85,7 +104,7 @@ export const FAQSection: React.FC = () => {
           className="inline-flex items-center gap-3 px-6 py-2 rounded-full border border-mat-gold/20 bg-mat-gold/5 backdrop-blur-md"
         >
           <Sparkles size={14} className="text-mat-gold" />
-          <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-gold">Protocol Intelligence</span>
+          <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-gold">Technical Manual</span>
         </motion.div>
         
         <motion.h1 

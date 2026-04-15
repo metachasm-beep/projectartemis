@@ -39,6 +39,8 @@ import { useGeolocation } from '@/hooks/useGeolocation';
 import { cn } from "@/lib/utils";
 import { QuestBoard } from '@/components/dashboards/QuestBoard';
 import { QueueStatus } from '@/components/dashboards/QueueStatus';
+import { DiscoveryService } from '@/services/discoveryService';
+import { QuestService } from '@/services/questService';
 
 interface MenDashboardProps {
   profile: MatriarchProfile;
@@ -101,6 +103,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success'>('idle');
+  const [queueCount, setQueueCount] = useState(0);
+  const [meritPct, setMeritPct] = useState(0);
 
   // 🛰️ Geolocation Resonance - Once per session
   const { location } = useGeolocation(profile?.user_id);
@@ -173,6 +177,21 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   useEffect(() => {
     fetchGaze();
     fetchRank();
+    
+    // 🔮 Dashboard Intelligence Fetch
+    const fetchStats = async () => {
+      const [qs, quests] = await Promise.all([
+        DiscoveryService.getQueueStatus(),
+        QuestService.getQuests()
+      ]);
+      setQueueCount(qs.count);
+      
+      if (quests.length > 0) {
+        const completed = quests.filter(q => q.status === 'completed').length;
+        setMeritPct(Math.round((completed / quests.length) * 100));
+      }
+    };
+    fetchStats();
   }, [fetchGaze, fetchRank]);
 
   const handleSyncIntegrity = async () => {
@@ -484,12 +503,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 pb-6 border-b border-white/10">
-                   {[
-                     { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
-                     { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
-                     { label: 'Verify', val: profile.is_verified ? 100 : 0, icon: UserCheckIcon },
-                     { label: 'Activity', val: 85, icon: TrendingUp }
-                   ].map((m, i) => (
+                    {[
+                      { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
+                      { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
+                      { label: 'Verify', val: profile.is_verified ? 100 : 0, icon: UserCheckIcon },
+                      { label: 'Merit', val: meritPct, icon: Zap },
+                      { label: 'Interest', val: queueCount > 0 ? 100 : 0, icon: Eye },
+                      { label: 'Standing', val: 85, icon: TrendingUp }
+                    ].map((m, i) => (
                      <div key={i} className="p-2 bg-white/5 rounded-xl border border-white/5">
                         <div className="flex justify-between items-center text-[7px] font-bold uppercase text-white/40">
                            <span>{m.label}</span>
@@ -586,23 +607,33 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                          </div>
                          <Activity className="text-mat-gold/20 w-12 h-12" />
                       </div>
-                      <div className="grid grid-cols-2 gap-6">
-                         {[
-                           { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
-                           { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
-                           { label: 'Verification', val: profile.is_verified ? 100 : 0, icon: UserCheckIcon },
-                           { label: 'Activity', val: 85, icon: TrendingUp }
-                         ].map((m, i) => (
-                           <div key={i} className="p-6 bg-white/5 rounded-[2rem] border border-white/10 group hover:bg-white/10 transition-all">
-                              <div className="flex justify-between items-center mb-4">
-                                 <m.icon size={16} className="text-mat-gold" />
-                                 <span className="text-xl font-bold text-mat-gold italic">{m.val}%</span>
-                              </div>
-                              <p className="text-[10px] font-black uppercase tracking-widest text-white/40">{m.label}</p>
-                              <div className="h-1 bg-white/5 rounded-full mt-2 overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: `${m.val}%` }} className="h-full bg-mat-gold" /></div>
-                           </div>
-                         ))}
-                      </div>
+                       <div className="grid grid-cols-3 gap-6">
+                          {[
+                            { label: 'Narrative', val: calculateIntegrity(), icon: Sparkles },
+                            { label: 'Portrait', val: (profile.photos?.length || 0) > 0 ? 100 : 0, icon: Camera },
+                            { label: 'Verification', val: profile.is_verified ? 100 : 0, icon: UserCheckIcon },
+                            { label: 'Daily Merit', val: meritPct, icon: Zap },
+                            { label: 'Considered By', val: queueCount, icon: Eye, isRaw: true },
+                            { label: 'Resonance', val: 85, icon: TrendingUp }
+                          ].map((m, i) => (
+                            <div key={i} className="p-6 bg-white/5 rounded-[2rem] border border-white/10 group hover:bg-white/10 transition-all">
+                               <div className="flex justify-between items-center mb-4">
+                                  <m.icon size={16} className="text-mat-gold" />
+                                  <span className="text-xl font-bold text-mat-gold italic">
+                                    {('isRaw' in m && m.isRaw) ? m.val : `${m.val}%`}
+                                  </span>
+                               </div>
+                               <p className="text-[10px] font-black uppercase tracking-widest text-white/40">{m.label}</p>
+                               <div className="h-1 bg-white/5 rounded-full mt-2 overflow-hidden">
+                                 <motion.div 
+                                   initial={{ width: 0 }} 
+                                   animate={{ width: `${('isRaw' in m && m.isRaw) ? Math.min(100, (m.val as number) * 20) : m.val}%` }} 
+                                   className="h-full bg-mat-gold" 
+                                 />
+                               </div>
+                            </div>
+                          ))}
+                       </div>
                    </div>
                   <div className="flex gap-4 mt-10">
                     <button onClick={() => setIsEditing?.(true)} className="flex-1 py-5 border border-white/20 text-white rounded-2xl font-bold uppercase tracking-widest hover:bg-white/5 transition-all">Edit Profile</button>
