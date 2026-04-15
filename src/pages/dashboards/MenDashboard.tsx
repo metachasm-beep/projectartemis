@@ -513,8 +513,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                                 <HelpCircle size={14} />
                               </button>
                             </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[200px] bg-mat-obsidian border-mat-gold/20 text-[10px] p-4 shadow-2xl">
-                              <p className="text-center text-mat-gold font-medium italic leading-relaxed">"Calculates your Dossier Integrity (Verification + Profile Depth) and applies it as a permanent standing multiplier to your Absolute Rank."</p>
+                            <TooltipContent 
+                              side="top" 
+                              align="center"
+                              sideOffset={8}
+                              collisionPadding={20}
+                              className="max-w-[180px] bg-mat-obsidian/95 border-mat-gold/20 text-[9px] p-4 shadow-2xl backdrop-blur-xl"
+                            >
+                              <p className="text-center text-mat-gold font-medium italic leading-relaxed">
+                                "Completing your profile and getting verified boosts your rank power, helping you climb higher in global standings."
+                              </p>
                             </TooltipContent>
                           </Tooltip>
                         </div>
@@ -599,8 +607,16 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                               <HelpCircle size={20} />
                             </button>
                           </TooltipTrigger>
-                          <TooltipContent side="top" className="max-w-[280px] bg-mat-obsidian border-mat-gold/20 text-xs p-5 shadow-2xl">
-                            <p className="text-mat-gold font-medium leading-relaxed italic">"Calculates your Dossier Integrity (Verification + Profile Depth) and applies it as a permanent standing multiplier to your Absolute Rank."</p>
+                          <TooltipContent 
+                            side="top" 
+                            align="center"
+                            sideOffset={10}
+                            collisionPadding={20}
+                            className="max-w-[240px] bg-mat-obsidian/95 border-mat-gold/20 text-[11px] p-5 shadow-2xl backdrop-blur-xl"
+                          >
+                            <p className="text-mat-gold font-medium leading-relaxed italic text-center">
+                              "Completing your profile and getting verified boosts your rank power, helping you climb higher in global standings."
+                            </p>
                           </TooltipContent>
                         </Tooltip>
                       </div>
