@@ -58,7 +58,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
         {/* Top Header: Sovereign Branding */}
         <header className="flex justify-between items-end">
           <div className="space-y-2">
-            <Badge variant="outline" className="px-4 py-1.5 border-mat-gold/30 text-mat-gold rounded-full bg-mat-gold/5 mat-text-label-pro text-[9px] uppercase tracking-tighter shadow-mat-gold/10">
+            <Badge variant="outline" className="px-4 py-1.5 border-mat-gold/40 text-mat-gold rounded-full bg-mat-gold/15 mat-text-label-pro text-[9px] uppercase tracking-tighter shadow-mat-gold/20">
               Registry: Elite Sanctum Verified
             </Badge>
             <h1 className="text-5xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
@@ -68,12 +68,12 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
           
           <div className="flex items-center gap-6">
             <div className="text-right hidden lg:block">
-              <p className="mat-text-label-pro opacity-40 text-[9px] uppercase tracking-[0.2em]">Logged Identity</p>
-              <p className="text-mat-cream font-bold italic text-sm">{profile?.display_name || 'Anonymous'}</p>
+              <p className="mat-text-label-pro opacity-60 text-[9px] uppercase tracking-[0.2em] text-white">Logged Identity</p>
+              <p className="text-mat-bone font-bold italic text-sm">{profile?.display_name || 'Anonymous'}</p>
             </div>
             <button 
                onClick={() => setShowFAQ(true)}
-               className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-mat-gold hover:bg-white/10 transition-all group"
+               className="w-12 h-12 rounded-2xl bg-mat-bone/90 border border-mat-gold/40 flex items-center justify-center text-mat-obsidian hover:bg-mat-gold hover:text-mat-obsidian transition-all group shadow-lg"
             >
                <HelpCircle size={20} className="group-hover:rotate-12 transition-transform" />
             </button>

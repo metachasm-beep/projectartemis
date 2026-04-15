@@ -63,7 +63,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
       activeTab === 'faq' 
         ? 'bg-mat-obsidian/90' 
         : profile?.role === 'woman' 
-          ? 'bg-mat-wine/95 border-mat-gold/30' 
+          ? 'bg-mat-cream/95 border-mat-gold/40 shadow-[0_20px_40px_rgba(0,0,0,0.2)]' 
           : 'bg-white/10'
     }`}>
         <div className="flex items-center gap-1">
@@ -73,8 +73,10 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
               onClick={() => setActiveTab(item.id as Extract<typeof activeTab, string>)}
               className={`flex items-center gap-2 px-5 py-3 rounded-full transition-all duration-300 group relative ${
                 activeTab === item.id 
-                ? 'bg-mat-bone text-mat-wine shadow-xl' 
-                : 'text-mat-bone/40 hover:text-mat-bone hover:bg-white/5'
+                ? 'bg-mat-gold text-mat-obsidian shadow-xl' 
+                : profile?.role === 'woman'
+                  ? 'text-mat-obsidian/40 hover:text-mat-obsidian hover:bg-black/5'
+                  : 'text-mat-bone/40 hover:text-mat-bone hover:bg-white/5'
               }`}
             >
               <item.icon size={16} className={activeTab === item.id ? 'animate-pulse' : 'group-hover:scale-110 transition-transform'} />
@@ -83,7 +85,7 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
                     {pendingCount}
                  </span>
               )}
-              <span className={`text-[12px] font-bold uppercase tracking-[0.2em] hidden sm:block ${activeTab === item.id ? 'opacity-100' : 'opacity-80 group-hover:opacity-100'}`}>
+              <span className={`text-[12px] font-bold uppercase tracking-[0.2em] hidden sm:block ${activeTab === item.id ? 'opacity-100' : 'opacity-60 group-hover:opacity-100'}`}>
                 {item.label}
               </span>
             </button>
