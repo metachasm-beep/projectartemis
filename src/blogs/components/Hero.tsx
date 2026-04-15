@@ -63,18 +63,25 @@ const Hero: React.FC = () => {
             </motion.span>
           </motion.div>
 
-          <a href="https://matriarchindia.com">
-            <StarBorder
-              as="div"
-              color="#D4AF37"
-              speed="4s"
-              className="rounded-full"
-            >
-              <button className="px-10 py-4 rounded-full text-white font-black uppercase tracking-[0.3em] text-[11px] bg-[#3C2F2F] hover:bg-[#3C2F2F]/90 transition-all border-none">
-                Back to Sanctuary
-              </button>
-            </StarBorder>
-          </a>
+          <StarBorder
+            as="a"
+            href="https://matriarchindia.com"
+            color="#D4AF37"
+            speed="4s"
+            className="rounded-full no-underline group active:scale-95 transition-transform"
+            innerStyle={{ 
+              background: 'transparent', 
+              border: 'none', 
+              padding: '16px 40px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <span className="text-[#3C2F2F] font-black uppercase tracking-[0.3em] text-[11px]">
+              Back to Sanctuary
+            </span>
+          </StarBorder>
         </motion.div>
       </div>
 
