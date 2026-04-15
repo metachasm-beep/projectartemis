@@ -205,18 +205,18 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                 <div className="h-full flex flex-col justify-between">
                   <div className="flex justify-between items-start">
                     <div className="space-y-2">
-                       <p className="mat-text-label-pro text-[9px] text-mat-gold uppercase tracking-[0.4em]">Resonance</p>
-                       <h3 className="text-3xl font-bold italic text-white leading-none">Harmony Index.</h3>
+                       <p className="mat-text-label-pro text-[12px] text-mat-gold uppercase tracking-[0.3em]">Resonance</p>
+                       <h3 className="text-2xl font-bold italic text-white leading-none">Harmony Index.</h3>
                     </div>
                     <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20">
                       <Compass className="text-mat-gold w-6 h-6 animate-spin-slow" strokeWidth={1} />
                     </div>
                   </div>
                   <div className="flex items-baseline gap-4">
-                     <span className="text-5xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                     <span className="text-4xl font-bold text-mat-cream tracking-tighter italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>
                         {Math.round(status?.rank_score || 0)}
                      </span>
-                     <p className="text-[10px] text-white/30 italic max-w-[150px] leading-tight">Strategic frequency alignment verified in local sector.</p>
+                     <p className="text-[11px] text-white/50 italic max-w-[160px] leading-tight">Strategic frequency alignment verified in local sector.</p>
                   </div>
                 </div>
               </GlassCard>
@@ -226,15 +226,15 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                     <div className="space-y-4">
                         <div className="flex items-center gap-4 text-white/60">
                           <ShieldCheck size={20} strokeWidth={1} />
-                          <span className="mat-text-label-pro text-[10px] uppercase tracking-widest font-black">Registry Audit</span>
+                          <span className="mat-text-label-pro text-[12px] uppercase tracking-[0.3em] font-black">Registry Audit</span>
                         </div>
-                        <h4 className="text-2xl font-bold italic text-white/40 leading-tight">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
+                        <h4 className="text-xl font-bold italic text-white/60 leading-tight">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
                     </div>
                     
                     <div className="bg-black/40 rounded-[2rem] p-6 border border-white/5 flex items-center justify-between">
-                       <div className="space-y-1">
-                          <p className="text-[10px] text-white/40 leading-none">Last Audit Protocol</p>
-                          <p className="text-mat-gold text-[12px] font-bold italic">Active | 3h Ago</p>
+                       <div className="space-y-1.5">
+                          <p className="mat-text-label-pro text-[11px] text-white/60 uppercase tracking-[0.2em] leading-none">Last Audit Protocol</p>
+                          <p className="text-mat-gold text-[13px] font-bold italic">Active | 3h Ago</p>
                        </div>
                        <motion.div 
                          initial={{ rotate: 0 }}
