@@ -15,8 +15,8 @@ const HowItWorksFold: React.FC = () => {
 
   return (
     <Fold id="how-it-works" className="bg-mat-cream border-t border-mat-gold/10 py-0 overflow-hidden">
-      <div ref={containerRef} className="h-full flex flex-col justify-center space-y-8 lg:space-y-12 py-12">
-        <div className="space-y-12">
+      <div ref={containerRef} className="h-full flex flex-col justify-center space-y-6 md:space-y-12 py-8 md:py-12">
+        <div className="space-y-8 md:space-y-12">
           <div className="space-y-4 flex flex-col items-center md:items-start text-center md:text-left">
             <motion.span 
               className="px-4 py-1 border border-mat-rose/20 uppercase tracking-[0.4em] font-black text-[9px] bg-mat-rose/5 text-mat-rose rounded-none inline-block"
@@ -31,7 +31,7 @@ const HowItWorksFold: React.FC = () => {
             </motion.h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8">
             {SEO_COPY.landing.how_it_works.steps.map((step, i) => (
               <motion.div 
                 key={i}
@@ -39,7 +39,7 @@ const HowItWorksFold: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="bg-mat-ivory backdrop-blur-sm border border-mat-gold/10 p-6 md:p-8 group hover:border-mat-gold/40 transition-all duration-700 flex flex-col justify-between min-h-[auto] md:min-h-[300px] shadow-sm"
+                className="bg-mat-ivory backdrop-blur-sm border border-mat-gold/10 p-5 md:p-8 group hover:border-mat-gold/40 transition-all duration-700 flex flex-col justify-between min-h-[auto] md:min-h-[300px] shadow-sm"
               >
                 <div className="space-y-4 md:space-y-6">
                   <div className="text-mat-rose font-black text-xl md:text-2xl group-hover:text-mat-gold transition-colors">
@@ -47,7 +47,7 @@ const HowItWorksFold: React.FC = () => {
                   </div>
                   <div>
                     <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] mb-2 text-mat-rose/40 italic">{step.title}</h3>
-                    <h4 className="text-xl md:text-3xl font-display text-mat-slate leading-tight uppercase tracking-tight">{step.label}</h4>
+                    <h4 className="text-lg md:text-3xl font-display text-mat-slate leading-tight uppercase tracking-tight">{step.label}</h4>
                   </div>
                 </div>
                 <p className="text-[11px] md:text-[12px] text-mat-slate/40 leading-relaxed font-light mt-4 md:mt-6 border-t border-mat-gold/10 pt-4 md:pt-6 uppercase tracking-wider">

@@ -20,7 +20,6 @@ export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnl
       {!iconOnly && (
         <span className="font-display text-2xl font-black tracking-tight text-black">
           MATRIARCH
-          <span className="text-black">.</span>
         </span>
       )}
     </div>

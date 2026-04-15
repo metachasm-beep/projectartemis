@@ -37,7 +37,7 @@ const LandscapeProtocolFold: React.FC = () => {
               <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/30">The Landscape</h3>
             </div>
             <h2 className="text-3xl md:text-5xl font-display text-mat-slate uppercase leading-tight">
-              Noise is <br /><span className="text-mat-gold/10 italic font-display lowercase tracking-normal">The Default</span>
+              Noise is <br /><span className="text-mat-gold/60 italic font-display lowercase tracking-normal">The Default</span>
             </h2>
             <div className="space-y-4 pt-2">
               {["Endless swiping loops", "Low-intent matches", "Chaotic inboxes", "Fake data scarcity", "No real feminine control"].map(item => (

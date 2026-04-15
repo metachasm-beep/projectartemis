@@ -1,18 +1,22 @@
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Fold from './Fold';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, X } from 'lucide-react';
 
-const SECURITY_POINTS = [
-  "Communication Isolation",
-  "Verification Journey",
-  "Privacy Infrastructure",
-  "Selective Discovery",
-  "Moderated Mechanics",
-  "Elite Referral Protocols"
-];
+const SECURITY_DATA: Record<string, string> = {
+  "Communication Isolation": "Secure, P2P encrypted messaging that bypasses standard cellular networks and keeps all sanctuary dialogue contained.",
+  "Verification Journey": "A multi-step authenticity ritual that uses cryptographic proof to verify identity without compromising personal data.",
+  "Privacy Infrastructure": "An obsidian-grade security architecture designed to mask metadata and ensure absolute user anonymity across the grid.",
+  "Selective Discovery": "A deliberate, non-algorithmic discovery engine that prioritizes meaningful alignment over high-volume scanning.",
+  "Moderated Mechanics": "A rigorous, human-in-the-loop oversight protocol that maintains the sanctuary's integrity and quality standards.",
+  "Elite Referral Protocols": "A closed-loop entry system requiring high-reputation referrals to ensure only the most aligned aspirants are invited."
+};
+
+const SECURITY_POINTS = Object.keys(SECURITY_DATA);
 
 const SecurityFold: React.FC = () => {
+  const [selectedProtocol, setSelectedProtocol] = useState<string | null>(null);
+
   return (
     <Fold id="security" className="bg-mat-cream py-12 lg:py-16 border-b border-mat-gold/10">
       <div className="space-y-12 lg:space-y-16">
@@ -43,7 +47,8 @@ const SecurityFold: React.FC = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
-                className="p-6 lg:p-8 border border-mat-gold/5 bg-mat-ivory/40 hover:bg-mat-ivory hover:border-mat-gold/20 transition-all duration-500 cursor-crosshair group shadow-sm"
+                onClick={() => setSelectedProtocol(item)}
+                className="p-6 lg:p-8 border border-mat-gold/5 bg-mat-ivory/40 hover:bg-mat-ivory hover:border-mat-gold/20 transition-all duration-500 cursor-pointer group shadow-sm active:scale-95"
               >
                 <span className="text-[9px] font-black uppercase tracking-[0.4em] group-hover:tracking-[0.5em] transition-all">
                   {item}
@@ -75,6 +80,54 @@ const SecurityFold: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Protocol Explanation Modal */}
+      <AnimatePresence>
+        {selectedProtocol && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedProtocol(null)}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-6 backdrop-blur-md bg-black/20"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="bg-mat-ivory p-12 max-w-lg w-full border border-mat-gold/30 shadow-2xl relative text-center space-y-8"
+            >
+              <button 
+                onClick={() => setSelectedProtocol(null)}
+                className="absolute top-4 right-4 text-mat-slate/20 hover:text-mat-wine transition-colors"
+              >
+                <X size={20} strokeWidth={1} />
+              </button>
+              
+              <div className="space-y-2">
+                <span className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold">Security Protocol</span>
+                <h3 className="text-3xl font-display text-mat-slate uppercase leading-none">{selectedProtocol}</h3>
+              </div>
+              
+              <div className="w-12 h-px bg-mat-gold/30 mx-auto" />
+              
+              <p className="text-lg text-mat-slate/60 font-light leading-relaxed">
+                {SECURITY_DATA[selectedProtocol]}
+              </p>
+              
+              <div className="pt-4">
+                <button 
+                  onClick={() => setSelectedProtocol(null)}
+                  className="px-8 py-3 bg-mat-wine text-mat-cream text-[10px] font-black uppercase tracking-widest hover:bg-mat-gold hover:text-mat-wine transition-all"
+                >
+                  Confirm Understanding
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Fold>
   );
 };

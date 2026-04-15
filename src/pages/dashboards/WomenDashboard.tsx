@@ -96,7 +96,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   </div>
                   <div className="space-y-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-[5.5rem] font-bold text-mat-wine italic tracking-tighter leading-none">{status?.points || 0}</span>
+                      <span className="text-6xl font-bold text-mat-wine italic tracking-tighter leading-none">{status?.points || 0}</span>
                       <span className="text-mat-gold/60 text-lg font-black animate-pulse">Hz</span>
                     </div>
                     <p className="mat-text-label-pro text-[10px] opacity-40 uppercase tracking-[0.2em]">Radiance Potential</p>
@@ -189,7 +189,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                          <stat.icon size={20} className={stat.color} strokeWidth={1.5} />
                        </div>
                        <div className="space-y-1">
-                          <p className="text-4xl font-bold text-white italic tracking-tighter">{stat.val}</p>
+                          <p className="text-2xl font-bold text-white italic tracking-tighter">{stat.val}</p>
                           <p className="mat-text-label-pro text-[9px] opacity-40 uppercase tracking-[0.2em]">{stat.label}</p>
                        </div>
                     </motion.div>
