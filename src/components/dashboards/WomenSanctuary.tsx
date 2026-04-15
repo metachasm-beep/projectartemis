@@ -269,26 +269,24 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               {/* Subtle accent light */}
               <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 blur-3xl rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
               
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-6 gap-y-6 lg:gap-x-10 lg:gap-y-8 w-full relative z-10">
+              <div className="grid grid-cols-2 md:grid-cols-5 gap-x-12 gap-y-10 lg:gap-x-16 lg:gap-y-12 w-full relative z-10 px-4">
                 {stats.map((stat, idx) => (
                   <motion.div
                     key={idx}
-                    initial={{ opacity: 0, scale: 0.95 }}
+                    initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3 + idx * 0.05, duration: 0.4 }}
-                    className="relative flex items-center justify-between group/stat py-3 border-b border-mat-noir/[0.05] hover:border-mat-rose-gold/40 transition-colors"
+                    transition={{ delay: 0.1 + idx * 0.04, duration: 0.5 }}
+                    className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-5 hover:border-mat-rose-gold/50"
                   >
-                    <div className="flex flex-col min-w-0 pr-4">
-                      <h3 className="mat-text-editorial-caps text-[7px] md:text-[8px] text-mat-noir/40 tracking-[0.25em] lg:tracking-[0.3em] uppercase mb-1.5">{stat.label}</h3>
-                      <p className="mat-text-fluid-huge font-light text-mat-noir leading-none">{stat.value}</p>
+                    <div className="flex items-center gap-2 mb-2 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
+                      {React.cloneElement(stat.icon as React.ReactElement, { size: 14, strokeWidth: 1.5 })}
+                      <h3 className="mat-text-editorial-caps text-[10px] tracking-[0.25em] uppercase font-bold">
+                        {stat.label}
+                      </h3>
                     </div>
-                    <div className={cn(
-                      "w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-[inset_0_1px_0_rgba(255,255,255,1),0_2px_8px_rgba(0,0,0,0.05)] text-mat-rose-gold transition-all duration-500",
-                      "bg-gradient-to-b from-white to-[#ece8e0] border border-[rgba(0,0,0,0.03)]",
-                      "group-hover/stat:from-mat-rose-gold group-hover/stat:to-mat-rose-gold/90 group-hover/stat:text-white"
-                    )}>
-                      {React.cloneElement(stat.icon as React.ReactElement, { size: 16 })}
-                    </div>
+                    <p className="text-2xl lg:text-3xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
+                      {stat.value}
+                    </p>
                   </motion.div>
                 ))}
               </div>
