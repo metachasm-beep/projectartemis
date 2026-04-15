@@ -28,7 +28,7 @@ export const DashboardLayout: React.FC = () => {
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
 
   // 🍷 Sovereign Ritual Toggle
-  const isImmersive = activeTab === 'sovereign_browse' || activeTab === 'profile' || activeTab === 'faq';
+  const isImmersive = activeTab === 'sovereign_browse' || activeTab === 'profile' || activeTab === 'faq' || activeTab === 'discovery';
 
   return (
     <motion.div 

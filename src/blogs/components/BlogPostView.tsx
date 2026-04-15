@@ -113,7 +113,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
             <div className="h-4 bg-white/5 rounded w-5/6 animate-pulse" />
           </div>
         ) : (
-          <article className="prose prose-invert prose-rose max-w-none prose-p:text-white/70 prose-p:leading-relaxed prose-p:text-lg prose-headings:text-white prose-headings:font-black prose-headings:tracking-tighter prose-strong:text-white prose-blockquote:border-rose-500 prose-blockquote:bg-rose-500/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl">
+          <article className="prose prose-invert prose-rose max-w-none prose-p:text-white/90 prose-p:leading-relaxed prose-p:text-lg prose-headings:text-white prose-headings:font-black prose-headings:tracking-tighter prose-strong:text-white prose-blockquote:border-rose-500 prose-blockquote:bg-rose-500/5 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {markdown}
             </ReactMarkdown>

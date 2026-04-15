@@ -332,7 +332,7 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                   {card.content && <div className="flex-1">{card.content}</div>}
                   <div>
                     <h3 className="text-lg font-black tracking-tight text-white mb-2 leading-tight">{card.title}</h3>
-                    <p className="text-xs text-white/40 leading-relaxed line-clamp-3">{card.description}</p>
+                    <p className="text-xs text-white/70 leading-relaxed line-clamp-3">{card.description}</p>
                   </div>
                 </ParticleCard>
               );
