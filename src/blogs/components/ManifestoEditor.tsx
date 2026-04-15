@@ -79,7 +79,7 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-[#FFFDF9]/95 backdrop-blur-3xl"
+          className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8 bg-[#FFFDF9] backdrop-blur-none"
         >
           <motion.div 
             initial={{ y: 20, opacity: 0, scale: 0.95 }}

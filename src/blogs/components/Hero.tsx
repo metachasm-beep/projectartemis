@@ -1,5 +1,4 @@
 import React from 'react';
-import LightRays from './bits/LightRays';
 import DecryptedText from './bits/DecryptedText';
 import BlurText from './bits/BlurText';
 import { motion } from 'framer-motion';
@@ -9,15 +8,7 @@ import StarBorder from '../../components/bits/StarBorder';
 const Hero: React.FC = () => {
   return (
     <section className="relative h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#FFFDF9]">
-      <div className="absolute inset-0 opacity-20">
-        <LightRays 
-          raysColor="#F5F1E8" 
-          raysSpeed={0.3}
-          lightSpread={1.5}
-          rayLength={2}
-          mouseInfluence={0.03}
-        />
-      </div>
+      <div className="absolute inset-0 bg-rose-500/[0.03] pointer-events-none" />
 
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FFFDF9]/40 to-[#FFFDF9] pointer-events-none" />
 

@@ -37,7 +37,7 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
     <div className="w-full">
       {/* Category Filter */}
       <div className="flex flex-col items-center mb-16">
-        <div className="flex flex-wrap gap-3 justify-center bg-[#3C2F2F]/[0.03] backdrop-blur-3xl p-2 rounded-full border border-[#3C2F2F]/5 shadow-xl">
+        <div className="flex flex-wrap gap-3 justify-center bg-[#3C2F2F]/[0.08] p-2 rounded-full border border-[#3C2F2F]/10 shadow-xl">
           {CATEGORIES.map(category => (
             <motion.button
               key={category}
