@@ -51,7 +51,7 @@ const Hero: React.FC = () => {
         >
           <motion.div 
             whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[#3C2F2F]/10 bg-[#3C2F2F]/5 backdrop-blur-xl text-[#3C2F2F]/40 text-xs font-black uppercase tracking-[0.4em] hover:text-[#3C2F2F] hover:border-[#3C2F2F]/20 transition-all cursor-pointer group shadow-2xl shadow-rose-500/5"
+            className="inline-flex items-center gap-3 px-8 py-4 rounded-full border border-[#3C2F2F]/20 text-[#3C2F2F]/50 text-xs font-black uppercase tracking-[0.4em] hover:text-[#3C2F2F] hover:border-[#3C2F2F]/30 transition-all cursor-pointer group"
           >
             Scroll to Explore
             <motion.span
