@@ -72,7 +72,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       exit={{ scale: 0.95, opacity: 0 }}
       className={cn(
         "relative bg-[#1A1A1A] border-l-[1px] border-t-[1px] border-white/10 border-r-[2px] border-b-[2px] border-black/60 rounded-[2.5rem] shadow-[0_40px_120px_rgba(0,0,0,0.8),_inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden flex flex-col group p-[1px] select-none",
-        isDashboard ? "w-full h-full aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] h-[85vh] md:min-h-[750px] max-h-[900px]"
+        isDashboard ? "w-full h-full aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] h-[82vh] md:min-h-[750px] max-h-[850px]"
       )}
     >
       {/* 🧬 Material Texture Overlay (Carbon/Noise) */}
@@ -105,7 +105,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       {/* 🖼️ RECESSED PORTRAIT FRAME */}
       <div className={cn(
         "relative min-h-0 overflow-hidden z-10 flex flex-col pt-1 px-1",
-        isDashboard ? "flex-[0_0_42%]" : "flex-[0_0_65%]"
+        isDashboard ? "flex-[0_0_42%]" : "flex-1 md:flex-[0_0_65%]"
       )}>
         <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all">
           <img 
@@ -119,21 +119,21 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
 
         {/* 🏅 RANK PLATE - PHYSICAL INSET */}
         <div className="absolute top-4 left-4 z-30">
-           <div className="min-w-16 px-3 py-2 bg-neutral-800 rounded-xl flex flex-col items-center justify-center border-t border-white/5 border-b border-black shadow-2xl">
-              <span className="text-[8px] font-black text-white/30 uppercase">Rank</span>
-              <span className="text-2xl font-black text-mat-gold italic leading-none">#{profile.absolute_rank || '--'}</span>
+           <div className="min-w-14 md:min-w-16 px-2 md:px-3 py-1.5 md:py-2 bg-neutral-800 rounded-xl flex flex-col items-center justify-center border-t border-white/5 border-b border-black shadow-2xl">
+              <span className="text-[7px] md:text-[8px] font-black text-white/30 uppercase">Rank</span>
+              <span className="text-xl md:text-2xl font-black text-mat-gold italic leading-none">#{profile.absolute_rank || '--'}</span>
            </div>
         </div>
 
         {/* Level Badge - Tactile */}
         <div className="absolute top-4 right-4 z-20">
-           <div className="px-4 py-1.5 bg-mat-rose-gold text-mat-wine rounded-full flex items-center gap-2 shadow-xl border border-white/20">
-              <Crown size={14} fill="currentColor" />
-              <span className="text-[11px] font-bold uppercase tracking-widest">{profile.status}</span>
+           <div className="px-3 md:px-4 py-1 md:py-1.5 bg-mat-rose-gold text-mat-wine rounded-full flex items-center gap-1.5 md:gap-2 shadow-xl border border-white/20">
+              <Crown size={12} className="md:size-[14px]" fill="currentColor" />
+              <span className="text-[9px] md:text-[11px] font-bold uppercase tracking-widest">{profile.status}</span>
            </div>
         </div>
 
-        <div className="absolute bottom-0 left-0 w-full p-4 md:p-6 bg-gradient-to-t from-black to-transparent z-10">
+        <div className="absolute bottom-4 md:bottom-0 left-0 w-full p-4 md:p-6 bg-gradient-to-t from-black to-transparent z-10 hidden md:block">
             <div className="flex flex-col">
                <div className="flex items-center gap-3">
                   <h2 className="font-display text-white text-3xl md:text-4xl italic tracking-tighter leading-tight drop-shadow-md">
@@ -146,32 +146,43 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
         </div>
       </div>
 
-      {/* 📜 PHYSICAL INTEL PANEL - NO GLASS */}
+      {/* 📜 PHYSICAL INTEL PANEL - OVERLAY ON MOBILE */}
       <div className={cn(
-        "flex-1 min-h-0 bg-[#121212] flex flex-col justify-between relative z-20 overflow-y-auto no-scrollbar border-t-[1px] border-white/5",
-        isDashboard ? "p-4" : "p-8"
+        "bg-[#121212] flex flex-col justify-between relative z-20 overflow-hidden border-t-[1px] border-white/5",
+        isDashboard ? "p-4" : "p-5 md:p-8",
+        !isDashboard && "absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-[#0a0a0abf] to-transparent md:relative md:bg-[#121212] md:from-transparent md:via-transparent md:to-transparent"
       )}>
         
         {/* Bio Embossing */}
+        <div className={cn("flex flex-col mb-3 md:mb-5 md:hidden")}>
+           <div className="flex items-center gap-3 mb-1">
+              <h2 className="font-display text-white text-2xl italic tracking-tighter leading-tight drop-shadow-md">
+               {profile.name}
+              </h2>
+              <VerificationBadge verified={profile.is_verified} />
+           </div>
+           <span className="text-[8px] uppercase font-black tracking-[0.4em] text-white/40 italic">{archetype}</span>
+        </div>
+
         {sanitizeBio(profile.bio) && (
-          <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-4")}>
-             <p className="text-white/60 text-[12px] md:text-[13px] leading-relaxed font-normal line-clamp-2 italic">
+          <div className={cn("flex-shrink-0", isDashboard ? "mb-2" : "mb-3 md:mb-4")}>
+             <p className="text-white/60 text-[11px] md:text-[13px] leading-relaxed font-normal line-clamp-1 md:line-clamp-2 italic">
                 "{sanitizeBio(profile.bio)}"
              </p>
           </div>
         )}
 
-        {/* 📊 TACTILE STATS GRID */}
-        <div className={cn("grid grid-cols-3 gap-x-2 md:gap-x-4", isDashboard ? "gap-y-2" : "gap-y-6")}>
+        {/* 📊 TACTILE STATS GRID - 5 cols on mobile */}
+        <div className={cn("grid gap-x-2 md:gap-x-4", isDashboard ? "grid-cols-3 gap-y-2" : "grid-cols-5 md:grid-cols-3 gap-y-3 md:gap-y-6")}>
           {statItems.map((s, i) => (
             <Tooltip key={i}>
                <TooltipTrigger asChild>
-                  <div className="space-y-1.5 cursor-help group/stat">
+                  <div className="space-y-1 md:space-y-1.5 cursor-help group/stat">
                      <div className="flex items-center justify-between px-0.5">
-                        <span className="text-[9px] font-bold uppercase tracking-wider text-white/30 group-hover/stat:text-mat-gold transition-colors">{s.label}</span>
-                        <span className="text-[11px] font-black text-mat-gold italic">{s.value}</span>
+                        <span className="text-[7px] md:text-[9px] font-bold uppercase tracking-wider text-white/30 group-hover/stat:text-mat-gold transition-colors">{s.label.slice(0,3)}</span>
+                        <span className="text-[9px] md:text-[11px] font-black text-mat-gold italic">{s.value}</span>
                      </div>
-                     <div className="w-full h-1.5 bg-black rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]">
+                     <div className="w-full h-1 md:h-1.5 bg-black rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]">
                         <motion.div 
                            initial={{ width: 0 }}
                            animate={{ width: `${s.value}%` }}
@@ -188,42 +199,42 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
           ))}
         </div>
 
-        {/* 📋 SKEUOMORPHIC DOSSIER DATA */}
-        <div className={cn("grid grid-cols-2 gap-3 border-t border-white/5 pt-4 pb-2", isDashboard ? "mt-3" : "mt-8")}>
-            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner">
-               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
-                  <Trophy size={14} />
+        {/* 📋 SKEUOMORPHIC DOSSIER DATA - COMPRESSED FOR MOBILE */}
+        <div className={cn("grid grid-cols-3 md:grid-cols-2 gap-2 border-t border-white/5 pt-3 md:pt-4 pb-1 md:pb-2", isDashboard ? "mt-3" : "mt-4 md:mt-8")}>
+            <div className="flex items-center gap-1.5 md:gap-2 bg-black/20 p-1.5 md:p-2 rounded-lg md:rounded-xl border border-white/5 shadow-inner">
+               <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60 shrink-0">
+                  <Trophy size={11} className="md:size-[14px]" />
                </div>
                <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Tier</span>
-                  <span className="text-[11px] font-bold text-white/70 uppercase truncate">{profile.tier}</span>
+                  <span className="text-[6px] md:text-[8px] uppercase font-black tracking-widest text-white/20">Tier</span>
+                  <span className="text-[9px] md:text-[11px] font-bold text-white/70 uppercase truncate">{profile.tier}</span>
                </div>
             </div>
             
-            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner">
-               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
-                  <MapPin size={14} />
+            <div className="flex items-center gap-1.5 md:gap-2 bg-black/20 p-1.5 md:p-2 rounded-lg md:rounded-xl border border-white/5 shadow-inner">
+               <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60 shrink-0">
+                  <MapPin size={11} className="md:size-[14px]" />
                </div>
                <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Height</span>
-                  <span className="text-[11px] font-bold text-white/70 uppercase">{profile.height_str}</span>
+                  <span className="text-[6px] md:text-[8px] uppercase font-black tracking-widest text-white/20">Height</span>
+                  <span className="text-[9px] md:text-[11px] font-bold text-white/70 uppercase truncate">{profile.height_str}</span>
                </div>
             </div>
 
-            <div className="flex items-center gap-2 bg-black/20 p-2 rounded-xl border border-white/5 shadow-inner col-span-2">
-               <div className="w-8 h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60">
-                  <Lock size={14} />
+            <div className="flex items-center gap-1.5 md:gap-2 bg-black/20 p-1.5 md:p-2 rounded-lg md:rounded-xl border border-white/5 shadow-inner col-span-1 md:col-span-2">
+               <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60 shrink-0">
+                  <Lock size={11} className="md:size-[14px]" />
                </div>
                <div className="flex flex-col min-w-0">
-                  <span className="text-[8px] uppercase font-black tracking-widest text-white/20">Vocation</span>
-                  <span className="text-[11px] font-bold text-white/70 italic truncate">{profile.vocation}</span>
+                  <span className="text-[6px] md:text-[8px] uppercase font-black tracking-widest text-white/20">Task</span>
+                  <span className="text-[9px] md:text-[11px] font-bold text-white/70 italic truncate">{profile.vocation}</span>
                </div>
             </div>
         </div>
 
-        {/* ⚡ PHYSICAL ACTION MATRIX */}
+        {/* ⚡ PHYSICAL ACTION MATRIX - COMPRESSED FOR MOBILE */}
         {!isDashboard && (
-          <div className="flex items-center justify-center gap-6 pt-6 border-t border-white/5 mt-4">
+          <div className="flex items-center justify-center gap-4 md:gap-6 pt-4 md:pt-6 border-t border-white/5 mt-3 md:mt-4">
              {[{ id: 'report', icon: ShieldAlert }, { id: 'block', icon: UserX }, { id: 'ping', icon: MessageSquarePlus, primary: true }, { id: 'never_show', icon: EyeOff }].map((btn) => (
                <Tooltip key={btn.id}>
                   <TooltipTrigger>
@@ -231,13 +242,13 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                        onPress={() => onAction?.(btn.id)}
                        isIconOnly 
                        className={cn(
-                         "w-12 h-12 flex items-center justify-center rounded-2xl transition-all shadow-xl active:scale-95",
-                         btn.primary 
-                          ? "bg-mat-gold text-[#2C1E0F] border-t border-white/30 border-b-2 border-black/40 scale-125" 
-                          : "bg-neutral-800 text-white/30 border-t border-white/5 border-b border-black hover:text-white"
+                          "w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-xl md:rounded-2xl transition-all shadow-xl active:scale-95",
+                          btn.primary 
+                           ? "bg-mat-gold text-[#2C1E0F] border-t border-white/30 border-b-2 border-black/40 scale-110 md:scale-125" 
+                           : "bg-neutral-800 text-white/30 border-t border-white/5 border-b border-black hover:text-white"
                        )}
                      >
-                        <btn.icon size={btn.primary ? 24 : 18} />
+                        <btn.icon size={btn.primary ? 20 : 16} />
                      </Button>
                   </TooltipTrigger>
                   <TooltipContent side="top">{btn.id}</TooltipContent>
