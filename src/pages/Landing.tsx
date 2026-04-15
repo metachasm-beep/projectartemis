@@ -25,20 +25,11 @@ const LandingPage: React.FC = () => {
     container: mainRef,
   });
 
-  // Track scroll for icon-only transition (Mobile specific)
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (window.innerWidth < 768) {
-      setHideLogoText(latest > 0.08);
-    } else {
-      setHideLogoText(false);
-    }
-  });
-
-  // Dynamic Logo Transitions: Gradual drift across the entire scroll
-  const logoScale = useTransform(scrollYProgress, [0, 1], [1, 0.55]);
-  const logoY = useTransform(scrollYProgress, [0, 1], [24, 12]);
+  // Dynamic Logo transitions
+  const logoOpacity = useTransform(scrollYProgress, [0, 0.08], [1, 0]);
+  const logoScale = useTransform(scrollYProgress, [0, 0.08], [1, 0.9]);
   
-  // Mobile-specific X transition (Top Left -> Top Right) - only applied if mobile
+  // Mobile-specific X transition - strictly centered for Hero
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -47,11 +38,8 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const mobileX = useTransform(scrollYProgress, [0, 1], [isMobile ? "-42vw" : "0%", isMobile ? "44vw" : "0%"]);
-  const mobileTranslateX = useTransform(scrollYProgress, [0, 1], ["-50%", "-50%"]); 
-
-  // Desktop stays centered but scales down
-  const desktopScale = useTransform(scrollYProgress, [0, 1], [1, 0.75]);
+  // Desktop stays centered with subtle fade
+  const desktopOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   // Check session on mount
   React.useEffect(() => {
@@ -134,14 +122,12 @@ const LandingPage: React.FC = () => {
       {/* 🔮 Dynamic Persistent Logo (Mobile: Top-Right Transition) */}
       <motion.div 
         style={{ 
+          opacity: isMobile ? logoOpacity : desktopOpacity,
           scale: logoScale,
-          y: logoY,
-          x: mobileX,
-          translateX: mobileTranslateX
         }}
-        className="fixed left-1/2 top-6 z-[100] pointer-events-none origin-center"
+        className="fixed left-1/2 top-[34dvh] md:top-8 z-[100] -translate-x-1/2 pointer-events-none origin-center"
       >
-        <MatriarchLogo iconOnly={hideLogoText} className="transition-transform duration-300" />
+        <MatriarchLogo className="transition-transform duration-300" />
       </motion.div>
 
       {/* 1. Global Cinematic Texture */}
