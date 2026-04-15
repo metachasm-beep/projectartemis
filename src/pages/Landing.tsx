@@ -7,7 +7,7 @@ import HeroFold from "@/components/landing/HeroFold";
 import HowItWorksFold from "@/components/landing/HowItWorksFold";
 import LandscapeProtocolFold from "@/components/landing/LandscapeProtocolFold";
 import MeritFold from "@/components/landing/MeritFold";
-import SystemIntegrityFold from "@/components/landing/SystemIntegrityFold";
+import SecurityFold from "@/components/landing/SecurityFold";
 import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
 import Footer from "@/components/landing/Footer";
 import MatriarchLogo from "@/components/MatriarchLogo";
@@ -142,9 +142,9 @@ const LandingPage: React.FC = () => {
         <div className="relative z-20">
           <HowItWorksFold />
           <LandscapeProtocolFold />
-          <SystemIntegrityFold />
           <MeritFold />
           <SelectionMatrixFold />
+          <SecurityFold />
           
           <Footer />
         </div>
