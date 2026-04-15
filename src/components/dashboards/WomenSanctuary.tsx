@@ -30,7 +30,7 @@ import { GlassCard } from '@/components/dashboard/promax/GlassCard';
 import { Dock } from '@/components/dashboard/promax/Dock';
 import { cn } from '@/lib/utils';
 import { FAQ } from '@/components/FAQ';
-import { AadhaarVerification } from '@/components/AadhaarVerification';
+import { VerificationPaymentModal } from '@/components/verification/VerificationPaymentModal';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
@@ -362,20 +362,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       {/* ══ VERIFICATION MODAL ══════════════════════════ */}
       <AnimatePresence>
         {showVerification && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[150] flex items-center justify-center p-12 bg-mat-noir/40 backdrop-blur-2xl"
-            onClick={() => setShowVerification(false)}
-          >
-            <GlassCard className="w-full max-w-2xl p-0 rounded-[3rem]" delay={0} onClick={(e: React.MouseEvent) => e.stopPropagation()}>
-              <button onClick={() => setShowVerification(false)} className="absolute top-8 right-8 text-mat-noir/20 hover:text-mat-rose-gold z-20"><X size={26} /></button>
-              <div className="p-14">
-                <AadhaarVerification
-                  userId={profile?.user_id}
-                  onVerified={async () => { await refreshProfile(); setShowVerification(false); }}
-                />
-              </div>
-            </GlassCard>
-          </motion.div>
+          <VerificationPaymentModal
+            onClose={() => setShowVerification(false)}
+            onSuccess={async () => { await refreshProfile(); setShowVerification(false); }}
+          />
         )}
       </AnimatePresence>
     </div>

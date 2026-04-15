@@ -640,6 +640,11 @@ export const AdminService = {
       const claim: any = claimRes.rows[0];
       if (!claim) throw new Error("Claim not found.");
 
+      let meta: any = {};
+      if (claim.metadata) {
+        try { meta = JSON.parse(claim.metadata); } catch (e) {}
+      }
+
       if (!approved) {
         await turso.execute({
           sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?",
@@ -647,26 +652,35 @@ export const AdminService = {
         });
 
         // 🛡️ REJECTION TRANSMISSION
+        const rejectMsg = meta?.type === 'verification'
+          ? `Greetings. Your verification payment [UTR: ${claim.submitted_utr}] could not be validated. Please ensure your transaction details are correct and re-submit your claim via the dashboard.`
+          : `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] could not be verified by the Sanctuary's financial ledger. Please ensure your transaction details are correct and re-submit your claim via the dashboard. Command discarded.`;
+
+        await AdminService.sendDirectAdminMessage(claim.user_id, rejectMsg);
+        return true;
+      }
+
+      if (meta?.type === 'verification') {
+        // ── VERIFICATION PROTOCOL ──
+        await turso.execute({
+          sql: "UPDATE pending_claims SET status = 'approved' WHERE id = ?",
+          args: [claimId]
+        });
+        
         await AdminService.sendDirectAdminMessage(
-          claim.user_id, 
-          `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] could not be verified by the Sanctuary's financial ledger. Please ensure your transaction details are correct and re-submit your claim via the dashboard. Command discarded.`
+          claim.user_id,
+          `Greetings. Your verification payment [UTR: ${claim.submitted_utr}] has been verified. You may now proceed to the centralized biometric registry. Click [here](/verify) to complete your Identity Check and unlock full Sanctuary Access.`
         );
+        // We explicitly do NOT mark is_verified = 1 here. They still must pass Didit.
+        metricsCache = null;
+        rosterCache = null;
         return true;
       }
 
       // 2. Extract Power and Density for Approval
-      let jumpType = 'nudge';
-      let city = 'Delhi';
-      let amount = 49;
-
-      if (claim.metadata) {
-        try {
-          const meta = JSON.parse(claim.metadata);
-          jumpType = meta.jump_type || 'nudge';
-          city = meta.city || 'Delhi';
-          amount = meta.amount || (jumpType === 'surge' ? 149 : jumpType === 'elite' ? 499 : 49);
-        } catch (e) {}
-      }
+      let jumpType = meta.jump_type || 'nudge';
+      let city = meta.city || 'Delhi';
+      let amount = meta.amount || (jumpType === 'surge' ? 149 : jumpType === 'elite' ? 499 : 49);
 
       // 3. Calculate Leap Bonus
       const JUMP_POWER: Record<string, number> = { nudge: 0.05, surge: 0.15, elite: 0.50 };

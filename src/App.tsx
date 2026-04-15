@@ -12,6 +12,7 @@ const SouthDelhi = React.lazy(() => import('./routes/delhi-dating/SouthDelhi'));
 const Gurgaon = React.lazy(() => import('./routes/delhi-dating/Gurgaon'));
 const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
 const VerifyCallback = React.lazy(() => import('./pages/VerifyCallback'));
+const VerifyPage = React.lazy(() => import('./pages/VerifyPage'));
 const BlogApp = React.lazy(() => import('./blogs/App'));
 
 const App: React.FC = () => {
@@ -55,6 +56,11 @@ const App: React.FC = () => {
             <Route path="/verify/callback" element={
               <React.Suspense fallback={null}>
                 <VerifyCallback />
+              </React.Suspense>
+            } />
+            <Route path="/verify" element={
+              <React.Suspense fallback={null}>
+                <AuthGate><VerifyPage /></AuthGate>
               </React.Suspense>
             } />
             <Route path="*" element={
