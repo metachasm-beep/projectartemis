@@ -87,7 +87,12 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
       )}>
         <div className="flex flex-col">
            <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.2em] text-[#2C1E0F]/80 italic leading-none">Matriarch League // {profile.rank_tier || 'Aspirant'}</span>
-           <span className="text-[12px] md:text-[13px] font-black uppercase tracking-widest text-[#2C1E0F]/30 italic">ID-{profile.id?.slice(0,4)}</span>
+           <div className="mt-1 flex items-center">
+              <VerificationBadge 
+                verified={profile.is_verified} 
+                className="bg-[#2C1E0F]/10 border-[#2C1E0F]/20 scale-[0.8] origin-left shadow-none" 
+              />
+           </div>
         </div>
         <div className="flex items-center gap-4">
            <div className="flex flex-col items-end">
@@ -139,7 +144,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
                   <h2 className="font-display text-white text-3xl md:text-4xl italic tracking-tighter leading-tight drop-shadow-md">
                    {profile.name}
                   </h2>
-                  <VerificationBadge verified={profile.is_verified} />
                </div>
                <span className="text-[9px] uppercase font-black tracking-[0.4em] text-white/40 mt-1 italic">{archetype}</span>
             </div>
@@ -159,7 +163,6 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, onClose, onAction
               <h2 className="font-display text-white text-2xl italic tracking-tighter leading-tight drop-shadow-md">
                {profile.name}
               </h2>
-              <VerificationBadge verified={profile.is_verified} />
            </div>
            <span className="text-[8px] uppercase font-black tracking-[0.4em] text-white/40 italic">{archetype}</span>
         </div>
