@@ -82,18 +82,18 @@ const HeroFold: React.FC = () => {
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
       >
         <motion.span 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
+          transition={{ delay: 0.15, duration: 0.6 }}
           className="text-mat-rose font-display tracking-[0.2em] text-sm mb-6 uppercase"
         >
           Elite Community
         </motion.span>
         
         <motion.h1 
-          initial={{ opacity: 0, scale: 0.9 }}
+          initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-4xl md:text-8xl font-display text-mat-slate mb-6 md:mb-8 leading-tight max-w-4xl px-4"
         >
           Curating the <br/>
@@ -101,20 +101,21 @@ const HeroFold: React.FC = () => {
         </motion.h1>
 
         <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
           className="text-mat-slate/70 max-w-xl text-lg md:text-xl font-light leading-relaxed mb-12"
         >
           India's most exclusive network for high-value connections and refined companionship.
         </motion.p>
 
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2 }}
+          transition={{ delay: 0.5, duration: 0.8 }}
           className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
         >
+
           <StarBorder 
             onClick={() => supabase.auth.signInWithOAuth({ 
               provider: 'google', 
