@@ -17,6 +17,24 @@ export default defineConfig({
       algorithm: 'gzip',
       ext: '.gz',
     }),
+    // 🚀 Performance: Inline CSS into HTML to eliminate render-blocking network requests
+    {
+      name: 'inline-css',
+      transformIndexHtml(html, ctx) {
+        if (!ctx.bundle) return html;
+        let css = '';
+        for (const [fileName, asset] of Object.entries(ctx.bundle)) {
+          if (fileName.endsWith('.css') && 'source' in asset) {
+            css += asset.source;
+          }
+        }
+        if (!css) return html;
+        // Optimization: Remove standard CSS link and inject inlined style
+        return html
+          .replace(/<link rel="stylesheet".*?>/g, '')
+          .replace('</head>', `<style>${css}</style></head>`);
+      }
+    }
   ],
   resolve: {
     alias: {
@@ -32,11 +50,13 @@ export default defineConfig({
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-motion': ['framer-motion', 'gsap'],
           'vendor-ui': ['@heroui/react', 'lucide-react'],
-          'vendor-webgl': ['ogl', 'three'], // Optimization for heavy animation engine
+          'vendor-webgl': ['ogl', 'three'], 
         }
       }
     },
     chunkSizeWarningLimit: 1000,
+    cssCodeSplit: false, // Force single CSS file for easier inlining
   },
 });
+
 
