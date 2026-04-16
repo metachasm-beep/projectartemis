@@ -25,10 +25,10 @@ import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
 import GazeHologram from './GazeHologram';
 
-import { SecurityMesh } from './SecurityMesh';
-import { TerminalHeader } from './TerminalHeader';
-import { SecurityMatrix } from './SecurityMatrix';
-import { AccessDock } from './AccessDock';
+import { LiquidOrb } from './LiquidOrb';
+import { GlassHeader } from './GlassHeader';
+import { EtherealStatus } from './EtherealStatus';
+import { MinimalDock } from './MinimalDock';
 
 interface AdminDashboardProps {
   handleLogout: () => void;
@@ -89,7 +89,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
       const claims = await AdminService.getPendingAuraClaims();
       setPendingClaimsCount(claims.length);
     } catch (err) {
-      console.warn("Registry uplink failed:", err);
+      console.warn("Archive mapping interrupted:", err);
     } finally {
       setLoading(false);
       fetchingRef.current = false;
@@ -125,16 +125,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
        setProfiles(p => p.map(x => x.user_id === userId ? { ...x, tokens: (x.tokens || 0) + amount } : x));
        await import('@/services/sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
     } else {
-      alert("MATRIX ERROR: Token uplink rejected.");
+      alert("SYSTEM FAULT: Token allocation failed.");
     }
   };
 
   const handleCulling = async () => {
-    if (!window.confirm("PROTOCOL ULTIMATUM: INITIATE GLOBAL CULLING? This permanently purges inactive nodes from the matrix. This is absolute.")) return;
+    if (!window.confirm("DEFINITIVE EXCISION: REORDER ARCHIVE? This permanently relocates inactive identities. This action is intentional and refined.")) return;
     try {
         setLoading(true);
         const res = await AdminService.executeGlobalCulling();
-        window.alert(`Culling Complete\n\n${res.purged} stagnant packets purged.\nMatrix reflowed.`);
+        window.alert(`Excision Protocol Finished\n\n${res.purged} records archived.\nArchive integrity verified.`);
         loadData();
     } catch(err) {
         console.error(err);
@@ -143,23 +143,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
   };
 
   const handleBroadcast = async () => {
-    const title = window.prompt("Enter Broadcast Title (e.g. ULTIMATUM_NODE_01)");
+    const title = window.prompt("Enter Decree Title (e.g. Protocol Alignment)");
     if(!title) return;
-    const body = window.prompt("Enter message payload for ALL active resonance channels:");
+    const body = window.prompt("Enter the manifesto payload for all active resonators:");
     if(!body) return;
     
-    if(!window.confirm(`BROADCAST CONFIRMATION\n\nYou are about to transmit a high-priority payload to ALL active identities. Proceed?`)) return;
+    if(!window.confirm(`PROTOCOL CONFIRMATION\n\nYou are about to manifest this decree across the entire network. Proceed?`)) return;
     
     setLoading(true);
     const res = await AdminService.sendSovereignBroadcast(title, body);
-    window.alert(`Sovereign TX successful. Packet delivery: ${res.count} targets.`);
+    window.alert(`Manifestation successful. Network coverage: ${res.count} identities.`);
     setLoading(false);
   };
 
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     if (currentUser?.id === itemToDelete) {
-        alert("CRITICAL: Self-termination protocol rejected.");
+        alert("ARCHIVE REJECTION: Self-archiving sequence identified and blocked.");
         setItemToDelete(null);
         return;
     }
@@ -171,36 +171,38 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
         loadData();
       }
     } catch (err) {
-      alert("ERROR: Excision protocol failed.");
+      alert("ERROR: System failed to execute record excision.");
     } finally {
       setItemToDelete(null);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white font-mono relative overflow-x-hidden selection:bg-purple-500 selection:text-white">
-      {/* 🔮 Security Mesh Background */}
-      <SecurityMesh />
+    <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden selection:bg-slate-900 selection:text-white">
+      {/* ⚪ Ethereal Background */}
+      <LiquidOrb />
       
-      {/* ⚠️ Protocol Violation Modal */}
+      {/* 🌫️ Excision Confirmation */}
       {itemToDelete && createPortal(
-        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-[#0a0a0a] p-10 rounded-2xl max-w-md w-full border-2 border-red-500 shadow-[0_0_50px_rgba(239,68,68,0.2)]">
-            <ShieldAlert className="w-16 h-16 text-red-500 mb-6 mx-auto animate-pulse" />
-            <h2 className="text-3xl font-black text-white mb-4 text-center tracking-tighter uppercase italic">Excision_Confirm?</h2>
-            <p className="text-white/40 mb-10 text-xs text-center leading-relaxed tracking-widest uppercase">
-              You are about to permanently obliterate this node from the sanctuary matrix. This action is absolute.
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
+          <div className="bg-white p-16 rounded-[4rem] max-w-xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)]">
+            <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-10">
+               <ShieldAlert size={48} strokeWidth={1} />
+            </div>
+            <h2 className="text-4xl font-bold text-slate-900 mb-4 text-center tracking-tighter uppercase italic">Protocol Excision?</h2>
+            <p className="text-slate-400 mb-12 text-sm text-center font-medium leading-relaxed max-w-xs mx-auto uppercase tracking-widest">
+              Identifying record for permanent relocation. This structural change is definitive.
             </p>
             <div className="flex gap-4">
               <button 
                 onClick={() => setItemToDelete(null)} 
-                className="flex-1 py-4 bg-white/5 text-white/40 hover:bg-white/10 rounded-xl font-bold text-[10px] tracking-widest uppercase transition-all"
+                className="flex-1 py-5 px-8 rounded-2xl font-bold text-[10px] tracking-widest uppercase bg-slate-50 text-slate-400 hover:bg-slate-100 transition-all"
               >
-                Abort
+                Retreat
               </button>
               <button 
                 onClick={confirmDelete} 
-                className="flex-1 py-4 bg-red-600 text-white hover:bg-red-700 rounded-xl font-bold text-[10px] tracking-widest uppercase transition-all shadow-lg"
+                className="flex-1 py-5 px-8 rounded-2xl font-bold text-[10px] tracking-widest uppercase bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-xl"
               >
                 Execute
               </button>
@@ -222,61 +224,61 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
       </AnimatePresence>
 
       <div className="relative z-10 flex flex-col min-h-screen">
-        <TerminalHeader 
+        <GlassHeader 
            activeTab={dashboardTab} 
            onTabChange={(t) => setDashboardTab(t)}
            roleFilter={filters.role}
            onRoleFilterChange={(r) => setFilters(f => ({...f, role: r}))}
         />
 
-        <main className="flex-1 py-12 space-y-16 pb-64">
-           {/* Matrix Scroll Transition */}
+        <main className="flex-1 py-16 space-y-20 pb-64">
+           {/* Soft Blur Transition */}
            <AnimatePresence mode="wait">
              <motion.div 
                key={dashboardTab}
-               initial={{ opacity: 0, y: 30, filter: 'blur(10px)' }}
-               animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-               exit={{ opacity: 0, y: -30, filter: 'blur(10px)' }}
-               transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-               className="space-y-16"
+               initial={{ opacity: 0, scale: 0.99, filter: 'blur(10px)' }}
+               animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+               exit={{ opacity: 0, scale: 1.01, filter: 'blur(10px)' }}
+               transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+               className="space-y-20"
              >
-                <SecurityMatrix metrics={metrics} />
+                <EtherealStatus metrics={metrics} />
 
                 <div className="max-w-[1600px] mx-auto px-10 space-y-12">
-                  <div className="flex justify-between items-center bg-black/60 p-4 rounded-2xl border border-white/5">
-                     <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_10px_#06b6d4] animate-pulse" />
-                        <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/40">
-                           Identity_Node_Registry
+                  <div className="flex justify-between items-center bg-white/40 p-4 rounded-3xl border border-black/[0.03] shadow-sm backdrop-blur-md">
+                     <div className="flex items-center gap-4">
+                        <div className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
+                        <h2 className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 italic">
+                           Archive Index Retrieval
                         </h2>
                      </div>
-                     <div className="flex items-center gap-2">
-                        <button onClick={() => setViewMode('STREAM')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${viewMode === 'STREAM' ? 'bg-purple-600 text-white' : 'text-white/20 hover:text-white'}`}>
-                           <Layers size={10} className="inline mr-2" /> Stream
+                     <div className="flex items-center gap-2 p-1 bg-black/[0.02] rounded-2xl">
+                        <button onClick={() => setViewMode('STREAM')} className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'STREAM' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                           <Layers size={11} strokeWidth={2} /> Stream
                         </button>
-                        <button onClick={() => setViewMode('GAZE')} className={`px-5 py-2 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${viewMode === 'GAZE' ? 'bg-purple-600 text-white' : 'text-white/20 hover:text-white'}`}>
-                           <Eye size={10} className="inline mr-2" /> Gaze
+                        <button onClick={() => setViewMode('GAZE')} className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'GAZE' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
+                           <Eye size={11} strokeWidth={2} /> Gaze Mode
                         </button>
                      </div>
                   </div>
 
                   {dashboardTab === 'ROSTER' ? (
-                    <div className="space-y-8 animate-in fade-in duration-500">
-                      <div className="flex flex-col md:flex-row gap-4">
+                    <div className="space-y-10">
+                      <div className="flex flex-col md:flex-row gap-6">
                          <div className="relative flex-1 group">
-                            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-purple-500/40 group-focus-within:text-purple-500 transition-colors" />
+                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-slate-900 transition-colors" />
                             <Input 
-                              placeholder="FILTER_NODES_BY_SIGL_OR_UID..." 
-                              className="h-14 pl-16 bg-black border-white/10 rounded-xl focus:border-purple-500 focus:ring-1 focus:ring-purple-500/20 text-[10px] font-bold uppercase tracking-widest text-white placeholder:text-white/10" 
+                              placeholder="RETRIEVE RECORD BY IDENTITY PIN..." 
+                              className="h-16 pl-20 bg-white border-black/[0.03] rounded-[2rem] focus:border-slate-900 focus:ring-4 focus:ring-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-900 placeholder:text-slate-200 shadow-[0_10px_30px_-5px_rgba(0,0,0,0.02)]" 
                               value={searchQuery} 
                               onChange={e => setSearchQuery(e.target.value)} 
                             />
                          </div>
                          <button 
                             onClick={loadData}
-                            className="w-14 h-14 bg-black border border-white/10 rounded-xl flex items-center justify-center text-purple-500 hover:bg-purple-500/10 hover:border-purple-500/40 transition-all shadow-sm"
+                            className="w-16 h-16 bg-white border border-black/[0.03] rounded-[2rem] flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all shadow-sm"
                          >
-                            <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+                            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
                          </button>
                       </div>
 
@@ -290,54 +292,54 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                           onPaymentReject={handlePaymentReject}
                         />
                       ) : (
-                        <div className="bg-black/40 rounded-3xl border border-white/5 overflow-hidden shadow-2xl relative min-h-[500px]">
+                        <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
                            <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
-                                 <thead className="bg-[#0a0a0a] sticky top-0 z-20 border-b border-purple-500/20">
+                                 <thead className="bg-[#f8fafc] sticky top-0 z-20 border-b border-black/[0.02]">
                                     <tr>
-                                       <th className="px-10 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Node_ID</th>
-                                       <th className="px-10 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Tier</th>
-                                       <th className="px-10 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-center">TX_Status</th>
-                                       <th className="px-10 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-white/30">Aura_Count</th>
-                                       <th className="px-10 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-white/30 text-right">Access</th>
+                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Identity Structure</th>
+                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Class</th>
+                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 text-center">Protocol</th>
+                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Aura Link</th>
+                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 text-right">Access</th>
                                     </tr>
                                  </thead>
-                                 <tbody className="divide-y divide-white/5">
+                                 <tbody className="divide-y divide-black/[0.02]">
                                     {profiles.map((p) => (
-                                       <tr key={p.user_id} className="group hover:bg-purple-500/[0.03] transition-all duration-300 relative">
-                                          <td className="px-10 py-6 flex items-center gap-6">
-                                             <div className="w-14 h-14 rounded-xl overflow-hidden bg-black border border-white/10 relative group-hover:border-purple-500/40 transition-colors duration-500">
+                                       <tr key={p.user_id} className="group hover:bg-black/[0.01] transition-all duration-700 relative">
+                                          <td className="px-14 py-10 flex items-center gap-10">
+                                             <div className="w-16 h-16 rounded-[2.25rem] overflow-hidden bg-slate-50 border border-black/[0.02] relative shadow-sm group-hover:scale-105 transition-transform duration-1000">
                                                 <img 
                                                    src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`} 
-                                                   className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+                                                   className="w-full h-full object-cover group-hover:grayscale transition-all duration-700" 
                                                 />
-                                                {p.is_verified && <BadgeCheck size={14} className="absolute -bottom-1 -right-1 text-purple-500" fill="black" />}
+                                                {p.is_verified && <BadgeCheck size={18} className="absolute -bottom-1 -right-1 text-slate-900" fill="white" />}
                                              </div>
-                                             <div className="space-y-0.5">
-                                                <p className="font-black text-white italic text-lg uppercase tracking-tighter transition-colors group-hover:text-purple-400">{p.full_name}</p>
-                                                <p className="text-[8px] font-bold text-white/20 uppercase tracking-[0.3em]">{p.city || 'U_NODE'}</p>
+                                             <div className="space-y-1">
+                                                <p className="font-bold text-slate-900 text-xl tracking-tight leading-none italic">{p.full_name}</p>
+                                                <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.25em]">{p.city || 'UNDEFINED'}</p>
                                              </div>
                                           </td>
-                                          <td className="px-10 py-6">
-                                             <Badge variant="outline" className="text-[8px] font-black p-2 uppercase border-purple-500/20 text-purple-500 bg-purple-500/5">{p.role}</Badge>
+                                          <td className="px-14 py-10">
+                                             <Badge variant="outline" className="text-[8px] font-bold p-2 uppercase border-slate-200 text-slate-400 bg-white italic tracking-widest">{p.role}</Badge>
                                           </td>
-                                          <td className="px-10 py-6 text-center">
-                                             <div className={`w-1.5 h-1.5 rounded-full mx-auto ${p.payment_status === 'APPROVED' ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-white/10'}`} />
+                                          <td className="px-14 py-10 text-center">
+                                             <div className={`w-2 h-2 rounded-full mx-auto ${p.payment_status === 'APPROVED' ? 'bg-slate-900' : 'bg-slate-100'}`} />
                                           </td>
-                                          <td className="px-10 py-6">
+                                          <td className="px-14 py-10">
                                              <div className="flex items-center gap-4">
-                                                <span className="font-black text-2xl text-white tracking-widest tabular-nums">{(p.tokens || 0).toLocaleString()}</span>
+                                                <span className="font-bold text-3xl text-slate-900 tabular-nums leading-none tracking-tighter">{(p.tokens || 0).toLocaleString()}</span>
                                                 <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                                   <button onClick={() => handleUpdateTokens(p.user_id, 1000)} className="w-6 h-6 bg-purple-500/10 text-purple-500 rounded-lg flex items-center justify-center font-bold text-xs hover:bg-purple-500 hover:text-white transition-all">+</button>
-                                                   <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-6 h-6 bg-white/5 text-white/20 rounded-lg flex items-center justify-center font-bold text-xs hover:bg-white/10 hover:text-white transition-all">-</button>
+                                                   <button onClick={() => handleUpdateTokens(p.user_id, 1000)} className="w-7 h-7 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-xs hover:bg-slate-700 transition-all shadow-lg">+</button>
+                                                   <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-7 h-7 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center font-bold text-xs hover:bg-slate-100 transition-all">-</button>
                                                 </div>
                                              </div>
                                           </td>
-                                          <td className="px-10 py-6 text-right">
-                                             <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                                <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-3 hover:bg-cyan-500/10 text-cyan-500 rounded-xl transition-all border border-transparent hover:border-cyan-500/20"><MessageSquare size={16} /></button>
-                                                <button onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} className={`p-3 rounded-xl transition-all border border-transparent ${p.is_verified ? 'text-purple-500 bg-purple-500/10 border-purple-500/20' : 'text-white/20 hover:text-purple-500 hover:bg-purple-500/5'}`}><Shield size={16} /></button>
-                                                <button onClick={() => setItemToDelete(p.user_id)} className="p-3 hover:bg-red-600/10 text-red-500 rounded-xl transition-all border border-transparent hover:border-red-500/20"><Trash2 size={16} /></button>
+                                          <td className="px-14 py-10 text-right">
+                                             <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0">
+                                                <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-4 hover:bg-indigo-50 text-indigo-400 rounded-2xl transition-all"><MessageSquare size={18} strokeWidth={1.5} /></button>
+                                                <button onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} className={`p-4 rounded-2xl transition-all ${p.is_verified ? 'text-slate-900 bg-slate-50 shadow-inner' : 'text-slate-300 hover:text-slate-900'}`}><Shield size={18} strokeWidth={1.5} /></button>
+                                                <button onClick={() => setItemToDelete(p.user_id)} className="p-4 hover:bg-rose-50 text-rose-400 rounded-2xl transition-all"><Trash2 size={18} strokeWidth={1.5} /></button>
                                              </div>
                                           </td>
                                        </tr>
@@ -353,13 +355,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                   ) : dashboardTab === 'COMMUNICATIONS' ? (
                     <AdminCommunicationsHub />
                   ) : dashboardTab === 'BUY_AURA' ? (
-                    <div className="py-40 text-center space-y-8 animate-in fade-in zoom-in-95 duration-500">
-                       <div className="w-24 h-24 rounded-3xl bg-purple-500/5 border border-purple-500/20 flex items-center justify-center mx-auto text-purple-500 shadow-[0_0_50px_rgba(168,85,247,0.1)]">
+                    <div className="py-48 text-center space-y-12 animate-in fade-in zoom-in-95 duration-1000">
+                       <div className="w-24 h-24 rounded-[2rem] bg-white border border-black/[0.03] flex items-center justify-center mx-auto text-slate-300 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)]">
                           <CreditCard size={48} strokeWidth={1} />
                        </div>
-                       <h3 className="text-4xl font-black text-white uppercase italic tracking-tighter">REGISTRY_EXPANSION</h3>
-                       <p className="text-[10px] font-mono font-bold text-white/20 max-w-sm mx-auto leading-relaxed tracking-widest uppercase italic">DIRECT_SOVEREIGN_TRANSMISSION_REQUIRED. CONNECT_TO_OPERATOR_FOR_AURA_ALLOCATION.</p>
-                       <button className="px-10 py-4 bg-purple-600 border border-purple-400 text-white rounded-xl text-[10px] font-black uppercase tracking-[0.3em] hover:bg-black hover:text-purple-500 hover:border-purple-500/40 transition-all shadow-xl active:scale-95">REQUEST_UPLINK</button>
+                       <div className="space-y-4">
+                          <h3 className="text-5xl font-bold text-slate-900 uppercase italic tracking-tighter">Identity Uplink</h3>
+                          <p className="text-sm font-medium text-slate-400 max-w-sm mx-auto leading-relaxed uppercase tracking-[0.25em]">Direct physical request required for Aura expansion. Coordinate via sovereign link.</p>
+                       </div>
                     </div>
                   ) : (
                     <AdminBlogModeration />
@@ -369,7 +372,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
            </AnimatePresence>
         </main>
 
-        <AccessDock 
+        <MinimalDock 
            onLogout={handleLogout}
            onSync={loadData}
            onBroadcast={handleBroadcast}
@@ -377,14 +380,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
            loading={loading}
         />
       </div>
-
-      <style>{`
-        @keyframes scan {
-          from { transform: translateY(-100%); opacity: 0; }
-          50% { opacity: 1; }
-          to { transform: translateY(200%); opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 };

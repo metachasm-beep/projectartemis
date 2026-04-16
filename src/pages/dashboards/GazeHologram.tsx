@@ -50,9 +50,9 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
         >
           <planeGeometry args={[3.2, 4.5]} />
           <MeshDistortMaterial 
-            color={hovered ? "#3b0764" : "#0a0a0a"} 
-            speed={4} 
-            distort={0.2} 
+            color={hovered ? "#f1f5f9" : "#ffffff"} 
+            speed={2} 
+            distort={0.15} 
             radius={1} 
             transparent 
             opacity={0.9}
@@ -60,7 +60,7 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
           
           <lineSegments>
              <edgesGeometry args={[new THREE.PlaneGeometry(3.2, 4.5)]} />
-             <lineBasicMaterial color={hovered ? "#A855F7" : "#06B6D4"} opacity={0.5} transparent />
+             <lineBasicMaterial color={hovered ? "#cbd5e1" : "#e2e8f0"} opacity={0.3} transparent />
           </lineSegments>
 
           <Html
@@ -84,12 +84,12 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
                   </div>
 
                   <div className="space-y-1">
-                     <h3 className="text-3xl font-black text-white italic tracking-tighter uppercase">
+                     <h3 className="text-3xl font-bold text-slate-900 italic tracking-tighter">
                         {profile.full_name.split(' ')[0]} <br/>
-                        <span className="text-purple-500 opacity-80 uppercase text-[9px] font-mono tracking-[0.4em] font-black">{profile.role}</span>
+                        <span className="text-slate-400 opacity-80 uppercase text-[9px] tracking-[0.4em] font-bold">{profile.role}</span>
                      </h3>
-                     <div className="flex items-center gap-2 text-[9px] font-mono font-bold text-cyan-500/40 uppercase tracking-widest">
-                        <Globe size={10} strokeWidth={3} /> {profile.city || 'U_NODE'}
+                     <div className="flex items-center gap-2 text-[9px] font-bold text-slate-300 uppercase tracking-widest">
+                        <Globe size={10} strokeWidth={2} /> {profile.city || 'UNDEFINED'}
                      </div>
                   </div>
                </div>
