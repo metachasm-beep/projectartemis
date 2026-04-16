@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import LegalArchiveOverlay from "@/components/layout/LegalArchiveOverlay";
 import OnboardingOverlay from "@/components/layout/OnboardingOverlay";
 import GrainOverlay from "@/components/landing/GrainOverlay";
 import HeroFold from "@/components/landing/HeroFold";
-import HowItWorksFold from "@/components/landing/HowItWorksFold";
-import LandscapeProtocolFold from "@/components/landing/LandscapeProtocolFold";
-import SecurityFold from "@/components/landing/SecurityFold";
-import SelectionMatrixFold from "@/components/landing/SelectionMatrixFold";
-import Footer from "@/components/landing/Footer";
+
+// 🚀 Performance: Lazy load sections below the fold
+const HowItWorksFold = lazy(() => import("@/components/landing/HowItWorksFold"));
+const LandscapeProtocolFold = lazy(() => import("@/components/landing/LandscapeProtocolFold"));
+const SecurityFold = lazy(() => import("@/components/landing/SecurityFold"));
+const SelectionMatrixFold = lazy(() => import("@/components/landing/SelectionMatrixFold"));
+const Footer = lazy(() => import("@/components/landing/Footer"));
+
 import MatriarchLogo from "@/components/MatriarchLogo";
+
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useRef } from "react";
 
@@ -139,14 +143,16 @@ const LandingPage: React.FC = () => {
         
         {/* Subsequent Folds scroll over the Hero layer */}
         <div className="relative z-20">
-          <HowItWorksFold />
-          <LandscapeProtocolFold />
-          <SelectionMatrixFold />
-          <SecurityFold />
-          
-          <Footer />
+          <Suspense fallback={<div className="h-20 bg-mat-cream" />}>
+            <HowItWorksFold />
+            <LandscapeProtocolFold />
+            <SelectionMatrixFold />
+            <SecurityFold />
+            <Footer />
+          </Suspense>
         </div>
       </div>
+
 
       {/* Overlays */}
       <LegalArchiveOverlay />

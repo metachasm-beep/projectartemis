@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { AuthGate } from '@/components/auth/AuthGate';
-import { DashboardLayout } from '@/components/DashboardLayout';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 import { MigrationService } from "./services/MigrationService";
+
+// 🚀 GRANULAR CODE SPLITTING: Prevent Dashboard/Auth from leaking into Landing
+const AuthGate = React.lazy(() => import('@/components/auth/AuthGate').then(m => ({ default: m.AuthGate })));
+const DashboardLayout = React.lazy(() => import('@/components/DashboardLayout').then(m => ({ default: m.DashboardLayout })));
 
 // Lazy load Delhi dating routes
 const SouthDelhi = React.lazy(() => import('./routes/delhi-dating/SouthDelhi'));
@@ -14,6 +16,8 @@ const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
 const VerifyCallback = React.lazy(() => import('./pages/VerifyCallback'));
 const VerifyPage = React.lazy(() => import('./pages/VerifyPage'));
 const BlogApp = React.lazy(() => import('./blogs/App'));
+const RootSkeleton = () => <div className="min-h-screen bg-mat-cream" />;
+
 
 const App: React.FC = () => {
   const { loading } = useAuthContext();
@@ -36,7 +40,7 @@ const App: React.FC = () => {
   return (
     <HelmetProvider>
       {isBlogSubdomain ? (
-        <React.Suspense fallback={null}>
+        <React.Suspense fallback={<RootSkeleton />}>
           <BlogApp />
         </React.Suspense>
       ) : (
@@ -47,32 +51,27 @@ const App: React.FC = () => {
               description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
               schema={defaultSchema}
             />
-            <Routes>
-              <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
-              <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
-              <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
-              <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
-              <Route path="/verify/callback" element={
-                <React.Suspense fallback={null}>
-                  <VerifyCallback />
-                </React.Suspense>
-              } />
-              <Route path="/verify" element={
-                <React.Suspense fallback={null}>
-                  <AuthGate><VerifyPage /></AuthGate>
-                </React.Suspense>
-              } />
-              <Route path="*" element={
-                <AuthGate>
-                  <DashboardLayout />
-                </AuthGate>
-              } />
-            </Routes>
+            <React.Suspense fallback={<RootSkeleton />}>
+              <Routes>
+                <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
+                <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
+                <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+                <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
+                <Route path="/verify/callback" element={<VerifyCallback />} />
+                <Route path="/verify" element={<AuthGate><VerifyPage /></AuthGate>} />
+                <Route path="*" element={
+                  <AuthGate>
+                    <DashboardLayout />
+                  </AuthGate>
+                } />
+              </Routes>
+            </React.Suspense>
           </div>
         </BrowserRouter>
       )}
     </HelmetProvider>
   );
 };
+
 
 export default App;

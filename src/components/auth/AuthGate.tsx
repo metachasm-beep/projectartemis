@@ -1,7 +1,8 @@
-import React from 'react';
-import Landing from '@/pages/Landing';
-import { Onboarding } from '@/components/Onboarding';
+import React, { lazy, Suspense } from 'react';
+const Landing = lazy(() => import('@/pages/Landing'));
+const Onboarding = lazy(() => import('@/components/Onboarding').then(m => ({ default: m.Onboarding })));
 import { useAuth } from '@/hooks/useAuth';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
@@ -101,7 +102,9 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
     return (
       <AnimatePresence mode="wait">
         <motion.div key="landing" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full">
-          <Landing />
+          <Suspense fallback={null}>
+            <Landing />
+          </Suspense>
         </motion.div>
       </AnimatePresence>
     );
@@ -132,11 +135,13 @@ export const AuthGate: React.FC<AuthGateProps> = ({ children }) => {
     return (
       <AnimatePresence mode="wait">
         <motion.div key="onboarding" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full h-full">
-          <Onboarding 
-            userId={session.user.id} 
-            metadata={session.user.user_metadata} 
-            onComplete={handleOnboardingComplete} 
-          />
+          <Suspense fallback={null}>
+            <Onboarding 
+              userId={session.user.id} 
+              metadata={session.user.user_metadata} 
+              onComplete={handleOnboardingComplete} 
+            />
+          </Suspense>
         </motion.div>
       </AnimatePresence>
     );

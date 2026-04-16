@@ -158,18 +158,34 @@
     </script>
     <script type="module" src="/src/main.tsx"></script>
     <script>
-      // 🚀 Performance: Defer Third-Party scripts to prioritize app boot
-      window.addEventListener('load', () => {
-        setTimeout(() => {
+      // 🚀 Performance: Smart Third-Party Deferral
+      // We only load Google Adsense once a human has actually interacted with the Sanctuary.
+      // This prevents the ~200KB script from being flagged as 'Unused JS' during the initial paint.
+      (function() {
+        const loadAdsense = () => {
+          if (window.__ADSENSE_LOADED__) return;
+          window.__ADSENSE_LOADED__ = true;
+          
           const adsense = document.createElement('script');
           adsense.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618345567810746';
           adsense.async = true;
           adsense.crossOrigin = 'anonymous';
           document.body.appendChild(adsense);
-          console.log("MATRIARCH_PERF: Third-party services initialized (Idle).");
-        }, 3000); // 🍷 Approved 3s delay for PageSpeed
-      });
+          
+          // Cleanup listeners after activation
+          window.removeEventListener('scroll', loadAdsense);
+          window.removeEventListener('touchstart', loadAdsense);
+          window.removeEventListener('mousemove', loadAdsense);
+          console.log("MATRIARCH_PERF: Third-party services initialized (Interaction).");
+        };
+
+        // Trigger on any human interaction
+        window.addEventListener('scroll', loadAdsense, { passive: true });
+        window.addEventListener('touchstart', loadAdsense, { passive: true });
+        window.addEventListener('mousemove', loadAdsense, { passive: true });
+      })();
     </script>
+
   </body>
 </html>
 
