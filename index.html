@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="https://api.dicebear.com/7.x/avataaars/svg?seed=matriarch" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.google.com https://*.googlesyndication.com https://tpc.googlesyndication.com https://*.supabase.co https://*.cloudinary.com https://*.google-analytics.com; connect-src 'self' https: data: https://*.supabase.co https://*.google.com https://*.cloudinary.com wss://*.supabase.co https://*.didit.me https://*.faceapi.io; img-src 'self' data: blob: https://*.google.com https://*.gstatic.com https://*.cloudinary.com https://*.supabase.co https://images.unsplash.com https://api.dicebear.com https://images.pexels.com https://picsum.photos https://*.picsum.photos https://grainy-gradients.vercel.app; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://*.google.com https://*.didit.me; worker-src 'self' blob:; object-src 'none';">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.google.com https://*.googlesyndication.com https://tpc.googlesyndication.com https://*.supabase.co https://*.cloudinary.com https://*.google-analytics.com; connect-src 'self' https: data: https://*.supabase.co https://*.google.com https://*.cloudinary.com wss://*.supabase.co https://*.didit.me https://*.faceapi.io; img-src 'self' data: blob: https://*.google.com https://*.gstatic.com https://*.cloudinary.com https://*.supabase.co https://images.unsplash.com https://api.dicebear.com https://images.pexels.com https://picsum.photos https://*.picsum.photos https://grainy-gradients.vercel.app; style-src 'self' 'unsafe-inline'; font-src 'self' data:; frame-src 'self' https://*.google.com https://*.didit.me; worker-src 'self' blob:; object-src 'none';">
     <meta name="google-adsense-account" content="ca-pub-8618345567810746">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8618345567810746"
      crossorigin="anonymous"></script>
@@ -62,14 +62,22 @@
     <meta property="og:description" content="Curated verification-based dating for Delhi's professionals. High-fidelity connections in a secure, exclusive sanctuary." />
     <meta property="og:image" content="https://www.matriarchindia.com/og-image.jpg" />
 
-    <!-- Preconnect to fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Sora:wght@800&display=swap" rel="stylesheet">
+    <!-- 🚀 Performance: Preload Critical Assets -->
+    <link rel="preload" href="/fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/outfit-normal.woff2" as="font" type="font/woff2" crossorigin>
+
     <style>
+      :root {
+        --color-mat-noir: #1A1A1A;
+        --color-mat-bone: #FDFCFB;
+        --font-display: "Fraunces", serif;
+        --font-body: "Outfit", sans-serif;
+      }
       body {
-        background-color: #FFFFFF;
+        background-color: var(--color-mat-bone);
+        color: var(--color-mat-noir);
         margin: 0;
+        font-family: var(--font-body);
         overflow-x: hidden;
         overflow-y: auto;
       }
@@ -79,21 +87,39 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #FFFFFF;
+        background: var(--color-mat-bone);
         z-index: 9999;
         transition: opacity 0.8s ease-in-out;
       }
       .loader-crown {
         width: 80px;
         height: 80px;
-        color: #000000;
+        color: var(--color-mat-noir);
         animation: pulse 2s infinite ease-in-out;
       }
       @keyframes pulse {
         0%, 100% { transform: scale(1); opacity: 0.5; }
         50% { transform: scale(1.1); opacity: 1; }
       }
+      
+      /* 🚀 Critical Hero Structure (Prevents Layout Shift) */
+      .hero-title {
+        font-family: var(--font-display);
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out forwards;
+      }
+      @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
+    
+    <!-- 🚀 Async CSS Pattern for Vite Production Bundle -->
+    <script>
+      (function() {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = '/src/index.css'; // Vite dev
+        document.head.appendChild(link);
+      })();
+    </script>
   </head>
   <body>
     <div id="root-loader">
