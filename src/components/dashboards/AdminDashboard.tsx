@@ -209,7 +209,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
           </h1>
           
           <div className="flex flex-col items-center gap-4">
-            <p className="text-mat-slate/40 text-[11px] font-bold tracking-widest uppercase flex items-center gap-3">
+            <p className="text-mat-slate/70 text-[11px] font-bold tracking-widest uppercase flex items-center gap-3">
               <span className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_#22c55e] animate-pulse" />
               Monitoring active matrices and registry integrity.
             </p>
@@ -248,7 +248,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                       separator=","
                     />
                   </div>
-                  <div className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-slate/40">
+                  <div className="text-[10px] uppercase tracking-[0.3em] font-black text-mat-slate/70">
                     <ShinyText text={m.label} speed={3} />
                   </div>
                 </div>
@@ -261,7 +261,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
             <button 
               key={t}
               onClick={() => setDashboardTab(t as any)}
-              className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 relative ${dashboardTab === t ? 'border-mat-wine text-mat-wine' : 'border-transparent text-mat-wine/30 hover:text-mat-wine'}`}
+              className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 relative ${dashboardTab === t ? 'border-mat-wine text-mat-wine' : 'border-transparent text-mat-wine/70 hover:text-mat-wine'}`}
             >
                {t}
                {t === 'TITHE' && pendingClaimsCount > 0 ? (
@@ -344,16 +344,18 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
           </div>
 
           {/* 📋 Sovereign Master Roster */}
+          {/* 📋 Sovereign Master Roster */}
           <div className="mat-glass-deep rounded-[2.5rem] border border-mat-rose/10 overflow-hidden mx-4 md:mx-0 shadow-mat-premium theme-sovereign">
-            <div className="h-[65vh] w-full overflow-y-auto scrollbar-hide">
+            {/* Desktop Table: Hidden on small screens */}
+            <div className="hidden md:block h-[65vh] w-full overflow-y-auto scrollbar-hide">
                <table className="w-full text-left text-sm whitespace-nowrap border-separate border-spacing-0">
                   <thead className="bg-mat-wine/5 border-b border-mat-rose/10 sticky top-0 z-20 backdrop-blur-xl">
                      <tr>
-                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/40 font-black uppercase">Identity Node</th>
-                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/40 font-black uppercase">Affiliation</th>
-                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/40 font-black uppercase text-center">Status</th>
-                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/40 font-black uppercase">Aura Balance</th>
-                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/40 font-black uppercase text-right">Rituals</th>
+                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/60 font-black uppercase">Identity Node</th>
+                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/60 font-black uppercase">Affiliation</th>
+                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/60 font-black uppercase text-center">Status</th>
+                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/60 font-black uppercase">Aura Balance</th>
+                        <th className="px-8 py-5 text-[9px] tracking-[0.3em] text-mat-wine/60 font-black uppercase text-right">Rituals</th>
                      </tr>
                   </thead>
                   <tbody className="divide-y divide-mat-rose/5">
@@ -407,10 +409,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                       {p.full_name}
                                       {p.user_id.includes('dummy') ? <span className="text-[7px] border border-mat-rose/20 px-1 rounded uppercase font-black text-mat-rose/40">Dummy</span> : null}
                                    </div>
-                                   <div className="text-[9px] text-mat-slate/40 font-mono tracking-tighter uppercase flex items-center gap-1.5 truncate">
+                                   <div className="text-[9px] text-mat-slate/70 font-mono tracking-tighter uppercase flex items-center gap-1.5 truncate">
                                       <Globe size={8} className="shrink-0" /> {p.city || 'PARTS_UNKNOWN'}
-                                      <span className="opacity-20 shrink-0">|</span>
-                                      <span className="opacity-60 truncate">UID: {p.user_id.split('-').pop()}</span>
+                                      <span className="opacity-40 shrink-0">|</span>
+                                      <span className="opacity-80 truncate">UID: {p.user_id.split('-').pop()}</span>
                                    </div>
                                  </div>
                               </td>
@@ -422,7 +424,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                               <td className="px-8 py-5 text-center">
                                  <div className="flex justify-center flex-col items-center gap-1">
                                     <div className={`w-2 h-2 rounded-full shadow-[0_0_8px] ${p.payment_status === 'APPROVED' ? 'bg-green-500 shadow-green-500/50' : p.payment_status === 'PENDING' ? 'bg-mat-gold shadow-mat-gold/50 animate-pulse' : 'bg-mat-rose shadow-mat-rose/50'}`} />
-                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] opacity-30">{p.payment_status || 'NONE'}</span>
+                                    <span className="text-[7px] font-black uppercase tracking-[0.2em] opacity-60">{p.payment_status || 'NONE'}</span>
                                  </div>
                               </td>
                               <td className="px-8 py-5">
@@ -435,7 +437,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                                        <span className="font-mono font-black text-mat-wine text-xs tracking-tighter">
                                           {(p.tokens || 0).toLocaleString()}
                                        </span>
-                                       <span className="text-[7px] font-bold text-mat-gold uppercase tracking-widest opacity-60">Balance</span>
+                                       <span className="text-[7px] font-bold text-mat-gold uppercase tracking-widest opacity-80">Balance</span>
                                     </div>
                                     <button 
                                       onClick={() => handleUpdateTokens(p.user_id, 500)}
@@ -483,14 +485,85 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
                            </motion.tr>
                         ))}
                      </AnimatePresence>
-                     {!loading && profiles.length === 0 ? (
-                        <tr>
-                           <td colSpan={5} className="text-center py-24 text-mat-slate/30 uppercase tracking-[0.3em] font-black text-[10px]">Matrix Empty: No nodes found.</td>
-                        </tr>
-                     ) : null}
                   </tbody>
                </table>
             </div>
+
+            {/* Mobile Cards: Visible only on small screens */}
+            <div className="md:hidden h-[65vh] w-full overflow-y-auto p-4 space-y-4 scrollbar-hide">
+               <AnimatePresence mode="popLayout">
+                  {profiles.map((p, idx) => (
+                     <motion.div 
+                       key={p.user_id}
+                       initial={{ opacity: 0, y: 10 }}
+                       animate={{ opacity: 1, y: 0 }}
+                       transition={{ delay: idx * 0.05 }}
+                       className="bg-white/40 border border-mat-rose/10 rounded-3xl p-5 space-y-5"
+                     >
+                        <div className="flex items-center gap-4">
+                           <div className="w-14 h-14 rounded-2xl overflow-hidden bg-mat-cream border border-mat-rose/10 relative">
+                              <img 
+                                src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.full_name || p.user_id}`} 
+                                className="w-full h-full object-cover" 
+                              />
+                              {p.is_verified && (
+                                 <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-0.5 shadow-sm border border-mat-rose/10">
+                                    <BadgeCheck className="w-3.5 h-3.5 text-blue-500" fill="currentColor" stroke="white" />
+                                 </div>
+                              )}
+                           </div>
+                           <div className="flex-1 space-y-0.5">
+                              <h3 className="font-bold text-mat-wine italic">{p.full_name}</h3>
+                              <div className="flex items-center gap-2 text-[9px] text-mat-slate/70 uppercase font-black tracking-widest">
+                                 <Badge className="px-2 py-0.5 text-[7px] border-mat-rose/10">{p.role}</Badge>
+                                 <span>{p.city || 'UNKNOWN'}</span>
+                              </div>
+                           </div>
+                           <div className="text-right flex flex-col items-end gap-1">
+                              <div className={`w-2 h-2 rounded-full ${p.payment_status === 'APPROVED' ? 'bg-green-500' : 'bg-mat-rose'}`} />
+                              <span className="text-[7px] font-black uppercase tracking-widest opacity-60">{p.payment_status || 'NONE'}</span>
+                           </div>
+                        </div>
+
+                        <div className="flex items-center justify-between p-3 bg-mat-rose/[0.03] rounded-2xl border border-mat-rose/5">
+                           <div className="flex flex-col">
+                              <span className="text-[8px] font-black text-mat-wine/60 uppercase tracking-widest">Aura Balance</span>
+                              <span className="font-mono font-black text-mat-wine">{(p.tokens || 0).toLocaleString()}</span>
+                           </div>
+                           <div className="flex gap-2">
+                              <button onClick={() => handleUpdateTokens(p.user_id, -500)} className="w-8 h-8 rounded-lg bg-mat-wine/5 flex items-center justify-center text-mat-wine font-bold">-</button>
+                              <button onClick={() => handleUpdateTokens(p.user_id, 500)} className="w-8 h-8 rounded-lg bg-mat-gold/10 flex items-center justify-center text-mat-gold font-bold">+</button>
+                           </div>
+                        </div>
+
+                        <div className="flex items-center gap-2 pt-1">
+                           <button 
+                             onClick={() => setMessageTarget({ id: p.user_id, name: p.full_name })}
+                             className="flex-1 h-11 bg-mat-wine text-white rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center justify-center gap-2 shadow-lg shadow-mat-wine/10"
+                           >
+                              <MessageSquare size={14} /> Message
+                           </button>
+                           <button 
+                             onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)}
+                             className={`w-11 h-11 rounded-xl flex items-center justify-center border transition-all ${p.is_verified ? 'border-blue-500/20 bg-blue-500/5 text-blue-500' : 'border-mat-rose/10 bg-white/40 text-mat-slate/40'}`}
+                           >
+                              <Shield size={16} />
+                           </button>
+                           <button 
+                             onClick={() => setItemToDelete(p.user_id)}
+                             className="w-11 h-11 rounded-xl border border-red-500/10 bg-red-500/5 text-red-500 flex items-center justify-center"
+                           >
+                              <Trash2 size={16} />
+                           </button>
+                        </div>
+                     </motion.div>
+                  ))}
+               </AnimatePresence>
+            </div>
+
+            {!loading && profiles.length === 0 ? (
+               <div className="text-center py-24 text-mat-slate/70 uppercase tracking-[0.3em] font-black text-[10px]">Matrix Empty: No nodes found.</div>
+            ) : null}
           </div>
         </>
       ) : dashboardTab === 'TITHE' ? (

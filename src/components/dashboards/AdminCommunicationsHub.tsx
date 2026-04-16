@@ -34,7 +34,7 @@ export const AdminCommunicationsHub: React.FC = () => {
       <div className="space-y-6">
         <button 
           onClick={() => setSelectedMatch(null)}
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-mat-wine/40 hover:text-mat-wine transition-colors"
+          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-mat-wine/70 hover:text-mat-wine transition-colors"
         >
           <ArrowRight size={14} className="rotate-180" /> Back to Directory
         </button>
@@ -71,7 +71,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                 encryptedClassName="text-mat-rose/30"
               />
             </h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40 flex items-center gap-2">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/70 flex items-center gap-2">
                <Shield size={10} className="text-mat-rose" /> Administrative Monitoring Conduit
             </p>
          </div>
@@ -152,21 +152,21 @@ export const AdminCommunicationsHub: React.FC = () => {
                            <h4 className="text-lg font-bold text-mat-wine italic">
                              {c.woman_name.split(' ')[0]} <span className="text-mat-rose/30 mx-1">&</span> {c.man_name.split(' ')[0]}
                            </h4>
-                           <Badge variant="outline" className="text-[7px] font-black uppercase tracking-tighter px-2 border-mat-rose/20 text-mat-rose">
+                           <Badge variant="outline" className="text-[7px] font-black uppercase tracking-tighter px-2 border-mat-rose/20 text-mat-rose/80">
                               {c.current_comm_mode.replace('_', ' ')}
                            </Badge>
                         </div>
-                        <p className="text-[11px] text-mat-slate/50 line-clamp-1 italic">
+                         <p className="text-[11px] text-mat-slate/70 line-clamp-1 italic font-medium">
                            "{c.last_message || 'Resonance initiated...'}"
-                        </p>
+                         </p>
                      </div>
 
                      <div className="text-right space-y-2">
-                        <div className="flex items-center gap-1 justify-end text-[8px] font-bold text-mat-slate/30 uppercase tracking-widest">
+                         <div className="flex items-center gap-1 justify-end text-[8px] font-bold text-mat-slate/60 uppercase tracking-widest">
                            <Clock size={10} />
                            {c.last_message_at ? new Date(c.last_message_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-mat-wine text-white rounded-full text-[9px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0 shadow-lg">
+                        <button className="flex items-center gap-2 px-4 py-2 bg-mat-wine text-white rounded-full text-[9px] font-black uppercase tracking-widest md:opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0 shadow-lg">
                            <Eye size={12} /> Enter Gaze
                         </button>
                      </div>

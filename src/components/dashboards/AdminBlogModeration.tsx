@@ -38,7 +38,7 @@ export const AdminBlogModeration: React.FC = () => {
         <div className="flex justify-between items-center">
           <button 
             onClick={() => setViewMode('GRID')}
-            className="text-[10px] font-black uppercase tracking-widest text-mat-wine/40 hover:text-mat-wine transition-colors flex items-center gap-2"
+            className="text-[10px] font-black uppercase tracking-widest text-mat-wine/70 hover:text-mat-wine transition-colors flex items-center gap-2"
           >
             ← Back to Queue
           </button>
@@ -69,7 +69,7 @@ export const AdminBlogModeration: React.FC = () => {
                  </div>
                  <div>
                     <p className="text-xs font-bold text-mat-wine uppercase tracking-tight">{selectedSubmission.author_name}</p>
-                    <p className="text-[10px] text-mat-slate/40 uppercase tracking-widest">Submitted on {new Date(selectedSubmission.created_at).toLocaleDateString()}</p>
+                    <p className="text-[10px] text-mat-slate/70 uppercase tracking-widest">Submitted on {new Date(selectedSubmission.created_at).toLocaleDateString()}</p>
                  </div>
               </div>
             </header>
@@ -94,15 +94,15 @@ export const AdminBlogModeration: React.FC = () => {
                 <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-wine/40">Moderation Metrics</h4>
                 <div className="space-y-4">
                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-mat-slate/60">Character Count</span>
+                      <span className="text-mat-slate/80">Character Count</span>
                       <span className="font-bold text-mat-wine">{selectedSubmission.content.length}</span>
                    </div>
                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-mat-slate/60">Estimated Read Time</span>
+                      <span className="text-mat-slate/80">Estimated Read Time</span>
                       <span className="font-bold text-mat-wine">{Math.ceil(selectedSubmission.content.length / 1000)} min</span>
                    </div>
                    <div className="flex justify-between items-center text-xs">
-                      <span className="text-mat-slate/60">Image Hosting</span>
+                      <span className="text-mat-slate/80">Image Hosting</span>
                       <span className="font-bold text-mat-rose uppercase text-[8px] tracking-widest">{selectedSubmission.image_url.includes('cloudinary') ? 'CloudinaryVault' : 'External'}</span>
                    </div>
                 </div>
@@ -110,7 +110,7 @@ export const AdminBlogModeration: React.FC = () => {
 
              <div className="bg-mat-cream/40 p-8 rounded-[2.5rem] border border-dashed border-mat-rose/20 space-y-4 text-center">
                 <Layers className="mx-auto text-mat-rose/30" size={32} strokeWidth={1} />
-                <p className="text-[10px] leading-relaxed text-mat-slate/60 font-bold uppercase tracking-widest">
+                <p className="text-[10px] leading-relaxed text-mat-slate/80 font-bold uppercase tracking-widest">
                   Upon approval, this manifesto will be interleaved into the public frequency of the Journal sanctuary.
                 </p>
              </div>
@@ -125,7 +125,7 @@ export const AdminBlogModeration: React.FC = () => {
       <div className="flex justify-between items-end">
         <div className="space-y-2">
           <h2 className="text-3xl font-light text-mat-wine italic">Manifesto <span className="text-mat-rose/50">Curation</span></h2>
-          <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40 flex items-center gap-2">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/70 flex items-center gap-2">
             <Filter size={10} /> Active Protocol Review Queue
           </p>
         </div>
@@ -167,8 +167,8 @@ export const AdminBlogModeration: React.FC = () => {
                 
                 <div className="flex-1 space-y-4">
                   <div className="flex items-center justify-between">
-                     <Badge variant="outline" className="text-[7px] tracking-widest uppercase border-mat-rose/10 text-mat-slate/40">Pending</Badge>
-                     <div className="flex items-center gap-1 text-[8px] font-bold text-mat-slate/30 uppercase tracking-widest">
+                     <Badge variant="outline" className="text-[7px] tracking-widest uppercase border-mat-rose/10 text-mat-slate/70">Pending</Badge>
+                     <div className="flex items-center gap-1 text-[8px] font-bold text-mat-slate/60 uppercase tracking-widest">
                         <Clock size={10} />
                         {new Date(s.created_at).toLocaleDateString()}
                      </div>
@@ -183,7 +183,7 @@ export const AdminBlogModeration: React.FC = () => {
                       </div>
                       <span className="text-[10px] font-bold text-mat-wine/60 uppercase tracking-tight">{s.author_name.split(' ')[0]}</span>
                    </div>
-                   <button className="p-2 bg-mat-wine text-white rounded-full opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 shadow-lg">
+                   <button className="p-2.5 bg-mat-wine text-white rounded-full md:opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0 shadow-lg">
                       <Eye size={12} />
                    </button>
                 </div>

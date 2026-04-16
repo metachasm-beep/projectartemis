@@ -61,7 +61,7 @@ export const AdminAuraPanel: React.FC = () => {
       <div className="flex justify-between items-center px-4 md:px-0">
          <div className="space-y-1">
             <h2 className="text-2xl font-light text-mat-wine">Sovereign <span className="italic text-mat-rose/50">Tithe Ledger</span></h2>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-slate/40 flex items-center gap-2">
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-mat-slate/70 flex items-center gap-2">
                <CreditCard size={10} className="text-mat-rose" /> Verification of Incoming Identity Offsets
             </p>
          </div>
@@ -107,10 +107,10 @@ export const AdminAuraPanel: React.FC = () => {
                        <div className="space-y-1">
                           <h3 className="font-bold text-mat-wine italic tracking-tight">{claim.full_name}</h3>
                           <div className="flex flex-col gap-0.5">
-                             <span className="text-[9px] text-mat-slate/40 flex items-center gap-1.5 uppercase font-black tracking-widest">
+                             <span className="text-[9px] text-mat-slate/70 flex items-center gap-1.5 uppercase font-black tracking-widest">
                                 <MapPin size={8} /> {claim.user_city || 'PARTS_UNKNOWN'}
                              </span>
-                             <span className="text-[7px] text-mat-wine/40 font-mono ring-1 ring-mat-wine/10 px-1.5 py-0.5 rounded self-start">
+                             <span className="text-[7px] text-mat-wine/70 font-mono ring-1 ring-mat-wine/20 px-1.5 py-0.5 rounded self-start">
                                 ID: {claim.user_id.split('-').pop()}
                              </span>
                           </div>
@@ -133,16 +133,16 @@ export const AdminAuraPanel: React.FC = () => {
                        </div>
                        
                        <div className="flex items-center gap-6 pt-2">
-                          <div className="flex items-center gap-2 text-mat-slate/40">
-                             <Clock size={12} />
-                             <span className="text-[10px] font-black uppercase tracking-widest">
-                                {new Date(claim.created_at).toLocaleDateString()} at {new Date(claim.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                             </span>
-                          </div>
-                          <div className="flex items-center gap-2 text-mat-wine/40">
-                             <Smartphone size={12} />
-                             <span className="text-[10px] font-black uppercase tracking-widest">Unified Payments Interface</span>
-                          </div>
+                           <div className="flex items-center gap-2 text-mat-slate/70">
+                              <Clock size={12} />
+                              <span className="text-[10px] font-black uppercase tracking-widest">
+                                 {new Date(claim.created_at).toLocaleDateString()} at {new Date(claim.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                              </span>
+                           </div>
+                           <div className="flex items-center gap-2 text-mat-wine/70">
+                              <Smartphone size={12} />
+                              <span className="text-[10px] font-black uppercase tracking-widest">Unified Payments Interface</span>
+                           </div>
                        </div>
                     </div>
 
@@ -176,7 +176,7 @@ export const AdminAuraPanel: React.FC = () => {
                className="py-24 flex flex-col items-center justify-center border-2 border-dashed border-mat-rose/10 rounded-[2.5rem] bg-mat-rose/[0.01]"
             >
                <CreditCard size={48} className="text-mat-rose/20 mb-4" />
-               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/30">Registry Clear: No Pending Tithes.</p>
+               <p className="text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/70">Registry Clear: No Pending Tithes.</p>
             </motion.div>
           )}
         </AnimatePresence>
