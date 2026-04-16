@@ -2,6 +2,7 @@ import { StrictMode, Component, type ReactNode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
+import { registerSW } from 'virtual:pwa-register'
 
 class ErrorBoundary extends Component<{children: ReactNode}, {hasError: boolean}> {
   constructor(props: {children: ReactNode}) {
@@ -33,15 +34,17 @@ if (diagnostic) {
   diagnostic.innerHTML += '<div>> [SYSTEM] Bundle v1.0.2 execution confirmed.</div>';
 }
 
-// Emergency Protocol Cache Purge (Redundant but safe)
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.getRegistrations().then(registrations => {
-    for (let registration of registrations) {
-      registration.unregister();
-      if (diagnostic) diagnostic.innerHTML += '<div>> [SW] Legacy ServiceWorker purged.</div>';
+// 📡 SOVEREIGN_PUSH: Register PWA Handshake
+registerSW({
+  onNeedRefresh() {
+    if (confirm('A newer version of the Sanctuary Protocol is available. Update now?')) {
+      window.location.reload();
     }
-  });
-}
+  },
+  onOfflineReady() {
+    console.log('🛡️ SANCTUARY: Offline reconnaissance protocol ready.');
+  },
+});
 
 import { AuthProvider } from './contexts/AuthContext.tsx'
 

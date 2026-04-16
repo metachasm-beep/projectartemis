@@ -61,11 +61,14 @@ export const DashboardLayout: React.FC = () => {
         isImmersive ? "bg-mat-obsidian pt-0" : "bg-mat-cream pt-20 md:pt-32 pb-16 mat-safe-pt"
       )}
     >
-      <MatriarchToolbar 
-        activeTab={activeTab as any} 
-        setActiveTab={setActiveTab as any} 
-        onLogout={signOut} 
-      />
+      {activeTab !== 'admin_panel' && (
+        <MatriarchToolbar 
+          activeTab={activeTab as any} 
+          setActiveTab={setActiveTab as any} 
+          onLogout={signOut} 
+          isImmersive={isImmersive}
+        />
+      )}
       
       <main className={cn(
         "mx-auto transition-all duration-1000",

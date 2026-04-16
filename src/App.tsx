@@ -5,6 +5,7 @@ import { useAuthContext } from '@/contexts/AuthContext';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 import { MigrationService } from "./services/MigrationService";
 import { AuthGate } from '@/components/auth/AuthGate';
+import { PWAInstallFAB } from '@/components/ui/PWAInstallFAB';
 
 // 🚀 THE PORTAL ENTRY: Eagerly imported to collapse the critical request chain
 const DashboardLayout = React.lazy(() => import('@/components/DashboardLayout').then(m => ({ default: m.DashboardLayout })));
@@ -60,6 +61,7 @@ const App: React.FC = () => {
                 } />
               </Routes>
             </React.Suspense>
+            <PWAInstallFAB variant="rose" />
           </div>
         </BrowserRouter>
       )}

@@ -8,6 +8,7 @@ import SplashCursor from './components/bits/SplashCursor';
 import ManifestoEditor from './components/ManifestoEditor';
 import { PenTool, CheckCircle, ArrowDown } from 'lucide-react';
 import { ManifestoService } from '@/services/manifestoService';
+import { PWAInstallFAB } from '@/components/ui/PWAInstallFAB';
 
 // ---------- Nav ---------------------------------------------------------------
 
@@ -303,6 +304,7 @@ const App: React.FC = () => {
       </main>
 
       {!selectedPost && <Footer onManifestoClick={() => setIsEditorOpen(true)} />}
+      <PWAInstallFAB variant="slate" />
     </div>
   );
 };

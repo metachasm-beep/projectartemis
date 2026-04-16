@@ -49,25 +49,30 @@ export const AdminService = {
       return metricsCache.data;
     }
 
+    const safeCount = async (sql: string, args: any[] = []) => {
+      try {
+        const res = await turso.execute({ sql, args });
+        const row: any = res.rows[0];
+        if (!row) return 0;
+        return Number(row.count ?? row['count(*)'] ?? Object.values(row)[0] ?? 0);
+      } catch (err) {
+        console.warn(`Admin Metrics Isolation: Query failed [${sql.slice(0, 30)}...]`, err);
+        return 0;
+      }
+    };
+
     try {
-      const [menQ, womenQ, verifiedQ, topicsQ] = await Promise.all([
-        turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
-        turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
-        turso.execute("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
-        turso.execute("SELECT COUNT(*) as count FROM forum_topics")
+      const [totalMen, totalWomen, verifiedProfiles, totalForumTopics] = await Promise.all([
+        safeCount("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
+        safeCount("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
+        safeCount("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
+        safeCount("SELECT COUNT(*) as count FROM forum_topics")
       ]);
 
-      const data = {
-        totalMen: Number(menQ.rows[0]?.count || 0),
-        totalWomen: Number(womenQ.rows[0]?.count || 0),
-        verifiedProfiles: Number(verifiedQ.rows[0]?.count || 0),
-        totalForumTopics: Number(topicsQ.rows[0]?.count || 0)
-      };
-
+      const data = { totalMen, totalWomen, verifiedProfiles, totalForumTopics };
       metricsCache = { data, timestamp: now };
       return data;
     } catch (err) {
-      console.error("ADMIN_METRICS_ERROR:", err);
       return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 };
     }
   },

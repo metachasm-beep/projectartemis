@@ -72,10 +72,10 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
               <button
                 key={item.id}
                 onClick={() => onTabChange(item.id)}
-                className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl text-[10px] font-bold uppercase tracking-widest transition-all whitespace-nowrap ${
+                className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   activeTab === item.id 
                     ? 'bg-slate-900 text-white shadow-xl' 
-                    : 'text-slate-500 hover:bg-black/[0.03] hover:text-slate-900'
+                    : 'text-slate-900 hover:bg-black/[0.03] hover:text-slate-800'
                 }`}
               >
                 <item.icon size={14} strokeWidth={2} />
@@ -93,7 +93,7 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
                   className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
                     roleFilter === role 
                       ? 'bg-white text-slate-900 shadow-md' 
-                      : 'text-slate-400 hover:text-slate-600'
+                      : 'text-slate-900 hover:text-slate-700'
                   }`}
                 >
                   {role}

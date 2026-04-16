@@ -147,7 +147,8 @@ export const MigrationService = {
       claims: 'matriarch_migration_claims_meta_v1',
       system: 'matriarch_migration_system_v1',
       streak: 'matriarch_migration_streak_v2',
-      dossier: 'matriarch_migration_dossier_v1'
+      dossier: 'matriarch_migration_dossier_v1',
+      push: 'matriarch_migration_push_v1'
     };
 
     const pendingQueries: { sql: string }[] = [];
@@ -200,6 +201,17 @@ export const MigrationService = {
       pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN full_name TEXT" });
       pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN age INTEGER" });
       pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN city TEXT" });
+    }
+    // 7. Sovereign Push Registry (v7)
+    if (!localStorage.getItem(flags.push)) {
+      pendingQueries.push({ sql: `
+        CREATE TABLE IF NOT EXISTS push_subscriptions (
+          user_id TEXT PRIMARY KEY,
+          subscription_json TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `});
     }
 
     if (pendingQueries.length === 0) return;

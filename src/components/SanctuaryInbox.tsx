@@ -7,10 +7,13 @@ import {
   ShieldCheck, 
   Clock, 
   ChevronRight,
-  Zap
+  Zap,
+  Bell,
+  BellOff
 } from 'lucide-react';
 import { turso } from '@/lib/turso';
 import { MessagingService, type MessagingMatch } from '@/lib/messaging';
+import { PushService } from '@/services/PushService';
 import { Badge } from './ui/badge';
 import DecryptedText from './ui/cyber/DecryptedText';
 
@@ -23,6 +26,17 @@ interface InboxProps {
 export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, onSelectMatch }) => {
   const [matches, setMatches] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pushPermission, setPushPermission] = useState<NotificationPermission>(
+    'Notification' in window ? Notification.permission : 'denied'
+  );
+
+  const handleEnablePush = async () => {
+    const status = await PushService.requestPermission();
+    setPushPermission(status);
+    if (status === 'granted') {
+      await PushService.subscribeUser(currentUserId);
+    }
+  };
 
   useEffect(() => {
     const fetchMatches = async () => {
@@ -112,6 +126,30 @@ export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, 
             <ShieldCheck size={10} className="text-mat-rose" /> Quantum Encrypted Sanctuary Links
          </p>
       </div>
+
+      {pushPermission !== 'granted' && (
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-8 mat-glass border-mat-gold/20 bg-mat-gold/5 rounded-[2.5rem] flex flex-col md:flex-row items-center justify-between gap-6"
+        >
+          <div className="flex items-center gap-6 text-center md:text-left">
+            <div className="p-4 rounded-2xl bg-mat-gold/10 text-mat-gold">
+              <Bell size={24} />
+            </div>
+            <div>
+              <h3 className="text-lg font-bold text-mat-wine">Enable Sovereign Alerts</h3>
+              <p className="text-[9px] font-bold uppercase tracking-widest text-mat-slate/60 mt-1">Receive real-time resonance when a connection initiates.</p>
+            </div>
+          </div>
+          <button 
+            onClick={handleEnablePush}
+            className="px-8 py-3 bg-mat-wine text-white rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg hover:scale-105 active:scale-95 transition-all"
+          >
+            Establish Conduit
+          </button>
+        </motion.div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         <AnimatePresence>
