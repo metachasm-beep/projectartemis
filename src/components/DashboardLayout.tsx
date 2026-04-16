@@ -16,7 +16,7 @@ const MagicChat = lazy(() => import('@/components/MagicChat').then(m => ({ defau
 const ProfileDashboard = lazy(() => import('@/components/ProfileDashboard').then(m => ({ default: m.ProfileDashboard })));
 const SovereignBrowsing = lazy(() => import('@/components/SovereignBrowsing').then(m => ({ default: m.SovereignBrowsing })));
 const PaymentScreen = lazy(() => import('@/components/payments/PaymentScreen').then(m => ({ default: m.PaymentScreen })));
-const AdminDashboard = lazy(() => import('@/components/dashboards/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
+const AdminDashboard = lazy(() => import('@/pages/dashboards/AdminDashboard').then(m => ({ default: m.AdminDashboard })));
 const PictureManager = lazy(() => import('@/components/dashboards/PictureManager'));
 const AadhaarVerification = lazy(() => import('@/components/AadhaarVerification').then(m => ({ default: m.AadhaarVerification })));
 const Leaderboard = lazy(() => import('@/components/discovery/Leaderboard').then(m => ({ default: m.Leaderboard })));
