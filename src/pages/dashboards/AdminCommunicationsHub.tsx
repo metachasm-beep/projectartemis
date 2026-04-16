@@ -4,7 +4,7 @@ import { MessageSquare, Shield, Users, ArrowRight, Eye, RefreshCw, Clock } from 
 import { AdminService } from '@/services/admin';
 import { MagicChat } from '@/components/MagicChat';
 import { Badge } from '@/components/ui/badge';
-import DecryptedText from '../ui/cyber/DecryptedText';
+import DecryptedText from '@/components/ui/cyber/DecryptedText';
 
 export const AdminCommunicationsHub: React.FC = () => {
   const [comms, setComms] = useState<any[]>([]);

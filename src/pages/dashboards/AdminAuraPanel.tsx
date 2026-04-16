@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AdminService } from '@/services/admin';
 import { Check, X, CreditCard, Clock, MapPin, User, Search, RefreshCw, Smartphone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import SpotlightCard from '../ui/cyber/SpotlightCard';
+import SpotlightCard from '@/components/ui/cyber/SpotlightCard';
 
 export const AdminAuraPanel: React.FC = () => {
   const [claims, setClaims] = useState<any[]>([]);
