@@ -5,6 +5,8 @@ import remarkGfm from 'remark-gfm';
 import type { Post } from '../data/posts';
 import { DUMMY_ASPIRANTS } from '../../data/dummyProfiles';
 import PerfectTextWrapper from './PerfectTextWrapper';
+import { ArticleSEO } from '@/components/seo/ArticleSEO';
+import { OptimizedImage } from '@/components/common/OptimizedImage';
 
 interface BlogPostViewProps {
   post: Post;
@@ -41,7 +43,9 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
   }, [post.markdownUrl, post.content]);
 
   return (
-    <motion.div
+    <>
+      <ArticleSEO post={post} author={author} />
+      <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -79,10 +83,11 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
           </h1>
 
           <div className="flex items-center gap-4 p-4 rounded-2xl bg-[#3C2F2F]/5 border border-[#3C2F2F]/5 max-w-fit">
-            <img
-              src={author?.img}
-              alt={author?.name}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            <OptimizedImage
+              src={author?.img || ''}
+              alt={author?.name || 'Matriarch Editorial'}
+              width={48}
+              height={48}
               className="w-12 h-12 rounded-full object-cover border border-[#3C2F2F]/10"
             />
             <div>
@@ -95,10 +100,12 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
         {/* Hero Image */}
         {post.image && (
           <div className="relative aspect-video md:aspect-[21/9] rounded-2xl md:rounded-3xl overflow-hidden mb-12 md:mb-16 border border-[#3C2F2F]/10">
-            <img
+            <OptimizedImage
               src={post.image}
               alt={post.title}
-              onError={(e) => { (e.target as HTMLImageElement).parentElement!.style.display = 'none'; }}
+              width={1200}
+              height={630}
+              priority={true}
               className="w-full h-full object-cover grayscale brightness-105 contrast-[1.1] transition-all duration-1000 group-hover:scale-110"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-[#FFFDF9]/40 via-transparent to-transparent opacity-60" />
@@ -132,7 +139,8 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ post, onBack }) => {
         </footer>
       </div>
     </motion.div>
-  );
+  </>
+);
 };
 
 export default BlogPostView;

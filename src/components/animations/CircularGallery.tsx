@@ -795,8 +795,8 @@ class App {
     this.boundOnTouchMove = this.onTouchMove.bind(this);
     this.boundOnTouchUp = this.onTouchUp.bind(this);
     
-    // Purity Fix: Attach listeners to container instead of window to prevent global scroll hijacking
-    this.container.addEventListener('resize', this.boundOnResize);
+    // Optimized Listener: Attach to window for proper resize detection
+    window.addEventListener('resize', this.boundOnResize);
     this.container.addEventListener('mousewheel', this.boundOnWheel, { passive: true });
     this.container.addEventListener('wheel', this.boundOnWheel, { passive: true });
     this.container.addEventListener('mousedown', this.boundOnTouchDown);
@@ -809,7 +809,7 @@ class App {
 
   destroy() {
     window.cancelAnimationFrame(this.raf);
-    this.container.removeEventListener('resize', this.boundOnResize);
+    window.removeEventListener('resize', this.boundOnResize);
     this.container.removeEventListener('mousewheel', this.boundOnWheel);
     this.container.removeEventListener('wheel', this.boundOnWheel);
     this.container.removeEventListener('mousedown', this.boundOnTouchDown);

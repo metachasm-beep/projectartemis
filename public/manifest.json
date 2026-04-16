@@ -1,0 +1,39 @@
+{
+  "name": "Matriarch: Elite Selection Protocol",
+  "short_name": "Matriarch",
+  "description": "Premium verification-based dating for professionals in Delhi, Mumbai, and Bangalore. The most exclusive social sanctuary in India.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0B",
+  "theme_color": "#0A0A0B",
+  "categories": ["lifestyle", "social", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "The Journal",
+      "url": "/journal",
+      "description": "Read the latest Selection Protocols and Aspirant Manifestos"
+    },
+    {
+      "name": "Sanctuary Discovery",
+      "url": "/discovery",
+      "description": "Navigate active Sanctuary identities"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "https://www.matriarchindia.com/og-image.jpg",
+      "sizes": "1200x630",
+      "type": "image/jpeg",
+      "platform": "wide",
+      "label": "Sanctuary Discovery Interface"
+    }
+  ]
+}

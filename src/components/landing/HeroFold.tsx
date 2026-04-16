@@ -5,15 +5,17 @@ import StarBorder from "@/components/bits/StarBorder";
 import { ArrowDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 
+const CLOUDINARY_PREFIX = "https://res.cloudinary.com/dsmbhnjg5/image/fetch/f_auto,q_auto,w_1200,c_limit/https://www.matriarchindia.com";
+
 const IMAGES = [
-  "/assets/slideshow/h_1.png",
-  "/assets/slideshow/h_2.png",
-  "/assets/slideshow/h_3.png",
-  "/assets/slideshow/h_4.png",
-  "/assets/slideshow/h_5.jpeg",
-  "/assets/slideshow/h_6.jpeg",
-  "/assets/slideshow/h_7.jpeg",
-  "/assets/slideshow/h_8.jpeg"
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_1.png`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_2.png`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_3.png`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_4.png`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_5.jpeg`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_6.jpeg`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_7.jpeg`,
+  `${CLOUDINARY_PREFIX}/assets/slideshow/h_8.jpeg`
 ];
 
 const HeroFold: React.FC = () => {
@@ -29,6 +31,7 @@ const HeroFold: React.FC = () => {
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   
   // Logo transforms: stays fixed, but dims slightly to feel integrated
+  // @ts-ignore
   const logoOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
 
   const [imageIndex, setImageIndex] = useState(0);
@@ -57,9 +60,17 @@ const HeroFold: React.FC = () => {
             animate={{ opacity: 0.6 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 2 }}
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: `url(${IMAGES[imageIndex]})` }}
-          />
+            className="absolute inset-0"
+          >
+            <img 
+              src={IMAGES[imageIndex]} 
+              alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
+              className="absolute inset-0 w-full h-full object-cover"
+              // @ts-ignore - fetchpriority is supported but not always in React types
+              fetchpriority={imageIndex === 0 ? "high" : "low"}
+              loading={imageIndex === 0 ? "eager" : "lazy"}
+            />
+          </motion.div>
         </AnimatePresence>
         {/* Soft Sanctuary Vignette */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-cream/60 to-mat-cream" />

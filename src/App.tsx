@@ -21,7 +21,10 @@ const App: React.FC = () => {
   const isBlogSubdomain = hostname.startsWith('blogs.');
 
   useEffect(() => {
-    MigrationService.runAll();
+    // 🚚 DEFER: Move migrations out of the critical path to improve LCP/FCP
+    setTimeout(() => {
+      MigrationService.runAll();
+    }, 2000);
   }, []);
 
   useEffect(() => {
@@ -30,47 +33,44 @@ const App: React.FC = () => {
     }
   }, [loading, isBlogSubdomain]);
 
-  // 🌹 Branching Logic: Serve the Blog subdomain or the Main PWA
-  if (isBlogSubdomain) {
-    return (
-      <React.Suspense fallback={null}>
-        <BlogApp />
-      </React.Suspense>
-    );
-  }
-
   return (
     <HelmetProvider>
-      <BrowserRouter>
-        <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
-          <SEOProvider 
-            title="MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating" 
-            description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
-            schema={defaultSchema}
-          />
-          <Routes>
-            <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
-            <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
-            <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
-            <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
-            <Route path="/verify/callback" element={
-              <React.Suspense fallback={null}>
-                <VerifyCallback />
-              </React.Suspense>
-            } />
-            <Route path="/verify" element={
-              <React.Suspense fallback={null}>
-                <AuthGate><VerifyPage /></AuthGate>
-              </React.Suspense>
-            } />
-            <Route path="*" element={
-              <AuthGate>
-                <DashboardLayout />
-              </AuthGate>
-            } />
-          </Routes>
-        </div>
-      </BrowserRouter>
+      {isBlogSubdomain ? (
+        <React.Suspense fallback={null}>
+          <BlogApp />
+        </React.Suspense>
+      ) : (
+        <BrowserRouter>
+          <div className="min-h-screen bg-mat-cream font-body selection:bg-mat-rose selection:text-white">
+            <SEOProvider 
+              title="MATRIARCH | Premium Selection Protocol & Delhi's Elite Dating" 
+              description="The most exclusive matchmaking portal for high-value individuals in Delhi, South Delhi, and Gurgaon."
+              schema={defaultSchema}
+            />
+            <Routes>
+              <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
+              <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
+              <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+              <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
+              <Route path="/verify/callback" element={
+                <React.Suspense fallback={null}>
+                  <VerifyCallback />
+                </React.Suspense>
+              } />
+              <Route path="/verify" element={
+                <React.Suspense fallback={null}>
+                  <AuthGate><VerifyPage /></AuthGate>
+                </React.Suspense>
+              } />
+              <Route path="*" element={
+                <AuthGate>
+                  <DashboardLayout />
+                </AuthGate>
+              } />
+            </Routes>
+          </div>
+        </BrowserRouter>
+      )}
     </HelmetProvider>
   );
 };

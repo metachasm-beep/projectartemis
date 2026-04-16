@@ -852,10 +852,13 @@ export default function SplashCursor({
 
     let lastUpdateTime = Date.now();
     let colorUpdateTimer = 0.0;
+    
+    // 🚀 CACHE: Store dimensions to avoid forced reflows
+    let cachedWidth = canvas.clientWidth;
+    let cachedHeight = canvas.clientHeight;
 
     function updateFrame() {
       const dt = calcDeltaTime();
-      if (resizeCanvas()) initFramebuffers();
       updateColors(dt);
       applyInputs();
       step(dt);
@@ -872,8 +875,8 @@ export default function SplashCursor({
     }
 
     function resizeCanvas() {
-      const width = scaleByPixelRatio(canvas!.clientWidth);
-      const height = scaleByPixelRatio(canvas!.clientHeight);
+      const width = scaleByPixelRatio(cachedWidth);
+      const height = scaleByPixelRatio(cachedHeight);
       if (canvas!.width !== width || canvas!.height !== height) {
         canvas!.width = width;
         canvas!.height = height;
@@ -881,6 +884,14 @@ export default function SplashCursor({
       }
       return false;
     }
+
+    // 🚀 LISTEN: Use window resize to update cache efficiently
+    const handleResize = () => {
+      cachedWidth = canvas.clientWidth;
+      cachedHeight = canvas.clientHeight;
+      if (resizeCanvas()) initFramebuffers();
+    };
+    window.addEventListener('resize', handleResize);
 
     function updateColors(dt: number) {
       colorUpdateTimer += dt * config.COLOR_UPDATE_SPEED;

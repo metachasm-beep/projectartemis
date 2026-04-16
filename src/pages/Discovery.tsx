@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { SEO_COPY } from '@/content/copy';
 import { DiscoveryService } from '@/services/discoveryService';
+import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 
 export const Discovery: React.FC = () => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
@@ -102,6 +103,15 @@ export const Discovery: React.FC = () => {
 
   return (
     <div className="relative w-full h-screen bg-mat-obsidian overflow-hidden">
+      <SEOProvider 
+        title="Sanctuary Discovery | Matriarch Elite Protocol"
+        description="Navigate the Matriarch Selection Protocol. Verified identities for high-value dating in Delhi, Mumbai, and Bangalore."
+        schema={{
+          ...defaultSchema,
+          "name": "Matriarch Selection Protocol",
+          "description": "Premium verification-based dating in Delhi, Mumbai, and Bangalore."
+        }}
+      />
       <h1 className="sr-only">{SEO_COPY.discovery.title}</h1>
       
       {/* 🔮 BROWSE MODE BANNER FOR UNVERIFIED WOMEN */}
