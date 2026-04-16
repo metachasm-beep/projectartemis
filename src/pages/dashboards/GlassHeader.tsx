@@ -84,21 +84,23 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
            ))}
         </div>
 
-        <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner">
-           {['man', 'woman', 'admin'].map((role) => (
-              <button
-                key={role}
-                onClick={() => onRoleFilterChange(role === 'admin' ? (roleFilter === 'admin' ? 'all' : 'admin') : (roleFilter === role ? 'all' : role))}
-                className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
-                  roleFilter === role 
-                    ? 'bg-white text-slate-900 shadow-md' 
-                    : 'text-slate-400 hover:text-slate-600'
-                }`}
-              >
-                {role}
-              </button>
-           ))}
-        </div>
+        {activeTab === 'ROSTER' && (
+          <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner animate-in fade-in slide-in-from-right-4 duration-500">
+             {['man', 'woman', 'admin'].map((role) => (
+                <button
+                  key={role}
+                  onClick={() => onRoleFilterChange(role === 'admin' ? (roleFilter === 'admin' ? 'all' : 'admin') : (roleFilter === role ? 'all' : role))}
+                  className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                    roleFilter === role 
+                      ? 'bg-white text-slate-900 shadow-md' 
+                      : 'text-slate-400 hover:text-slate-600'
+                  }`}
+                >
+                  {role}
+                </button>
+             ))}
+          </div>
+        )}
       </div>
     </div>
   );

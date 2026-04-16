@@ -9,7 +9,6 @@ import {
   BadgeCheck, 
   Layers, 
   Eye,
-  RefreshCw,
   MessageSquare,
   Zap
 } from 'lucide-react';
@@ -25,7 +24,6 @@ import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
 import GazeHologram from './GazeHologram';
 
-import { LiquidOrb } from './LiquidOrb';
 import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
 import { MinimalDock } from './MinimalDock';
@@ -125,7 +123,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden selection:bg-slate-900 selection:text-white">
-      <LiquidOrb />
+      
       
       {itemToDelete && createPortal(
         <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
@@ -202,9 +200,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                               onChange={e => setSearchQuery(e.target.value)} 
                             />
                          </div>
-                         <button onClick={loadData} className="w-16 h-16 bg-white border border-black/[0.03] rounded-[2rem] flex items-center justify-center text-slate-400 hover:text-slate-900 transition-all shadow-sm">
-                            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
-                         </button>
                       </div>
 
                       {viewMode === 'GAZE' ? (
