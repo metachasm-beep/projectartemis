@@ -61,8 +61,16 @@ export const ManifestoService = {
    * 📖 FETCH LIVE FEED:
    * Retrieves all approved manifestos for the public Journal.
    */
+  /**
+   * 📖 FETCH LIVE FEED:
+   * Retrieves all approved manifestos for the public Journal.
+   * Includes JIT initialization if the registry is missing.
+   */
   getLiveManifestos: async (): Promise<ManifestoSubmission[]> => {
     try {
+      // 🚀 Just-In-Time Registry Manifestation
+      await ManifestoService.initialize();
+      
       const res = await turso.execute("SELECT * FROM blog_submissions WHERE status = 'approved' ORDER BY created_at DESC");
       return res.rows as unknown as ManifestoSubmission[];
     } catch (err) {
@@ -70,6 +78,7 @@ export const ManifestoService = {
       return [];
     }
   },
+
 
   /**
    * 🛡️ FETCH PENDING QUEUE:

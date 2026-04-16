@@ -5,6 +5,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
 import { Badge } from '@/components/ui/badge';
+import { MigrationService } from '@/services/MigrationService';
+import { useEffect } from 'react';
+
 
 // 🚀 GRANULAR CODE SPLITTING: Load views only when entered
 const Discovery = lazy(() => import('@/pages/Discovery').then(m => ({ default: m.Discovery })));
@@ -38,6 +41,13 @@ export const DashboardLayout: React.FC = () => {
                          profile?.role === 'woman' ? 'discovery' : 'profile';
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
+
+  useEffect(() => {
+    // 🏛️ SANCTUARY INTEGRITY CHECK
+    // Run migrations only once the user has entered the dashboard shell.
+    MigrationService.runAll();
+  }, []);
+
 
   // 🍷 Sovereign Ritual Toggle
   const isImmersive = activeTab === 'sovereign_browse' || activeTab === 'profile' || activeTab === 'faq' || activeTab === 'discovery';

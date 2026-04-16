@@ -25,17 +25,11 @@ const App: React.FC = () => {
   const isBlogSubdomain = hostname.startsWith('blogs.');
 
   useEffect(() => {
-    // 🚚 DEFER: Move migrations out of the critical path to improve LCP/FCP
-    setTimeout(() => {
-      MigrationService.runAll();
-    }, 2000);
-  }, []);
-
-  useEffect(() => {
     if (!loading && !isBlogSubdomain) {
       window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
     }
   }, [loading, isBlogSubdomain]);
+
 
   return (
     <HelmetProvider>
