@@ -4,81 +4,38 @@ import type { MatriarchProfile } from '@/types';
 // 🛡️ THE CACHING SHIELD: Defensive state management to prevent network saturation.
 const TTL = 5000; 
 let metricsCache: { data: any, timestamp: number } | null = null;
-let rosterCache: { data: MatriarchProfile[], timestamp: number } | null = null;
 
 /**
  * 🛠️ DEEP NORMALIZATION LAYER:
  * Standardizes raw Turso rows into valid MatriarchProfile objects.
- * Defensive against double-stringified JSON, single-quoted arrays, and legacy lists.
+ * Optimized for high-throughput and standard JSON formats.
  */
 const normalizeProfile = (row: any): MatriarchProfile => {
   if (!row) return {} as MatriarchProfile;
   
-  const rawPhotos: any = row.photos || row.avatar_url || row.image_url || row.image || row.photo || row.avatar || row.profile_picture;
   let photos: string[] = [];
+  const rawPhotos = row.photos || row.avatar_url || row.image_url;
   
-  if (rawPhotos) {
-    let p = rawPhotos;
-    
-    // 🛡️ RECURSIVE MULTI-MODE DE-STRINGIFIER
-    try {
-      let limit = 5;
-      while (typeof p === 'string' && limit > 0) {
-        let trimmed = p.trim();
-        
-        // Mode 1: Standard / Double-Stringified JSON
-        if (trimmed.startsWith('[') || trimmed.startsWith('"') || trimmed.startsWith('{')) {
-          try {
-            // Fix single-quoted "fake" JSON arrays (common JS .toString() output)
-            if (trimmed.startsWith('[') && trimmed.includes("'") && !trimmed.includes('"')) {
-              trimmed = trimmed.replace(/'/g, '"');
-            }
-            p = JSON.parse(trimmed);
-            limit--;
-            continue;
-          } catch (e) {
-             // Fall through to other modes
-          }
-        }
-
-        // Mode 2: Comma-Separated Literals
-        if (trimmed.includes(',') && !trimmed.includes('[') && !trimmed.includes('{')) {
-           p = trimmed.split(',').map(s => s.trim());
-           break;
-        }
-
-        // Mode 3: Bracketed list without valid JSON quotes
-        if (trimmed.startsWith('[') && trimmed.endsWith(']')) {
-           p = trimmed.slice(1, -1).split(',').map(s => s.trim());
-           break;
-        }
-
-        break;
-      }
-    } catch (e) {
-      console.warn("Normalize: Recovery attempt failed", e);
+  try {
+    if (typeof rawPhotos === 'string' && rawPhotos.startsWith('[')) {
+      photos = JSON.parse(rawPhotos);
+    } else if (Array.isArray(rawPhotos)) {
+      photos = rawPhotos;
+    } else if (rawPhotos) {
+      photos = [rawPhotos];
     }
-
-    // Convert result to cleaned array
-    const rawArray = Array.isArray(p) ? p : [p];
-    photos = rawArray
-      .filter(u => u && typeof u === 'string')
-      .map(u => {
-         // Scrub any remaining single/double quotes or brackets from the URL itself
-         return u.trim().replace(/^['"\[]+|['"\]]+$/g, '');
-      })
-      .filter(u => (u.startsWith('http') || u.startsWith('https')) && u.includes('.'));
+  } catch (e) {
+    console.warn("Normalize Recovery: Falling back to seed avatar.");
   }
 
-  // 🎭 Final Fallback: Generator
-  const finalPhotos = photos.length > 0 
-    ? photos 
-    : [`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user_id || row.id || row.full_name || 'anon'}`];
+  const finalPhotos = photos.filter(u => u && typeof u === 'string' && u.includes('.')).length > 0
+    ? photos.filter(u => u && typeof u === 'string' && u.includes('.'))
+    : [`https://api.dicebear.com/7.x/avataaars/svg?seed=${row.user_id || row.full_name || 'anon'}`];
 
   return {
     ...row,
     photos: finalPhotos,
-    is_verified: row.is_verified === 1 || row.is_verified === true || row.verified === 1,
+    is_verified: row.is_verified === 1 || row.is_verified === true,
   } as unknown as MatriarchProfile;
 };
 
@@ -93,45 +50,25 @@ export const AdminService = {
     }
 
     try {
-      const [menQ, womenQ, verifiedQ, tokensQ] = await Promise.all([
+      const [menQ, womenQ, verifiedQ, topicsQ] = await Promise.all([
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
         turso.execute("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
-        turso.execute("SELECT SUM(tokens) as total FROM profiles")
+        turso.execute("SELECT COUNT(*) as count FROM forum_topics")
       ]);
 
       const data = {
         totalMen: Number(menQ.rows[0]?.count || 0),
         totalWomen: Number(womenQ.rows[0]?.count || 0),
         verifiedProfiles: Number(verifiedQ.rows[0]?.count || 0),
-        totalTokens: Number(tokensQ.rows[0]?.total || 0)
+        totalForumTopics: Number(topicsQ.rows[0]?.count || 0)
       };
 
       metricsCache = { data, timestamp: now };
       return data;
     } catch (err) {
       console.error("ADMIN_METRICS_ERROR:", err);
-      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalTokens: 0 };
-    }
-  },
-
-  /**
-   * 🗺️ Geographic Census: Extracts top 10 city populations for targeted campaigns.
-   */
-  getCityCensus: async () => {
-    try {
-      const res = await turso.execute(`
-        SELECT city, COUNT(*) as count 
-        FROM profiles 
-        WHERE city IS NOT NULL AND city != '' 
-        GROUP BY city 
-        ORDER BY count DESC 
-        LIMIT 10
-      `);
-      return res.rows.map(r => ({ city: String(r.city), count: Number(r.count) }));
-    } catch(e) {
-      console.error("ADMIN_CENSUS_ERROR:", e);
-      return [];
+      return { totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 };
     }
   },
 
@@ -199,84 +136,30 @@ export const AdminService = {
   },
 
   /**
-   * 🧪 Absolute Excision (Resilient Deep Purge): 
-   * Removes a user from EVERY sanctuary table.
-   * Uses sequential execution to survive missing optional tables (e.g. forum, matches).
+   * 🧪 Absolute Excision (Recursive Purge)
    */
   deleteUserRecord: async (userId: string) => {
     if (!userId) return false;
-    
-    // 🛡️ INTERNAL PURGE PROTOCOL: Silently executes deletes, ignoring missing table errors.
-    const silentDelete = async (sql: string, args: any[]) => {
-      try {
-        await turso.execute({ sql, args });
-      } catch (err: any) {
-        // Ignore "no such table" errors (code: SQLITE_ERROR)
-        if (err?.message?.includes('no such table')) {
-          return;
-        }
-        console.warn(`ADMIN_PURGE_WARNING on table: ${sql.split(' ')[2]}`, err);
-      }
-    };
-
     try {
-      // 🍷 Identity & Messaging Cleanup (Self-Contained)
-      console.log(`ADMIN_SERVICE: Executing Deep Purge traversal for identity: ${userId}`);
+      await turso.batch([
+        { sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] },
+        { sql: "DELETE FROM messages WHERE sender_user_id = ?", args: [userId] },
+        { sql: "DELETE FROM matches WHERE woman_user_id = ? OR man_user_id = ?", args: [userId, userId] },
+        { sql: "DELETE FROM conversations WHERE id LIKE ?", args: [`%${userId}%`] }
+      ], "write");
       
-      // 💬 Messaging & Communication
-      await silentDelete("DELETE FROM messages WHERE sender_user_id = ?", [userId]);
-      await silentDelete("DELETE FROM message_receipts WHERE user_id = ?", [userId]);
-      await silentDelete("DELETE FROM prompt_responses WHERE responder_user_id = ?", [userId]);
-      await silentDelete("DELETE FROM call_requests WHERE requested_by_user_id = ?", [userId]);
-      
-      // 💎 Matches & Relationships
-      await silentDelete("DELETE FROM match_state_history WHERE changed_by_user_id = ?", [userId]);
-      await silentDelete("DELETE FROM matches WHERE woman_user_id = ? OR man_user_id = ?", [userId, userId]);
-      await silentDelete("DELETE FROM blocks WHERE blocker_user_id = ? OR blocked_user_id = ?", [userId, userId]);
-      await silentDelete("DELETE FROM reports WHERE reporter_user_id = ? OR reported_user_id = ?", [userId, userId]);
-      
-      // 👤 Primary Identity (Always required)
-      const res = await turso.execute({ sql: "DELETE FROM profiles WHERE user_id = ?", args: [userId] });
-      
-      // Nuclear cache invalidation
       metricsCache = null;
-      rosterCache = null;
       return true;
     } catch (err) {
-      console.error("ADMIN_RESILIENT_PURGE_ERROR (userId: " + userId + "):", err);
+      console.error("ADMIN_PURGE_ERROR:", err);
       return false;
     }
   },
 
   /**
-   * 🎨 Visual Curation Index: Fetch all profile identifying data.
-   */
-  getAllCurationProfiles: async (): Promise<MatriarchProfile[]> => {
-    const now = Date.now();
-    // Use a slightly shorter TTL or check freshness
-    if (rosterCache && (now - rosterCache.timestamp < 2000)) { 
-      return rosterCache.data;
-    }
-
-    try {
-      const r = await turso.execute("SELECT * FROM profiles ORDER BY created_at DESC");
-      if (r.rows.length === 0) {
-         console.warn("ADMIN_CURATION: Registry returned 0 rows.");
-      }
-      const data = r.rows.map(normalizeProfile);
-      rosterCache = { data, timestamp: now };
-      return data;
-    } catch (err) {
-      console.error("ADMIN_CURATION_FETCH_ERROR:", err);
-      return [];
-    }
-  },
-
-  /**
-   * ⚔️ The Culling: Sweeps inactive 'man' profiles and reflows ranks.
+   * ⚔️ The Culling: Sweeps inactive profiles.
    */
   executeGlobalCulling: async () => {
-    console.log("ADMIN_SERVICE: Commencing The Culling Sequence.");
     try {
         const thirtyDaysAgo = new Date();
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
@@ -286,81 +169,20 @@ export const AdminService = {
             args: [thirtyDaysAgo.toISOString()]
         });
         
-        const toDelete = res.rows.map(r => r.user_id as string);
-        let purgedCount = 0;
-        
+        const toDelete = res.rows.map(r => String(r.user_id));
+        let count = 0;
         for (const id of toDelete) {
-            const success = await AdminService.deleteUserRecord(id);
-            if(success) purgedCount++;
+            if (await AdminService.deleteUserRecord(id)) count++;
         }
         
-        // Final Rank Polish
-        await import('./sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
-        
-        return { success: true, purged: purgedCount };
+        return { success: true, purged: count };
     } catch(err) {
-        console.error("ADMIN_CULLING_ERROR:", err);
         return { success: false, purged: 0 };
     }
   },
 
   /**
-   * 🌪️ Purge Protocol (Resilient Dedupe):
-   * Automated removal of visual asset clones using the Resilient Deep Purge protocol.
-   */
-  performBulkDedupe: async () => {
-    try {
-      const r = await turso.execute("SELECT * FROM profiles");
-      const allProfiles = r.rows.map(normalizeProfile);
-      
-      console.log(`ADMIN_BULK_PURGE: Scanning ${allProfiles.length} profiles for visual collisions...`);
-      
-      const photoMap = new Map<string, { user_id: string, created_at: string }>();
-      const toDelete: string[] = [];
-
-      allProfiles.forEach(p => {
-        const photoUrl = p.photos?.[0];
-        if (!photoUrl) return;
-
-        if (photoMap.has(photoUrl)) {
-          const existing = photoMap.get(photoUrl)!;
-          // Compare created_at to keep the original (earliest) record
-          if (p.created_at < existing.created_at) {
-            toDelete.push(existing.user_id);
-            photoMap.set(photoUrl, { user_id: p.user_id, created_at: p.created_at });
-          } else {
-            toDelete.push(p.user_id);
-          }
-        } else {
-          photoMap.set(photoUrl, { user_id: p.user_id, created_at: p.created_at });
-        }
-      });
-
-      if (toDelete.length === 0) {
-        console.log("ADMIN_BULK_PURGE: Sanctuary is already pure. No collisions detected.");
-        return { deletedCount: 0 };
-      }
-
-      console.log(`ADMIN_BULK_PURGE: Commencing resilient excision for ${toDelete.length} redundant identities.`);
-
-      let successfulDeletes = 0;
-      for (const id of toDelete) {
-        const success = await AdminService.deleteUserRecord(id);
-        if (success) successfulDeletes++;
-      }
-
-      metricsCache = null;
-      rosterCache = null;
-
-      return { deletedCount: successfulDeletes };
-    } catch (err) {
-      console.error("ADMIN_BULK_DEDUPE_ERROR:", err);
-      throw err;
-    }
-  },
-
-  /**
-   * 👁️ Sovereign Eyes: Global communication surveillance logic.
+   * 👁️ Sovereign Eyes: Global communication surveillance.
    */
   getGlobalCommunications: async () => {
      try {
@@ -368,7 +190,6 @@ export const AdminService = {
           SELECT 
             c.id as conv_id,
             m.id as id,
-            m.current_comm_mode,
             pw.full_name as woman_name, 
             pw.photos as woman_photos,
             pm.full_name as man_name, 
@@ -380,53 +201,24 @@ export const AdminService = {
           LEFT JOIN profiles pw ON m.woman_user_id = pw.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pw.user_id AND pw.role = 'woman')
           LEFT JOIN profiles pm ON m.man_user_id = pm.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pm.user_id AND pm.role = 'man')
           WHERE last_message IS NOT NULL
-          ORDER BY last_message_at DESC NULLS LAST
+          ORDER BY last_message_at DESC LIMIT 100
         `;
         const res = await turso.execute(sql);
-        
-        // Post-process to handle Admin specific labels
-        return res.rows.map(row => {
-          if (!row.id && row.conv_id.startsWith('admin_conv_')) {
-             return {
-                ...row,
-                id: row.conv_id, // Use conv_id as pseudo match id for selectedMatch logic
-                current_comm_mode: 'SOVEREIGN_TRANSMISSION',
-                woman_name: row.woman_name || 'The Matriarch',
-                man_name: row.man_name || 'Sanctuary Aspirant'
-             };
-          }
-          return row;
-        });
+        return res.rows.map(row => ({
+          ...row,
+          id: row.id || row.conv_id
+        }));
      } catch (err) {
-        console.error("ADMIN_GLOBAL_COMM_ERROR:", err);
-        return [];
-     }
-  },
-
-  getMatchMessages: async (matchId: string) => {
-     try {
-        const sql = `
-          SELECT msg.* 
-          FROM messages msg
-          JOIN conversations c ON msg.conversation_id = c.id
-          WHERE c.match_id = ?
-          ORDER BY msg.created_at ASC
-        `;
-        const res = await turso.execute({ sql, args: [matchId] });
-        return res.rows;
-     } catch (err) {
-        console.error("ADMIN_MATCH_MSG_ERROR:", err);
         return [];
      }
   },
 
   /**
-   * 🛠️ Sovereign Profile Mutation: 
-   * Directly updates verification, roles, and aura tokens.
+   * 🛠️ Sovereign Mutation
    */
   updateProfileStatus: async (userId: string, data: Partial<MatriarchProfile>) => {
     try {
-      const allowedFields = ['is_verified', 'role', 'tokens', 'payment_utr', 'payment_status'];
+      const allowedFields = ['is_verified', 'role', 'tokens', 'payment_status'];
       const setClause: string[] = [];
       const args: any[] = [];
 
@@ -440,176 +232,59 @@ export const AdminService = {
       }
 
       if (setClause.length === 0) return true;
-
-      const sql = `UPDATE profiles SET ${setClause.join(', ')} WHERE user_id = ?`;
       args.push(userId);
       
-      await turso.execute({ sql, args });
-      // Reset caches
+      await turso.execute({ sql: `UPDATE profiles SET ${setClause.join(', ')} WHERE user_id = ?`, args });
       metricsCache = null;
-      rosterCache = null;
       return true;
     } catch (err) {
-      console.error("ADMIN_UPDATE_STATUS_ERROR:", err);
       return false;
     }
   },
 
-  /**
-   * 🛡️ Sovereign Transmission:
-   * Delivers a direct administrative message to a user.
-   * Creates an "ADMIN_CONV" with match_id = NULL if it doesn't exist.
-   */
   sendDirectAdminMessage: async (userId: string, body: string) => {
-    if (!userId || !body.trim()) return false;
-
     try {
-      // 1. Locate or Invoke Admin Conversation
-      // We look for a conversation with match_id NULL that involves this user and 'ADMIN'
-      // Wait, matches table usually defines the pair. For Admin sessions, we'll use a special match.
-      // Or simply: Look for a conversation where ID starts with 'admin_conv_' + userId
       const convId = `admin_conv_${userId}`;
-      
-      // Check if conversation exists (idempotent check)
-      const checkRes = await turso.execute({
-        sql: "SELECT id FROM conversations WHERE id = ?",
+      await turso.execute({
+        sql: "INSERT OR IGNORE INTO conversations (id, match_id) VALUES (?, NULL)",
         args: [convId]
       });
-
-      if (checkRes.rows.length === 0) {
-        console.log(`ADMIN_SERVICE: Invoking new Sovereign Bridge for user: ${userId}`);
-        await turso.execute({
-          sql: "INSERT INTO conversations (id, match_id) VALUES (?, NULL)",
-          args: [convId]
-        });
-      }
-
-      // 2. Transmit Message
-      const msgId = `msg_sys_${Date.now()}`;
-      const now = new Date().toISOString();
       await turso.execute({
         sql: "INSERT INTO messages (id, conversation_id, sender_user_id, body, created_at) VALUES (?, ?, 'ADMIN', ?, ?)",
-        args: [msgId, convId, body, now]
+        args: [`msg_sys_${Date.now()}`, convId, body, new Date().toISOString()]
       });
-
       return true;
     } catch (err) {
-      console.error("ADMIN_DIRECT_MSG_ERROR:", err);
       return false;
     }
   },
 
-  /**
-   * 💎 Aura Token Allocation: Atomic Adjustment
-   */
   updateUserTokens: async (userId: string, amount: number) => {
     try {
-      const res = await turso.execute({
+      await turso.execute({
         sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?",
         args: [amount, userId]
       });
-      return res.rowsAffected > 0;
+      return true;
     } catch (err) {
-      console.error("ADMIN_TOKEN_UPDATE_ERROR:", err);
       return false;
     }
   },
 
-  /**
-   * 📢 Sovereign Broadcast: Force-involves the Admin direct-message system to push a manifesto or ultimatum to ALL men.
-   */
   sendSovereignBroadcast: async (title: string, body: string) => {
     try {
-        console.log(`ADMIN_SERVICE: Initiating Sovereign Broadcast: ${title}`);
         const res = await turso.execute("SELECT user_id FROM profiles WHERE role = 'man'");
-        const maleIds = res.rows.map(r => String(r.user_id));
-        
-        const fullMessage = `[SOVEREIGN_BROADCAST]: ${title}\n\n${body}`;
-        let successCount = 0;
-        
-        for (const userId of maleIds) {
-            const success = await AdminService.sendDirectAdminMessage(userId, fullMessage);
-            if(success) successCount++;
+        const ids = res.rows.map(r => String(r.user_id));
+        const fullMsg = `[SOVEREIGN_BROADCAST]: ${title}\n\n${body}`;
+        for (const id of ids) {
+            await AdminService.sendDirectAdminMessage(id, fullMsg);
         }
-        
-        return { success: true, count: successCount };
+        return { success: true, count: ids.length };
     } catch(err) {
-        console.error("ADMIN_BROADCAST_ERROR:", err);
         return { success: false, count: 0 };
     }
   },
 
-  /**
-   * 🏦 Tithe Ledger: Retrieve all financial and transaction audit logs.
-   */
-  getFinancialAudits: async () => {
-    try {
-      const result = await turso.execute(`
-        SELECT p.*, prof.full_name as user_name 
-        FROM protocol_audits p
-        LEFT JOIN profiles prof ON p.user_id = prof.user_id
-        WHERE p.action LIKE 'MONETIZATION%' OR p.action = 'PAYMENT_CLAIM'
-        ORDER BY p.created_at DESC LIMIT 500
-      `);
-      return result.rows;
-    } catch (err) {
-      console.error("ADMIN_FINANCIAL_AUDITS_ERROR:", err);
-      return [];
-    }
-  },
-
-  /**
-   * 🛡️ Identity Audit Lifecycle:
-   * Fetches users with pending biometric verification evidence.
-   */
-  getPendingAudits: async () => {
-    try {
-      const sql = `
-        SELECT a.*, p.full_name, p.photos as profile_photos, p.is_verified
-        FROM protocol_audits a
-        JOIN profiles p ON a.user_id = p.user_id
-        WHERE a.status = 'PENDING'
-        ORDER BY a.created_at ASC
-      `;
-      const res = await turso.execute(sql);
-      return res.rows;
-    } catch (err) {
-      console.error("ADMIN_GET_AUDITS_ERROR:", err);
-      return [];
-    }
-  },
-
-  /**
-   * ⚖️ Sovereign Judgment:
-   * Resolves a pending audit, sealing the verification if approved.
-   */
-  resolveAudit: async (auditId: string, userId: string, approved: boolean) => {
-    try {
-      if (approved) {
-        await turso.batch([
-          { sql: "UPDATE profiles SET is_verified = 1 WHERE user_id = ?", args: [userId] },
-          { sql: "UPDATE protocol_audits SET status = 'APPROVED' WHERE id = ?", args: [auditId] }
-        ], "write");
-      } else {
-        await turso.execute({ 
-           sql: "UPDATE protocol_audits SET status = 'REJECTED' WHERE id = ?", 
-           args: [auditId] 
-        });
-      }
-      
-      // Reset caches
-      metricsCache = null;
-      rosterCache = null;
-      return true;
-    } catch (err) {
-      console.error("ADMIN_RESOLVE_AUDIT_ERROR:", err);
-      return false;
-    }
-  },
-
-  /**
-   * 🏦 Tithe Ledger: Retrieve all pending UTR claims.
-   */
   getPendingAuraClaims: async () => {
     try {
       const res = await turso.execute(`
@@ -621,123 +296,35 @@ export const AdminService = {
       `);
       return res.rows;
     } catch (err) {
-      console.error("ADMIN_GET_CLAIMS_ERROR:", err);
       return [];
     }
   },
 
-  /**
-   * ⚖️ Sovereign Redemption:
-   * Manually approve or reject a UTR claim.
-   */
   resolveAuraClaim: async (claimId: string, approved: boolean) => {
     try {
-      // 1. Fetch Claim Details (Required for both paths)
-      const claimRes = await turso.execute({
-        sql: "SELECT * FROM pending_claims WHERE id = ?",
-        args: [claimId]
-      });
+      const claimRes = await turso.execute({ sql: "SELECT * FROM pending_claims WHERE id = ?", args: [claimId] });
       const claim: any = claimRes.rows[0];
-      if (!claim) throw new Error("Claim not found.");
-
-      let meta: any = {};
-      if (claim.metadata) {
-        try { meta = JSON.parse(claim.metadata); } catch (e) {}
-      }
+      if (!claim) return false;
 
       if (!approved) {
-        await turso.execute({
-          sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?",
-          args: [claimId]
-        });
-
-        // 🛡️ REJECTION TRANSMISSION
-        const rejectMsg = meta?.type === 'verification'
-          ? `Greetings. Your verification payment [UTR: ${claim.submitted_utr}] could not be validated. Please ensure your transaction details are correct and re-submit your claim via the dashboard.`
-          : `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] could not be verified by the Sanctuary's financial ledger. Please ensure your transaction details are correct and re-submit your claim via the dashboard. Command discarded.`;
-
-        await AdminService.sendDirectAdminMessage(claim.user_id, rejectMsg);
+        await turso.execute({ sql: "UPDATE pending_claims SET status = 'rejected' WHERE id = ?", args: [claimId] });
+        await AdminService.sendDirectAdminMessage(claim.user_id, `Your tithe [UTR: ${claim.submitted_utr}] could not be verified.`);
         return true;
       }
 
-      if (meta?.type === 'verification') {
-        // ── VERIFICATION PROTOCOL ──
-        await turso.execute({
-          sql: "UPDATE pending_claims SET status = 'approved' WHERE id = ?",
-          args: [claimId]
-        });
-        
-        await AdminService.sendDirectAdminMessage(
-          claim.user_id,
-          `Greetings. Your verification payment [UTR: ${claim.submitted_utr}] has been verified. You may now proceed to the centralized biometric registry. Click [here](/verify) to complete your Identity Check and unlock full Sanctuary Access.`
-        );
-        // We explicitly do NOT mark is_verified = 1 here. They still must pass Didit.
-        metricsCache = null;
-        rosterCache = null;
-        return true;
-      }
-
-      // 2. Extract Power and Density for Approval
-      let jumpType = meta.jump_type || 'nudge';
-      let city = meta.city || 'Delhi';
-      let amount = meta.amount || (jumpType === 'surge' ? 149 : jumpType === 'elite' ? 499 : 49);
-
-      // 3. Calculate Leap Bonus
-      const JUMP_POWER: Record<string, number> = { nudge: 0.05, surge: 0.15, elite: 0.50 };
-      const densityRes = await turso.execute({
-        sql: "SELECT COUNT(*) as density FROM profiles WHERE role = 'man' AND city = ?",
-        args: [city]
-      });
-      const density = Number(densityRes.rows[0]?.density || 1000);
-      const leapBonus = Math.floor((JUMP_POWER[jumpType] || 0.05) * density);
-
-      // 4. Atomic Payload: Status Update + Profile Update + Rank Log
-      const { v4: uuidv4 } = await import('uuid');
-      const logId = `rank_log_${uuidv4()}`;
-
+      const meta = JSON.parse(claim.metadata || '{}');
+      const amount = meta.amount || 49;
+      
       await turso.batch([
         { sql: "UPDATE pending_claims SET status = 'approved' WHERE id = ?", args: [claimId] },
-        { 
-          sql: "UPDATE profiles SET tokens = tokens + ?, rank_score = rank_score + ?, updated_at = ? WHERE user_id = ?", 
-          args: [amount, leapBonus, new Date().toISOString(), claim.user_id] 
-        },
-        { 
-          sql: "INSERT INTO rank_logs (id, user_id, delta, reason) VALUES (?, ?, ?, ?)", 
-          args: [logId, claim.user_id, leapBonus, `ADMIN_RELEASE: ${jumpType.toUpperCase()} | UTR: ${claim.submitted_utr}`] 
-        }
+        { sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?", args: [amount, claim.user_id] }
       ], "write");
 
-      // 🛡️ APPROVAL TRANSMISSION
-      await AdminService.sendDirectAdminMessage(
-        claim.user_id,
-        `Greetings, Aspirant. Your tithe [UTR: ${claim.submitted_utr}] has been verified. ${amount} Aura tokens have been credited to your identity, and your standing has been elevated by ${leapBonus} rank points. The Sanctuary acknowledges your support. Resonance established.`
-      );
-
-      // 5. Trigger Rank Reflow
-      const { SanctuaryService } = await import('./sanctuary');
-      await SanctuaryService.recalculateGlobalRanks();
-
+      await AdminService.sendDirectAdminMessage(claim.user_id, `Your tithe [UTR: ${claim.submitted_utr}] has been verified. ${amount} Aura tokens credited.`);
       metricsCache = null;
-      rosterCache = null;
       return true;
     } catch (err) {
-      console.error("ADMIN_RESOLVE_CLAIM_ERROR:", err);
       return false;
-    }
-  },
-
-  /**
-   * 👑 Global Rank Ritual:
-   * Triggers a system-wide re-calculation of the absolute rank sequence.
-   */
-  recalculateAllRanks: async () => {
-    try {
-       const { SanctuaryService } = await import('@/services/sanctuary');
-       await SanctuaryService.recalculateGlobalRanks();
-       return true;
-    } catch (err) {
-       console.error("ADMIN_RECALC_RANK_ERROR:", err);
-       return false;
     }
   }
 };

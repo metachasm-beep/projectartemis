@@ -34,7 +34,6 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
     { id: 'ROSTER', label: 'Control Panel', icon: Archive },
     { id: 'TITHE', label: 'Results', icon: Shield },
     { id: 'COMMUNICATIONS', label: 'Messages', icon: MessageSquare },
-    { id: 'BUY_AURA', label: 'Buy Aura', icon: CreditCard },
     { id: 'JOURNAL', label: 'Manual', icon: BookOpen },
   ];
 
