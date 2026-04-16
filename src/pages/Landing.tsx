@@ -19,21 +19,52 @@ import { useRef } from "react";
 
 const LandingPage: React.FC = () => {
   const mainRef = useRef<HTMLDivElement>(null);
+  const secondaryFoldRef = useRef<HTMLDivElement>(null);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
-  const [hideLogoText, setHideLogoText] = useState(false);
+  const [showSecondaryFolds, setShowSecondaryFolds] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // 🚀 Performance: Defer secondary folds until interaction or scroll proximity
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setShowSecondaryFolds(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: '400px' } // Start loading 400px before reaching the section
+    );
+
+    if (secondaryFoldRef.current) {
+      observer.observe(secondaryFoldRef.current);
+    }
+
+    // Fail-safe: Also trigger on interaction/scroll
+    const trigger = () => {
+      setShowSecondaryFolds(true);
+      window.removeEventListener('scroll', trigger);
+      window.removeEventListener('touchstart', trigger);
+    };
+    window.addEventListener('scroll', trigger, { passive: true });
+    window.addEventListener('touchstart', trigger, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('scroll', trigger);
+      window.removeEventListener('touchstart', trigger);
+    };
+  }, []);
 
   const { scrollYProgress } = useScroll({
     container: mainRef,
   });
 
   // Dynamic Logo transitions: STRICT First-Fold Visibility Only
-  // With 8 folds, 1/8 = 0.125. We fade out exactly at the transition.
   const logoOpacity = useTransform(scrollYProgress, [0, 0.08, 0.12, 1], [1, 1, 0, 0]);
   const logoScale = useTransform(scrollYProgress, [0, 0.12], [1, 0.95]);
   
-  // Mobile-specific X transition - strictly centered for Hero
-  const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -41,7 +72,6 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Desktop stays centered with subtle fade
   const desktopOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0]);
 
   // Check session on mount
@@ -122,7 +152,7 @@ const LandingPage: React.FC = () => {
       ref={mainRef}
       className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-cream selection:bg-mat-gold/20 selection:text-mat-slate"
     >
-      {/* 🔮 Dynamic Persistent Logo (Mobile: Top-Right Transition) */}
+      {/* 🔮 Dynamic Persistent Logo */}
       <motion.div 
         style={{ 
           opacity: isMobile ? logoOpacity : desktopOpacity,
@@ -133,32 +163,29 @@ const LandingPage: React.FC = () => {
         <MatriarchLogo className="transition-transform duration-300" />
       </motion.div>
 
-      {/* 1. Global Cinematic Texture */}
       <GrainOverlay />
       
-      {/* 2. Fold Sections */}
       <div className="relative z-10 w-full h-full">
-        {/* Fixed Logo is handled internally by HeroFold with z-index control */}
         <HeroFold />
         
-        {/* Subsequent Folds scroll over the Hero layer */}
-        <div className="relative z-20">
-          <Suspense fallback={<div className="h-20 bg-mat-cream" />}>
-            <HowItWorksFold />
-            <LandscapeProtocolFold />
-            <SelectionMatrixFold />
-            <SecurityFold />
-            <Footer />
-          </Suspense>
+        <div ref={secondaryFoldRef} className="relative z-20 min-h-[10px]">
+          {showSecondaryFolds && (
+            <Suspense fallback={<div className="h-40 bg-mat-cream" />}>
+              <HowItWorksFold />
+              <LandscapeProtocolFold />
+              <SelectionMatrixFold />
+              <SecurityFold />
+              <Footer />
+            </Suspense>
+          )}
         </div>
       </div>
 
-
-      {/* Overlays */}
       <LegalArchiveOverlay />
       {showOnboarding && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
     </main>
   );
 };
+
 
 export default LandingPage;
