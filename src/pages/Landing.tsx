@@ -147,6 +147,21 @@ const LandingPage: React.FC = () => {
     }
   };
 
+  const [legalSlug, setLegalSlug] = useState<string | null>(null);
+
+  const scrollToSection = (id: string) => {
+    const element = document.getElementById(id);
+    if (element && mainRef.current) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const scrollToTop = () => {
+    if (mainRef.current) {
+      mainRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <main 
       ref={mainRef}
@@ -175,13 +190,17 @@ const LandingPage: React.FC = () => {
               <LandscapeProtocolFold />
               <SelectionMatrixFold />
               <SecurityFold />
-              <Footer />
+              <Footer 
+                onOpenLegal={setLegalSlug} 
+                onScrollTo={scrollToSection}
+                onScrollToTop={scrollToTop}
+              />
             </Suspense>
           )}
         </div>
       </div>
 
-      <LegalArchiveOverlay />
+      <LegalArchiveOverlay slug={legalSlug} onClose={() => setLegalSlug(null)} />
       {showOnboarding && <OnboardingOverlay onComplete={handleOnboardingComplete} />}
     </main>
   );
