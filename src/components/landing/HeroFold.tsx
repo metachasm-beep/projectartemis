@@ -20,6 +20,23 @@ const IMAGES = [
 
 const HeroFold: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
+  const [showHeavyAssets, setShowHeavyAssets] = useState(false);
+
+  useEffect(() => {
+    // 🏎️ PERFORMANCE: Hydration Yield
+    // Defers the heavy WebGL/Slideshow background to allow the text content to settle on the main thread.
+    const yieldHydration = () => {
+      setShowHeavyAssets(true);
+      console.log("MATRIARCH_PERF: Hero Hydration Yield Complete.");
+    };
+
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => yieldHydration());
+    } else {
+      setTimeout(yieldHydration, 400); // 🏎️ Conservative yield for slower devices
+    }
+  }, []);
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end start"]
@@ -37,11 +54,12 @@ const HeroFold: React.FC = () => {
   const [imageIndex, setImageIndex] = useState(0);
 
   useEffect(() => {
+    if (!showHeavyAssets) return;
     const timer = setInterval(() => {
       setImageIndex((prev) => (prev + 1) % IMAGES.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [showHeavyAssets]);
 
   return (
     <section 
@@ -52,35 +70,46 @@ const HeroFold: React.FC = () => {
 
 
       {/* 2. Parallax Background Slideshow */}
-      <motion.div style={{ scale: backgroundScale }} className="absolute inset-0 z-0">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={imageIndex}
+      <AnimatePresence>
+        {showHeavyAssets && (
+          <motion.div 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 0.6 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 2 }}
-            className="absolute inset-0"
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1.5 }}
+            style={{ scale: backgroundScale }} 
+            className="absolute inset-0 z-0"
           >
-            <img 
-              src={IMAGES[imageIndex]} 
-              alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
-              className="absolute inset-0 w-full h-full object-cover"
-              // @ts-ignore - fetchpriority is supported but not always in React types
-              fetchpriority={imageIndex === 0 ? "high" : "low"}
-              loading={imageIndex === 0 ? "eager" : "lazy"}
-            />
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={imageIndex}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 0.6 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 2 }}
+                className="absolute inset-0"
+              >
+                <img 
+                  src={IMAGES[imageIndex]} 
+                  alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
+                  className="absolute inset-0 w-full h-full object-cover"
+                  // @ts-ignore - fetchpriority is supported but not always in React types
+                  fetchpriority={imageIndex === 0 ? "high" : "low"}
+                  loading={imageIndex === 0 ? "eager" : "lazy"}
+                />
+              </motion.div>
+            </AnimatePresence>
+            {/* Soft Sanctuary Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-cream/60 to-mat-cream" />
           </motion.div>
-        </AnimatePresence>
-        {/* Soft Sanctuary Vignette */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-cream/60 to-mat-cream" />
-      </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* 3. Hero Content */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
       >
+
         <motion.span 
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}

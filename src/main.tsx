@@ -48,16 +48,29 @@ import { AuthProvider } from './contexts/AuthContext.tsx'
 const rootElement = document.getElementById('root');
 if (rootElement) {
   const root = createRoot(rootElement);
-  if (diagnostic) diagnostic.innerHTML += '<div>> [SYSTEM] Rendering React Root...</div>';
-  root.render(
-    <StrictMode>
-      <ErrorBoundary>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </ErrorBoundary>
-    </StrictMode>,
-  );
+  if (diagnostic) diagnostic.innerHTML += '<div>> [SYSTEM] Preparing Sanctuary Hydration...</div>';
+  
+  // 🏎️ PERFORMANCE: Main-Thread Yield
+  // We yield to the browser to handle initial layout and input before the heavy React mount.
+  const startMount = () => {
+    if (diagnostic) diagnostic.innerHTML += '<div>> [SYSTEM] Rendering React Root...</div>';
+    root.render(
+      <StrictMode>
+        <ErrorBoundary>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </ErrorBoundary>
+      </StrictMode>,
+    );
+  };
+
+  if (window.requestIdleCallback) {
+    window.requestIdleCallback(() => startMount());
+  } else {
+    setTimeout(startMount, 10);
+  }
+
   
   // Handshake Listener: Dismiss loader only when app signals it's ready
   window.addEventListener('message', (event) => {
