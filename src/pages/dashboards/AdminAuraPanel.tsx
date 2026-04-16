@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AdminService } from '@/services/admin';
-import { Check, X, CreditCard, RefreshCw, Smartphone, User } from 'lucide-react';
+import { Check, X, CreditCard, RefreshCw, Smartphone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import SpotlightCard from '@/components/ui/cyber/SpotlightCard';
 
@@ -35,7 +35,7 @@ export const AdminAuraPanel: React.FC = () => {
       if (ok) {
         setClaims(prev => prev.filter(c => c.id !== claimId));
       } else {
-        alert("TERMINAL ERROR: Judgment rejected by registry.");
+        alert("ARCHIVE ERROR: Registry refused the transaction.");
       }
     } catch (err) {
       console.error("Transaction fault:", err);
@@ -48,59 +48,59 @@ export const AdminAuraPanel: React.FC = () => {
     try {
        const meta = JSON.parse(metadataStr);
        const tier = meta.jump_type || 'nudge';
-       if (tier === 'elite') return <Badge className="bg-emerald-500 text-black text-[8px] font-black uppercase tracking-widest shadow-[0_0_10px_#10b981]">ELITE LEAP</Badge>;
-       if (tier === 'surge') return <Badge className="bg-emerald-500/20 text-emerald-500 border border-emerald-500/40 text-[8px] font-black uppercase tracking-widest">SURGE LEAP</Badge>;
-       return <Badge className="bg-white/5 text-slate-400 border border-white/10 text-[8px] font-black uppercase tracking-widest">NUDGE LEAP</Badge>;
+       if (tier === 'elite') return <Badge className="bg-[#D4AF37] text-white text-[8px] font-black uppercase tracking-widest shadow-md">ELITE LEAP</Badge>;
+       if (tier === 'surge') return <Badge className="bg-[#D4AF37]/20 text-[#D4AF37] border border-[#D4AF37]/40 text-[8px] font-black uppercase tracking-widest">SURGE LEAP</Badge>;
+       return <Badge className="bg-[#1A1A1A]/5 text-[#1A1A1A]/40 border border-[#1A1A1A]/10 text-[8px] font-black uppercase tracking-widest">NUDGE LEAP</Badge>;
     } catch (e) {
-       return <Badge className="bg-slate-800 text-slate-500 text-[8px] font-black uppercase tracking-widest">STANDARD</Badge>;
+       return <Badge className="bg-[#1A1A1A]/5 text-[#1A1A1A]/40 text-[8px] font-black uppercase tracking-widest">STANDARD</Badge>;
     }
   };
 
   return (
-    <div className="space-y-12 min-h-[60vh] pb-20">
-      <div className="flex justify-between items-center px-4 md:px-0">
-          <div className="space-y-2">
-             <div className="flex items-center gap-3">
-                <span className="w-8 h-[2px] bg-emerald-500/40" />
-                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">Observer <span className="text-emerald-500/50">Tithe Ledger</span></h2>
+    <div className="space-y-16 min-h-[60vh] pb-24 px-10">
+      <div className="flex justify-between items-center px-4 md:px-0 border-b border-[#D4AF37]/10 pb-8">
+          <div className="space-y-4">
+             <div className="flex items-center gap-4">
+                <span className="w-8 h-[1px] bg-[#D4AF37]" />
+                <h2 className="text-4xl font-display font-black text-[#1A1A1A] uppercase italic tracking-tighter">Spectral <span className="text-[#D4AF37]">Tithe Ledger</span></h2>
              </div>
-             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/30 flex items-center gap-2 italic">
-                <CreditCard size={10} className="text-emerald-500 animate-pulse" /> Verification of Incoming Identity Offsets
+             <p className="text-[10px] font-black uppercase tracking-[0.4em] text-[#1A1A1A]/30 flex items-center gap-2 italic">
+                <CreditCard size={12} className="text-[#D4AF37]" /> Verification of Incoming Identity Offsets
              </p>
           </div>
           <button 
             onClick={loadClaims}
-            className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-all active:scale-90"
+            className="p-5 rounded-full bg-white border border-[#D4AF37]/20 text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all shadow-sm active:scale-90"
           >
-             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
       </div>
 
-      <div className="grid gap-6">
+      <div className="grid gap-10">
         <AnimatePresence mode="popLayout">
           {claims.length > 0 ? (
             claims.map((claim, idx) => (
               <motion.div
                 key={claim.id}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ delay: idx * 0.05 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: idx * 0.05 }}
               >
-                <SpotlightCard className="p-0 overflow-hidden border-emerald-500/10 bg-slate-900/40 group">
-                  <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-emerald-500/10">
+                <div className="bg-white border border-[#D4AF37]/10 rounded-[3rem] overflow-hidden shadow-[0_15px_40px_rgba(212,175,55,0.05)] group">
+                  <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-[#D4AF37]/10">
                     {/* User Info */}
-                    <div className="p-10 md:w-1/3 bg-emerald-500/[0.02] flex items-center gap-8">
+                    <div className="p-12 md:w-1/3 bg-[#D4AF37]/[0.02] flex items-center gap-10">
                        <div className="relative">
-                          <div className="w-20 h-20 rounded-2xl p-px bg-gradient-to-tr from-emerald-500/40 to-cyan-500/40 shadow-[0_0_20px_rgba(16,185,129,0.1)]">
-                             <div className="w-full h-full rounded-[1.1rem] overflow-hidden bg-slate-950">
+                          <div className="w-24 h-24 rounded-[2.5rem] p-px bg-gradient-to-tr from-[#D4AF37]/60 to-[#BFA06A]/60 shadow-[0_10px_20px_rgba(212,175,55,0.15)]">
+                             <div className="w-full h-full rounded-[2.4rem] overflow-hidden bg-white">
                                 {claim.user_photos ? (
                                    <img 
                                      src={JSON.parse(claim.user_photos)[0]} 
-                                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700" 
+                                     className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
                                    />
                                 ) : (
-                                   <div className="w-full h-full flex items-center justify-center text-emerald-500 text-2xl font-black">
+                                   <div className="w-full h-full flex items-center justify-center text-[#D4AF37] text-3xl font-black">
                                       {claim.user_name?.charAt(0)}
                                    </div>
                                 )}
@@ -108,65 +108,65 @@ export const AdminAuraPanel: React.FC = () => {
                           </div>
                        </div>
                        <div className="space-y-1">
-                          <h4 className="text-xl font-black text-white uppercase italic tracking-tighter">{claim.user_name}</h4>
-                          <span className="text-[9px] font-black text-emerald-500/40 uppercase tracking-[0.3em]">ID: {claim.user_id.slice(0,8)}...</span>
+                          <h4 className="text-2xl font-display font-black text-[#1A1A1A] uppercase italic tracking-tighter">{claim.user_name}</h4>
+                          <span className="text-[10px] font-black text-[#1A1A1A]/20 uppercase tracking-[0.2em]">ID: {claim.user_id.slice(0,10)}</span>
                        </div>
                     </div>
 
                     {/* Transaction Details */}
-                    <div className="p-10 flex-1 grid grid-cols-2 lg:grid-cols-3 gap-8 items-center bg-black/20">
-                       <div className="space-y-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Target Protocol</p>
+                    <div className="p-12 flex-1 grid grid-cols-2 lg:grid-cols-3 gap-10 items-center">
+                       <div className="space-y-3">
+                          <p className="text-[9px] font-black text-[#1A1A1A]/30 uppercase tracking-[0.4em] italic leading-none">Protocol Tier</p>
                           <div className="flex items-center gap-2">
                              {getTierBadge(claim.metadata)}
                           </div>
                        </div>
 
-                       <div className="space-y-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Reference ID</p>
-                          <div className="text-xs font-mono font-bold text-white tracking-widest uppercase">
+                       <div className="space-y-3">
+                          <p className="text-[9px] font-black text-[#1A1A1A]/30 uppercase tracking-[0.4em] italic leading-none">Master Key</p>
+                          <div className="text-xs font-royal font-bold text-[#1A1A1A] tracking-widest uppercase">
                              {claim.reference_id || 'TERMINAL_LINK'}
                           </div>
                        </div>
 
-                       <div className="space-y-2">
-                          <p className="text-[8px] font-black text-slate-500 uppercase tracking-widest italic">Aura Offset</p>
-                          <div className="text-2xl font-black text-emerald-500 flex items-center gap-2">
+                       <div className="space-y-3">
+                          <p className="text-[9px] font-black text-[#1A1A1A]/30 uppercase tracking-[0.4em] italic leading-none">Registry Offset</p>
+                          <div className="text-4xl font-royal font-black text-[#D4AF37] leading-none tabular-nums">
                              +{claim.amount.toLocaleString()}
                           </div>
                        </div>
                     </div>
 
                     {/* Action Block */}
-                    <div className="p-10 bg-emerald-500/[0.01] flex items-center justify-center gap-4">
+                    <div className="p-12 bg-[#D4AF37]/[0.01] flex items-center justify-center gap-4">
                        <button 
                          onClick={() => handleResolve(claim.id, false)}
                          disabled={!!processingId}
-                         className="p-5 rounded-2xl bg-white/5 text-slate-500 hover:bg-red-500/10 hover:text-red-500 transition-all"
+                         className="p-6 rounded-[1.5rem] bg-[#1A1A1A]/5 text-[#1A1A1A]/20 hover:bg-red-50 hover:text-red-400 transition-all shadow-sm"
                          title="Deny Tithe"
                        >
-                          <X size={20} />
+                          <X size={24} />
                        </button>
                        <button 
                          onClick={() => handleResolve(claim.id, true)}
                          disabled={!!processingId}
-                         className="flex-1 md:flex-none px-10 py-5 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-2xl font-black text-[10px] tracking-[0.4em] uppercase hover:bg-emerald-500 hover:text-black transition-all shadow-[0_0_30px_rgba(16,185,129,0.1)] active:scale-95"
+                         className="flex-1 md:flex-none px-12 py-6 bg-[#D4AF37] text-white rounded-[1.5rem] font-black text-[11px] tracking-[0.4em] uppercase hover:bg-[#BFA06A] transition-all shadow-xl active:scale-95"
                        >
                           Authenticate
                        </button>
                     </div>
                   </div>
-                </SpotlightCard>
+                </div>
               </motion.div>
             ))
           ) : (
-            <div className="py-32 flex flex-col items-center justify-center text-center space-y-6 bg-white/[0.01] rounded-[3rem] border border-white/5">
-                <div className="w-20 h-20 rounded-full bg-emerald-500/5 flex items-center justify-center text-emerald-500 animate-pulse">
-                   <Smartphone size={32} />
+            <div className="py-40 flex flex-col items-center justify-center text-center space-y-8 bg-white/40 rounded-[4rem] border border-[#D4AF37]/10 opacity-60">
+                <div className="w-24 h-24 rounded-full bg-[#D4AF37]/5 flex items-center justify-center text-[#D4AF37]">
+                   <Smartphone size={40} strokeWidth={1} />
                 </div>
-                <div className="space-y-2">
-                   <h3 className="text-xl font-black text-white uppercase italic tracking-tighter">No Pending Offsets</h3>
-                   <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest">The Tithe ledger is synchronized and current.</p>
+                <div className="space-y-3">
+                   <h3 className="text-2xl font-display font-black text-[#1A1A1A] uppercase italic tracking-tighter">Archive Synchronized</h3>
+                   <p className="text-[10px] font-black text-[#1A1A1A]/40 uppercase tracking-[0.3em]">The Tithe ledger is current and authenticated.</p>
                 </div>
             </div>
           )}

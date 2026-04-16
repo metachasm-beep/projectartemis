@@ -50,9 +50,9 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
         >
           <planeGeometry args={[3.2, 4.5]} />
           <MeshDistortMaterial 
-            color={hovered ? "#064e3b" : "#020617"} 
+            color={hovered ? "#fef3c7" : "#ffffff"} 
             speed={2} 
-            distort={0.1} 
+            distort={0.05} 
             radius={1} 
             transparent 
             opacity={0.9}
@@ -60,7 +60,7 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
           
           <lineSegments>
              <edgesGeometry args={[new THREE.PlaneGeometry(3.2, 4.5)]} />
-             <lineBasicMaterial color={hovered ? "#34d399" : "#10b981"} opacity={0.3} transparent />
+             <lineBasicMaterial color={hovered ? "#D4AF37" : "#D4AF37"} opacity={0.3} transparent />
           </lineSegments>
 
           <Html
@@ -84,11 +84,11 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
                   </div>
 
                   <div className="space-y-1">
-                     <h3 className="text-3xl font-black text-white italic tracking-tighter">
+                     <h3 className="text-3xl font-black text-[#1A1A1A] italic tracking-tighter">
                         {profile.full_name.split(' ')[0]} <br/>
-                        <span className="text-emerald-500 opacity-50 uppercase text-xs tracking-[0.4em] font-black">{profile.role}</span>
+                        <span className="text-[#D4AF37] opacity-60 uppercase text-[9px] tracking-[0.4em] font-black">{profile.role}</span>
                      </h3>
-                     <div className="flex items-center gap-2 text-[10px] font-bold text-emerald-500/40 uppercase tracking-widest">
+                     <div className="flex items-center gap-2 text-[9px] font-bold text-[#1A1A1A]/30 uppercase tracking-widest">
                         <Globe size={10} /> {profile.city || 'PARTS_UNKNOWN'}
                      </div>
                   </div>

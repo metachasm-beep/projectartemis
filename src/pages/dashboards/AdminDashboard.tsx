@@ -3,13 +3,10 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Shield, 
-  Users, 
-  MessageSquare, 
   Search, 
   Trash2, 
   ShieldAlert, 
   BadgeCheck, 
-  Zap, 
   Layers, 
   Eye,
   RefreshCw,
@@ -18,7 +15,6 @@ import { AdminService } from '@/services/admin';
 import { useAuth } from '@/hooks/useAuth';
 import type { MatriarchProfile } from '@/types';
 import { Input } from '@/components/ui/input';
-import DecryptedText from '@/components/ui/cyber/DecryptedText';
 
 import { Badge } from '@/components/ui/badge';
 import { AdminCommunicationsHub } from './AdminCommunicationsHub';
@@ -27,10 +23,10 @@ import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
 import GazeHologram from './GazeHologram';
 
-import { IdentityConstellation } from './IdentityConstellation';
-import { TacticalStatus } from './TacticalStatus';
-import { CommandBlade } from './CommandBlade';
-import { ObserverBento } from './ObserverBento';
+import { SanctuaryPillar } from './SanctuaryPillar';
+import { SpectralHeader } from './SpectralHeader';
+import { ArchiveStatus } from './ArchiveStatus';
+import { LuxuryDock } from './LuxuryDock';
 
 interface AdminDashboardProps {
   handleLogout: () => void;
@@ -39,7 +35,7 @@ interface AdminDashboardProps {
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager }) => {
   const { user: currentUser } = useAuth();
-  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
+  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'JOURNAL' | 'BUY_AURA'>('ROSTER');
   const [viewMode, setViewMode] = useState<'STREAM' | 'GAZE'>('STREAM');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [pendingClaimsCount, setPendingClaimsCount] = useState(0);
@@ -91,7 +87,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
       const claims = await AdminService.getPendingAuraClaims();
       setPendingClaimsCount(claims.length);
     } catch (err) {
-      console.warn("Roster hydration failed:", err);
+      console.warn("Archive synchronization failed:", err);
     } finally {
       setLoading(false);
       fetchingRef.current = false;
@@ -127,16 +123,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
        setProfiles(p => p.map(x => x.user_id === userId ? { ...x, tokens: (x.tokens || 0) + amount } : x));
        await import('@/services/sanctuary').then(m => m.SanctuaryService.recalculateGlobalRanks());
     } else {
-      alert("TERMINAL ERROR: Registry uplink failed.");
+      alert("ARCHIVE SYSTEM ERROR: Ledger link interrupted.");
     }
   };
 
   const handleCulling = async () => {
-    if (!window.confirm("PROTOCOL ULTIMATUM: INITIATE GLOBAL CULLING? This permanently purges inactive aspirants. This is absolute.")) return;
+    if (!window.confirm("ULTIMATE CULLING? This permanently archives inactive men and reflows the Sanctuary hierarchy. This is definitive.")) return;
     try {
         setLoading(true);
         const res = await AdminService.executeGlobalCulling();
-        window.alert(`Culling Complete\n\n${res.purged} stagnant souls evicted.\nAbsolute Rank Matrix reflowed.`);
+        window.alert(`Culling Complete\n\n${res.purged} stagnant souls archived.\nSpectral Matrix reflowed.`);
         loadData();
     } catch(err) {
         console.error(err);
@@ -145,23 +141,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
   };
 
   const handleBroadcast = async () => {
-    const title = window.prompt("Enter Broadcast Notice Title (e.g. ULTIMATUM)");
+    const title = window.prompt("Enter Decree Title (e.g. SANCTUARY ULTIMATUM)");
     if(!title) return;
-    const body = window.prompt("Enter the manifesto or message body to broadcast to ALL aspirants:");
+    const body = window.prompt("Enter the manifesto or decree body for ALL active aspirants:");
     if(!body) return;
     
     if(!window.confirm(`BROADCAST CONFIRMATION\n\nYou are about to transmit a high-priority decree to ALL active profiles. Proceed?`)) return;
     
     setLoading(true);
     const res = await AdminService.sendSovereignBroadcast(title, body);
-    window.alert(`Sovereign Broadcast successful to ${res.count} channels.`);
+    window.alert(`Sovereign Broadcast delivered to ${res.count} archives.`);
     setLoading(false);
   };
 
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     if (currentUser?.id === itemToDelete) {
-        alert("CRITICAL: Self-eviction protocol rejected.");
+        alert("DEFINITIVE: Self-archiving sequence rejected.");
         setItemToDelete(null);
         return;
     }
@@ -180,29 +176,29 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-200 font-mono relative overflow-x-hidden selection:bg-emerald-500 selection:text-black scroll-smooth">
-      {/* 🌌 Background 3D & Effects */}
-      <IdentityConstellation />
+    <div className="min-h-screen bg-[#fdfcfb] text-[#1A1A1A] font-body relative overflow-x-hidden selection:bg-[#D4AF37] selection:text-white">
+      {/* 🏛️ 3D Background */}
+      <SanctuaryPillar />
       
-      {/* 🛡️ Confirmation Modal */}
+      {/* ⚖️ Confirmation Portal */}
       {itemToDelete && createPortal(
-        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="bg-slate-900 p-10 rounded-[2rem] max-w-md w-full border-2 border-red-500/20 shadow-[0_0_50px_rgba(239,68,68,0.1)]">
-            <ShieldAlert className="w-16 h-16 text-red-500 mb-6 mx-auto animate-pulse" />
-            <h2 className="text-3xl font-black text-white mb-4 text-center tracking-tighter uppercase italic">Absolute Excision?</h2>
-            <p className="text-slate-400 mb-10 text-xs text-center leading-relaxed tracking-widest uppercase">
-              You are about to permanently obliterate this identity from the sanctuary. This action is absolute and irreversible.
+        <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-[#1A1A1A]/20 backdrop-blur-xl animate-in fade-in duration-500">
+          <div className="bg-white p-12 rounded-[3.5rem] max-w-lg w-full border border-[#D4AF37]/30 shadow-[0_40px_100px_rgba(212,175,55,0.2)]">
+            <ShieldAlert className="w-20 h-20 text-[#D4AF37] mb-8 mx-auto opacity-80" />
+            <h2 className="text-4xl font-display font-black text-[#1A1A1A] mb-4 text-center tracking-tighter uppercase italic">Definitive Excision?</h2>
+            <p className="text-[#1A1A1A]/60 mb-12 text-sm text-center font-body leading-relaxed max-w-xs mx-auto">
+              You are about to permanently obliterate this identity from the sanctuary archives. This action is absolute.
             </p>
             <div className="flex gap-4">
               <button 
                 onClick={() => setItemToDelete(null)} 
-                className="flex-1 py-4 px-6 rounded-xl font-black text-[10px] tracking-widest uppercase bg-slate-800 text-slate-400 hover:bg-slate-700 transition-all"
+                className="flex-1 py-5 px-8 rounded-[2rem] font-black text-[10px] tracking-widest uppercase bg-[#1A1A1A]/5 text-[#1A1A1A]/40 hover:bg-[#1A1A1A]/10 transition-all"
               >
                 Retreat
               </button>
               <button 
                 onClick={confirmDelete} 
-                className="flex-1 py-4 px-6 rounded-xl font-black text-[10px] tracking-widest uppercase bg-red-600 text-white hover:bg-black transition-all shadow-lg"
+                className="flex-1 py-5 px-8 rounded-[2rem] font-black text-[10px] tracking-widest uppercase bg-[#D4AF37] text-white hover:bg-[#BFA06A] transition-all shadow-xl"
               >
                 Obliterate
               </button>
@@ -223,173 +219,160 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
         )}
       </AnimatePresence>
 
-      {/* ⚙️ Tactical Shell */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <TacticalStatus metrics={metrics} />
+        <SpectralHeader 
+           activeTab={dashboardTab} 
+           onTabChange={(t) => setDashboardTab(t)}
+           roleFilter={filters.role}
+           onRoleFilterChange={(r) => setFilters(f => ({...f, role: r}))}
+        />
 
-        <main className="flex-1 py-12 space-y-20 pb-48">
-           <ObserverBento metrics={metrics} />
+        <main className="flex-1 py-16 space-y-24 pb-64">
+           {/* Dolly Zoom Wrapper */}
+           <AnimatePresence mode="wait">
+             <motion.div 
+               key={dashboardTab}
+               initial={{ opacity: 0, scale: 0.95, z: -50 }}
+               animate={{ opacity: 1, scale: 1, z: 0 }}
+               exit={{ opacity: 0, scale: 1.05, z: 50 }}
+               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+               className="space-y-24"
+             >
+                <ArchiveStatus metrics={metrics} />
 
-           {/* 🧬 Action Matrix */}
-           <div className="space-y-12 max-w-[1600px] mx-auto">
-              <div className="flex flex-col md:flex-row justify-between items-center gap-10 px-10">
-                 <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
-                       <span className="w-8 h-[2px] bg-emerald-500/40" />
-                       <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-emerald-500">
-                          <DecryptedText text="Identity Processing Matrix" speed={80} revealDirection="center" />
-                       </h2>
-                    </div>
-                    <div className="flex gap-8">
-                       {['ROSTER', 'TITHE', 'COMMUNICATIONS', 'JOURNAL'].map(t => (
-                          <button 
-                            key={t}
-                            onClick={() => setDashboardTab(t as any)}
-                            className={`text-[10px] font-black uppercase tracking-[0.4em] transition-all pb-2 border-b-2 relative ${dashboardTab === t ? 'border-emerald-500 text-white shadow-[0_4px_10px_rgba(16,185,129,0.1)]' : 'border-transparent text-slate-500 hover:text-emerald-500/60'}`}
-                          >
-                             {t}
-                             {t === 'TITHE' && pendingClaimsCount > 0 && (
-                                <span className="absolute -top-1 -right-4 w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_#10b981] animate-pulse" />
-                             )}
-                          </button>
-                       ))}
-                    </div>
-                 </div>
-
-                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-1.5 p-1 bg-white/5 rounded-2xl border border-white/10">
-                       <button onClick={() => setViewMode('STREAM')} className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'STREAM' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-slate-500 hover:text-white'}`}>
-                          <Layers size={10} /> Stream
-                       </button>
-                       <button onClick={() => setViewMode('GAZE')} className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'GAZE' ? 'bg-emerald-500 text-black shadow-lg shadow-emerald-500/20' : 'text-slate-500 hover:text-white'}`}>
-                          <Eye size={10} /> Gaze Mode
-                       </button>
-                    </div>
-                 </div>
-              </div>
-
-              {dashboardTab === 'ROSTER' ? (
-                <div className="space-y-8 animate-in fade-in duration-700 px-10">
-                  <div className="flex flex-col md:flex-row gap-4">
-                     <div className="relative flex-1 group">
-                        <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-emerald-500/40 group-focus-within:text-emerald-500 transition-colors" />
-                        <Input 
-                          placeholder="FILTER NODES BY UID OR IDENTITY..." 
-                          className="h-14 pl-16 bg-white/[0.03] border-emerald-500/10 rounded-2xl focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/40 text-[10px] font-bold uppercase tracking-widest text-white placeholder:text-slate-700 transition-all" 
-                          value={searchQuery} 
-                          onChange={e => setSearchQuery(e.target.value)} 
-                        />
+                <div className="max-w-[1600px] mx-auto px-10 space-y-16">
+                  {/* Mode Selector */}
+                  <div className="flex justify-between items-center border-b border-[#D4AF37]/10 pb-8">
+                     <div className="flex items-center gap-4">
+                        <span className="w-5 h-[1px] bg-[#D4AF37]" />
+                        <h2 className="text-[10px] font-black uppercase tracking-[0.5em] text-[#D4AF37] italic">
+                           Archive Retrieval Interface
+                        </h2>
                      </div>
-                     <select 
-                       value={filters.role} 
-                       onChange={e => setFilters(f => ({...f, role: e.target.value}))} 
-                       className="bg-white/[0.03] border border-emerald-500/10 rounded-2xl px-8 py-2 text-[9px] font-black text-emerald-500/60 uppercase tracking-widest focus:outline-none focus:border-emerald-500 transition-all"
-                     >
-                        <option value="all">ALL ROLES</option>
-                        <option value="man">MEN</option>
-                        <option value="woman">WOMEN</option>
-                        <option value="admin">ADMINS</option>
-                     </select>
+                     <div className="flex items-center gap-2 p-1 bg-[#D4AF37]/5 rounded-2xl border border-[#D4AF37]/10">
+                        <button onClick={() => setViewMode('STREAM')} className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'STREAM' ? 'bg-[#D4AF37] text-white shadow-md' : 'text-[#D4AF37]/40 hover:text-[#D4AF37]'}`}>
+                           <Layers size={11} /> Stream
+                        </button>
+                        <button onClick={() => setViewMode('GAZE')} className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'GAZE' ? 'bg-[#D4AF37] text-white shadow-md' : 'text-[#D4AF37]/40 hover:text-[#D4AF37]'}`}>
+                           <Eye size={11} /> Gaze Mode
+                        </button>
+                     </div>
                   </div>
 
-                  {viewMode === 'GAZE' ? (
-                    <GazeHologram 
-                      profiles={profiles} 
-                      onVerify={handleVerifyToggle}
-                      onMessage={setMessageTarget}
-                      onDelete={setItemToDelete}
-                      onPaymentApprove={handlePaymentApprove}
-                      onPaymentReject={handlePaymentReject}
-                    />
-                  ) : (
-                    <div className="bg-white/[0.01] rounded-[2.5rem] border border-emerald-500/5 overflow-hidden shadow-2xl relative">
-                       {/* Table Layout */}
-                       <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
-                          <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
-                             <thead className="bg-slate-900 sticky top-0 z-20 border-b border-emerald-500/10">
-                                <tr>
-                                   <th className="px-12 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/40">Identity Node</th>
-                                   <th className="px-12 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/40">Affiliation</th>
-                                   <th className="px-12 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/40 text-center">Protocol Status</th>
-                                   <th className="px-12 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/40">Aura Balance</th>
-                                   <th className="px-12 py-8 text-[9px] font-black uppercase tracking-[0.2em] text-emerald-500/40 text-right">Rituals</th>
-                                </tr>
-                             </thead>
-                             <tbody className="divide-y divide-emerald-500/5">
-                                {profiles.map((p) => (
-                                   <tr key={p.user_id} className="group hover:bg-emerald-500/[0.02] transition-all duration-300 relative">
-                                      {/* Laser Scanning Hover Effect */}
-                                      <td className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity overflow-hidden">
-                                         <div className="w-[1px] h-full bg-emerald-500/40 absolute top-0 left-0 animate-[laser_2s_ease-in-out_infinite]" />
-                                      </td>
+                  {dashboardTab === 'ROSTER' ? (
+                    <div className="space-y-10">
+                      <div className="flex flex-col md:flex-row gap-6">
+                         <div className="relative flex-1 group">
+                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D4AF37]/40 group-focus-within:text-[#D4AF37] transition-all" />
+                            <Input 
+                              placeholder="SEARCH ARCHIVE BY IDENTITY KEY..." 
+                              className="h-16 pl-20 bg-white border-[#D4AF37]/10 rounded-full focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 text-[11px] font-bold uppercase tracking-widest text-[#1A1A1A] placeholder:text-[#1A1A1A]/10 shadow-sm" 
+                              value={searchQuery} 
+                              onChange={e => setSearchQuery(e.target.value)} 
+                            />
+                         </div>
+                         <button 
+                            onClick={loadData}
+                            className="w-16 h-16 bg-white border border-[#D4AF37]/10 rounded-full flex items-center justify-center text-[#D4AF37] hover:bg-[#D4AF37]/5 transition-all shadow-sm"
+                         >
+                            <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
+                         </button>
+                      </div>
 
-                                      <td className="px-12 py-8 flex items-center gap-6">
-                                         <div className="w-14 h-14 rounded-2xl overflow-hidden bg-emerald-500/5 border border-emerald-500/10 relative">
-                                            <img src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" />
-                                            {p.is_verified && <BadgeCheck size={14} className="absolute -bottom-1 -right-1 text-emerald-500" fill="black" />}
-                                         </div>
-                                         <div className="space-y-0.5">
-                                            <p className="font-black text-white italic text-base uppercase tracking-tight">{p.full_name}</p>
-                                            <p className="text-[8px] font-black text-emerald-500/30 uppercase tracking-[0.3em]">{p.city || 'Unknown Node'}</p>
-                                         </div>
-                                      </td>
-                                      <td className="px-12 py-8">
-                                         <Badge variant="outline" className="text-[8px] font-black p-2 uppercase border-emerald-500/20 text-emerald-500 bg-emerald-500/5">{p.role}</Badge>
-                                      </td>
-                                      <td className="px-12 py-8 text-center text-[10px] font-mono font-bold text-emerald-500/60 uppercase">
-                                         {p.payment_status || 'NOT_LINKED'}
-                                      </td>
-                                      <td className="px-12 py-8">
-                                         <div className="flex items-center gap-3">
-                                            <span className="font-mono font-black text-xl text-white tracking-widest">{(p.tokens || 0).toLocaleString()}</span>
-                                            <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
-                                               <button onClick={() => handleUpdateTokens(p.user_id, 1000)} className="w-6 h-6 bg-emerald-500/10 text-emerald-500 rounded-lg flex items-center justify-center font-bold text-xs hover:bg-emerald-500 hover:text-black transition-all">+</button>
-                                               <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-6 h-6 bg-white/5 text-slate-500 rounded-lg flex items-center justify-center font-bold text-xs hover:bg-red-500 hover:text-white transition-all">-</button>
-                                            </div>
-                                         </div>
-                                      </td>
-                                      <td className="px-12 py-8 text-right">
-                                         <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-4 group-hover:translate-x-0">
-                                            <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-3 hover:bg-emerald-500/10 text-emerald-500 rounded-xl transition-all"><MessageSquare size={16} /></button>
-                                            <button onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} className={`p-3 rounded-xl transition-all ${p.is_verified ? 'text-emerald-500 bg-emerald-500/10' : 'text-slate-700 hover:bg-emerald-500/5 hover:text-emerald-500'}`}><Shield size={16} /></button>
-                                            <button onClick={() => setItemToDelete(p.user_id)} className="p-3 hover:bg-red-500/10 text-red-500 rounded-xl transition-all"><Trash2 size={16} /></button>
-                                         </div>
-                                      </td>
-                                   </tr>
-                                ))}
-                             </tbody>
-                          </table>
-                       </div>
+                      {viewMode === 'GAZE' ? (
+                        <GazeHologram 
+                          profiles={profiles} 
+                          onVerify={handleVerifyToggle}
+                          onMessage={setMessageTarget}
+                          onDelete={setItemToDelete}
+                          onPaymentApprove={handlePaymentApprove}
+                          onPaymentReject={handlePaymentReject}
+                        />
+                      ) : (
+                        <div className="bg-white rounded-[4rem] border border-[#D4AF37]/10 overflow-hidden shadow-[0_30px_70px_rgba(212,175,55,0.05)] relative min-h-[500px]">
+                           <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
+                              <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
+                                 <thead className="bg-[#fdfcfb] sticky top-0 z-20 border-b border-[#D4AF37]/10">
+                                    <tr>
+                                       <th className="px-14 py-10 text-[9px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">Identity Soul</th>
+                                       <th className="px-14 py-10 text-[9px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">Presence</th>
+                                       <th className="px-14 py-10 text-[9px] font-black uppercase tracking-[0.3em] text-[#D4AF37] text-center">Protocol</th>
+                                       <th className="px-14 py-10 text-[9px] font-black uppercase tracking-[0.3em] text-[#D4AF37]">Aura Tithe</th>
+                                       <th className="px-14 py-10 text-[9px] font-black uppercase tracking-[0.3em] text-[#D4AF37] text-right">Ritualism</th>
+                                    </tr>
+                                 </thead>
+                                 <tbody className="divide-y divide-[#D4AF37]/5">
+                                    {profiles.map((p) => (
+                                       <tr key={p.user_id} className="group hover:bg-[#D4AF37]/[0.02] transition-all duration-700 relative">
+                                          <td className="px-14 py-10 flex items-center gap-8">
+                                             <div className="w-16 h-16 rounded-[2rem] overflow-hidden bg-white border border-[#D4AF37]/10 relative shadow-sm">
+                                                <img 
+                                                   src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`} 
+                                                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" 
+                                                />
+                                                {p.is_verified && <BadgeCheck size={16} className="absolute -bottom-1 -right-1 text-[#D4AF37]" fill="white" />}
+                                             </div>
+                                             <div className="space-y-1">
+                                                <p className="font-display font-black text-[#1A1A1A] italic text-xl tracking-tight leading-none">{p.full_name}</p>
+                                                <p className="text-[9px] font-bold text-[#1A1A1A]/30 uppercase tracking-[0.2em]">{p.city || 'PARTS UNKNOWN'}</p>
+                                             </div>
+                                          </td>
+                                          <td className="px-14 py-10">
+                                             <Badge variant="outline" className="text-[8px] font-black p-2 uppercase border-[#D4AF37]/20 text-[#D4AF37] bg-white italic">{p.role}</Badge>
+                                          </td>
+                                          <td className="px-14 py-10 text-center">
+                                             <div className={`w-2.5 h-2.5 rounded-full mx-auto ${p.payment_status === 'APPROVED' ? 'bg-[#D4AF37]' : 'bg-red-200'}`} />
+                                          </td>
+                                          <td className="px-14 py-10">
+                                             <div className="flex items-center gap-4">
+                                                <span className="font-royal font-black text-2xl text-[#1A1A1A] tabular-nums leading-none">{(p.tokens || 0).toLocaleString()}</span>
+                                                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all translate-x-2 group-hover:translate-x-0">
+                                                   <button onClick={() => handleUpdateTokens(p.user_id, 1000)} className="w-7 h-7 bg-[#D4AF37]/10 text-[#D4AF37] rounded-xl flex items-center justify-center font-bold text-xs hover:bg-[#D4AF37] hover:text-white transition-all">+</button>
+                                                   <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-7 h-7 bg-[#1A1A1A]/5 text-[#1A1A1A]/40 rounded-xl flex items-center justify-center font-bold text-xs hover:bg-black hover:text-white transition-all">-</button>
+                                                </div>
+                                             </div>
+                                          </td>
+                                          <td className="px-14 py-10 text-right">
+                                             <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all translate-x-3 group-hover:translate-x-0">
+                                                <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-4 hover:bg-[#D4AF37]/5 text-[#D4AF37] rounded-2xl transition-all"><MessageSquare size={16} /></button>
+                                                <button onClick={() => handleVerifyToggle(p.user_id, !!p.is_verified)} className={`p-4 rounded-2xl transition-all ${p.is_verified ? 'text-[#D4AF37] bg-[#D4AF37]/5 shadow-inner' : 'text-[#1A1A1A]/20 hover:text-[#D4AF37]'}`}><Shield size={16} /></button>
+                                                <button onClick={() => setItemToDelete(p.user_id)} className="p-4 hover:bg-red-50 text-red-400 rounded-2xl transition-all"><Trash2 size={16} /></button>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    ))}
+                                 </tbody>
+                              </table>
+                           </div>
+                        </div>
+                      )}
                     </div>
+                  ) : dashboardTab === 'TITHE' ? (
+                    <AdminAuraPanel />
+                  ) : dashboardTab === 'COMMUNICATIONS' ? (
+                    <AdminCommunicationsHub />
+                  ) : dashboardTab === 'BUY_AURA' ? (
+                    <div className="py-40 text-center spa-y-8 animate-in fade-in zoom-in-95 duration-700">
+                       <CreditCard size={64} className="mx-auto text-[#D4AF37] opacity-20 mb-8" />
+                       <h3 className="text-4xl font-display font-black text-[#D4AF37] uppercase italic mb-4">Registry Expansion</h3>
+                       <p className="text-sm font-body text-[#1A1A1A]/40 max-w-md mx-auto leading-relaxed">Identity offset acquisitions are currently handled via direct sovereign request. Connect with an operator for priority allocation.</p>
+                    </div>
+                  ) : (
+                    <AdminBlogModeration />
                   )}
                 </div>
-              ) : dashboardTab === 'TITHE' ? (
-                <div className="px-10"><AdminAuraPanel /></div>
-              ) : dashboardTab === 'COMMUNICATIONS' ? (
-                <div className="px-10"><AdminCommunicationsHub /></div>
-              ) : (
-                <div className="px-10"><AdminBlogModeration /></div>
-              )}
-           </div>
+             </motion.div>
+           </AnimatePresence>
         </main>
 
-        <CommandBlade 
-          onLogout={handleLogout} 
-          onSync={loadData} 
-          onBroadcast={handleBroadcast} 
-          onCulling={handleCulling} 
-          loading={loading} 
+        <LuxuryDock 
+           onLogout={handleLogout}
+           onSync={loadData}
+           onBroadcast={handleBroadcast}
+           onCulling={handleCulling}
+           loading={loading}
         />
       </div>
-
-      <style>{`
-        @keyframes laser {
-          0% { left: 0%; opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { left: 100%; opacity: 0; }
-        }
-      `}</style>
     </div>
   );
 };
