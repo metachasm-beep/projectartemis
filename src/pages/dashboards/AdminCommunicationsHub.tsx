@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, Shield, Users, ArrowRight, Eye, RefreshCw, Clock } from 'lucide-react';
+import { MessageSquare, Shield, ArrowRight, Eye, RefreshCw, Clock, Terminal } from 'lucide-react';
 import { AdminService } from '@/services/admin';
 import { MagicChat } from '@/components/MagicChat';
 import { Badge } from '@/components/ui/badge';
@@ -29,16 +29,18 @@ export const AdminCommunicationsHub: React.FC = () => {
       try { return JSON.parse(json || '[]'); } catch { return []; }
     };
 
-    // 👁️ Monitor Mode: Reusing MagicChat with a specialized monitor bridge
     return (
-      <div className="space-y-6">
+      <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
         <button 
           onClick={() => setSelectedMatch(null)}
-          className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-mat-wine/70 hover:text-mat-wine transition-colors"
+          className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-emerald-500/60 hover:text-emerald-500 transition-all group"
         >
-          <ArrowRight size={14} className="rotate-180" /> Back to Directory
+          <div className="p-2 bg-emerald-500/5 rounded-lg group-hover:bg-emerald-500/20 transition-all">
+            <ArrowRight size={14} className="rotate-180" />
+          </div> 
+          Terminate Monitoring Session
         </button>
-        <div className="bg-mat-cream/40 p-1 rounded-[3rem] border border-mat-rose/10">
+        <div className="bg-slate-900/60 p-1 rounded-[3rem] border border-emerald-500/10 shadow-[0_0_50px_rgba(16,185,129,0.05)]">
            <MagicChat 
              match={{
                ...selectedMatch,
@@ -58,117 +60,95 @@ export const AdminCommunicationsHub: React.FC = () => {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex justify-between items-end">
-         <div className="space-y-2">
-            <h2 className="text-3xl font-black text-mat-wine tracking-tighter">
-              <DecryptedText 
-                text="SOVEREIGN EYES" 
-                speed={100}
-                sequential={true}
-                animateOn="view"
-                className="text-mat-wine"
-                encryptedClassName="text-mat-rose/30"
-              />
-            </h2>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/70 flex items-center gap-2">
-               <Shield size={10} className="text-mat-rose" /> Administrative Monitoring Conduit
-            </p>
-         </div>
-         <button onClick={loadComms} className="p-3 bg-mat-wine/5 text-mat-wine rounded-full hover:bg-mat-wine/10 transition-all">
-            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
-         </button>
+    <div className="space-y-12 pb-20">
+      <div className="flex justify-between items-center px-4 md:px-0">
+          <div className="space-y-2">
+             <div className="flex items-center gap-3">
+                <span className="w-8 h-[2px] bg-emerald-500/40" />
+                <h2 className="text-3xl font-black text-white uppercase italic tracking-tighter">
+                  <DecryptedText 
+                    text="SOVEREIGN EYES" 
+                    speed={80}
+                    sequential={true}
+                    className="text-white"
+                  />
+                </h2>
+             </div>
+             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-emerald-500/30 flex items-center gap-2 italic">
+                <Shield size={10} className="text-emerald-500 animate-pulse" /> Administrative Monitoring Conduit
+             </p>
+          </div>
+          <button 
+            onClick={loadComms} 
+            className="p-4 rounded-2xl bg-emerald-500/5 border border-emerald-500/10 text-emerald-500 hover:bg-emerald-500 hover:text-black transition-all active:scale-90"
+          >
+             <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+          </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-4">
+      <div className="grid grid-cols-1 gap-6">
          {loading && comms.length === 0 ? (
-            <div className="h-64 flex items-center justify-center opacity-20">
-               <RefreshCw className="animate-spin" />
+            <div className="h-64 flex items-center justify-center text-emerald-500/20">
+               <RefreshCw className="animate-spin w-10 h-10" />
             </div>
          ) : comms.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center text-center space-y-4 mat-glass rounded-[3rem] border-dashed border-mat-rose/20 opacity-40">
-               <MessageSquare size={48} strokeWidth={0.5} />
-               <p className="text-xs uppercase tracking-widest font-black">No Active Resonances Found</p>
+            <div className="py-32 flex flex-col items-center justify-center text-center space-y-6 bg-white/[0.01] rounded-[3rem] border border-white/5 opacity-40">
+                <Terminal size={48} className="text-emerald-500/40" />
+                <p className="text-[10px] uppercase tracking-[0.3em] font-black text-emerald-500/40">No Active Resonances Found in Matrix</p>
             </div>
          ) : (
             <AnimatePresence>
                {comms.map((c, i) => (
                   <motion.div 
                     key={c.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05 }}
-                    onClick={() => setSelectedMatch(c)}
-                    className="group mat-glass-deep p-6 rounded-[2.5rem] border border-mat-rose/10 hover:border-mat-rose/40 hover:bg-white transition-all cursor-pointer flex items-center gap-8 shadow-sm"
+                    className="group"
                   >
-                     {/* Identity Collision View */}
-                     <div className="flex -space-x-8">
-                        {[
-                          { img: (function(){ try { return JSON.parse(c.woman_photos || '[]')[0]; } catch { return "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200"; }})(), name: c.woman_name },
-                          { img: (function(){ try { return JSON.parse(c.man_photos || '[]')[0]; } catch { return "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200"; }})(), name: c.man_name }
-                         ].map((user, idx) => {
-                            const photos = (function(){
-                               try {
-                                  const raw = idx === 0 ? c.woman_photos : c.man_photos;
-                                  return JSON.parse(raw || '[]');
-                               } catch { return []; }
-                            })();
-                            return (
-                               <div key={idx} className="w-16 h-16 rounded-[1.25rem] border-4 border-mat-cream overflow-hidden shadow-mat-premium group-hover:scale-105 transition-transform duration-500 bg-mat-rose/5">
-                                  <img 
-                                    src={user.img} 
-                                    referrerPolicy="no-referrer" 
-                                    crossOrigin="anonymous"
-                                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all font-bold"
-                                    onError={(e) => {
-                                      const target = e.currentTarget;
-                                      const currentSrc = target.src || '';
-                                      
-                                      // STAGE 1: Google Re-format
-                                      if (currentSrc.includes('googleusercontent.com') && !currentSrc.includes('sz=300')) {
-                                        const base = currentSrc.split('=')[0];
-                                        target.src = `${base}=s300`;
-                                        return;
-                                      }
-
-                                      // STAGE 2: Photo Array Fallback
-                                      if (photos.length > 1 && target.src !== photos[1]) {
-                                        target.src = photos[1];
-                                        return;
-                                      }
-
-                                      // STAGE 3: Premium DiceBear
-                                      target.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.name}&backgroundColor=ffdfbf,ffd5dc,d1d4f9`;
-                                      target.removeAttribute('crossorigin');
-                                    }}
-                                  />
-                               </div>
-                            );
-                         })}
-                     </div>
-
-                     <div className="flex-1 space-y-2">
-                        <div className="flex items-center gap-3">
-                           <h4 className="text-lg font-bold text-mat-wine italic">
-                             {c.woman_name.split(' ')[0]} <span className="text-mat-rose/30 mx-1">&</span> {c.man_name.split(' ')[0]}
-                           </h4>
-                           <Badge variant="outline" className="text-[7px] font-black uppercase tracking-tighter px-2 border-mat-rose/20 text-mat-rose/80">
-                              {c.current_comm_mode.replace('_', ' ')}
-                           </Badge>
+                     <div className="bg-slate-900/40 border border-emerald-500/10 rounded-[2rem] p-8 flex flex-col md:flex-row items-center justify-between gap-8 hover:bg-emerald-500/[0.02] hover:border-emerald-500/20 transition-all duration-500 relative overflow-hidden">
+                        {/* Scanning Line */}
+                        <div className="absolute inset-x-0 h-[1px] bg-emerald-500/20 top-0 opacity-0 group-hover:opacity-100 animate-[scan_2s_linear_infinite]" />
+                        
+                        <div className="flex items-center gap-8 flex-1">
+                           <div className="flex -space-x-4">
+                              {[c.man_photos, c.woman_photos].map((p, idx) => (
+                                 <div key={idx} className="w-14 h-14 rounded-2xl border-2 border-slate-950 overflow-hidden bg-slate-800 shadow-xl">
+                                    <img 
+                                      src={JSON.parse(p || '[]')[0] || "https://api.dicebear.com/7.x/avataaars/svg?seed=neutral"} 
+                                      className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                    />
+                                 </div>
+                              ))}
+                           </div>
+                           <div className="space-y-1">
+                              <h4 className="text-xl font-black text-white italic tracking-tighter uppercase whitespace-nowrap">
+                                {c.man_name.split(' ')[0]} <span className="text-emerald-500/40">&</span> {c.woman_name.split(' ')[0]}
+                              </h4>
+                              <div className="flex items-center gap-4 text-[8px] font-black text-emerald-500/40 uppercase tracking-[0.3em]">
+                                 <span className="flex items-center gap-1.5"><Clock size={10} /> {new Date(c.last_message_at).toLocaleTimeString()}</span>
+                                 <span className="w-1 h-1 rounded-full bg-emerald-500/20" />
+                                 <Badge variant="outline" className="text-[7px] border-emerald-500/20 text-emerald-500/60 px-2">ENCRYPTED</Badge>
+                              </div>
+                           </div>
                         </div>
-                         <p className="text-[11px] text-mat-slate/70 line-clamp-1 italic font-medium">
-                           "{c.last_message || 'Resonance initiated...'}"
-                         </p>
-                     </div>
 
-                     <div className="text-right space-y-2">
-                         <div className="flex items-center gap-1 justify-end text-[8px] font-bold text-mat-slate/60 uppercase tracking-widest">
-                           <Clock size={10} />
-                           {c.last_message_at ? new Date(c.last_message_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'Pending'}
+                        <div className="flex items-center gap-6">
+                           <div className="hidden lg:flex flex-col items-end text-right">
+                              <span className="text-[7px] font-black text-emerald-500/20 uppercase tracking-[0.4em]">Signal Integrity</span>
+                              <div className="flex gap-1 mt-1">
+                                 {[1,2,3,4].map(b => (
+                                    <div key={b} className={`w-1 h-3 rounded-full ${b <= 3 ? 'bg-emerald-500' : 'bg-emerald-500/20'}`} />
+                                 ))}
+                              </div>
+                           </div>
+                           <button 
+                             onClick={() => setSelectedMatch(c)}
+                             className="px-8 py-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/20 rounded-2xl font-black text-[9px] tracking-[0.4em] uppercase hover:bg-emerald-500 hover:text-black transition-all shadow-[0_0_20px_rgba(16,185,129,0.05)] flex items-center gap-3 active:scale-95"
+                           >
+                              <Eye size={14} /> Open Conduit
+                           </button>
                         </div>
-                        <button className="flex items-center gap-2 px-4 py-2 bg-mat-wine text-white rounded-full text-[9px] font-black uppercase tracking-widest md:opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0 shadow-lg">
-                           <Eye size={12} /> Enter Gaze
-                        </button>
                      </div>
                   </motion.div>
                ))}
