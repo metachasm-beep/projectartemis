@@ -151,10 +151,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data: { session: currentSession } } = await supabase.auth.getSession();
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      
+      // 🏎️ PERFORMANCE: Release loader immediately after session resolves.
+      // Profile hydration happens in the background to avoid blocking initial paint.
+      setLoading(false);
+      
       if (currentSession?.user) {
-        await fetchProfile(currentSession.user.id);
-      } else {
-        setLoading(false);
+        fetchProfile(currentSession.user.id);
       }
     };
 
@@ -163,13 +166,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       setSession(currentSession);
       setUser(currentSession?.user ?? null);
+      
       if (currentSession?.user) {
-        await fetchProfile(currentSession.user.id);
+        // Non-blocking profile update
+        fetchProfile(currentSession.user.id);
       } else {
         setProfile(null);
         setLoading(false);
       }
     });
+
 
     return () => subscription.unsubscribe();
     // 🛡️ SECURITY: fetchProfile is stable due to syncStreak identity stability.
