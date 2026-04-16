@@ -70,7 +70,7 @@ export const MatriarchHeader: React.FC = () => {
                         <item.icon size={20} strokeWidth={1.5} />
                       </div>
                       <div>
-                         <h4 className="mat-text-label-pro !text-black mb-1">{item.label}</h4>
+                         <p className="mat-text-label-pro !text-black mb-1">{item.label}</p>
                          <p className="text-[10px] text-black/30 uppercase tracking-[0.2em] font-medium">{item.desc}</p>
                       </div>
                    </div>

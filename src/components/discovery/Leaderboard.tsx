@@ -262,7 +262,7 @@ export const Leaderboard: React.FC = () => {
               <Users size={40} />
            </div>
            <div className="space-y-2">
-              <h4 className="text-2xl font-bold text-mat-wine italic">Void Resonance.</h4>
+              <h3 className="text-2xl font-bold text-mat-wine italic">Void Resonance.</h3>
               <p className="text-[10px] font-bold uppercase tracking-widest text-mat-slate/40">No aspirants found in this sector.</p>
            </div>
            <Button onClick={() => setSelectedCity(null)} className="h-12 bg-mat-wine text-white px-8 rounded-xl text-[9px] font-bold uppercase tracking-widest">Reset Sector</Button>

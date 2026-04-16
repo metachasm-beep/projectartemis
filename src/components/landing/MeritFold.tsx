@@ -49,7 +49,7 @@ const MeritFold: React.FC = () => {
             <div className="flex justify-between items-center relative z-10">
               <div className="space-y-1">
                 <span className="text-[9px] font-black uppercase tracking-[0.4em] text-mat-gold italic">Merit Status</span>
-                <h4 className="text-3xl md:text-4xl font-display text-mat-slate uppercase tracking-tight">Elite Tier</h4>
+                <h3 className="text-3xl md:text-4xl font-display text-mat-slate uppercase tracking-tight">Elite Tier</h3>
               </div>
               <div className="w-16 h-16 bg-mat-gold/10 backdrop-blur-xl border border-mat-gold/20 grid place-items-center rounded-2xl">
                 <Crown className="w-8 h-8 text-mat-gold" strokeWidth={1} />
@@ -88,7 +88,7 @@ const MeritFold: React.FC = () => {
                       <item.icon size={18} />
                     </div>
                     <div>
-                      <h4 className="text-[9px] font-black uppercase tracking-[0.3em] text-mat-slate/30">{item.title}</h4>
+                      <h3 className="text-[9px] font-black uppercase tracking-[0.3em] text-mat-slate/30">{item.title}</h3>
                       <div className="text-2xl font-display text-mat-slate">{item.reward}</div>
                     </div>
                   </div>
