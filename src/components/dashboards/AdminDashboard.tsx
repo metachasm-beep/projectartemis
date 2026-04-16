@@ -591,7 +591,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onOpenPictureMan
               ) : null}
             </div>
           )}
-          </div>
         </>
       ) : dashboardTab === 'TITHE' ? (
         <AdminAuraPanel />
