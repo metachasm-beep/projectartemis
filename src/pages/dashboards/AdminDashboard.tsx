@@ -10,6 +10,8 @@ import {
   Layers, 
   Eye,
   RefreshCw,
+  MessageSquare,
+  CreditCard
 } from 'lucide-react';
 import { AdminService } from '@/services/admin';
 import { useAuth } from '@/hooks/useAuth';
