@@ -4,9 +4,9 @@ import { HelmetProvider } from 'react-helmet-async';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 import { MigrationService } from "./services/MigrationService";
+import { AuthGate } from '@/components/auth/AuthGate';
 
-// 🚀 GRANULAR CODE SPLITTING: Prevent Dashboard/Auth from leaking into Landing
-const AuthGate = React.lazy(() => import('@/components/auth/AuthGate').then(m => ({ default: m.AuthGate })));
+// 🚀 THE PORTAL ENTRY: Eagerly imported to collapse the critical request chain
 const DashboardLayout = React.lazy(() => import('@/components/DashboardLayout').then(m => ({ default: m.DashboardLayout })));
 
 // Lazy load Delhi dating routes

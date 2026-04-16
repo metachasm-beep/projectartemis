@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-const Landing = lazy(() => import('@/pages/Landing'));
+import Landing from '@/pages/Landing';
 const Onboarding = lazy(() => import('@/components/Onboarding').then(m => ({ default: m.Onboarding })));
 import { useAuth } from '@/hooks/useAuth';
 
