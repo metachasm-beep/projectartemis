@@ -78,7 +78,7 @@ export const SpectralHeader: React.FC<SpectralHeaderProps> = ({
                 onClick={() => onTabChange(item.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
                   activeTab === item.id 
-                    ? 'bg-[#D4AF37] text-white shadow-lg' 
+                    ? 'bg-[#D4AF37] text-[#1A1A1A] shadow-lg' 
                     : 'text-[#1A1A1A]/50 hover:bg-[#D4AF37]/5 hover:text-[#D4AF37]'
                 }`}
               >
@@ -95,7 +95,7 @@ export const SpectralHeader: React.FC<SpectralHeaderProps> = ({
                 onClick={() => onRoleFilterChange(role === 'admin' ? (roleFilter === 'admin' ? 'all' : 'admin') : (roleFilter === role ? 'all' : role))}
                 className={`px-5 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
                   roleFilter === role 
-                    ? 'bg-white text-[#D4AF37] shadow-sm' 
+                    ? 'bg-white text-[#1A1A1A] border border-[#D4AF37]/30 shadow-sm' 
                     : 'text-[#D4AF37]/40 hover:text-[#D4AF37]'
                 }`}
               >
