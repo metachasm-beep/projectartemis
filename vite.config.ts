@@ -27,6 +27,16 @@ export default defineConfig({
     outDir: 'dist',
     rollupOptions: {
       input: 'index.html',
+      output: {
+        manualChunks: {
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-motion': ['framer-motion', 'gsap'],
+          'vendor-ui': ['@heroui/react', 'lucide-react'],
+          'vendor-webgl': ['ogl', 'three'], // Optimization for heavy animation engine
+        }
+      }
     },
+    chunkSizeWarningLimit: 1000,
   },
 });
+

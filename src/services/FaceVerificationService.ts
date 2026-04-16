@@ -1,26 +1,34 @@
-import * as faceapi from 'face-api.js';
+// 🛡️ DYNAMIC: face-api.js is heavy (ML models). Load only when verification starts.
+let faceapi: any = null;
 
 class FaceVerificationService {
   private modelsLoaded = false;
   private loadingPromise: Promise<void> | null = null;
+
+  private async getFaceApi() {
+    if (!faceapi) {
+      faceapi = await import('face-api.js');
+    }
+    return faceapi;
+  }
 
   async loadModels() {
     if (this.modelsLoaded) return;
     if (this.loadingPromise) return this.loadingPromise;
 
     this.loadingPromise = (async () => {
+      const api = await this.getFaceApi();
       const MODEL_URL = '/models';
       try {
-        // Since we flattened the directory, all manifest files are at /models/[net]_model-weights_manifest.json
         await Promise.all([
-          faceapi.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
-          faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-          faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
-          faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
+          api.nets.ssdMobilenetv1.loadFromUri(MODEL_URL),
+          api.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+          api.nets.faceRecognitionNet.loadFromUri(MODEL_URL),
+          api.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
         ]);
         this.modelsLoaded = true;
       } catch (error) {
-        console.error('CRITICAL: Failed to load biometric models from /models. Ensure weight manifests are flattened at the root.', error);
+        console.error('CRITICAL: Failed to load biometric models from /models.', error);
         throw error;
       }
     })();
@@ -29,9 +37,10 @@ class FaceVerificationService {
   }
 
   async getFaceDescriptor(imageElement: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement) {
+    const api = await this.getFaceApi();
     await this.loadModels();
     
-    const detection = await faceapi
+    const detection = await api
       .detectSingleFace(imageElement)
       .withFaceLandmarks()
       .withFaceDescriptor();
@@ -40,25 +49,20 @@ class FaceVerificationService {
   }
 
   async verifyFaces(referenceImage: HTMLImageElement, liveImage: HTMLImageElement | HTMLCanvasElement): Promise<{ success: boolean; distance: number; error?: 'NO_FACE_DETECTED' | 'MISMATCH' }> {
+    const api = await this.getFaceApi();
     await this.loadModels();
 
     const refDescriptor = await this.getFaceDescriptor(referenceImage);
     const liveDescriptor = await this.getFaceDescriptor(liveImage);
 
     if (!refDescriptor || !liveDescriptor) {
-      console.warn("Face detection failed in verification cycle.");
       return { success: false, distance: 1.0, error: 'NO_FACE_DETECTED' };
     }
 
-    const distance = faceapi.euclideanDistance(refDescriptor, liveDescriptor);
-    // Threshold of 0.6 is common for face recognition
+    const distance = api.euclideanDistance(refDescriptor, liveDescriptor);
     const success = distance < 0.6;
     
-    return { 
-      success, 
-      distance, 
-      error: success ? undefined : 'MISMATCH' 
-    };
+    return { success, distance, error: success ? undefined : 'MISMATCH' };
   }
 
   /**
