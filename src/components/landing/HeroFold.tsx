@@ -4,6 +4,7 @@ import MatriarchLogo from "@/components/MatriarchLogo";
 import StarBorder from "@/components/bits/StarBorder";
 import { ArrowDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { LoginModal } from "@/components/auth/LoginModal";
 
 const CLOUDINARY_PREFIX = "https://res.cloudinary.com/dsmbhnjg5/image/fetch/f_auto,q_auto,w_1200,c_limit/https://www.matriarchindia.com";
 
@@ -21,6 +22,7 @@ const IMAGES = [
 const HeroFold: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showHeavyAssets, setShowHeavyAssets] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
 
   useEffect(() => {
     // 🏎️ PERFORMANCE: Hydration Yield
@@ -146,10 +148,7 @@ const HeroFold: React.FC = () => {
         >
 
           <StarBorder 
-            onClick={() => supabase.auth.signInWithOAuth({ 
-              provider: 'google', 
-              options: { redirectTo: window.location.origin } 
-            })} 
+            onClick={() => setIsLoginModalOpen(true)} 
             className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-gold text-white border-mat-gold"
           >
             GET STARTED
@@ -172,6 +171,11 @@ const HeroFold: React.FC = () => {
           <ArrowDown className="w-4 h-4" />
         </motion.div>
       </motion.div>
+
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)} 
+      />
     </section>
   );
 };
