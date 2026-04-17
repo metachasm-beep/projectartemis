@@ -23,6 +23,9 @@ import {
   Edit3,
   Settings,
   HelpCircle,
+  Clock,
+  MousePointer2,
+  Flame
 } from 'lucide-react';
 
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
@@ -277,49 +280,102 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
             </motion.div>
 
-            {/* ── FOOTNOTE STATS BLOCK (Bottom 40%) ───────────────────── */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className={cn(
-                "w-full shrink-0 flex-1 md:flex-[0.6] min-h-[220px] rounded-[2.5rem] p-6 lg:p-8 flex flex-col justify-center relative overflow-hidden", 
-                SkeuSurface
-              )}
-            >
-              {/* Subtle accent light */}
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/40 blur-3xl rounded-full pointer-events-none -translate-y-1/2 translate-x-1/4" />
+            {/* ── FOOTNOTE STATS BLOCK: APPLE CINEMATIC BENTO ───────────── */}
+            <div className="w-full shrink-0 flex-1 md:flex-[0.6] min-h-[220px] grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6">
               
-              <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-12 gap-y-3 md:gap-y-8 w-full relative z-10 px-4">
-                  {stats.map((stat, idx) => (
-                    <Tooltip key={idx}>
-                      <TooltipTrigger asChild>
-                        <motion.div
-                          initial={{ opacity: 0, scale: 0.98 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.1 + idx * 0.04, duration: 0.5 }}
-                          className="relative flex flex-col group/stat transition-all border-l border-mat-noir/[0.08] pl-3 md:pl-5 hover:border-mat-rose-gold/50 cursor-help"
-                        >
-                          <div className="flex items-center gap-2 mb-0.5 md:mb-1.5 text-mat-noir/40 group-hover/stat:text-mat-rose-gold transition-colors">
-                            {React.cloneElement(stat.icon as React.ReactElement, { size: 11, strokeWidth: 1.5 })}
-                            <h3 className="mat-text-editorial-caps text-[7px] md:text-[9px] tracking-[0.25em] uppercase font-bold whitespace-nowrap overflow-hidden text-ellipsis">
-                              {stat.label}
-                            </h3>
-                          </div>
-                          <p className="text-lg md:text-2xl font-light text-mat-noir leading-none tracking-tight" style={{ fontFamily: 'var(--font-display)' }}>
-                            {stat.value}
-                          </p>
-                        </motion.div>
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="bg-mat-noir text-white border-mat-noir px-3 py-1.5 text-[10px] rounded-lg shadow-xl">
-                        {stat.description}
-                      </TooltipContent>
-                    </Tooltip>
-                  ))}
+              {/* 🏆 Sanctum Rank: Hero Card */}
+              <GlassCard 
+                className="col-span-2 row-span-1 relative overflow-hidden group border-mat-gold/20" 
+                delay={0.1}
+                noPadding
+              >
+                <div className="absolute inset-0 z-0 opacity-10 group-hover:opacity-20 transition-opacity">
+                  <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/40 via-transparent to-mat-wine/40" />
                 </div>
-              </div>
-            </motion.div>
+                <div className="relative z-10 h-full p-6 flex items-center justify-between">
+                  <div className="space-y-1">
+                    <p className="mat-text-editorial-caps text-[7px] text-mat-gold tracking-[0.4em] uppercase font-black">Sanctum Status</p>
+                    <h3 className="text-4xl font-bold italic text-mat-noir leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
+                      {metrics.safetyLevel ?? 'Standard'}
+                    </h3>
+                  </div>
+                  <div className="w-12 h-12 rounded-full bg-mat-gold/10 border border-mat-gold/20 flex items-center justify-center text-mat-gold">
+                    <Star size={20} fill="currentColor" strokeWidth={1} />
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🛡️ Trust Score: High Impact Card */}
+              <GlassCard 
+                className="col-span-1 row-span-1 relative overflow-hidden" 
+                delay={0.2}
+                noPadding
+              >
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                   <ShieldCheck size={16} className="text-mat-gold" />
+                   <div className="space-y-0.5">
+                      <p className="text-3xl font-bold text-mat-noir italic leading-none">{completeness}%</p>
+                      <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Trust Score</p>
+                   </div>
+                </div>
+              </GlassCard>
+
+              {/* ⚡ Response Pulse */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.3} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                   <Flame size={16} className="text-mat-rose-gold animate-pulse" />
+                   <div className="space-y-0.5">
+                      <p className="text-2xl font-bold text-mat-noir italic leading-none">{metrics.responseRate || 'High'}</p>
+                      <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Pulse</p>
+                   </div>
+                </div>
+              </GlassCard>
+
+              {/* 👁️ Views */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.4} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                  <Eye size={16} className="text-mat-noir/20" />
+                  <div className="space-y-0.5">
+                    <p className="text-3xl font-bold text-mat-noir italic leading-none">{metrics.profileViews || 0}</p>
+                    <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Views</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* ❤️ Matches */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.5} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                  <Heart size={16} className="text-mat-rose-gold" />
+                  <div className="space-y-0.5">
+                    <p className="text-3xl font-bold text-mat-noir italic leading-none">{metrics.matches || 0}</p>
+                    <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Matches</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🖱️ Selections */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.6} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                  <MousePointer2 size={16} className="text-mat-gold" />
+                  <div className="space-y-0.5">
+                    <p className="text-3xl font-bold text-mat-noir italic leading-none">{metrics.profilesEngaged || 0}</p>
+                    <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Selections</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🕒 Time Online */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.7} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between items-start">
+                   <Clock size={16} className="text-mat-noir/30" />
+                   <div className="space-y-0.5">
+                      <p className="text-xl font-bold text-mat-noir italic leading-none">{formatTime(metrics.sessionSeconds || 0)}</p>
+                      <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">Time Online</p>
+                   </div>
+                </div>
+              </GlassCard>
+
+            </div>
 
           </div>
         </TooltipProvider>
