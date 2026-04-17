@@ -148,35 +148,38 @@
     100% { background-position: 200% 50%; }
   }
 
-  /* ─── Holographic Silk Utilities ─────────────────────────────── */
-  .mat-holographic-border {
-    position: relative;
-    border: 1px solid transparent;
-    background: linear-gradient(var(--color-mat-bone), var(--color-mat-bone)) padding-box,
-                linear-gradient(115deg, #ff00ff, #00ffff, #00ff00, #ffff00, #ff0000) border-box;
-    background-size: 200% 200%;
-    transition: background-position 0.3s ease;
+  /* ─── Neon Sanctum Utilities ─────────────────────────────── */
+  .mat-neon-border-rose {
+    border: 1px solid rgba(183, 110, 121, 0.3);
+    box-shadow: 0 0 20px rgba(183, 110, 121, 0.1), inset 0 0 10px rgba(183, 110, 121, 0.05);
   }
 
-  .mat-silk-bg {
-    background: radial-gradient(circle at top left, #F2E8E4 0%, #FDFCFB 100%);
+  .mat-neon-border-violet {
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 0 20px rgba(139, 92, 246, 0.1), inset 0 0 10px rgba(139, 92, 246, 0.05);
   }
 
-  .mat-text-holographic {
-    background: linear-gradient(135deg, #B76E79 0%, #ff00ff 50%, #B76E79 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% 200%;
-    animation: mat-material-shimmer 5s linear infinite;
+  .mat-text-liquid-neon {
+    color: #fff;
+    text-shadow: 
+      0 0 5px #fff,
+      0 0 10px var(--neon-color, #B76E79),
+      0 0 20px var(--neon-color, #B76E79),
+      0 0 40px var(--neon-color, #B76E79);
+    filter: blur(0.5px);
   }
 
-  @keyframes mat-silk-float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+  .mat-neon-glow-soft {
+    filter: drop-shadow(0 0 15px var(--neon-color, #B76E79));
   }
 
-  .animate-silk-float {
-    animation: mat-silk-float 6s ease-in-out infinite;
+  @keyframes mat-neon-breathe {
+    0%, 100% { opacity: 0.8; filter: brightness(1); }
+    50% { opacity: 1; filter: brightness(1.3) drop-shadow(0 0 25px var(--neon-color, #B76E79)); }
+  }
+
+  .animate-neon-breathe {
+    animation: mat-neon-breathe 4s ease-in-out infinite;
   }
 
   .mat-perspective-1000 {

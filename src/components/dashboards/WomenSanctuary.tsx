@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence, useSpring, useMotionValue, useTransform } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
+  Zap, 
   Heart, 
+  Activity, 
   Sparkles,
   Eye,
   Star,
   X,
   HelpCircle,
   ArrowRight,
-  Zap,
-  Layers,
-  Fingerprint
+  Fingerprint,
+  Cpu,
+  Waves
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -20,25 +22,35 @@ import { VerificationPaymentModal } from '@/components/verification/Verification
 import { useAuth } from '@/hooks/useAuth';
 
 /**
- * 💿 HolographicCard: A card with borders that react to device tilt
+ * 💡 NeonStat: A high-tech stat card with diffused neon glow
  */
-const HolographicCard = ({ children, className, tiltX, tiltY }: { children: React.ReactNode, className?: string, tiltX: any, tiltY: any }) => {
-  const bgPos = useTransform(
-    [tiltX, tiltY],
-    ([x, y]: any) => `${50 + (x as number) * 0.5}% ${50 + (y as number) * 0.5}%`
-  );
-
-  return (
-    <motion.div 
-      className={cn("mat-holographic-border rounded-[32px] overflow-hidden group", className)}
-      style={{ backgroundPosition: bgPos as any }}
-    >
-      <div className="bg-mat-bone/80 h-full w-full p-6 lg:p-8 flex flex-col justify-between">
-        {children}
-      </div>
-    </motion.div>
-  );
-};
+const NeonStat = ({ label, value, icon, color = "#B76E79", delay = 0 }: { label: string, value: string, icon: React.ReactNode, color?: string, delay?: number }) => (
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.95 }}
+    animate={{ opacity: 1, scale: 1 }}
+    transition={{ delay, duration: 0.8 }}
+    style={{ "--neon-color": color } as any}
+    className={cn(
+      "p-6 lg:p-10 rounded-[40px] bg-white/[0.02] flex flex-col justify-between group transition-all duration-500",
+      color === "#B76E79" ? "mat-neon-border-rose" : "mat-neon-border-violet"
+    )}
+  >
+    <div className="flex justify-between items-start">
+       <div className="p-4 rounded-3xl bg-white/[0.03] text-white/80 group-hover:animate-neon-breathe transition-all">
+          {icon}
+       </div>
+       <Zap size={14} className="text-white/5 group-hover:text-white/20" />
+    </div>
+    <div className="mt-8">
+       <h3 className={cn("mat-text-liquid-neon text-5xl lg:text-6xl font-extralight tracking-tighter mb-2")}>
+          {value}
+       </h3>
+       <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] opacity-20 group-hover:opacity-40 transition-opacity">
+          {label}
+       </p>
+    </div>
+  </motion.div>
+);
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -68,203 +80,132 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const [showVerification, setShowVerification] = React.useState(false);
   const { refreshProfile } = useAuth();
 
-  // 📐 Tilt Motion Values
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springConfig = { damping: 20, stiffness: 150 };
-  const tiltX = useSpring(x, springConfig);
-  const tiltY = useSpring(y, springConfig);
-
-  useEffect(() => {
-    // Desktop: Mouse Move fallback
-    const handleMouseMove = (e: MouseEvent) => {
-      const centerX = window.innerWidth / 2;
-      const centerY = window.innerHeight / 2;
-      x.set((e.clientX - centerX) / 20);
-      y.set((e.clientY - centerY) / 20);
-    };
-
-    // Mobile: Gyroscope tilt
-    const handleOrientation = (e: DeviceOrientationEvent) => {
-      if (e.gamma !== null && e.beta !== null) {
-        x.set(e.gamma);
-        y.set(e.beta - 45); // Adjust for 45 deg natural holding angle
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('deviceorientation', handleOrientation);
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('deviceorientation', handleOrientation);
-    };
-  }, [x, y]);
-
   const isVerified = profile?.is_verified;
   const completeness = profile?.profile_completeness ?? 94;
 
-  return (
-    <div className="relative w-full h-[100dvh] overflow-hidden mat-silk-bg selection:bg-mat-rose-gold selection:text-white">
-      
-      {/* 🌸 HOLOGRAPHIC SILK CANVAS ═══════════════════ */}
-      <main className="h-full w-full max-w-[1600px] mx-auto p-6 lg:p-12 flex flex-col lg:grid lg:grid-cols-12 lg:grid-rows-6 gap-6 overflow-y-auto lg:overflow-hidden custom-scrollbar">
-        
-        {/* 1. Identity Focus (Mobile: Row 1, Desktop: Col 1-4, Row 1-4) */}
-        <div className="lg:col-span-4 lg:row-span-4 flex flex-col gap-6">
-           <HolographicCard tiltX={tiltX} tiltY={tiltY} className="flex-1 shadow-2xl">
-              <div className="flex justify-between items-start mb-6">
-                 <div className="p-4 rounded-3xl bg-mat-rose-gold/10 text-mat-rose-gold">
-                    <Fingerprint size={24} />
-                 </div>
-                 <div className="flex gap-2">
-                    <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-                    <span className="text-[9px] font-bold text-mat-noir/30 uppercase tracking-widest">Live Aura</span>
-                 </div>
-              </div>
+  const stats = [
+    { label: 'Sanctuary Trust', value: `${completeness}%`, icon: <ShieldCheck />, color: "#B76E79" },
+    { label: 'Neural Matches',  value: String(metrics.matches || 0), icon: <Heart />, color: "#8B5CF6" },
+  ];
 
-              <div className="flex flex-col items-center text-center gap-6 mb-8">
-                 <div className="relative group">
-                    <div className="w-40 h-40 lg:w-48 lg:h-48 rounded-full border-4 border-white shadow-xl overflow-hidden relative z-10 transition-transform duration-700 group-hover:scale-105">
+  return (
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#020202] text-white flex flex-col mat-cinematic-grain selection:bg-violet-500 selection:text-white">
+      
+      {/* 💡 NEON SANCTUM CANVAS ════════════════════════ */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-6 lg:p-12 flex flex-col lg:grid lg:grid-cols-12 gap-6 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+        
+        {/* Left: Bio-Identity Hero (5 cols) */}
+        <div className="lg:col-span-5 flex flex-col gap-6">
+           <div className="flex-1 rounded-[50px] bg-white/[0.01] border border-white/[0.05] p-10 flex flex-col items-center justify-center text-center gap-10 relative overflow-hidden group">
+              {/* Diffused Atmosphere Glows */}
+              <div className="absolute -top-20 -left-20 w-80 h-80 bg-mat-rose-gold/10 rounded-full blur-[120px] animate-pulse" />
+              <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-violet-500/10 rounded-full blur-[120px] animate-pulse" />
+
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1.5 }}
+                className="relative z-10"
+              >
+                 <div className="w-56 h-56 lg:w-64 lg:h-64 rounded-full border border-white/5 p-4 relative group-hover:scale-105 transition-transform duration-1000">
+                    <div className="w-full h-full rounded-full overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(255,255,255,0.05)]">
                        <img 
                          src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
                          alt="Aura" 
-                         className="w-full h-full object-cover"
+                         className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-[2000ms]"
                        />
                     </div>
-                    {/* Iridescent Glow */}
-                    <div className="absolute -inset-4 bg-gradient-to-tr from-[#ff00ff]/20 via-[#00ffff]/20 to-[#ffff00]/20 rounded-full blur-2xl animate-silk-float opacity-50" />
+                    {/* Bio-scanner line */}
+                    <motion.div 
+                      animate={{ top: ['0%', '100%', '0%'] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                      className="absolute left-0 right-0 h-px bg-mat-rose-gold/40 shadow-[0_0_15px_rgba(183,110,121,1)] z-20 pointer-events-none"
+                    />
                  </div>
-                 
-                 <div className="space-y-1">
-                    <h1 className="mat-text-fluid-huge text-mat-noir leading-none lowercase">
-                       {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-mat-rose-gold">.</span>
-                    </h1>
-                    <p className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-mat-noir/20">identity synchronized</p>
+              </motion.div>
+
+              <div className="space-y-4 z-10">
+                 <h1 className="text-6xl lg:text-7xl font-thin tracking-tighter text-white/90">
+                    {profile?.full_name?.split(' ')[0] || 'Aspirant'}<span className="text-mat-rose-gold animate-pulse">_</span>
+                 </h1>
+                 <div className="flex items-center justify-center gap-4">
+                    <span className="mat-text-editorial-caps text-[9px] tracking-[0.6em] text-white/30 uppercase">Protocol Authenticated</span>
+                    <Fingerprint size={12} className="text-mat-rose-gold" />
                  </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                 <button onClick={() => setIsEditing(true)} className="py-4 rounded-2xl bg-mat-noir text-white mat-text-editorial-caps text-[9px] tracking-[0.2em] hover:bg-mat-rose-gold transition-all">Curate</button>
-                 <button onClick={() => setShowFAQ(true)} className="py-4 rounded-2xl bg-white border border-mat-noir/5 text-mat-noir/40 hover:text-mat-rose-gold transition-all flex items-center justify-center"><HelpCircle size={18} /></button>
+              <div className="w-full grid grid-cols-2 gap-4 z-10">
+                 <button onClick={() => setIsEditing(true)} className="py-5 rounded-3xl bg-white/[0.03] border border-white/10 text-[9px] uppercase tracking-widest font-black hover:bg-white/10 transition-all">Curate</button>
+                 <button onClick={() => setShowFAQ(true)} className="py-5 rounded-3xl bg-white/[0.03] border border-white/10 text-white/40 hover:text-white transition-all flex items-center justify-center"><HelpCircle size={18} /></button>
               </div>
-           </HolographicCard>
+           </div>
         </div>
 
-        {/* 2. Primary Action (Mobile: Row 2, Desktop: Col 5-8, Row 1-3) */}
-        <div className="lg:col-span-4 lg:row-span-3">
-           <HolographicCard tiltX={tiltX} tiltY={tiltY} className="h-full bg-white shadow-xl">
-              <div className="flex flex-col h-full justify-between">
-                 <div className="space-y-4">
-                    <h4 className="mat-text-editorial-caps text-[11px] tracking-[0.5em] text-mat-rose-gold">Sanctum Access</h4>
-                    <p className="text-mat-noir/40 text-[13px] font-light leading-relaxed">Enter the discovery thread to explore aspirants aligned with your neural profile.</p>
+        {/* Right: Metrics & System (7 cols) */}
+        <div className="lg:col-span-7 flex flex-col gap-6">
+           {/* Top Stats Row */}
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full lg:h-1/2">
+              {stats.map((stat, i) => (
+                <NeonStat key={i} {...stat} delay={0.2 * i} />
+              ))}
+           </div>
+
+           {/* Bottom: Discovery & Verification */}
+           <div className="flex-1 grid grid-cols-1 md:grid-cols-1 gap-6">
+              <div className="rounded-[50px] bg-white/[0.01] border border-white/5 p-10 flex flex-col lg:flex-row items-center justify-between gap-10 group relative overflow-hidden">
+                 <div className="space-y-4 z-10">
+                    <div className="flex items-center gap-3">
+                       <Waves size={16} className="text-violet-400" />
+                       <h4 className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-violet-400">Neural Discovery</h4>
+                    </div>
+                    <p className="text-white/30 text-[12px] font-light max-w-xs leading-relaxed">Your profile is currently broadcasting. 14 potential matches are within your resonance radius.</p>
                  </div>
 
-                 <div className="relative py-12 flex justify-center items-center">
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 15, repeat: Infinity, ease: "linear" }} className="absolute w-32 h-32 border border-dashed border-mat-rose-gold/20 rounded-full" />
+                 <div className="relative z-10">
                     <button 
                       onClick={onBeginDiscovery}
-                      className="w-24 h-24 rounded-full bg-mat-noir text-white flex items-center justify-center hover:scale-110 transition-transform shadow-[0_15px_40px_rgba(0,0,0,0.2)]"
+                      className="group relative w-32 h-32 rounded-full border border-white/10 flex items-center justify-center hover:border-violet-500/50 transition-all duration-700"
                     >
-                      <ArrowRight size={32} strokeWidth={1} />
+                       <div className="absolute inset-2 rounded-full border border-dashed border-white/5 group-hover:animate-[spin_10s_linear_infinite]" />
+                       <ArrowRight size={32} className="text-white group-hover:translate-x-1 group-hover:text-violet-400 transition-all" />
                     </button>
                  </div>
+              </div>
 
-                 <div className="flex justify-between items-center text-[10px] font-bold text-mat-noir/20 uppercase tracking-widest">
-                    <span>Protocol v5.2</span>
-                    <Zap size={14} />
+              <div className="flex gap-6">
+                 <button 
+                   onClick={() => setShowVerification(true)}
+                   className="flex-1 py-6 rounded-3xl bg-white text-black mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-rose-gold hover:text-white transition-all shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex items-center justify-center gap-4"
+                 >
+                   Apply Verification <Sparkles size={16} />
+                 </button>
+                 <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-center">
+                    <Cpu size={20} className="text-white/20" />
                  </div>
               </div>
-           </HolographicCard>
-        </div>
-
-        {/* 3. Stats Grid (Col 9-12, Row 1-6) */}
-        <div className="lg:col-span-4 lg:row-span-6 grid grid-cols-1 gap-6">
-           {[
-             { label: 'Trust Level', value: `${completeness}%`, icon: <ShieldCheck />, color: 'text-blue-500' },
-             { label: 'Active Matches', value: String(metrics.matches || 0), icon: <Heart />, color: 'text-mat-rose-gold' },
-             { label: 'Profile Reach', value: String(metrics.profileViews || 0), icon: <Eye />, color: 'text-mat-gold' },
-             { label: 'Sanctuary Rank', value: metrics.safetyLevel ?? 'Gold', icon: <Star />, color: 'text-purple-500' }
-           ].map((stat, i) => (
-             <HolographicCard key={i} tiltX={tiltX} tiltY={tiltY} className="h-full">
-                <div className="flex items-center gap-6">
-                   <div className={cn("p-4 rounded-2xl bg-white shadow-inner", stat.color)}>
-                      {React.cloneElement(stat.icon as any, { size: 24 })}
-                   </div>
-                   <div className="space-y-1">
-                      <p className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-mat-noir/20">{stat.label}</p>
-                      <h3 className="mat-text-fluid-huge text-3xl text-mat-noir !leading-tight">{stat.value}</h3>
-                   </div>
-                </div>
-             </HolographicCard>
-           ))}
-        </div>
-
-        {/* 4. Verification & System (Col 1-8, Row 4-6) */}
-        <div className="lg:col-span-8 lg:row-span-3 flex gap-6">
-           <HolographicCard tiltX={tiltX} tiltY={tiltY} className="flex-1">
-              <div className="flex flex-col h-full justify-between">
-                 <div className="flex justify-between items-start">
-                    <div className="space-y-1">
-                       <h4 className="mat-text-editorial-caps text-[11px] tracking-[0.5em] text-mat-rose-gold">Merit Index</h4>
-                       <p className="text-mat-noir/40 text-[12px] font-light">Verification enhances sanctuary priority.</p>
-                    </div>
-                    <Sparkles size={18} className="text-mat-gold" />
-                 </div>
-
-                 <div className="mt-8">
-                    {!isVerified ? (
-                       <button 
-                         onClick={() => setShowVerification(true)}
-                         className="w-full py-6 rounded-[24px] bg-white border border-mat-gold text-mat-gold mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-gold hover:text-white transition-all shadow-lg"
-                       >
-                         Apply for Verification
-                       </button>
-                    ) : (
-                       <div className="p-6 rounded-[24px] bg-green-500/5 border border-green-500/10 flex items-center justify-center gap-4">
-                          <ShieldCheck className="text-green-500" />
-                          <span className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-green-500">Identity Authenticated</span>
-                       </div>
-                    )}
-                 </div>
-              </div>
-           </HolographicCard>
-
-           <HolographicCard tiltX={tiltX} tiltY={tiltY} className="flex-1 hidden lg:flex">
-              <div className="flex flex-col justify-between h-full">
-                 <div className="p-4 rounded-2xl bg-mat-noir/5 w-fit">
-                    <Layers size={20} className="text-mat-noir/30" />
-                 </div>
-                 <div className="space-y-2">
-                    <p className="mat-text-editorial-caps text-[8px] tracking-[0.3em] opacity-20">Aura Engine Status</p>
-                    <div className="flex items-center gap-2">
-                       <div className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse" />
-                       <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest">Synchronizing</span>
-                    </div>
-                 </div>
-              </div>
-           </HolographicCard>
+           </div>
         </div>
 
       </main>
 
-      {/* 💿 MODALS ═══════════════════════════════════════ */}
+      {/* 💡 MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 mat-silk-bg"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-[#020202]"
             onClick={() => setShowFAQ(false)}
           >
             <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 border border-mat-noir/10 text-mat-noir/40 hover:text-mat-rose-gold transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white shadow-xl"
+                className="absolute top-12 right-12 w-16 h-16 border border-white/10 text-white/40 hover:text-mat-rose-gold transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-xl"
               >
                 <X size={24} />
               </button>
               
               <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
                 <div className="max-w-6xl mx-auto">
-                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-rose-gold mb-12 block text-center">Sanctuary Gnosis</span>
-                   <div className="pointer-events-auto opacity-70"><FAQ /></div>
+                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-rose-gold mb-12 block text-center">Sanctum Registry</span>
+                   <div className="pointer-events-auto opacity-80"><FAQ /></div>
                 </div>
               </div>
             </div>
