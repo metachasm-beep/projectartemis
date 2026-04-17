@@ -9,8 +9,9 @@ import {
   X,
   HelpCircle,
   ArrowRight,
-  Infinity as InfinityIcon,
-  Circle
+  Zap,
+  Fingerprint,
+  Waves
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -19,25 +20,25 @@ import { VerificationPaymentModal } from '@/components/verification/Verification
 import { useAuth } from '@/hooks/useAuth';
 
 /**
- * 🎨 AuraMetric: A symmetrically designed floating stat
+ * 🍎 GlassPill: An ultra-premium glass-morphic stat pill
  */
-const AuraMetric = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
+const GlassPill = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
   <motion.div 
-    initial={{ opacity: 0, y: 20 }}
-    animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
-    className="flex flex-col items-center justify-center gap-4 py-8 px-4"
+    initial={{ opacity: 0, scale: 0.9, y: 30 }}
+    animate={{ opacity: 1, scale: 1, y: 0 }}
+    transition={{ delay, duration: 1, ease: [0.16, 1, 0.3, 1] }}
+    className="mat-glass-thick mat-glass-pill group cursor-default hover:scale-[1.02] transition-transform duration-700"
   >
-     <div className="text-white/40 mb-2">
-        {icon}
-     </div>
-     <div className="space-y-1">
-        <h3 className="mat-text-fluid-huge text-4xl lg:text-5xl text-white font-extralight tracking-[0.1em] lowercase leading-none">
+     <span className="mat-text-apple-display text-[8px] tracking-[0.4em] mb-3 opacity-40 group-hover:opacity-100 transition-opacity">
+        {label}
+     </span>
+     <div className="flex items-center gap-6">
+        <div className="p-3 rounded-full bg-white/40 text-mat-noir/40 group-hover:text-mat-rose-gold transition-colors">
+           {icon}
+        </div>
+        <h3 className="mat-text-fluid-huge text-4xl lg:text-5xl text-mat-noir leading-none tracking-tighter">
            {value}
         </h3>
-        <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] text-white/40 uppercase">
-           {label}
-        </p>
      </div>
   </motion.div>
 );
@@ -74,143 +75,116 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const completeness = profile?.profile_completeness ?? 94;
 
   const stats = [
-    { label: 'Views',      value: String(metrics.profileViews || 0),   icon: <Eye size={18} /> },
-    { label: 'Trust',      value: `${completeness}%`,                   icon: <ShieldCheck size={18} /> },
-    { label: 'Matches',    value: String(metrics.matches || 0),         icon: <Heart size={18} /> },
-    { label: 'Status',     value: metrics.safetyLevel ?? 'Gold',        icon: <Star size={18} /> },
+    { label: 'Sanctuary Merit',  value: `${completeness}%`, icon: <ShieldCheck size={20} /> },
+    { label: 'Resonance',       value: String(metrics.matches || 0), icon: <Heart size={20} /> },
+    { label: 'Neural Reach',    value: String(metrics.profileViews || 0), icon: <Eye size={20} /> },
+    { label: 'Integrity Rank',  value: metrics.safetyLevel ?? 'Gold', icon: <Star size={20} /> },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden mat-aura-fluid-bg flex flex-col selection:bg-white selection:text-black">
+    <div className="relative w-full h-[100dvh] overflow-hidden mat-apple-bg flex flex-col selection:bg-mat-noir selection:text-white">
       
-      {/* 🎨 GENERATIVE FLUID LAYERS ══════════════════ */}
-      <div className="absolute inset-0 z-0">
-         <div className="mat-aura-fluid-layer" style={{ animationDelay: '0s' }} />
-         <div className="mat-aura-fluid-layer" style={{ animationDelay: '-5s', opacity: 0.6 }} />
-         <div className="mat-aura-fluid-layer" style={{ animationDelay: '-10s', opacity: 0.4 }} />
-         
-         {/* Deep Overlay to ensure text readability */}
-         <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
+      {/* 🍎 CINEMATIC OVERLAYS ═══════════════════════ */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+         <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-mat-rose-gold/10 rounded-full blur-[120px] animate-pulse" />
+         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-blue-500/5 rounded-full blur-[120px] animate-pulse" />
       </div>
 
-      {/* 🎨 SYMMETRICAL UI ═══════════════════════════ */}
-      <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto flex flex-col items-center justify-between py-12 lg:py-24 px-8 overflow-y-auto custom-scrollbar">
+      {/* 🍎 SYMMETRICAL CORE ══════════════════════════ */}
+      <main className="relative z-10 flex-1 w-full max-w-4xl mx-auto flex flex-col items-center justify-between py-12 lg:py-20 px-8 overflow-y-auto custom-scrollbar">
         
-        {/* Top: Minimal Status Detail */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 2 }}
-          className="flex flex-col items-center gap-4 mb-8"
-        >
-           <div className="flex items-center gap-3">
-              <Circle size={8} className="fill-white/20 text-transparent animate-pulse" />
-              <span className="mat-text-editorial-caps text-[10px] tracking-[0.8em] text-white/50 uppercase">Protocol Active</span>
-           </div>
-        </motion.div>
-
-        {/* Center: The Aura Identity Focus */}
-        <div className="flex flex-col items-center gap-12 text-center">
+        {/* 1. Symmetrical Identity Hero */}
+        <div className="flex flex-col items-center gap-10 text-center">
            <motion.div 
-             initial={{ scale: 0.8, opacity: 0 }}
+             initial={{ scale: 0.9, opacity: 0 }}
              animate={{ scale: 1, opacity: 1 }}
-             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+             transition={{ duration: 1.2, ease: "circOut" }}
              className="relative"
            >
-              {/* Floating Decorative Rings */}
-              <motion.div 
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-12 border border-white/5 rounded-full"
-              />
-              <motion.div 
-                animate={{ rotate: -360 }}
-                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                className="absolute -inset-8 border border-white/10 rounded-full"
-              />
+              {/* Glass Ring Halo */}
+              <div className="absolute -inset-8 border border-white/40 rounded-full backdrop-blur-3xl z-[-1]" />
               
-              <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full border border-white/20 p-4 relative group">
-                 <div className="w-full h-full rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_80px_rgba(255,255,255,0.1)]">
-                    <img 
-                      src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
-                      alt="Aura" 
-                      className="w-full h-full object-cover scale-110 group-hover:scale-105 transition-transform duration-1000"
-                    />
-                 </div>
+              <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full border-4 border-white shadow-2xl overflow-hidden relative z-10 group">
+                 <img 
+                   src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
+                   alt="Identity" 
+                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-[2s]"
+                 />
+                 {/* Glass overlay on photo */}
+                 <div className="absolute inset-0 bg-white/5 backdrop-blur-[1px] group-hover:backdrop-blur-0 transition-all duration-700" />
               </div>
 
-              {/* Verified Badge */}
-              {isVerified && (
-                 <motion.div 
-                   initial={{ opacity: 0, scale: 0 }}
-                   animate={{ opacity: 1, scale: 1 }}
-                   transition={{ delay: 1 }}
-                   className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-xl"
-                 >
-                    <ShieldCheck size={16} className="text-black" />
-                 </motion.div>
-              )}
+              {/* Status Badge */}
+              <motion.div 
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1 }}
+                className="absolute bottom-0 right-0 p-3 bg-white rounded-full shadow-lg border border-mat-noir/5"
+              >
+                 <Fingerprint size={16} className="text-mat-rose-gold" />
+              </motion.div>
            </motion.div>
 
-           <div className="space-y-4">
-              <h1 className="mat-text-fluid-huge text-6xl lg:text-8xl text-white font-extralight tracking-tighter leading-none">
-                 {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-white/40">.</span>
+           <div className="space-y-3">
+              <span className="mat-text-apple-display text-[9px] tracking-[0.6em] text-mat-noir/30">Sanctuary authenticated</span>
+              <h1 className="mat-text-fluid-huge text-5xl lg:text-7xl text-mat-noir leading-none tracking-tight">
+                 {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-mat-rose-gold opacity-50">.</span>
               </h1>
-              <div className="flex items-center justify-center gap-6">
-                 <div className="h-px w-8 bg-white/20" />
-                 <span className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-white/40 uppercase">v5.2.0 fluid aura</span>
-                 <div className="h-px w-8 bg-white/20" />
+              <div className="flex items-center justify-center gap-4">
+                 <div className="h-px w-6 bg-mat-noir/10" />
+                 <Waves size={14} className="text-mat-rose-gold/40 animate-pulse" />
+                 <div className="h-px w-6 bg-mat-noir/10" />
               </div>
            </div>
         </div>
 
-        {/* Bottom: Symmetrical Stats Grid */}
-        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 border-t border-white/5">
+        {/* 2. Cinematic Glass Stat Board */}
+        <div className="w-full flex flex-col gap-4 mt-12">
            {stats.map((stat, i) => (
-             <AuraMetric key={i} {...stat} delay={0.2 * i} />
+             <GlassPill key={i} {...stat} delay={0.2 * i} />
            ))}
         </div>
 
-        {/* Global Discovery Control */}
-        <div className="flex flex-col items-center gap-12 w-full mt-12">
+        {/* 3. Primary Control & Intel */}
+        <div className="w-full flex flex-col items-center gap-12 mt-16">
            <motion.button 
-             whileHover={{ scale: 1.05 }}
-             whileTap={{ scale: 0.95 }}
+             whileHover={{ scale: 1.02, y: -2 }}
+             whileTap={{ scale: 0.98 }}
              onClick={onBeginDiscovery}
-             className="px-16 py-6 rounded-full bg-white text-black mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:shadow-[0_20px_80px_rgba(255,255,255,0.4)] transition-all flex items-center gap-4 group"
+             className="w-full lg:w-96 py-6 rounded-[200px] bg-mat-noir text-white mat-text-apple-display text-[10px] tracking-[0.5em] font-bold shadow-2xl hover:bg-mat-rose-gold transition-all flex items-center justify-center gap-4 group"
            >
-             Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+             Enter Thread <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
            </motion.button>
 
-           <div className="flex gap-12">
-              <button onClick={() => setIsEditing(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Curate Profile</button>
-              <button onClick={() => setShowFAQ(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Gnosis Registry</button>
+           <div className="flex items-center gap-12">
+              <button onClick={() => setIsEditing(true)} className="mat-text-apple-display text-[8px] tracking-[0.3em] hover:text-mat-rose-gold transition-colors">Settings</button>
+              <button onClick={() => setShowFAQ(true)} className="mat-text-apple-display text-[8px] tracking-[0.3em] hover:text-mat-rose-gold transition-colors">Registry</button>
               {!isVerified && (
-                 <button onClick={() => setShowVerification(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Apply Verification</button>
+                <button onClick={() => setShowVerification(true)} className="mat-text-apple-display text-[8px] tracking-[0.3em] text-mat-rose-gold font-black">Verify Identity</button>
               )}
            </div>
         </div>
 
       </main>
 
-      {/* 🎨 MODALS ═══════════════════════════════════════ */}
+      {/* 🍎 MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-black/90 backdrop-blur-3xl"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-white/60 backdrop-blur-[50px]"
             onClick={() => setShowFAQ(false)}
           >
             <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 border border-white/20 text-white/40 hover:text-white transition-all duration-500 z-20 flex items-center justify-center rounded-full"
+                className="absolute top-12 right-12 w-16 h-16 border border-mat-noir/10 text-mat-noir/40 hover:text-mat-rose-gold transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white shadow-xl"
               >
                 <X size={24} />
               </button>
               
-              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48 text-white">
-                <div className="max-w-6xl mx-auto">
-                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-white/20 mb-12 block text-center uppercase">System Intel</span>
-                   <div className="pointer-events-auto opacity-70 grayscale invert brightness-200"><FAQ /></div>
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
+                <div className="max-w-4xl mx-auto">
+                   <span className="mat-text-apple-display text-[12px] tracking-[1em] text-mat-noir/30 mb-12 block text-center uppercase">System registry</span>
+                   <div className="pointer-events-auto opacity-70"><FAQ /></div>
                 </div>
               </div>
             </div>
