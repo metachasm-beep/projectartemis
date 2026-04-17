@@ -30,12 +30,14 @@ const GlassMetric = ({ label, value, icon, delay = 0 }: { label: string, value: 
      <div className="text-mat-noir/30 mb-1 scale-75 lg:scale-100">
         {icon}
      </div>
-     <h3 className="mat-text-fluid-huge text-xl lg:text-3xl text-mat-noir leading-none font-bold">
-        {value}
-     </h3>
-     <span className="mat-text-apple-display text-[7px] lg:text-[9px] tracking-[0.3em] opacity-40 uppercase truncate w-full px-1">
-        {label}
-     </span>
+     <div className="flex flex-col items-center">
+        <h3 className="mat-text-fluid-huge text-2xl lg:text-3xl text-mat-noir leading-none font-black mb-1">
+           {value}
+        </h3>
+        <span className="mat-text-apple-display text-[9px] lg:text-[11px] tracking-[0.4em] text-mat-noir font-bold uppercase">
+           {label}
+        </span>
+     </div>
   </motion.div>
 );
 
