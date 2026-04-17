@@ -13,7 +13,8 @@ import {
   Bookmark,
   HelpCircle,
   ArrowRight,
-  Menu
+  TrendingUp,
+  Award
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -22,21 +23,28 @@ import { VerificationPaymentModal } from '@/components/verification/Verification
 import { useAuth } from '@/hooks/useAuth';
 
 /**
- * 🖋️ EditorialStat: A high-fashion minimalist stat display
+ * 🍷 VelvetStat: A low-blur, glassmorphic stat card
  */
-const EditorialStat = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
+const VelvetStat = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
   <motion.div 
-    initial={{ opacity: 0, x: -10 }}
-    animate={{ opacity: 1, x: 0 }}
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
     transition={{ delay, duration: 0.8 }}
-    className="flex flex-col items-start gap-4 p-6 lg:p-10 border-r border-b border-mat-gold/10"
+    className="mat-velvet-card p-6 lg:p-8 rounded-3xl flex flex-col gap-4 group hover:bg-white/[0.05] transition-colors"
   >
-    <div className="text-mat-gold opacity-50">{icon}</div>
-    <div className="space-y-1">
-      <h3 className="mat-text-fluid-huge leading-[0.7] text-mat-noir" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+    <div className="flex justify-between items-start">
+      <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/[0.05] text-mat-rose-gold group-hover:scale-110 transition-transform">
+        {icon}
+      </div>
+      <TrendingUp size={14} className="text-white/10 group-hover:text-mat-rose-gold transition-colors" />
+    </div>
+    <div>
+      <h3 className="mat-text-velvet-huge text-4xl lg:text-5xl mb-1">
         {value}
       </h3>
-      <p className="mat-text-editorial-label">{label}</p>
+      <p className="mat-text-editorial-caps text-[9px] tracking-[0.3em] opacity-30 group-hover:opacity-60 transition-opacity">
+        {label}
+      </p>
     </div>
   </motion.div>
 );
@@ -71,173 +79,173 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
   const isVerified = profile?.is_verified;
   const completeness = profile?.profile_completeness ?? 94;
-  const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
-
+  
   const stats = [
-    { label: 'Views',      value: String(metrics.profileViews || 0),          icon: <Eye size={18} /> },
-    { label: 'Trust',      value: `${completeness}%`,                          icon: <ShieldCheck size={18} /> },
-    { label: 'Matches',    value: String(metrics.matches || 0),                icon: <Heart size={18} /> },
-    { label: 'Status',     value: metrics.safetyLevel ?? 'Gold',               icon: <Star size={18} /> },
+    { label: 'Profile Views',  value: String(metrics.profileViews || 0),   icon: <Eye size={20} /> },
+    { label: 'Trust Score',    value: `${completeness}%`,                   icon: <ShieldCheck size={20} /> },
+    { label: 'Sanctuary Rank', value: metrics.safetyLevel ?? 'Gold',        icon: <Award size={20} /> },
+    { label: 'Active Matches', value: String(metrics.matches || 0),         icon: <Heart size={20} /> },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-bone flex flex-col selection:bg-mat-rose-gold selection:text-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#050505] text-white flex flex-col mat-cinematic-grain selection:bg-mat-rose-gold selection:text-white">
       
-      {/* ══ MINIMALIST NAV ══════════════════════════════ */}
-      <nav className="relative z-20 w-full flex justify-between items-center px-8 py-8 lg:px-20 border-b border-mat-gold/10 shrink-0">
-        <div className="flex items-center gap-12">
-          <h2 className="mat-text-editorial-caps text-[10px] tracking-[1em] opacity-40">Matriarch Protocol</h2>
-          <div className="hidden lg:flex items-center gap-8">
-            {['Sanctuary', 'Identity', 'Discovery'].map((link) => (
-              <span key={link} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] cursor-pointer hover:text-mat-gold transition-colors">{link}</span>
-            ))}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-6">
-           <button onClick={() => setShowFAQ(true)} className="p-2 text-mat-noir/40 hover:text-mat-gold transition-colors">
-              <HelpCircle size={20} strokeWidth={1.5} />
-           </button>
-           <button 
-             onClick={() => setIsEditing(true)}
-             className="hidden lg:block px-8 py-3 bg-mat-noir text-white mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black hover:bg-mat-gold transition-all duration-500"
-           >
-             Curate Profile
-           </button>
-           <button className="lg:hidden p-2 text-mat-noir">
-              <Menu size={24} strokeWidth={1.5} />
-           </button>
-        </div>
-      </nav>
-
-      {/* ══ EDITORIAL BODY ══════════════════════════════ */}
-      <main className="flex-1 w-full flex flex-col lg:flex-row min-h-0">
+      {/* 🍷 VELVET CANVAS ══════════════════════════════ */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 lg:px-12 py-8 lg:py-12 grid grid-cols-1 lg:grid-cols-12 gap-8 min-h-0 overflow-y-auto custom-scrollbar">
         
-        {/* Left: Huge Display Identity */}
-        <div className="flex-[1.2] flex flex-col justify-center px-8 lg:px-20 py-12 lg:py-0 border-b lg:border-b-0 lg:border-r border-mat-gold/10">
-          <div className="space-y-6">
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1 }}
-            >
-              <h1 className="mat-text-fluid-huge text-mat-noir leading-[0.8]">
-                {profile?.full_name?.split(' ')[0] || 'Existence'}<span className="text-mat-gold">.</span>
-              </h1>
-              <div className="flex items-center gap-4 mt-8">
-                 <div className="h-px w-12 bg-mat-gold/30" />
-                 <p className="mat-text-editorial-caps text-[10px] tracking-[0.6em] text-mat-noir/30">Member Since {memberSince}</p>
-              </div>
-            </motion.div>
-
-            <div className="flex flex-wrap gap-4 pt-12">
-              {!isVerified && (
-                <button 
-                  onClick={() => setShowVerification(true)}
-                  className="px-10 py-5 bg-mat-bone border border-mat-gold text-mat-gold mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-gold hover:text-white transition-all duration-700"
-                >
-                  Apply Verification
-                </button>
-              )}
-              <button 
-                onClick={onBeginDiscovery}
-                className="px-10 py-5 bg-mat-noir text-white mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-gold transition-all duration-700 flex items-center gap-4 group"
+        {/* Left: Identity Hero (4 cols) */}
+        <div className="lg:col-span-4 flex flex-col gap-8">
+           <div className="mat-velvet-card p-8 lg:p-10 rounded-[40px] flex flex-col items-center text-center gap-6 relative overflow-hidden group">
+              {/* Animated Glow behind Aura */}
+              <div className="absolute inset-0 bg-gradient-to-b from-mat-rose-gold/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+              
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 1.2 }}
+                className="relative w-48 h-48 lg:w-56 lg:h-56 z-10"
               >
-                Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            </div>
-          </div>
+                 <div className="w-full h-full rounded-full border-2 border-white/5 p-3 relative">
+                    <div className="w-full h-full rounded-full overflow-hidden border border-mat-rose-gold/20 shadow-[0_0_50px_rgba(183,110,121,0.1)]">
+                       <img 
+                         src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
+                         alt="Aura" 
+                         className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-[3000ms]"
+                       />
+                    </div>
+                    {/* Pulsing Ring */}
+                    <motion.div 
+                      animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0, 0.1] }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                      className="absolute -inset-4 rounded-full border border-mat-rose-gold/30"
+                    />
+                 </div>
+
+                 {/* Status Badge */}
+                 <div className="absolute bottom-4 right-4 bg-mat-rose-gold p-2 rounded-full shadow-lg border border-white/20">
+                    <Sparkles size={14} className="text-white" />
+                 </div>
+              </motion.div>
+
+              <div className="space-y-2 z-10">
+                 <h1 className="mat-text-velvet-huge text-5xl lg:text-6xl text-white">
+                    {profile?.full_name?.split(' ')[0] || 'Aspirant'}<span className="text-mat-rose-gold">.</span>
+                 </h1>
+                 <p className="mat-text-editorial-caps text-[10px] tracking-[0.5em] text-white/40">Verified Sanctuary Identity</p>
+              </div>
+
+              <div className="flex gap-4 w-full z-10 mt-4">
+                 <button 
+                   onClick={() => setIsEditing(true)}
+                   className="flex-1 py-4 rounded-2xl bg-white/5 border border-white/10 mat-text-editorial-caps text-[9px] tracking-[0.4em] hover:bg-white/10 transition-all"
+                 >
+                   Curate
+                 </button>
+                 <button 
+                   onClick={() => setShowFAQ(true)}
+                   className="p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all"
+                 >
+                   <HelpCircle size={18} className="opacity-40" />
+                 </button>
+              </div>
+           </div>
+
+           {/* Quick Actions Card */}
+           <div className="mat-velvet-card p-8 rounded-[40px] flex flex-col gap-6">
+              <h4 className="mat-text-editorial-caps text-[10px] tracking-[0.4em] opacity-40">Quick Actions</h4>
+              <div className="space-y-4">
+                 {!isVerified && (
+                   <button 
+                     onClick={() => setShowVerification(true)}
+                     className="w-full py-5 rounded-2xl bg-gradient-to-r from-mat-rose-gold to-mat-gold/50 text-white mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black hover:brightness-110 transition-all shadow-[0_10px_30px_rgba(183,110,121,0.3)]"
+                   >
+                     Apply Verification
+                   </button>
+                 )}
+                 <button 
+                   onClick={onBeginDiscovery}
+                   className="w-full py-5 rounded-2xl bg-white text-mat-noir mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black hover:bg-mat-rose-gold hover:text-white transition-all flex items-center justify-center gap-3"
+                 >
+                   Enter Discovery <ArrowRight size={14} />
+                 </button>
+              </div>
+           </div>
         </div>
 
-        {/* Right: The Grid & Aura */}
-        <div className="flex-1 flex flex-col min-h-0">
-          
-          {/* Top: 2x2 Stats Grid */}
-          <div className="grid grid-cols-2 flex-1">
-            {stats.map((stat, i) => (
-              <EditorialStat key={i} {...stat} delay={0.2 * i} />
-            ))}
-          </div>
+        {/* Right: Metrics & Intel (8 cols) */}
+        <div className="lg:col-span-8 flex flex-col gap-8">
+           {/* Top Stats Row */}
+           <div className="grid grid-cols-2 lg:grid-cols-2 gap-6 h-full lg:h-1/2">
+              {stats.map((stat, i) => (
+                <VelvetStat key={i} {...stat} delay={0.2 * i} />
+              ))}
+           </div>
 
-          {/* Bottom: Aura Visual Focus */}
-          <div className="relative h-1/3 lg:h-1/2 flex items-center justify-center p-8 overflow-hidden bg-mat-cashmere/20">
-             {/* Subtle Background Pattern */}
-             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)', backgroundSize: '40px 40px' }} />
-             
-             <motion.div 
-               initial={{ scale: 0.9, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-               className="relative w-40 h-40 lg:w-64 lg:h-64 shrink-0"
-             >
-                <div className="w-full h-full rounded-full border border-mat-gold/20 p-2 relative">
-                   <div className="w-full h-full rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-[2000ms] shadow-2xl">
-                      <img 
-                        src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
-                        alt="Aura" 
-                        className="w-full h-full object-cover scale-110"
-                      />
-                   </div>
-                   
-                   {/* Minimalist Orbitals */}
-                   <motion.div 
-                     animate={{ rotate: 360 }}
-                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                     className="absolute -inset-4 border border-mat-gold/10 rounded-full"
-                   />
-                   <motion.div 
-                     animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
-                     transition={{ duration: 4, repeat: Infinity }}
-                     className="absolute inset-0 rounded-full bg-mat-gold/5 blur-2xl -z-10"
-                   />
-                </div>
-                
-                {/* Floating Micro-UI detail */}
-                <div className="absolute -right-12 top-1/2 -translate-y-1/2 rotate-90 hidden lg:block">
-                   <p className="mat-text-editorial-caps text-[8px] tracking-[1.5em] opacity-20 whitespace-nowrap">Authentication Sequence Complete</p>
-                </div>
-             </motion.div>
-          </div>
+           {/* Bottom Content Area: System Status */}
+           <div className="mat-velvet-card flex-1 rounded-[40px] p-8 lg:p-10 flex flex-col justify-between relative overflow-hidden group">
+              {/* Subtle Pattern overlay */}
+              <div className="absolute inset-0 opacity-[0.02] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #fff 1px, transparent 0)', backgroundSize: '32px 32px' }} />
+              
+              <div className="flex justify-between items-start z-10">
+                 <div className="space-y-1">
+                    <h4 className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-mat-rose-gold">Sanctuary Health</h4>
+                    <p className="text-white/40 text-[11px] font-light max-w-xs leading-relaxed">Your neural footprint is currently optimized. Your trust score has increased by 4% this week.</p>
+                 </div>
+                 <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/20">
+                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[9px] font-bold text-green-500 uppercase tracking-widest">Active</span>
+                 </div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-8 z-10 mt-12">
+                 {[
+                   { label: 'Network', value: 'Prime' },
+                   { label: 'Privacy', value: 'Stealth' },
+                   { label: 'Storage', value: 'Cloud' }
+                 ].map((item, i) => (
+                    <div key={i} className="space-y-2">
+                       <p className="mat-text-editorial-caps text-[8px] tracking-[0.3em] opacity-30">{item.label}</p>
+                       <p className="text-xl font-light text-white/90">{item.value}</p>
+                    </div>
+                 ))}
+              </div>
+
+              {/* Progress Detail */}
+              <div className="w-full h-[1px] bg-white/5 my-8" />
+              
+              <div className="flex justify-between items-end z-10">
+                 <div className="flex -space-x-3">
+                    {[1,2,3,4].map(i => (
+                      <div key={i} className="w-8 h-8 rounded-full border-2 border-[#0A0A0A] bg-white/10 overflow-hidden">
+                         <img src={`https://i.pravatar.cc/100?u=${i}`} className="w-full h-full object-cover grayscale opacity-50" alt="avatar" />
+                      </div>
+                    ))}
+                    <div className="w-8 h-8 rounded-full border-2 border-[#0A0A0A] bg-mat-rose-gold flex items-center justify-center text-[10px] font-bold">+12</div>
+                 </div>
+                 <p className="mat-text-editorial-caps text-[8px] tracking-[0.3em] opacity-30">Selection Index v5.2.0 Velvet</p>
+              </div>
+           </div>
         </div>
 
       </main>
-
-      {/* ══ SYSTEM FOOTER ═══════════════════════════════ */}
-      <footer className="shrink-0 w-full px-8 py-6 lg:px-20 border-t border-mat-gold/10 flex justify-between items-center bg-white/50 backdrop-blur-sm">
-         <div className="flex gap-8">
-            <div className="flex flex-col">
-               <span className="mat-text-editorial-label">Sanctum Registry</span>
-               <span className="text-[10px] font-bold opacity-30 mt-1">ID_{profile?.user_id?.slice(0,8) || 'SYSTEM'}</span>
-            </div>
-            <div className="flex flex-col">
-               <span className="mat-text-editorial-label">Selection Index</span>
-               <span className="text-[10px] font-bold opacity-30 mt-1">v5.2.0 Ivory</span>
-            </div>
-         </div>
-
-         <div className="flex items-center gap-4">
-            <Sparkles size={14} className="text-mat-gold" />
-            <span className="mat-text-editorial-caps text-[9px] tracking-[0.4em] opacity-30">All Protocols Optimal</span>
-         </div>
-      </footer>
 
       {/* ══ MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-mat-bone"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-[#050505]"
             onClick={() => setShowFAQ(false)}
           >
             <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 border border-mat-gold text-mat-gold hover:bg-mat-gold hover:text-white transition-all duration-500 z-20 flex items-center justify-center rounded-full"
+                className="absolute top-12 right-12 w-16 h-16 border border-mat-rose-gold text-mat-rose-gold hover:bg-mat-rose-gold hover:text-white transition-all duration-500 z-20 flex items-center justify-center rounded-full"
               >
                 <X size={24} />
               </button>
               
               <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
                 <div className="max-w-6xl mx-auto">
-                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-gold mb-12 block">Gnosis Registry</span>
+                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-rose-gold mb-12 block text-center">Protocol Gnosis</span>
                    <div className="pointer-events-auto"><FAQ /></div>
                 </div>
               </div>
