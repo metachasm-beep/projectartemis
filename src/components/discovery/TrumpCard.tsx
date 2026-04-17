@@ -199,8 +199,11 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
                      </div>
                   </div>
                </TooltipTrigger>
-               <TooltipContent side="top">
-                  <p className="text-[10px] uppercase tracking-widest font-bold">{s.label}: {s.value}%</p>
+               <TooltipContent side="top" className="bg-neutral-900 border border-white/10 shadow-2xl px-4 py-2 rounded-xl">
+                  <p className="text-[11px] md:text-[12px] uppercase tracking-[0.3em] font-black text-white flex items-center gap-3">
+                    <span className="opacity-40">{s.label}</span>
+                    <span className="text-mat-gold italic font-display text-lg">{s.value}%</span>
+                  </p>
                </TooltipContent>
             </Tooltip>
           ))}
@@ -265,7 +268,11 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
                         <btn.icon size={btn.primary ? 20 : 16} />
                      </Button>
                   </TooltipTrigger>
-                  <TooltipContent side="top">{btn.id}</TooltipContent>
+                  <TooltipContent side="top" className="bg-mat-noir border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.8)] px-4 py-2 rounded-lg">
+                    <p className="mat-text-apple-display text-[10px] tracking-[0.5em] font-black text-mat-gold uppercase">
+                      {btn.id}
+                    </p>
+                  </TooltipContent>
                </Tooltip>
              ))}
           </div>
