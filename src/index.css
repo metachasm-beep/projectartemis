@@ -148,27 +148,34 @@
     100% { background-position: 200% 50%; }
   }
 
-  /* ─── Kinetic Petal Utilities ────────────────────────────── */
-  .mat-petal-shape-1 { border-radius: 60% 40% 70% 30% / 60% 30% 70% 40%; }
-  .mat-petal-shape-2 { border-radius: 30% 70% 40% 60% / 40% 70% 30% 60%; }
-  .mat-petal-shape-3 { border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%; }
-
-  @keyframes mat-petal-sway {
-    0%, 100% { transform: rotate(0deg) translateY(0); }
-    33% { transform: rotate(2deg) translateY(-5px); }
-    66% { transform: rotate(-1deg) translateY(2px); }
+  /* ─── Editorial Aura Utilities ────────────────────────────── */
+  .mat-text-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
   }
 
-  .animate-petal-sway {
-    animation: mat-petal-sway 8s ease-in-out infinite;
+  .mat-bg-cashmere {
+    background-color: #F2E8E4;
   }
 
-  .mat-bg-moss-gradient {
-    background: radial-gradient(circle at top right, #FDFCFB 0%, #F2E8E4 100%);
+  .mat-bg-silk {
+    background-color: #1A1A1A;
   }
 
-  .mat-text-peach { color: #F7D1BA; }
-  .mat-text-moss { color: #8A9A5B; }
+  .mat-text-chic-serif {
+    font-family: var(--font-royal); /* Bodoni Moda */
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+  }
+
+  .mat-editorial-mask {
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0% 100%);
+  }
+
+  .mat-border-silk {
+    border-color: rgba(26, 26, 26, 0.1);
+  }
 
   .mat-perspective-1000 {
     perspective: 1000px;
