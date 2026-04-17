@@ -21,6 +21,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
   className,
   delay = 0,
   noPadding = false,
+  allowOverflow = false,
   onClick
 }) => {
   return (

@@ -11,7 +11,11 @@ import {
   Star,
   Compass,
   HelpCircle,
-  X
+  X,
+  Clock,
+  Bookmark,
+  MousePointer2,
+  Flame
 } from 'lucide-react';
 
 import { Badge } from "@/components/ui/badge";
@@ -162,94 +166,138 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
           {/* Right Mainframe: Data Matrix (8 cols) */}
           <div className="col-span-12 lg:col-span-8 flex flex-col gap-6 lg:gap-8">
             
-            {/* Top Wide: Connection Arch */}
-            <GlassCard className="flex-[1.5]" delay={0.3}>
-              <div className="h-full flex flex-col justify-between relative overflow-hidden">
-                {/* Visual Anchor */}
-                <div className="absolute top-0 right-0 opacity-5 -mr-12 -mt-12 scale-150 rotate-12">
-                   <Heart size={300} fill="white" />
-                </div>
-                
-                <div className="space-y-2">
-                  <p className="mat-text-label-pro text-[10px] text-mat-rose uppercase tracking-[0.4em]">Live Matrix</p>
-                  <h2 className="text-6xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'var(--font-display)' }}>
-                    Connection <span className="opacity-20 text-mat-gold">Arch.</span>
-                  </h2>
-                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-                    {[
-                      { label: 'New Seekers', val: status?.matches || 0, icon: Activity, color: 'text-white' },
-                      { label: 'Active Dialogs', val: status?.profilesEngaged || 0, icon: MessageCircle, color: 'text-mat-rose' },
-                      { label: 'Admiration Index', val: status?.profilesViewed || 0, icon: Eye, color: 'text-white/40' },
-                      { label: 'Status Rank', val: status?.safetyLevel || 'Elite', icon: Star, color: 'text-mat-gold' },
-                    ].map((stat, i) => (
-                      <GlassCard key={i} delay={0.1 + i * 0.1} allowOverflow noPadding className="p-6">
-                        <div className="flex flex-col h-full justify-between items-start gap-4">
-                          <div className="w-11 h-11 bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 shrink-0">
-                            <stat.icon size={18} className={stat.color} strokeWidth={1.5} />
-                          </div>
-                          <div className="space-y-1.5 overflow-visible">
-                            <p className="text-2xl font-bold text-white italic tracking-tight leading-relaxed">{stat.val}</p>
-                            <p className="mat-text-label-pro text-sm opacity-90 uppercase tracking-[0.2em] font-medium text-white/95">{stat.label}</p>
-                          </div>
-                        </div>
-                      </GlassCard>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </GlassCard>
-
-            {/* Bottom Split: Metric Harmony */}
-            <div className="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 min-h-[250px]">
+            {/* Apple Cinematic Bento Matrix */}
+            <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 lg:grid-rows-3 gap-4 lg:gap-6">
               
-              <GlassCard className="h-full" delay={0.4} allowOverflow>
-                <div className="h-full flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <div className="space-y-2">
-                       <p className="mat-text-label-pro text-sm text-mat-gold uppercase tracking-widest font-bold">Resonance Index</p>
-                       <h3 className="text-2xl font-bold italic text-white leading-relaxed">Harmony Index.</h3>
-                    </div>
-                    <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20 flex-shrink-0">
-                      <Compass className="text-mat-gold w-6 h-6 animate-spin-slow" strokeWidth={1} />
-                    </div>
+              {/* 🏆 Sanctum Rank: Hero Card (Large) */}
+              <GlassCard 
+                className="col-span-2 row-span-2 relative overflow-hidden group" 
+                delay={0.1}
+                noPadding
+              >
+                <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-30 transition-opacity">
+                  <div className="absolute inset-0 bg-gradient-to-br from-mat-gold/40 via-transparent to-mat-wine/40" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[150%] h-[150%] bg-[radial-gradient(circle,rgba(191,160,106,0.2)_0%,transparent_70%)] animate-pulse" />
+                </div>
+                <div className="relative z-10 h-full p-8 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <p className="mat-text-label-pro text-[10px] text-mat-gold uppercase tracking-[0.4em] font-black">Sovereign Standing</p>
+                    <h2 className="text-7xl font-bold italic text-mat-cream tracking-tighter leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                      {status?.safetyLevel || 'Standard'}
+                    </h2>
                   </div>
-                  <div className="flex items-center gap-5 py-2">
-                     <span className="text-4xl lg:text-5xl font-bold text-mat-cream tracking-normal italic leading-relaxed" style={{ fontFamily: 'var(--font-display)' }}>
-                        {Math.round(status?.rank_score || 0)}
-                     </span>
-                     <p className="text-xs text-white/60 italic max-w-[160px] leading-relaxed">Strategic frequency alignment verified in local sector.</p>
+                  <div className="flex items-center gap-4">
+                    <div className="w-12 h-12 rounded-full bg-mat-gold/20 border border-mat-gold/40 flex items-center justify-center text-mat-gold">
+                      <Star size={24} fill="currentColor" />
+                    </div>
+                    <p className="text-sm text-mat-cream/60 italic max-w-[200px]">Your presence is recognized within the elite tier of the Sanctum.</p>
                   </div>
                 </div>
               </GlassCard>
 
-              <GlassCard className="h-full" delay={0.5} allowOverflow>
-                 <div className="h-full flex flex-col justify-between">
-                    <div className="space-y-6">
-                        <div className="flex items-center gap-4 text-white/60">
-                          <ShieldCheck size={24} strokeWidth={1.5} className="text-mat-gold" />
-                          <span className="mat-text-label-pro text-sm uppercase tracking-widest font-black text-white/90">Registry Audit</span>
-                        </div>
-                        <h4 className="text-xl lg:text-2xl font-bold italic text-white/80 leading-relaxed">Integrity Status: <span className="text-mat-gold">Stable</span></h4>
-                    </div>
-                    
-                    <div className="bg-black/40 rounded-[2.5rem] p-7 border border-white/5 flex items-center justify-between mt-4">
-                       <div className="space-y-2 py-1">
-                          <p className="mat-text-label-pro text-sm text-white/60 uppercase tracking-widest leading-normal">Last Audit Protocol</p>
-                          <p className="text-mat-gold text-base font-bold italic">Active | 3h Ago</p>
-                       </div>
-                       <motion.div 
-                         initial={{ rotate: 0 }}
-                         animate={{ rotate: 360 }}
-                         transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                         className="flex gap-1"
-                       >
-                          <div className="w-2 h-2 rounded-full bg-mat-gold shadow-[0_0_15px_rgba(202,138,4,0.5)]" />
-                          <div className="w-2 h-2 rounded-full bg-mat-gold/40" />
-                          <div className="w-2 h-2 rounded-full bg-mat-gold/10" />
-                       </motion.div>
-                    </div>
-                 </div>
+              {/* 🛡️ Trust Score: Hero Card (Portrait) */}
+              <GlassCard 
+                className="col-span-2 lg:col-span-1 lg:row-span-2 relative overflow-hidden group" 
+                delay={0.2}
+                noPadding
+              >
+                <div className="absolute inset-0 z-0 opacity-10 bg-gradient-to-b from-white to-transparent" />
+                <div className="relative z-10 h-full p-8 flex flex-col justify-between items-center text-center">
+                  <p className="mat-text-label-pro text-[10px] text-white/40 uppercase tracking-[0.3em] font-black">Integrity</p>
+                  <div className="relative">
+                    <span className="text-6xl lg:text-7xl font-bold text-white tracking-tighter italic">
+                      {status?.trustScore || '94'}<span className="text-mat-gold text-2xl">%</span>
+                    </span>
+                    <motion.div 
+                      className="absolute -inset-4 border border-mat-gold/20 rounded-full"
+                      animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.5, 0.2] }}
+                      transition={{ duration: 4, repeat: Infinity }}
+                    />
+                  </div>
+                  <p className="text-[10px] text-white/60 uppercase tracking-widest font-bold">Trust Score</p>
+                </div>
               </GlassCard>
+
+              {/* ⚡ Response Pulse: Wide Card */}
+              <GlassCard 
+                className="col-span-2 lg:col-span-1 row-span-1 relative overflow-hidden" 
+                delay={0.3}
+                noPadding
+              >
+                <div className="h-full p-6 flex flex-col justify-between">
+                   <div className="flex justify-between items-start">
+                      <p className="mat-text-label-pro text-[9px] text-mat-rose uppercase tracking-[0.3em] font-black">Vibrancy</p>
+                      <Flame size={14} className="text-mat-rose animate-pulse" />
+                   </div>
+                   <div className="space-y-1">
+                      <p className="text-2xl font-bold text-white italic leading-none">{status?.responsePulse || 'High'}</p>
+                      <p className="text-[9px] text-white/40 uppercase tracking-widest">Response Pulse</p>
+                   </div>
+                </div>
+              </GlassCard>
+
+              {/* 👁️ Profile Views: Standard Card */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.4} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between">
+                  <Eye size={16} className="text-white/40" />
+                  <div className="space-y-1">
+                    <p className="text-3xl font-bold text-white italic leading-none">{status?.profilesViewed || 0}</p>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest">Views</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* ❤️ Matches: Standard Card */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.5} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between">
+                  <Heart size={16} className="text-mat-rose" />
+                  <div className="space-y-1">
+                    <p className="text-3xl font-bold text-white italic leading-none">{status?.matches || 0}</p>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest">Matches</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🖱️ Selections: Standard Card */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.6} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between">
+                  <MousePointer2 size={16} className="text-mat-gold" />
+                  <div className="space-y-1">
+                    <p className="text-3xl font-bold text-white italic leading-none">{status?.profilesEngaged || 0}</p>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest">Selections</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🔖 Saves: Standard Card */}
+              <GlassCard className="col-span-1 row-span-1" delay={0.7} noPadding>
+                <div className="h-full p-6 flex flex-col justify-between">
+                  <Bookmark size={16} className="text-white/60" />
+                  <div className="space-y-1">
+                    <p className="text-3xl font-bold text-white italic leading-none">{status?.saves || 0}</p>
+                    <p className="text-[9px] text-white/40 uppercase tracking-widest">Saves</p>
+                  </div>
+                </div>
+              </GlassCard>
+
+              {/* 🕒 Time Online: Wide Card */}
+              <GlassCard 
+                className="col-span-2 lg:col-span-1 row-span-1 relative overflow-hidden" 
+                delay={0.8}
+                noPadding
+              >
+                <div className="h-full p-6 flex flex-col justify-between">
+                   <div className="flex justify-between items-start">
+                      <Clock size={16} className="text-mat-gold/60" />
+                      <div className="px-2 py-0.5 rounded-full bg-mat-gold/10 border border-mat-gold/20 text-[8px] text-mat-gold uppercase font-black">Active</div>
+                   </div>
+                   <div className="space-y-1">
+                      <p className="text-xl font-bold text-white italic leading-none">{status?.timeOnline || '63h 4m'}</p>
+                      <p className="text-[9px] text-white/40 uppercase tracking-widest">Time Online</p>
+                   </div>
+                </div>
+              </GlassCard>
+
             </div>
           </div>
         </div>
