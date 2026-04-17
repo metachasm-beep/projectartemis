@@ -148,6 +148,32 @@
     100% { background-position: 200% 50%; }
   }
 
+  /* ─── Ivory Editorial Utilities ────────────────────────────────── */
+  .mat-border-editorial {
+    border: 0.5px solid rgba(212, 175, 55, 0.2);
+  }
+
+  .mat-card-ivory {
+    background: var(--color-mat-bone);
+    border: 0.5px solid rgba(212, 175, 55, 0.15);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  }
+
+  .mat-divider-gold {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.2), transparent);
+  }
+
+  .mat-text-editorial-label {
+    font-family: var(--font-body);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6em;
+    color: var(--color-mat-noir);
+    opacity: 0.4;
+  }
+
   .mat-perspective-1000 {
     perspective: 1000px;
   }

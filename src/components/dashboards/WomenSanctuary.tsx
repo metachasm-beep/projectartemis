@@ -1,170 +1,45 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, useScroll } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
   Zap, 
   Heart, 
   Activity, 
   Sparkles,
-  MessageCircle,
   Eye,
   Star,
-  Compass,
-  X,
   LayoutGrid,
-  CheckCircle2,
-  AlertCircle,
-  MapPin,
-  Briefcase,
-  GraduationCap,
-  Ruler,
-  Calendar,
+  X,
   Bookmark,
-  Edit3,
-  Settings,
   HelpCircle,
-  Clock,
-  MousePointer2,
-  Flame
+  ArrowRight,
+  Menu
 } from 'lucide-react';
 
-import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
 import { cn } from '@/lib/utils';
 import { FAQ } from '@/components/FAQ';
 import { VerificationPaymentModal } from '@/components/verification/VerificationPaymentModal';
 import { useAuth } from '@/hooks/useAuth';
-import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
 
 /**
- * 🪐 FloatingGeometry: Multi-layered parallax shards
+ * 🖋️ EditorialStat: A high-fashion minimalist stat display
  */
-const FloatingGeometry = () => {
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
-      {[...Array(8)].map((_, i) => (
-        <motion.div
-          key={i}
-          animate={{ 
-            y: [0, -40, 0],
-            rotate: [0, 180, 360],
-            opacity: [0.2, 0.5, 0.2] 
-          }}
-          transition={{
-            duration: 10 + Math.random() * 20,
-            repeat: Infinity,
-            ease: "easeInOut"
-          }}
-          className="absolute border border-white/10 rounded-full"
-          style={{
-            width: Math.random() * 300 + 100 + "px",
-            height: Math.random() * 300 + 100 + "px",
-            left: Math.random() * 100 + "%",
-            top: Math.random() * 100 + "%",
-            filter: "blur(20px)",
-            background: "radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%)"
-          }}
-        />
-      ))}
+const EditorialStat = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
+  <motion.div 
+    initial={{ opacity: 0, x: -10 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ delay, duration: 0.8 }}
+    className="flex flex-col items-start gap-4 p-6 lg:p-10 border-r border-b border-mat-gold/10"
+  >
+    <div className="text-mat-gold opacity-50">{icon}</div>
+    <div className="space-y-1">
+      <h3 className="mat-text-fluid-huge leading-[0.7] text-mat-noir" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+        {value}
+      </h3>
+      <p className="mat-text-editorial-label">{label}</p>
     </div>
-  );
-};
-
-/**
- * ✨ SparkleParticles: Subtle "Design Spell"
- */
-const SparkleParticles = () => {
-  return (
-    <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      {[...Array(20)].map((_, i) => (
-        <motion.div
-          key={i}
-          className="absolute w-1 h-1 bg-white rounded-full opacity-0"
-          initial={{ x: Math.random() * 100 + "%", y: Math.random() * 100 + "%", scale: 0 }}
-          animate={{ opacity: [0, 0.8, 0], scale: [0, 1.5, 0], y: ["-5%", "5%"] }}
-          transition={{ duration: 2 + Math.random() * 3, repeat: Infinity, delay: Math.random() * 5 }}
-          style={{ filter: 'blur(1px)', boxShadow: '0 0 10px #fff' }}
-        />
-      ))}
-    </div>
-  );
-};
-
-/**
- * 💎 GemstoneCard: Enhanced with materials and magnetic snapping
- */
-const GemstoneCard = ({ 
-  children, 
-  delay = 0, 
-  className = "", 
-  material = "glass",
-  isHolographic = false 
-}: { 
-  children: React.ReactNode, 
-  delay?: number, 
-  className?: string,
-  material?: "glass" | "gold" | "silver" | "obsidian",
-  isHolographic?: boolean
-}) => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const rotateX = useSpring(useTransform(mouseY, [-100, 100], [15, -15]), { stiffness: 150, damping: 20 });
-  const rotateY = useSpring(useTransform(mouseX, [-100, 100], [-15, 15]), { stiffness: 150, damping: 20 });
-
-  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-    mouseX.set(event.clientX - centerX);
-    mouseY.set(event.clientY - centerY);
-  }
-
-  function handleMouseLeave() {
-    mouseX.set(0);
-    mouseY.set(0);
-  }
-
-  const materialClasses = {
-    glass: "mat-gemstone-glass",
-    gold: "mat-material-gold",
-    silver: "mat-material-silver",
-    obsidian: "mat-material-obsidian"
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      whileHover={{ scale: 1.02 }}
-      transition={{ delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-      className={cn(
-        "mat-iridescent-border p-5 rounded-3xl transition-shadow hover:shadow-[0_40px_80px_rgba(0,0,0,0.15)] group cursor-pointer relative",
-        materialClasses[material],
-        isHolographic && "mat-holographic-foil",
-        className
-      )}
-    >
-      <div style={{ transform: "translateZ(30px)" }} className="relative z-10">
-        {children}
-      </div>
-      {/* Dynamic Refractive Highlight */}
-      <motion.div 
-        className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" 
-        style={{
-          background: useTransform(
-            [mouseX, mouseY],
-            ([mx, my]) => `radial-gradient(circle at ${50 + (mx as number) / 2}% ${50 + (my as number) / 2}%, rgba(255,255,255,0.2) 0%, transparent 60%)`
-          )
-        }}
-      />
-    </motion.div>
-  );
-};
+  </motion.div>
+);
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -192,7 +67,6 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);
   const [showVerification, setShowVerification] = React.useState(false);
-  const [isResonating, setIsResonating] = useState(false);
   const { refreshProfile } = useAuth();
 
   const isVerified = profile?.is_verified;
@@ -200,223 +74,171 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
 
   const stats = [
-    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          material: 'glass' as const },
-    { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  material: 'silver' as const, isHolographic: isVerified },
-    { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        material: 'gold' as const },
-    { label: 'Selections',      value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   material: 'glass' as const },
-    { label: 'Saves',           value: String(metrics.saves || 0),                  icon: <Bookmark size={13} />,     material: 'glass' as const },
-    { label: 'Time Online',     value: 'Active',                                    icon: <Activity size={13} />,     material: 'glass' as const },
-    { label: 'Sanctum Rank',    value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         material: 'obsidian' as const },
-    { label: 'Response Pulse',  value: metrics.responseRate || 'High',             icon: <Zap size={13} />,          material: 'glass' as const },
+    { label: 'Views',      value: String(metrics.profileViews || 0),          icon: <Eye size={18} /> },
+    { label: 'Trust',      value: `${completeness}%`,                          icon: <ShieldCheck size={18} /> },
+    { label: 'Matches',    value: String(metrics.matches || 0),                icon: <Heart size={18} /> },
+    { label: 'Status',     value: metrics.safetyLevel ?? 'Gold',               icon: <Star size={18} /> },
   ];
 
-  const triggerResonance = () => {
-    setIsResonating(true);
-    setTimeout(() => setIsResonating(false), 2000);
-  };
-
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#0a0a0a] selection:bg-mat-rose-gold selection:text-white flex flex-col mat-cinematic-grain">
-      <LiquidMesh />
-      <FloatingGeometry />
-      <PostProcessOverlay />
-      <SparkleParticles />
-
-      <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-8 lg:px-20 lg:py-12 min-h-0">
-        
-        {/* ══ SOVEREIGN HEADER ══════════════════════════════ */}
-        <header className="flex justify-between items-start shrink-0 mb-8 lg:mb-12">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <motion.span 
-                animate={{ width: [16, 48, 16], opacity: [0.3, 0.7, 0.3] }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="h-[1px] bg-mat-gold" 
-              />
-              <span className="mat-text-editorial-caps text-[10px] text-white/40 tracking-[0.8em] font-medium">Sovereign Sanctuary</span>
-            </div>
-            <h1 className="text-5xl lg:text-7xl font-light italic text-white leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
-              Existence<span className="text-mat-gold">.</span>
-            </h1>
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-bone flex flex-col selection:bg-mat-rose-gold selection:text-white">
+      
+      {/* ══ MINIMALIST NAV ══════════════════════════════ */}
+      <nav className="relative z-20 w-full flex justify-between items-center px-8 py-8 lg:px-20 border-b border-mat-gold/10 shrink-0">
+        <div className="flex items-center gap-12">
+          <h2 className="mat-text-editorial-caps text-[10px] tracking-[1em] opacity-40">Matriarch Protocol</h2>
+          <div className="hidden lg:flex items-center gap-8">
+            {['Sanctuary', 'Identity', 'Discovery'].map((link) => (
+              <span key={link} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] cursor-pointer hover:text-mat-gold transition-colors">{link}</span>
+            ))}
           </div>
-          
-          <div className="flex items-center gap-6">
-             <motion.button 
-                whileHover={{ scale: 1.1, rotate: 180 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => setShowFAQ(true)}
-                className="w-14 h-14 rounded-full bg-white/5 backdrop-blur-3xl border border-white/10 flex items-center justify-center text-white/60 shadow-2xl hover:bg-white/10 transition-all duration-500"
-             >
-                <HelpCircle size={20} />
-             </motion.button>
-             <button 
-               onClick={() => setIsEditing(true)}
-               className="px-10 py-4 rounded-full bg-white text-mat-noir mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black shadow-2xl hover:bg-mat-gold hover:text-white transition-all duration-700 hover:shadow-mat-gold/30"
-             >
-               Curate Identity
-             </button>
-          </div>
-        </header>
-
-        {/* ══ THE AURA MATRIX (Advanced Isometric) ═══════════════ */}
-        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-32 min-h-0 mat-perspective-1000">
-          
-          {/* Left Stats Column (Jewelry Materials) */}
-          <div className="hidden lg:grid grid-cols-1 gap-10 w-64 mat-isometric-tilt">
-             {[stats[0], stats[1], stats[2], stats[3]].map((stat, i) => (
-                <GemstoneCard key={i} delay={0.1 * i} material={stat.material} isHolographic={stat.isHolographic}>
-                   <div className="flex flex-col gap-4">
-                      <div className="opacity-60">{React.cloneElement(stat.icon as React.ReactElement, { size: 18 })}</div>
-                      <div className="space-y-1">
-                         <p className={cn(
-                           "text-4xl font-light italic leading-none",
-                           stat.material === 'gold' ? 'text-white' : 'text-inherit'
-                         )} style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black uppercase opacity-40">{stat.label}</p>
-                      </div>
-                   </div>
-                </GemstoneCard>
-             ))}
-          </div>
-
-          {/* Central Aura Orb: Biomimetic Identity */}
-          <div className="relative shrink-0 flex flex-col items-center">
-             <motion.div 
-               onTap={triggerResonance}
-               initial={{ scale: 0.8, opacity: 0 }}
-               animate={{ 
-                 scale: isResonating ? 1.05 : 1,
-                 opacity: 1 
-               }}
-               transition={{ scale: { duration: 0.4, ease: "easeOut" }, opacity: { duration: 2, ease: [0.16, 1, 0.3, 1] } }}
-               className="relative w-64 h-64 lg:w-[480px] lg:h-[480px] rounded-full p-3 bg-gradient-to-tr from-mat-gold/10 via-white/10 to-mat-rose-gold/10 shadow-[0_60px_120px_rgba(0,0,0,0.4)] group cursor-pointer"
-             >
-                {/* Breathe Interaction */}
-                <motion.div 
-                  animate={{ scale: [1, 1.08, 1], opacity: [0.1, 0.3, 0.1] }}
-                  transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                  className="absolute inset-0 rounded-full bg-white blur-3xl -z-10"
-                />
-
-                <div className="w-full h-full rounded-full overflow-hidden border border-white/20 relative shadow-inner">
-                   <img 
-                      src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
-                      alt="Identity" 
-                      className="w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 transition-all duration-[2000ms] scale-105 group-hover:scale-100"
-                   />
-                   <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
-                   
-                   <AnimatePresence>
-                     {isResonating && (
-                       <motion.div 
-                         initial={{ scale: 0, opacity: 1, borderWidth: 10 }}
-                         animate={{ scale: 2.5, opacity: 0, borderWidth: 0 }}
-                         className="absolute inset-0 rounded-full border-mat-gold z-20"
-                       />
-                     )}
-                   </AnimatePresence>
-                </div>
-
-                {/* Cinematic Rings */}
-                <motion.div animate={{ rotate: 360 }} transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-                   className="absolute -inset-10 border border-mat-gold/10 rounded-full pointer-events-none"
-                />
-                <motion.div animate={{ rotate: -360 }} transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
-                   className="absolute -inset-16 border border-white/5 rounded-full pointer-events-none"
-                />
-             </motion.div>
-             
-             <div className="mt-16 text-center">
-                <h2 className="text-5xl lg:text-7xl font-light italic text-white leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
-                   {profile?.full_name || 'Sovereign'}
-                </h2>
-                <div className="flex items-center justify-center gap-4 mt-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-mat-gold shadow-[0_0_10px_#D4AF37] animate-pulse" />
-                  <p className="mat-text-editorial-caps text-[10px] text-white/30 tracking-[0.6em] font-black uppercase">Identity Registry: {profile?.user_id?.slice(0,8) || 'AUTHENTICATED'}</p>
-                </div>
-             </div>
-          </div>
-
-          {/* Right Stats Column (Advanced Materials) */}
-          <div className="hidden lg:grid grid-cols-1 gap-10 w-64 mat-isometric-tilt" style={{ transform: 'rotateX(15deg) rotateY(10deg) rotateZ(-2deg)' }}>
-             {[stats[4], stats[5], stats[6], stats[7]].map((stat, i) => (
-                <GemstoneCard key={i} delay={0.4 + 0.1 * i} material={stat.material}>
-                   <div className="flex flex-col gap-4">
-                      <div className="opacity-60">{React.cloneElement(stat.icon as React.ReactElement, { size: 18 })}</div>
-                      <div className="space-y-1">
-                         <p className="text-4xl font-light italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black uppercase opacity-40">{stat.label}</p>
-                      </div>
-                   </div>
-                </GemstoneCard>
-             ))}
-          </div>
-
-          {/* Mobile High-Density View */}
-          <div className="grid lg:hidden grid-cols-2 gap-4 w-full px-4 mb-12">
-             {stats.map((stat, i) => (
-                <GemstoneCard key={i} delay={0.1 * i} material={stat.material} isHolographic={stat.isHolographic} className="p-4">
-                   <div className="flex flex-col gap-2">
-                      <div className="opacity-40">{React.cloneElement(stat.icon as React.ReactElement, { size: 14 })}</div>
-                      <div className="space-y-0.5 overflow-hidden">
-                         <p className="text-2xl font-light italic text-white leading-none" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[7px] text-white/20 tracking-[0.2em] font-black truncate uppercase">{stat.label}</p>
-                      </div>
-                   </div>
-                </GemstoneCard>
-             ))}
-          </div>
-
         </div>
 
-        {/* ══ FOOTER SOVEREIGNTY ═══════════════════════════════ */}
-        <footer className="shrink-0 mt-auto flex flex-col items-center gap-10 pb-6">
-           {!isVerified && (
-              <motion.button
-                whileHover={{ scale: 1.05, y: -4, shadow: "0 20px 40px rgba(212,175,55,0.2)" }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => setShowVerification(true)}
-                className="flex items-center gap-4 px-10 py-5 bg-mat-gold/10 border border-mat-gold/30 rounded-full backdrop-blur-3xl group transition-all duration-500"
+        <div className="flex items-center gap-6">
+           <button onClick={() => setShowFAQ(true)} className="p-2 text-mat-noir/40 hover:text-mat-gold transition-colors">
+              <HelpCircle size={20} strokeWidth={1.5} />
+           </button>
+           <button 
+             onClick={() => setIsEditing(true)}
+             className="hidden lg:block px-8 py-3 bg-mat-noir text-white mat-text-editorial-caps text-[9px] tracking-[0.4em] font-black hover:bg-mat-gold transition-all duration-500"
+           >
+             Curate Profile
+           </button>
+           <button className="lg:hidden p-2 text-mat-noir">
+              <Menu size={24} strokeWidth={1.5} />
+           </button>
+        </div>
+      </nav>
+
+      {/* ══ EDITORIAL BODY ══════════════════════════════ */}
+      <main className="flex-1 w-full flex flex-col lg:flex-row min-h-0">
+        
+        {/* Left: Huge Display Identity */}
+        <div className="flex-[1.2] flex flex-col justify-center px-8 lg:px-20 py-12 lg:py-0 border-b lg:border-b-0 lg:border-r border-mat-gold/10">
+          <div className="space-y-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1 }}
+            >
+              <h1 className="mat-text-fluid-huge text-mat-noir leading-[0.8]">
+                {profile?.full_name?.split(' ')[0] || 'Existence'}<span className="text-mat-gold">.</span>
+              </h1>
+              <div className="flex items-center gap-4 mt-8">
+                 <div className="h-px w-12 bg-mat-gold/30" />
+                 <p className="mat-text-editorial-caps text-[10px] tracking-[0.6em] text-mat-noir/30">Member Since {memberSince}</p>
+              </div>
+            </motion.div>
+
+            <div className="flex flex-wrap gap-4 pt-12">
+              {!isVerified && (
+                <button 
+                  onClick={() => setShowVerification(true)}
+                  className="px-10 py-5 bg-mat-bone border border-mat-gold text-mat-gold mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-gold hover:text-white transition-all duration-700"
+                >
+                  Apply Verification
+                </button>
+              )}
+              <button 
+                onClick={onBeginDiscovery}
+                className="px-10 py-5 bg-mat-noir text-white mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-gold transition-all duration-700 flex items-center gap-4 group"
               >
-                 <Sparkles size={20} className="text-mat-gold group-hover:rotate-[30deg] transition-transform duration-700" />
-                 <span className="mat-text-editorial-caps text-[11px] text-mat-gold font-black tracking-[0.6em]">Elevate Status</span>
-              </motion.button>
-           )}
-           
-           <div className="flex items-center gap-8 opacity-20 mat-text-editorial-caps text-[9px] tracking-[0.6em] font-black uppercase text-white">
-              <span>Sanctum v5.2</span>
-              <span className="w-1 h-1 rounded-full bg-white/40" />
-              <span>Sovereign Identity</span>
-              <span className="w-1 h-1 rounded-full bg-white/40" />
-              <span>Est. {memberSince}</span>
-           </div>
-        </footer>
+                Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Right: The Grid & Aura */}
+        <div className="flex-1 flex flex-col min-h-0">
+          
+          {/* Top: 2x2 Stats Grid */}
+          <div className="grid grid-cols-2 flex-1">
+            {stats.map((stat, i) => (
+              <EditorialStat key={i} {...stat} delay={0.2 * i} />
+            ))}
+          </div>
+
+          {/* Bottom: Aura Visual Focus */}
+          <div className="relative h-1/3 lg:h-1/2 flex items-center justify-center p-8 overflow-hidden bg-mat-cashmere/20">
+             {/* Subtle Background Pattern */}
+             <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #000 1px, transparent 0)', backgroundSize: '40px 40px' }} />
+             
+             <motion.div 
+               initial={{ scale: 0.9, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+               className="relative w-40 h-40 lg:w-64 lg:h-64 shrink-0"
+             >
+                <div className="w-full h-full rounded-full border border-mat-gold/20 p-2 relative">
+                   <div className="w-full h-full rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-[2000ms] shadow-2xl">
+                      <img 
+                        src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
+                        alt="Aura" 
+                        className="w-full h-full object-cover scale-110"
+                      />
+                   </div>
+                   
+                   {/* Minimalist Orbitals */}
+                   <motion.div 
+                     animate={{ rotate: 360 }}
+                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                     className="absolute -inset-4 border border-mat-gold/10 rounded-full"
+                   />
+                   <motion.div 
+                     animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
+                     transition={{ duration: 4, repeat: Infinity }}
+                     className="absolute inset-0 rounded-full bg-mat-gold/5 blur-2xl -z-10"
+                   />
+                </div>
+                
+                {/* Floating Micro-UI detail */}
+                <div className="absolute -right-12 top-1/2 -translate-y-1/2 rotate-90 hidden lg:block">
+                   <p className="mat-text-editorial-caps text-[8px] tracking-[1.5em] opacity-20 whitespace-nowrap">Authentication Sequence Complete</p>
+                </div>
+             </motion.div>
+          </div>
+        </div>
 
       </main>
 
+      {/* ══ SYSTEM FOOTER ═══════════════════════════════ */}
+      <footer className="shrink-0 w-full px-8 py-6 lg:px-20 border-t border-mat-gold/10 flex justify-between items-center bg-white/50 backdrop-blur-sm">
+         <div className="flex gap-8">
+            <div className="flex flex-col">
+               <span className="mat-text-editorial-label">Sanctum Registry</span>
+               <span className="text-[10px] font-bold opacity-30 mt-1">ID_{profile?.user_id?.slice(0,8) || 'SYSTEM'}</span>
+            </div>
+            <div className="flex flex-col">
+               <span className="mat-text-editorial-label">Selection Index</span>
+               <span className="text-[10px] font-bold opacity-30 mt-1">v5.2.0 Ivory</span>
+            </div>
+         </div>
+
+         <div className="flex items-center gap-4">
+            <Sparkles size={14} className="text-mat-gold" />
+            <span className="mat-text-editorial-caps text-[9px] tracking-[0.4em] opacity-30">All Protocols Optimal</span>
+         </div>
+      </footer>
+
+      {/* ══ MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-[100px] bg-black/90"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-mat-bone"
             onClick={() => setShowFAQ(false)}
           >
-            <div className="w-full h-full flex flex-col relative overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-20 h-20 bg-white text-black hover:bg-mat-gold hover:text-white transition-all duration-700 z-20 flex items-center justify-center rounded-full shadow-2xl"
+                className="absolute top-12 right-12 w-16 h-16 border border-mat-gold text-mat-gold hover:bg-mat-gold hover:text-white transition-all duration-500 z-20 flex items-center justify-center rounded-full"
               >
-                <X size={28} />
+                <X size={24} />
               </button>
               
-              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-40">
-                <div className="max-w-7xl mx-auto space-y-32">
-                  <div className="flex flex-col items-start space-y-10">
-                    <span className="mat-text-editorial-caps text-[14px] tracking-[1em] text-mat-gold/40">Intelligence Protocol</span>
-                    <h2 className="font-light italic text-8xl md:text-[12rem] tracking-tighter leading-[0.8] text-white" style={{ fontFamily: 'var(--font-display)' }}>
-                      The Gnosis of <br /><span className="text-mat-gold">Selection.</span>
-                    </h2>
-                  </div>
-                  <div className="w-full h-px bg-white/5" />
-                  <div className="pointer-events-auto"><FAQ /></div>
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
+                <div className="max-w-6xl mx-auto">
+                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-gold mb-12 block">Gnosis Registry</span>
+                   <div className="pointer-events-auto"><FAQ /></div>
                 </div>
               </div>
             </div>
@@ -437,4 +259,3 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 };
 
 export default WomenSanctuary;
-
