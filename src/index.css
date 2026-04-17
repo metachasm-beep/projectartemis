@@ -1,4 +1,6 @@
-/* ─── High-Performance Typography (Self-Hosted) ────────────────── */
+/* ─── High-Performance Typography (Self-Hosted & Google) ────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
 @font-face {
   font-family: 'Fraunces';
   font-style: normal;
@@ -46,9 +48,10 @@
   --color-mat-gold:        #D4AF37;    /* Classic Luxury                  */
 
   /* ─── Typography (High-Fashion) ─────────────────────────────────── */
-  --font-display: "Fraunces", serif;    /* Editorial Serif                */
-  --font-royal:   "Bodoni Moda", serif; /* Royal Fashion                  */
-  --font-body:    "Outfit", sans-serif; /* Clean Modern                   */
+  --font-display: "Cormorant Garamond", serif;    /* Luxury Editorial Serif   */
+  --font-royal:   "Bodoni Moda", serif;           /* Royal Fashion            */
+  --font-body:    "Montserrat", sans-serif;       /* Clean Modern Sans        */
+
 
   /* ─── Radii & Aesthetics ─────────────────────────────────────────────────── */
   --radius-mat-editorial: 24px;
@@ -102,6 +105,56 @@
     box-shadow: 
       0 10px 30px rgba(0, 0, 0, 0.02),
       inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  }
+
+  .mat-gemstone-glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(24px) saturate(150%);
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+      0 20px 40px rgba(0, 0, 0, 0.05),
+      inset 0 0 20px rgba(255, 255, 255, 0.2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mat-iridescent-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    padding: 1px;
+    border-radius: inherit;
+    background: linear-gradient(
+      115deg,
+      transparent,
+      rgba(255, 255, 255, 0.4),
+      rgba(183, 110, 121, 0.3),
+      rgba(212, 175, 55, 0.3),
+      transparent
+    );
+    -webkit-mask: 
+      linear-gradient(#fff 0 0) content-box, 
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: mat-iridescent-shift 4s linear infinite;
+    background-size: 200% 200%;
+  }
+
+  @keyframes mat-iridescent-shift {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .mat-perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .mat-isometric-tilt {
+    transform: rotateX(10deg) rotateY(-5deg) rotateZ(1deg);
+    transform-style: preserve-3d;
   }
 
   /* ─── Haute Typography ───────────────────────────────────────────── */

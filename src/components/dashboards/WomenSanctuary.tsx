@@ -1,5 +1,5 @@
-import React from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import { 
   ShieldCheck, 
   Zap, 
@@ -30,13 +30,93 @@ import {
 
 import { LiquidMesh } from '@/components/dashboard/promax/LiquidMesh';
 import { GlassCard } from '@/components/dashboard/promax/GlassCard';
-import { Dock } from '@/components/dashboard/promax/Dock';
 import { cn } from '@/lib/utils';
 import { FAQ } from '@/components/FAQ';
 import { VerificationPaymentModal } from '@/components/verification/VerificationPaymentModal';
 import { useAuth } from '@/hooks/useAuth';
 import { PostProcessOverlay } from '@/components/dashboard/promax/PostProcessOverlay';
 import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from '@/components/ui/tooltip';
+
+/**
+ * ✨ SparkleParticles: Subtle "Design Spell" for that magical touch
+ */
+const SparkleParticles = () => {
+  return (
+    <div className="absolute inset-0 pointer-events-none overflow-hidden">
+      {[...Array(15)].map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 bg-white rounded-full opacity-0"
+          initial={{ 
+            x: Math.random() * 100 + "%", 
+            y: Math.random() * 100 + "%",
+            scale: 0 
+          }}
+          animate={{ 
+            opacity: [0, 0.8, 0],
+            scale: [0, 1.5, 0],
+            y: ["-5%", "5%"]
+          }}
+          transition={{
+            duration: 2 + Math.random() * 3,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "easeInOut"
+          }}
+          style={{
+            filter: 'blur(1px)',
+            boxShadow: '0 0 10px #fff'
+          }}
+        />
+      ))}
+    </div>
+  );
+};
+
+/**
+ * 💎 GemstoneCard: High-fidelity "Digital Jewelry" bento tile
+ */
+const GemstoneCard = ({ children, delay = 0, className = "" }: { children: React.ReactNode, delay?: number, className?: string }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const rotateX = useSpring(useTransform(y, [-100, 100], [10, -10]), { stiffness: 100, damping: 30 });
+  const rotateY = useSpring(useTransform(x, [-100, 100], [-10, 10]), { stiffness: 100, damping: 30 });
+
+  function handleMouseMove(event: React.MouseEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    x.set(event.clientX - centerX);
+    y.set(event.clientY - centerY);
+  }
+
+  function handleMouseLeave() {
+    x.set(0);
+    y.set(0);
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
+      className={cn(
+        "mat-gemstone-glass mat-iridescent-border p-4 rounded-3xl transition-shadow hover:shadow-[0_32px_64px_rgba(0,0,0,0.12)] group cursor-pointer",
+        className
+      )}
+    >
+      <div style={{ transform: "translateZ(20px)" }} className="relative z-10">
+        {children}
+      </div>
+      {/* Refractive Light Highlight */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/10 to-white/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </motion.div>
+  );
+};
 
 interface WomenSanctuaryProps {
   profile: any;
@@ -50,15 +130,12 @@ interface WomenSanctuaryProps {
     vibeRating?: number;
     activeStreak?: number;
     safetyLevel?: string;
+    profileViews?: number;
   };
   setIsEditing: (val: boolean) => void;
   onBeginDiscovery?: () => void;
 }
 
-/**
- * 🏛️ Women's Sanctuary 5.0: Trump Card Edition
- * Rich profile data card + auto-sizing skeuomorphic stat chips.
- */
 export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({ 
   profile,
   metrics, 
@@ -67,6 +144,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);
   const [showVerification, setShowVerification] = React.useState(false);
+  const [isResonating, setIsResonating] = useState(false);
   const { refreshProfile } = useAuth();
 
   const formatTime = (seconds: number) => {
@@ -78,36 +156,29 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
   const isVerified = profile?.is_verified;
   const completeness = profile?.profile_completeness ?? 94;
-
-  /* ── Bio data pulled from profile ── */
-  const age         = profile?.age ?? (profile?.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : '--');
-  const occupation  = profile?.occupation ?? '--';
-  const education   = profile?.education ?? '--';
-  const height      = profile?.height ? `${profile.height} cm` : '-- cm';
-  const bio         = profile?.bio ?? 'Awaiting identity narrative...';
-  const interests   = profile?.interests ?? [];
   const memberSince = profile?.created_at ? new Date(profile.created_at).getFullYear() : '--';
 
-  /* ── Engagement stats ── */
   const stats = [
-    /* --- Updated Stats Matrix (Real Data Only) --- */
-    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50', description: "Total number of seekers who have engaged with your dossier." },
-    { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50', description: "Profile integrity score based on dossier completeness." },
-    { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        accent: 'from-pink-100 to-pink-50', description: "Successful protocol synchronizations with compatible aspirants." },
-    { label: 'Selections',      value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50', description: "Total number of aspirants you have evaluated." },
-    { label: 'Saves',           value: String(metrics.saves || 0),                  icon: <Bookmark size={13} />,     accent: 'from-sky-100 to-sky-50', description: "Aspirants flagged for long-term sanctuary tracking." },
-    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50', description: "Total duration of active presence within the protocol." },
-    { label: 'Sanctum Rank',    value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50', description: "Your current authority level within the sanctuary registry." },
-    { label: 'Response Pulse',  value: metrics.responseRate || 'High',             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50', description: "Real-time communication reliability index." },
+    { label: 'Profile Views',   value: String(metrics.profileViews || 0),          icon: <Eye size={13} />,          accent: 'from-rose-100 to-rose-50' },
+    { label: 'Trust Score',     value: `${completeness}%`,                          icon: <ShieldCheck size={13} />,  accent: 'from-amber-100 to-amber-50' },
+    { label: 'Matches',         value: String(metrics.matches || 0),                icon: <Heart size={13} />,        accent: 'from-pink-100 to-pink-50' },
+    { label: 'Selections',      value: String(metrics.profilesEngaged || 0),        icon: <LayoutGrid size={13} />,   accent: 'from-violet-100 to-violet-50' },
+    { label: 'Saves',           value: String(metrics.saves || 0),                  icon: <Bookmark size={13} />,     accent: 'from-sky-100 to-sky-50' },
+    { label: 'Time Online',     value: formatTime(metrics.sessionSeconds || 0),     icon: <Activity size={13} />,     accent: 'from-emerald-100 to-emerald-50' },
+    { label: 'Sanctum Rank',    value: metrics.safetyLevel ?? 'Standard',              icon: <Star size={13} />,         accent: 'from-teal-100 to-teal-50' },
+    { label: 'Response Pulse',  value: metrics.responseRate || 'High',             icon: <Zap size={13} />,          accent: 'from-yellow-100 to-yellow-50' },
   ];
 
-  /* ─── Skeuomorphic raised surface class ─── */
-  const SkeuSurface = "bg-gradient-to-b from-[#fdfcfa] to-[#ede8e0] shadow-[inset_0_1px_0_rgba(255,255,255,0.95),inset_0_-1px_0_rgba(0,0,0,0.05),0_4px_12px_rgba(0,0,0,0.08),0_1px_3px_rgba(0,0,0,0.05)] border border-[rgba(0,0,0,0.06)]";
+  const triggerResonance = () => {
+    setIsResonating(true);
+    setTimeout(() => setIsResonating(false), 2000);
+  };
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#f5f0ea] selection:bg-mat-rose-gold selection:text-white flex flex-col">
+    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#faf8f5] selection:bg-mat-rose-gold selection:text-white flex flex-col mat-cinematic-grain">
       <LiquidMesh />
       <PostProcessOverlay />
+      <SparkleParticles />
 
       <main className="relative z-10 w-full flex-1 flex flex-col px-6 py-8 lg:px-20 lg:py-12 min-h-0">
         
@@ -115,142 +186,174 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         <header className="flex justify-between items-start shrink-0 mb-8 lg:mb-12">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="w-4 h-[1px] bg-mat-rose-gold" />
-              <span className="mat-text-editorial-caps text-[8px] text-mat-noir/40 tracking-[0.4em]">Sovereign Sanctuary</span>
+              <motion.span 
+                animate={{ width: [16, 32, 16] }}
+                transition={{ duration: 4, repeat: Infinity }}
+                className="h-[1px] bg-mat-rose-gold" 
+              />
+              <span className="mat-text-editorial-caps text-[9px] text-mat-noir/40 tracking-[0.6em]">Sovereign Sanctuary</span>
             </div>
-            <h1 className="text-3xl lg:text-4xl font-bold italic text-mat-noir leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
+            <h1 className="text-4xl lg:text-5xl font-medium italic text-mat-noir leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
               Existence<span className="text-mat-rose-gold">.</span>
             </h1>
           </div>
           
           <div className="flex items-center gap-4">
              <motion.button 
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1.05, rotate: 90 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => setShowFAQ(true)}
-                className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center text-mat-noir/60"
+                className="w-12 h-12 rounded-full bg-white/30 backdrop-blur-xl border border-white/40 flex items-center justify-center text-mat-noir/60 shadow-lg"
              >
-                <HelpCircle size={16} />
+                <HelpCircle size={18} />
              </motion.button>
              <button 
                onClick={() => setIsEditing(true)}
-               className="px-6 py-2.5 rounded-full bg-mat-noir text-white mat-text-editorial-caps text-[8px] tracking-widest font-black shadow-xl hover:bg-mat-rose-gold transition-colors"
+               className="px-8 py-3 rounded-full bg-mat-noir text-white mat-text-editorial-caps text-[9px] tracking-[0.4em] font-bold shadow-2xl hover:bg-mat-rose-gold transition-all duration-500 hover:shadow-mat-rose-gold/20"
              >
                Curate Identity
              </button>
           </div>
         </header>
 
-        {/* ══ THE AURA MATRIX (Zero-Scroll Centrality) ═══════════════ */}
-        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 min-h-0">
+        {/* ══ THE AURA MATRIX (Isometric Perspective) ═══════════════ */}
+        <div className="flex-1 flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-24 min-h-0 mat-perspective-1000">
           
-          {/* Left Stats Column (Desktop) */}
-          <div className="hidden lg:grid grid-cols-1 gap-6 w-48">
+          {/* Left Stats Column (Isometric Tilt) */}
+          <div className="hidden lg:grid grid-cols-1 gap-8 w-56 mat-isometric-tilt">
              {[stats[0], stats[1], stats[2], stats[3]].map((stat, i) => (
-                <GlassCard key={i} delay={0.1 * i} noPadding className="p-4 border-white/40">
-                   <div className="flex flex-col gap-2">
-                      <div className="text-mat-rose-gold">{React.cloneElement(stat.icon as React.ReactElement, { size: 14 })}</div>
-                      <div className="space-y-0.5">
-                         <p className="text-xl font-bold text-mat-noir italic leading-none">{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">{stat.label}</p>
+                <GemstoneCard key={i} delay={0.1 * i}>
+                   <div className="flex flex-col gap-3">
+                      <div className="text-mat-rose-gold/60">{React.cloneElement(stat.icon as React.ReactElement, { size: 16 })}</div>
+                      <div className="space-y-1">
+                         <p className="text-3xl font-medium text-mat-noir italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
+                         <p className="mat-text-editorial-caps text-[8px] text-mat-noir/30 tracking-[0.3em] font-bold uppercase">{stat.label}</p>
                       </div>
                    </div>
-                </GlassCard>
+                </GemstoneCard>
              ))}
           </div>
 
-          {/* Central Aura Orb: The Identity Focal Point */}
-          <div className="relative shrink-0">
+          {/* Central Aura Orb: Biomimetic Identity */}
+          <div className="relative shrink-0 flex flex-col items-center">
              <motion.div 
+               onTap={triggerResonance}
                initial={{ scale: 0.8, opacity: 0 }}
-               animate={{ scale: 1, opacity: 1 }}
-               transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
-               className="relative w-48 h-48 lg:w-80 lg:h-80 rounded-full p-2 bg-gradient-to-tr from-mat-rose-gold/40 via-white/20 to-mat-gold/40 shadow-2xl"
+               animate={{ 
+                 scale: isResonating ? 1.05 : 1,
+                 opacity: 1 
+               }}
+               transition={{ 
+                 scale: { duration: 0.4, ease: "easeOut" },
+                 opacity: { duration: 1.5, ease: [0.16, 1, 0.3, 1] }
+               }}
+               className="relative w-56 h-56 lg:w-96 lg:h-96 rounded-full p-2 bg-gradient-to-tr from-mat-rose-gold/20 via-white/40 to-mat-gold/20 shadow-[0_40px_100px_rgba(0,0,0,0.1)] group cursor-pointer"
              >
-                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/60 relative">
+                {/* Breathing Inner Halo */}
+                <motion.div 
+                  animate={{ scale: [1, 1.05, 1], opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 rounded-full bg-gradient-to-tr from-mat-rose-gold/30 to-mat-gold/30 blur-2xl -z-10"
+                />
+
+                <div className="w-full h-full rounded-full overflow-hidden border border-white/60 relative">
                    <img 
                       src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
                       alt="Identity" 
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover grayscale-[20%] hover:grayscale-0 transition-all duration-1000"
                    />
-                   <div className="absolute inset-0 bg-gradient-to-t from-mat-noir/40 to-transparent" />
+                   <div className="absolute inset-0 bg-gradient-to-t from-mat-noir/60 via-transparent to-transparent opacity-60" />
+                   
+                   {/* Resonance Wave Ripple */}
+                   <AnimatePresence>
+                     {isResonating && (
+                       <motion.div 
+                         initial={{ scale: 0, opacity: 0.8 }}
+                         animate={{ scale: 2, opacity: 0 }}
+                         exit={{ opacity: 0 }}
+                         className="absolute inset-0 rounded-full border-4 border-white/50 z-20"
+                       />
+                     )}
+                   </AnimatePresence>
                 </div>
-                {/* Holographic Halo */}
+
+                {/* Refractive Rings */}
                 <motion.div 
                    animate={{ rotate: 360 }}
-                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                   className="absolute -inset-4 border border-dashed border-mat-gold/30 rounded-full pointer-events-none"
+                   transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                   className="absolute -inset-6 border-[0.5px] border-mat-gold/20 rounded-full pointer-events-none"
                 />
                 <motion.div 
                    animate={{ rotate: -360 }}
-                   transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-                   className="absolute -inset-8 border border-dotted border-mat-rose-gold/20 rounded-full pointer-events-none"
+                   transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+                   className="absolute -inset-10 border-[0.5px] border-mat-rose-gold/10 rounded-full pointer-events-none"
                 />
              </motion.div>
              
-             {/* Float Labels (Desktop) */}
-             <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center w-full">
-                <h2 className="text-2xl lg:text-3xl font-bold italic text-mat-noir leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
+             {/* Sovereign Identity Labels */}
+             <div className="mt-12 text-center">
+                <h2 className="text-4xl lg:text-5xl font-medium italic text-mat-noir leading-none tracking-tighter" style={{ fontFamily: 'var(--font-display)' }}>
                    {profile?.full_name || 'Sovereign'}
                 </h2>
-                <p className="mat-text-editorial-caps text-[8px] text-mat-noir/40 tracking-[0.4em] uppercase mt-2">Elite Registry ID: {profile?.user_id?.slice(0,8) || 'SANCTUM'}</p>
+                <div className="flex items-center justify-center gap-3 mt-4">
+                  <span className="w-2 h-2 rounded-full bg-mat-rose-gold animate-pulse" />
+                  <p className="mat-text-editorial-caps text-[9px] text-mat-noir/40 tracking-[0.5em] uppercase">Sanctum Registry: {profile?.user_id?.slice(0,8) || 'AUTHENTICATED'}</p>
+                </div>
              </div>
           </div>
 
-          {/* Right Stats Column (Desktop) */}
-          <div className="hidden lg:grid grid-cols-1 gap-6 w-48">
+          {/* Right Stats Column (Isometric Tilt) */}
+          <div className="hidden lg:grid grid-cols-1 gap-8 w-56 mat-isometric-tilt" style={{ transform: 'rotateX(10deg) rotateY(5deg) rotateZ(-1deg)' }}>
              {[stats[4], stats[5], stats[6], stats[7]].map((stat, i) => (
-                <GlassCard key={i} delay={0.4 + 0.1 * i} noPadding className="p-4 border-white/40">
-                   <div className="flex flex-col gap-2">
-                      <div className="text-mat-gold">{React.cloneElement(stat.icon as React.ReactElement, { size: 14 })}</div>
-                      <div className="space-y-0.5">
-                         <p className="text-xl font-bold text-mat-noir italic leading-none">{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[7px] text-mat-noir/40 tracking-widest uppercase font-bold">{stat.label}</p>
+                <GemstoneCard key={i} delay={0.4 + 0.1 * i}>
+                   <div className="flex flex-col gap-3">
+                      <div className="text-mat-gold/60">{React.cloneElement(stat.icon as React.ReactElement, { size: 16 })}</div>
+                      <div className="space-y-1">
+                         <p className="text-3xl font-medium text-mat-noir italic leading-none" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
+                         <p className="mat-text-editorial-caps text-[8px] text-mat-noir/30 tracking-[0.3em] font-bold uppercase">{stat.label}</p>
                       </div>
                    </div>
-                </GlassCard>
+                </GemstoneCard>
              ))}
           </div>
 
-          {/* Mobile Grid (Alternative view for smaller screens) */}
-          <div className="grid lg:hidden grid-cols-2 gap-4 w-full">
+          {/* Mobile Grid (Compact Gemstone cards) */}
+          <div className="grid lg:hidden grid-cols-2 gap-4 w-full px-4 mb-8">
              {stats.map((stat, i) => (
-                <GlassCard key={i} delay={0.1 * i} noPadding className="p-4 border-white/40">
+                <GemstoneCard key={i} delay={0.1 * i} className="p-3">
                    <div className="flex items-center gap-3">
-                      <div className="text-mat-rose-gold shrink-0">{React.cloneElement(stat.icon as React.ReactElement, { size: 12 })}</div>
+                      <div className="text-mat-rose-gold shrink-0">{React.cloneElement(stat.icon as React.ReactElement, { size: 14 })}</div>
                       <div className="space-y-0.5 overflow-hidden">
-                         <p className="text-lg font-bold text-mat-noir italic leading-none truncate">{stat.value}</p>
-                         <p className="mat-text-editorial-caps text-[6px] text-mat-noir/40 tracking-widest uppercase font-bold truncate">{stat.label}</p>
+                         <p className="text-xl font-medium text-mat-noir italic leading-none truncate" style={{ fontFamily: 'var(--font-display)' }}>{stat.value}</p>
+                         <p className="mat-text-editorial-caps text-[6px] text-mat-noir/40 tracking-[0.2em] font-bold truncate uppercase">{stat.label}</p>
                       </div>
                    </div>
-                </GlassCard>
+                </GemstoneCard>
              ))}
           </div>
 
         </div>
 
         {/* ══ FOOTER COMMANDS ═══════════════════════════════ */}
-        <footer className="shrink-0 mt-8 flex flex-col items-center gap-6">
-           <div className="flex items-center gap-8">
-              {!isVerified && (
-                 <motion.button
-                   whileHover={{ scale: 1.02 }}
-                   whileTap={{ scale: 0.98 }}
-                   onClick={() => setShowVerification(true)}
-                   className="flex items-center gap-2 px-6 py-3 bg-amber-500/10 border border-amber-500/20 rounded-full"
-                 >
-                    <AlertCircle size={14} className="text-amber-500" />
-                    <span className="mat-text-editorial-caps text-[8px] text-amber-600 font-black tracking-widest">Verify Identity</span>
-                 </motion.button>
-              )}
-           </div>
+        <footer className="shrink-0 mt-auto flex flex-col items-center gap-8 pb-4">
+           {!isVerified && (
+              <motion.button
+                whileHover={{ scale: 1.02, y: -2 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => setShowVerification(true)}
+                className="flex items-center gap-3 px-8 py-4 bg-mat-gold/5 border border-mat-gold/20 rounded-full backdrop-blur-xl group transition-all"
+              >
+                 <Sparkles size={16} className="text-mat-gold group-hover:rotate-12 transition-transform" />
+                 <span className="mat-text-editorial-caps text-[9px] text-mat-gold font-bold tracking-[0.4em]">Elevate Credentials</span>
+              </motion.button>
+           )}
            
-           <div className="flex items-center gap-4 opacity-40 mat-text-editorial-caps text-[7px] tracking-[0.3em] font-black uppercase text-mat-noir">
-              <span>Sanctuary Registry</span>
-              <span className="w-1 h-1 rounded-full bg-mat-noir/20" />
-              <span>Alpha Protocol 5.0</span>
-              <span className="w-1 h-1 rounded-full bg-mat-noir/20" />
-              <span>{memberSince}</span>
+           <div className="flex items-center gap-6 opacity-30 mat-text-editorial-caps text-[8px] tracking-[0.4em] font-bold uppercase text-mat-noir">
+              <span>Registry v5.0</span>
+              <span className="w-1 h-1 rounded-full bg-mat-noir/40" />
+              <span>Identity Sanctum</span>
+              <span className="w-1 h-1 rounded-full bg-mat-noir/40" />
+              <span>Est. {memberSince}</span>
            </div>
         </footer>
 
@@ -259,29 +362,29 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-xl bg-white"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 backdrop-blur-3xl bg-white/90"
             onClick={() => setShowFAQ(false)}
           >
             <div 
-              className="w-full h-full flex flex-col relative bg-white overflow-hidden" 
+              className="w-full h-full flex flex-col relative bg-transparent overflow-hidden" 
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
             >
               <button 
                 onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 bg-black text-white hover:bg-mat-rose-gold transition-all z-20 flex items-center justify-center"
+                className="absolute top-12 right-12 w-16 h-16 bg-mat-noir text-white hover:bg-mat-rose-gold transition-all z-20 flex items-center justify-center rounded-full shadow-2xl"
               >
-                <X size={32} strokeWidth={1} />
+                <X size={24} />
               </button>
               
               <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-24 py-32">
                 <div className="max-w-6xl mx-auto space-y-24">
                   <div className="flex flex-col items-start space-y-8">
-                    <span className="text-[12px] uppercase font-black tracking-[0.6em] opacity-20">Sanctuary Intelligence Protocol</span>
-                    <h2 className="font-serif italic text-7xl md:text-9xl tracking-tighter leading-[0.85] opacity-90 max-w-4xl">
-                      The Gnosis of <br /><span className="opacity-30">Selection.</span>
+                    <span className="mat-text-editorial-caps text-[12px] tracking-[0.8em]">Sanctuary Intelligence</span>
+                    <h2 className="italic text-7xl md:text-9xl tracking-tighter leading-[0.85] text-mat-noir" style={{ fontFamily: 'var(--font-display)' }}>
+                      The Gnosis of <br /><span className="text-mat-rose-gold/40">Selection.</span>
                     </h2>
                   </div>
-                  <div className="w-full h-px bg-black/10" />
+                  <div className="w-full h-px bg-mat-noir/5" />
                   <div className="pointer-events-auto"><FAQ /></div>
                 </div>
               </div>
@@ -303,3 +406,4 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 };
 
 export default WomenSanctuary;
+
