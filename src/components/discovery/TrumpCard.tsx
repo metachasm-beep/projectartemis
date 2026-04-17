@@ -156,9 +156,9 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
 
       {/* 📜 PHYSICAL INTEL PANEL - OVERLAY ON MOBILE */}
       <div className={cn(
-        "bg-[#121212] flex flex-col justify-between relative z-20 overflow-hidden border-t-[1px] border-white/5",
-        isDashboard ? "p-4" : "p-5 md:p-8",
-        !isDashboard && "absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-[#0a0a0abf] to-transparent md:relative md:bg-[#121212] md:from-transparent md:via-transparent md:to-transparent"
+        "flex flex-col justify-between relative z-20 overflow-hidden",
+        isDashboard ? "p-4 bg-[#121212] border-t-[1px] border-white/5" : "p-5 md:p-8",
+        !isDashboard && "absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-[#0a0a0abf] to-transparent md:relative md:bg-[#121212] md:border-t-[1px] md:border-white/5"
       )}>
         
         {/* Bio Embossing */}
