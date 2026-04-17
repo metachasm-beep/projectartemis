@@ -210,12 +210,82 @@
     justify-content: center;
   }
 
-  .mat-safe-pb {
-    padding-bottom: var(--mat-safe-bottom);
+  /* ─── Digital Jewelry Materials ─────────────────────────────────── */
+  .mat-material-gold {
+    background: linear-gradient(135deg, #d4af37 0%, #f7ef8a 20%, #d4af37 40%, #f7ef8a 60%, #d4af37 80%, #f7ef8a 100%);
+    background-size: 200% 200%;
+    animation: mat-material-shimmer 8s linear infinite;
+    color: #4a3705;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      0 10px 20px rgba(212, 175, 55, 0.2);
   }
 
-  .mat-safe-pt {
-    padding-top: var(--mat-safe-top);
+  .mat-material-silver {
+    background: linear-gradient(135deg, #c0c0c0 0%, #ffffff 20%, #c0c0c0 40%, #ffffff 60%, #c0c0c0 80%, #ffffff 100%);
+    background-size: 200% 200%;
+    animation: mat-material-shimmer 10s linear infinite;
+    color: #333;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.8),
+      0 10px 20px rgba(192, 192, 192, 0.2);
+  }
+
+  .mat-material-obsidian {
+    background: linear-gradient(135deg, #0c0c0c 0%, #2a2a2a 50%, #0c0c0c 100%);
+    color: #fafafa;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+      inset 0 1px 1px rgba(255, 255, 255, 0.1),
+      0 10px 30px rgba(0, 0, 0, 0.5);
+  }
+
+  @keyframes mat-material-shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+
+  .mat-holographic-foil {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .mat-holographic-foil::before {
+    content: "";
+    position: absolute;
+    inset: -100%;
+    background: linear-gradient(
+      115deg,
+      transparent 0%,
+      rgba(255, 0, 255, 0.1) 15%,
+      rgba(0, 255, 255, 0.1) 30%,
+      rgba(0, 255, 0, 0.1) 45%,
+      rgba(255, 255, 0, 0.1) 60%,
+      rgba(255, 0, 0, 0.1) 75%,
+      transparent 100%
+    );
+    background-size: 200% 200%;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+    z-index: 5;
+    animation: mat-holographic-move 5s linear infinite;
+  }
+
+  @keyframes mat-holographic-move {
+    0% { transform: rotate(0deg) translate(-10%, -10%); }
+    100% { transform: rotate(360deg) translate(10%, 10%); }
+  }
+
+  /* ─── Haptic Snapping & Liquid Cursor ────────────────────────── */
+  .mat-magnetic-active {
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .mat-liquid-cursor {
+    mix-blend-mode: difference;
+    filter: blur(4px);
   }
 
   /* ─── Motion ──────────────────────────────────────────────────── */
