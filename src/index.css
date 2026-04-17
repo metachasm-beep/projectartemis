@@ -148,42 +148,35 @@
     100% { background-position: 200% 50%; }
   }
 
-  /* ─── Gold Thread Utilities ────────────────────────────────── */
-  .mat-thread-gold {
-    border-color: rgba(212, 175, 55, 0.3);
+  /* ─── Holographic Silk Utilities ─────────────────────────────── */
+  .mat-holographic-border {
+    position: relative;
+    border: 1px solid transparent;
+    background: linear-gradient(var(--color-mat-bone), var(--color-mat-bone)) padding-box,
+                linear-gradient(115deg, #ff00ff, #00ffff, #00ff00, #ffff00, #ff0000) border-box;
+    background-size: 200% 200%;
+    transition: background-position 0.3s ease;
   }
 
-  .mat-thread-line {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
-    width: 100%;
+  .mat-silk-bg {
+    background: radial-gradient(circle at top left, #F2E8E4 0%, #FDFCFB 100%);
   }
 
-  @keyframes mat-line-draw {
-    from { transform: scaleX(0); }
-    to { transform: scaleX(1); }
+  .mat-text-holographic {
+    background: linear-gradient(135deg, #B76E79 0%, #ff00ff 50%, #B76E79 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 200% 200%;
+    animation: mat-material-shimmer 5s linear infinite;
   }
 
-  .animate-line-draw {
-    transform-origin: left;
-    animation: mat-line-draw 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  @keyframes mat-silk-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
   }
 
-  .mat-text-luxury-serif {
-    font-family: var(--font-display);
-    font-weight: 200;
-    letter-spacing: 0.1em;
-    color: var(--color-mat-bone);
-  }
-
-  .mat-text-thread-label {
-    font-family: var(--font-body);
-    font-size: 9px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5em;
-    color: var(--color-mat-gold);
-    opacity: 0.6;
+  .animate-silk-float {
+    animation: mat-silk-float 6s ease-in-out infinite;
   }
 
   .mat-perspective-1000 {
