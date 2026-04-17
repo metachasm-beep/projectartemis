@@ -9,9 +9,8 @@ import {
   X,
   HelpCircle,
   ArrowRight,
-  Bookmark,
-  TrendingUp,
-  Camera
+  Infinity as InfinityIcon,
+  Circle
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -20,24 +19,26 @@ import { VerificationPaymentModal } from '@/components/verification/Verification
 import { useAuth } from '@/hooks/useAuth';
 
 /**
- * 🎞️ EditorialBlock: A high-fashion stat block with vertical labels
+ * 🎨 AuraMetric: A symmetrically designed floating stat
  */
-const EditorialBlock = ({ label, value, delay = 0 }: { label: string, value: string, delay?: number }) => (
+const AuraMetric = ({ label, value, icon, delay = 0 }: { label: string, value: string, icon: React.ReactNode, delay?: number }) => (
   <motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
-    transition={{ delay, duration: 1, ease: [0.16, 1, 0.3, 1] }}
-    className="flex items-start gap-4 p-6 lg:p-10 border-b border-mat-silk/10 group"
+    transition={{ delay, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+    className="flex flex-col items-center justify-center gap-4 py-8 px-4"
   >
-    <div className="mat-text-vertical mat-text-editorial-caps text-[8px] tracking-[0.5em] text-mat-silk/30 group-hover:text-mat-silk transition-colors">
-       {label}
-    </div>
-    <div className="space-y-1">
-       <h3 className="mat-text-chic-serif text-5xl lg:text-7xl text-mat-silk uppercase">
-          {value}
-       </h3>
-       <div className="h-px w-12 bg-mat-silk group-hover:w-full transition-all duration-700 origin-left" />
-    </div>
+     <div className="text-white/40 mb-2">
+        {icon}
+     </div>
+     <div className="space-y-1">
+        <h3 className="mat-text-fluid-huge text-4xl lg:text-5xl text-white font-extralight tracking-[0.1em] lowercase leading-none">
+           {value}
+        </h3>
+        <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] text-white/40 uppercase">
+           {label}
+        </p>
+     </div>
   </motion.div>
 );
 
@@ -73,132 +74,143 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const completeness = profile?.profile_completeness ?? 94;
 
   const stats = [
-    { label: 'Neural Index', value: `${completeness}%` },
-    { label: 'Matches',      value: String(metrics.matches || 0) },
-    { label: 'Visibility',   value: String(metrics.profileViews || 0) },
-    { label: 'Sanctum Rank', value: metrics.safetyLevel ?? 'Gold' },
+    { label: 'Views',      value: String(metrics.profileViews || 0),   icon: <Eye size={18} /> },
+    { label: 'Trust',      value: `${completeness}%`,                   icon: <ShieldCheck size={18} /> },
+    { label: 'Matches',    value: String(metrics.matches || 0),         icon: <Heart size={18} /> },
+    { label: 'Status',     value: metrics.safetyLevel ?? 'Gold',        icon: <Star size={18} /> },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-mat-cashmere flex flex-col selection:bg-mat-silk selection:text-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden mat-aura-fluid-bg flex flex-col selection:bg-white selection:text-black">
       
-      {/* 🎞️ EDITORIAL AURA CANVAS ═════════════════════ */}
-      <main className="flex-1 w-full flex flex-col lg:flex-row min-h-0">
+      {/* 🎨 GENERATIVE FLUID LAYERS ══════════════════ */}
+      <div className="absolute inset-0 z-0">
+         <div className="mat-aura-fluid-layer" style={{ animationDelay: '0s' }} />
+         <div className="mat-aura-fluid-layer" style={{ animationDelay: '-5s', opacity: 0.6 }} />
+         <div className="mat-aura-fluid-layer" style={{ animationDelay: '-10s', opacity: 0.4 }} />
+         
+         {/* Deep Overlay to ensure text readability */}
+         <div className="absolute inset-0 bg-black/10 backdrop-blur-[2px]" />
+      </div>
+
+      {/* 🎨 SYMMETRICAL UI ═══════════════════════════ */}
+      <main className="relative z-10 flex-1 w-full max-w-5xl mx-auto flex flex-col items-center justify-between py-12 lg:py-24 px-8 overflow-y-auto custom-scrollbar">
         
-        {/* Left: Huge Photo Hero (Desktop: 50%, Mobile: Top 40%) */}
-        <div className="flex-1 relative overflow-hidden h-[45dvh] lg:h-full">
+        {/* Top: Minimal Status Detail */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+          className="flex flex-col items-center gap-4 mb-8"
+        >
+           <div className="flex items-center gap-3">
+              <Circle size={8} className="fill-white/20 text-transparent animate-pulse" />
+              <span className="mat-text-editorial-caps text-[10px] tracking-[0.8em] text-white/50 uppercase">Protocol Active</span>
+           </div>
+        </motion.div>
+
+        {/* Center: The Aura Identity Focus */}
+        <div className="flex flex-col items-center gap-12 text-center">
            <motion.div 
-             initial={{ scale: 1.1, opacity: 0 }}
+             initial={{ scale: 0.8, opacity: 0 }}
              animate={{ scale: 1, opacity: 1 }}
-             transition={{ duration: 1.5, ease: "circOut" }}
-             className="w-full h-full"
+             transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+             className="relative"
            >
-              <img 
-                src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=1200"} 
-                alt="Editorial Aura" 
-                className="w-full h-full object-cover grayscale brightness-90 hover:grayscale-0 hover:brightness-100 transition-all duration-[2000ms]"
+              {/* Floating Decorative Rings */}
+              <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-12 border border-white/5 rounded-full"
+              />
+              <motion.div 
+                animate={{ rotate: -360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-8 border border-white/10 rounded-full"
               />
               
-              {/* Overlay Content */}
-              <div className="absolute inset-0 bg-gradient-to-t from-mat-silk/80 via-transparent to-transparent flex flex-col justify-end p-8 lg:p-20">
-                 <motion.div
-                   initial={{ opacity: 0, x: -20 }}
-                   animate={{ opacity: 1, x: 0 }}
-                   transition={{ delay: 0.5, duration: 1 }}
-                   className="space-y-4"
-                 >
-                    <span className="mat-text-editorial-caps text-[10px] tracking-[1em] text-white/50">Issue No. 001</span>
-                    <h1 className="mat-text-chic-serif text-7xl lg:text-[10rem] text-white leading-none uppercase tracking-tighter">
-                       {profile?.full_name?.split(' ')[0] || 'aspirant'}
-                    </h1>
-                 </motion.div>
+              <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full border border-white/20 p-4 relative group">
+                 <div className="w-full h-full rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 shadow-[0_0_80px_rgba(255,255,255,0.1)]">
+                    <img 
+                      src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
+                      alt="Aura" 
+                      className="w-full h-full object-cover scale-110 group-hover:scale-105 transition-transform duration-1000"
+                    />
+                 </div>
               </div>
+
+              {/* Verified Badge */}
+              {isVerified && (
+                 <motion.div 
+                   initial={{ opacity: 0, scale: 0 }}
+                   animate={{ opacity: 1, scale: 1 }}
+                   transition={{ delay: 1 }}
+                   className="absolute bottom-4 right-4 bg-white p-2 rounded-full shadow-xl"
+                 >
+                    <ShieldCheck size={16} className="text-black" />
+                 </motion.div>
+              )}
            </motion.div>
-           
-           {/* Floating Floating UI detail */}
-           <div className="absolute top-12 left-12 flex items-center gap-4 text-white/40">
-              <Camera size={14} />
-              <span className="mat-text-editorial-caps text-[8px] tracking-[0.5em]">Identity Captured</span>
+
+           <div className="space-y-4">
+              <h1 className="mat-text-fluid-huge text-6xl lg:text-8xl text-white font-extralight tracking-tighter leading-none">
+                 {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-white/40">.</span>
+              </h1>
+              <div className="flex items-center justify-center gap-6">
+                 <div className="h-px w-8 bg-white/20" />
+                 <span className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-white/40 uppercase">v5.2.0 fluid aura</span>
+                 <div className="h-px w-8 bg-white/20" />
+              </div>
            </div>
         </div>
 
-        {/* Right: The Grid & Intel (Desktop: 50%, Mobile: Scrollable Bottom) */}
-        <div className="flex-1 flex flex-col min-h-0 bg-white lg:bg-transparent overflow-y-auto custom-scrollbar">
-           
-           {/* Primary Navigation / Actions */}
-           <div className="flex border-b border-mat-silk/10">
-              <button 
-                onClick={onBeginDiscovery}
-                className="flex-1 p-10 lg:p-16 bg-mat-silk text-white hover:bg-mat-silk/90 transition-all group flex items-center justify-between"
-              >
-                 <span className="mat-text-chic-serif text-3xl lg:text-4xl">Enter Discovery</span>
-                 <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
-              </button>
-              <button 
-                onClick={() => setIsEditing(true)}
-                className="p-10 lg:p-16 border-l border-mat-silk/10 hover:bg-mat-cashmere transition-all"
-              >
-                 <span className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-mat-silk">Curate</span>
-              </button>
-           </div>
+        {/* Bottom: Symmetrical Stats Grid */}
+        <div className="w-full grid grid-cols-2 lg:grid-cols-4 gap-4 mt-12 border-t border-white/5">
+           {stats.map((stat, i) => (
+             <AuraMetric key={i} {...stat} delay={0.2 * i} />
+           ))}
+        </div>
 
-           {/* Stats Board */}
-           <div className="grid grid-cols-1 lg:grid-cols-2 flex-1">
-              {stats.map((stat, i) => (
-                <EditorialBlock key={i} {...stat} delay={0.2 * i} />
-              ))}
-           </div>
+        {/* Global Discovery Control */}
+        <div className="flex flex-col items-center gap-12 w-full mt-12">
+           <motion.button 
+             whileHover={{ scale: 1.05 }}
+             whileTap={{ scale: 0.95 }}
+             onClick={onBeginDiscovery}
+             className="px-16 py-6 rounded-full bg-white text-black mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black shadow-[0_20px_50px_rgba(255,255,255,0.2)] hover:shadow-[0_20px_80px_rgba(255,255,255,0.4)] transition-all flex items-center gap-4 group"
+           >
+             Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+           </motion.button>
 
-           {/* Verification Footnote */}
-           <div className="p-10 lg:p-20 flex flex-col lg:flex-row items-center justify-between gap-12 mt-auto">
-              {!isVerified ? (
-                 <div className="flex flex-col gap-6 w-full lg:w-auto">
-                    <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] text-mat-silk/30">Authentication Pending</p>
-                    <button 
-                      onClick={() => setShowVerification(true)}
-                      className="px-12 py-5 border border-mat-silk text-mat-silk mat-text-editorial-caps text-[10px] tracking-[0.6em] font-black hover:bg-mat-silk hover:text-white transition-all"
-                    >
-                      Apply for Verification
-                    </button>
-                 </div>
-              ) : (
-                 <div className="flex items-center gap-6">
-                    <ShieldCheck size={32} className="text-mat-silk opacity-20" />
-                    <span className="mat-text-editorial-caps text-[11px] tracking-[0.5em] text-mat-silk">Identity Authenticated</span>
-                 </div>
+           <div className="flex gap-12">
+              <button onClick={() => setIsEditing(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Curate Profile</button>
+              <button onClick={() => setShowFAQ(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Gnosis Registry</button>
+              {!isVerified && (
+                 <button onClick={() => setShowVerification(true)} className="mat-text-editorial-caps text-[9px] tracking-[0.4em] text-white/40 hover:text-white transition-colors">Apply Verification</button>
               )}
-              
-              <button 
-                onClick={() => setShowFAQ(true)}
-                className="group flex items-center gap-6"
-              >
-                 <HelpCircle size={20} className="text-mat-silk/20 group-hover:text-mat-silk transition-colors" />
-                 <span className="mat-text-editorial-caps text-[9px] tracking-[0.3em] text-mat-silk/30 group-hover:text-mat-silk transition-colors">Sanctum Gnosis</span>
-              </button>
            </div>
-
         </div>
 
       </main>
 
-      {/* 🎞️ MODALS ═══════════════════════════════════════ */}
+      {/* 🎨 MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-mat-silk text-white"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-black/90 backdrop-blur-3xl"
             onClick={() => setShowFAQ(false)}
           >
             <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 border border-white/20 text-white hover:bg-white hover:text-mat-silk transition-all duration-500 z-20 flex items-center justify-center rounded-full"
+                className="absolute top-12 right-12 w-16 h-16 border border-white/20 text-white/40 hover:text-white transition-all duration-500 z-20 flex items-center justify-center rounded-full"
               >
                 <X size={24} />
               </button>
               
-              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48 text-white">
                 <div className="max-w-6xl mx-auto">
-                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-white/40 mb-12 block text-center">Protocol Gnosis</span>
-                   <div className="pointer-events-auto grayscale invert brightness-200"><FAQ /></div>
+                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-white/20 mb-12 block text-center uppercase">System Intel</span>
+                   <div className="pointer-events-auto opacity-70 grayscale invert brightness-200"><FAQ /></div>
                 </div>
               </div>
             </div>
