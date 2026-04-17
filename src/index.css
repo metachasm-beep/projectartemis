@@ -148,39 +148,27 @@
     100% { background-position: 200% 50%; }
   }
 
-  /* ─── Neon Sanctum Utilities ─────────────────────────────── */
-  .mat-neon-border-rose {
-    border: 1px solid rgba(183, 110, 121, 0.3);
-    box-shadow: 0 0 20px rgba(183, 110, 121, 0.1), inset 0 0 10px rgba(183, 110, 121, 0.05);
+  /* ─── Kinetic Petal Utilities ────────────────────────────── */
+  .mat-petal-shape-1 { border-radius: 60% 40% 70% 30% / 60% 30% 70% 40%; }
+  .mat-petal-shape-2 { border-radius: 30% 70% 40% 60% / 40% 70% 30% 60%; }
+  .mat-petal-shape-3 { border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%; }
+
+  @keyframes mat-petal-sway {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    33% { transform: rotate(2deg) translateY(-5px); }
+    66% { transform: rotate(-1deg) translateY(2px); }
   }
 
-  .mat-neon-border-violet {
-    border: 1px solid rgba(139, 92, 246, 0.3);
-    box-shadow: 0 0 20px rgba(139, 92, 246, 0.1), inset 0 0 10px rgba(139, 92, 246, 0.05);
+  .animate-petal-sway {
+    animation: mat-petal-sway 8s ease-in-out infinite;
   }
 
-  .mat-text-liquid-neon {
-    color: #fff;
-    text-shadow: 
-      0 0 5px #fff,
-      0 0 10px var(--neon-color, #B76E79),
-      0 0 20px var(--neon-color, #B76E79),
-      0 0 40px var(--neon-color, #B76E79);
-    filter: blur(0.5px);
+  .mat-bg-moss-gradient {
+    background: radial-gradient(circle at top right, #FDFCFB 0%, #F2E8E4 100%);
   }
 
-  .mat-neon-glow-soft {
-    filter: drop-shadow(0 0 15px var(--neon-color, #B76E79));
-  }
-
-  @keyframes mat-neon-breathe {
-    0%, 100% { opacity: 0.8; filter: brightness(1); }
-    50% { opacity: 1; filter: brightness(1.3) drop-shadow(0 0 25px var(--neon-color, #B76E79)); }
-  }
-
-  .animate-neon-breathe {
-    animation: mat-neon-breathe 4s ease-in-out infinite;
-  }
+  .mat-text-peach { color: #F7D1BA; }
+  .mat-text-moss { color: #8A9A5B; }
 
   .mat-perspective-1000 {
     perspective: 1000px;

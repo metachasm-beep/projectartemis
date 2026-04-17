@@ -2,18 +2,16 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
-  Zap, 
   Heart, 
-  Activity, 
   Sparkles,
   Eye,
   Star,
   X,
   HelpCircle,
   ArrowRight,
-  Fingerprint,
-  Cpu,
-  Waves
+  Leaf,
+  Wind,
+  Flower2
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -22,33 +20,35 @@ import { VerificationPaymentModal } from '@/components/verification/Verification
 import { useAuth } from '@/hooks/useAuth';
 
 /**
- * 💡 NeonStat: A high-tech stat card with diffused neon glow
+ * 🌸 KineticPetal: An organic shaped stat that sways gently
  */
-const NeonStat = ({ label, value, icon, color = "#B76E79", delay = 0 }: { label: string, value: string, icon: React.ReactNode, color?: string, delay?: number }) => (
+const KineticPetal = ({ label, value, icon, variant = 1, delay = 0 }: { label: string, value: string, icon: React.ReactNode, variant?: number, delay?: number }) => (
   <motion.div 
-    initial={{ opacity: 0, scale: 0.95 }}
+    initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
-    transition={{ delay, duration: 0.8 }}
-    style={{ "--neon-color": color } as any}
+    transition={{ delay, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
     className={cn(
-      "p-6 lg:p-10 rounded-[40px] bg-white/[0.02] flex flex-col justify-between group transition-all duration-500",
-      color === "#B76E79" ? "mat-neon-border-rose" : "mat-neon-border-violet"
+      "relative p-8 lg:p-12 flex flex-col justify-center items-center text-center gap-4 bg-white/40 backdrop-blur-sm border border-white/20 shadow-xl animate-petal-sway group",
+      variant === 1 ? "mat-petal-shape-1" : variant === 2 ? "mat-petal-shape-2" : "mat-petal-shape-3"
     )}
+    style={{ animationDelay: `${delay}s` }}
   >
-    <div className="flex justify-between items-start">
-       <div className="p-4 rounded-3xl bg-white/[0.03] text-white/80 group-hover:animate-neon-breathe transition-all">
-          {icon}
-       </div>
-       <Zap size={14} className="text-white/5 group-hover:text-white/20" />
-    </div>
-    <div className="mt-8">
-       <h3 className={cn("mat-text-liquid-neon text-5xl lg:text-6xl font-extralight tracking-tighter mb-2")}>
-          {value}
-       </h3>
-       <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] opacity-20 group-hover:opacity-40 transition-opacity">
-          {label}
-       </p>
-    </div>
+     <div className="text-mat-moss opacity-40 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700">
+        {icon}
+     </div>
+     <div className="space-y-1">
+        <h3 className="mat-text-fluid-huge text-4xl lg:text-5xl text-mat-noir leading-none tracking-tighter">
+           {value}
+        </h3>
+        <p className="mat-text-editorial-caps text-[8px] tracking-[0.4em] text-mat-moss font-bold">
+           {label}
+        </p>
+     </div>
+     
+     {/* Decorative organic "vein" */}
+     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full opacity-[0.03] pointer-events-none">
+        <Leaf size={120} strokeWidth={0.5} />
+     </div>
   </motion.div>
 );
 
@@ -84,128 +84,123 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const completeness = profile?.profile_completeness ?? 94;
 
   const stats = [
-    { label: 'Sanctuary Trust', value: `${completeness}%`, icon: <ShieldCheck />, color: "#B76E79" },
-    { label: 'Neural Matches',  value: String(metrics.matches || 0), icon: <Heart />, color: "#8B5CF6" },
+    { label: 'Trust Roots',  value: `${completeness}%`, icon: <ShieldCheck />, variant: 1 },
+    { label: 'Blossoms',     value: String(metrics.matches || 0), icon: <Heart />, variant: 2 },
+    { label: 'Sanctuary Sun',value: metrics.safetyLevel ?? 'Gold', icon: <Star />, variant: 3 },
+    { label: 'Aura Reach',   value: String(metrics.profileViews || 0), icon: <Eye />, variant: 1 },
   ];
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden bg-[#020202] text-white flex flex-col mat-cinematic-grain selection:bg-violet-500 selection:text-white">
+    <div className="relative w-full h-[100dvh] overflow-hidden mat-bg-moss-gradient flex flex-col selection:bg-mat-moss selection:text-white">
       
-      {/* 💡 NEON SANCTUM CANVAS ════════════════════════ */}
-      <main className="flex-1 w-full max-w-7xl mx-auto p-6 lg:p-12 flex flex-col lg:grid lg:grid-cols-12 gap-6 min-h-0 overflow-y-auto lg:overflow-hidden custom-scrollbar">
+      {/* 🌸 KINETIC PETAL CANVAS ══════════════════════ */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-6 lg:p-12 flex flex-col lg:grid lg:grid-cols-12 gap-8 min-h-0 overflow-y-auto custom-scrollbar">
         
-        {/* Left: Bio-Identity Hero (5 cols) */}
-        <div className="lg:col-span-5 flex flex-col gap-6">
-           <div className="flex-1 rounded-[50px] bg-white/[0.01] border border-white/[0.05] p-10 flex flex-col items-center justify-center text-center gap-10 relative overflow-hidden group">
-              {/* Diffused Atmosphere Glows */}
-              <div className="absolute -top-20 -left-20 w-80 h-80 bg-mat-rose-gold/10 rounded-full blur-[120px] animate-pulse" />
-              <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-violet-500/10 rounded-full blur-[120px] animate-pulse" />
+        {/* Central Identity Petal (Huge) */}
+        <div className="lg:col-span-5 flex flex-col justify-center gap-8">
+           <motion.div 
+             initial={{ opacity: 0, scale: 0.9 }}
+             animate={{ opacity: 1, scale: 1 }}
+             transition={{ duration: 1.5 }}
+             className="relative p-12 lg:p-16 flex flex-col items-center text-center gap-8 bg-white/60 mat-petal-shape-3 shadow-2xl border border-white/40 group overflow-hidden"
+           >
+              {/* Floating Background Leaves */}
+              <div className="absolute top-0 right-0 p-8 text-mat-moss/5 animate-bounce">
+                 <Wind size={48} />
+              </div>
 
-              <motion.div 
-                initial={{ scale: 0.9, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ duration: 1.5 }}
-                className="relative z-10"
-              >
-                 <div className="w-56 h-56 lg:w-64 lg:h-64 rounded-full border border-white/5 p-4 relative group-hover:scale-105 transition-transform duration-1000">
-                    <div className="w-full h-full rounded-full overflow-hidden border border-white/10 shadow-[0_0_80px_rgba(255,255,255,0.05)]">
-                       <img 
-                         src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
-                         alt="Aura" 
-                         className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-[2000ms]"
-                       />
-                    </div>
-                    {/* Bio-scanner line */}
-                    <motion.div 
-                      animate={{ top: ['0%', '100%', '0%'] }}
-                      transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                      className="absolute left-0 right-0 h-px bg-mat-rose-gold/40 shadow-[0_0_15px_rgba(183,110,121,1)] z-20 pointer-events-none"
+              <div className="relative">
+                 <div className="w-48 h-48 lg:w-56 lg:h-56 rounded-full border-8 border-white shadow-xl overflow-hidden relative z-10 transition-transform duration-1000 group-hover:scale-105">
+                    <img 
+                      src={profile?.photos?.[0] || "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800"} 
+                      alt="Aura" 
+                      className="w-full h-full object-cover"
                     />
                  </div>
-              </motion.div>
+                 {/* Petal Halo */}
+                 <motion.div 
+                   animate={{ rotate: 360 }}
+                   transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                   className="absolute -inset-6 border-2 border-dashed border-mat-peach/40 rounded-full"
+                 />
+              </div>
 
-              <div className="space-y-4 z-10">
-                 <h1 className="text-6xl lg:text-7xl font-thin tracking-tighter text-white/90">
-                    {profile?.full_name?.split(' ')[0] || 'Aspirant'}<span className="text-mat-rose-gold animate-pulse">_</span>
+              <div className="space-y-2">
+                 <h1 className="mat-text-fluid-huge text-5xl lg:text-7xl text-mat-noir leading-none tracking-tighter">
+                    {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-mat-peach">.</span>
                  </h1>
-                 <div className="flex items-center justify-center gap-4">
-                    <span className="mat-text-editorial-caps text-[9px] tracking-[0.6em] text-white/30 uppercase">Protocol Authenticated</span>
-                    <Fingerprint size={12} className="text-mat-rose-gold" />
-                 </div>
+                 <p className="mat-text-editorial-caps text-[10px] tracking-[0.6em] text-mat-moss font-black uppercase">biomimetic identity</p>
               </div>
 
-              <div className="w-full grid grid-cols-2 gap-4 z-10">
-                 <button onClick={() => setIsEditing(true)} className="py-5 rounded-3xl bg-white/[0.03] border border-white/10 text-[9px] uppercase tracking-widest font-black hover:bg-white/10 transition-all">Curate</button>
-                 <button onClick={() => setShowFAQ(true)} className="py-5 rounded-3xl bg-white/[0.03] border border-white/10 text-white/40 hover:text-white transition-all flex items-center justify-center"><HelpCircle size={18} /></button>
+              <div className="flex gap-4 w-full">
+                 <button onClick={() => setIsEditing(true)} className="flex-1 py-5 rounded-full bg-mat-noir text-white mat-text-editorial-caps text-[9px] tracking-[0.4em] hover:bg-mat-moss transition-all">Curate</button>
+                 <button onClick={() => setShowFAQ(true)} className="p-5 rounded-full bg-white border border-mat-noir/5 text-mat-noir/40 hover:text-mat-moss transition-all"><HelpCircle size={18} /></button>
               </div>
-           </div>
+           </motion.div>
         </div>
 
-        {/* Right: Metrics & System (7 cols) */}
-        <div className="lg:col-span-7 flex flex-col gap-6">
-           {/* Top Stats Row */}
-           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 h-full lg:h-1/2">
+        {/* Floating Petal Stats (Right Side) */}
+        <div className="lg:col-span-7 flex flex-col gap-8 justify-center">
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
               {stats.map((stat, i) => (
-                <NeonStat key={i} {...stat} delay={0.2 * i} />
+                <div key={i} className={cn(i % 2 === 0 ? "lg:-translate-y-8" : "lg:translate-y-8")}>
+                   <KineticPetal {...stat} delay={0.2 * i} />
+                </div>
               ))}
            </div>
 
-           {/* Bottom: Discovery & Verification */}
-           <div className="flex-1 grid grid-cols-1 md:grid-cols-1 gap-6">
-              <div className="rounded-[50px] bg-white/[0.01] border border-white/5 p-10 flex flex-col lg:flex-row items-center justify-between gap-10 group relative overflow-hidden">
-                 <div className="space-y-4 z-10">
-                    <div className="flex items-center gap-3">
-                       <Waves size={16} className="text-violet-400" />
-                       <h4 className="mat-text-editorial-caps text-[10px] tracking-[0.4em] text-violet-400">Neural Discovery</h4>
-                    </div>
-                    <p className="text-white/30 text-[12px] font-light max-w-xs leading-relaxed">Your profile is currently broadcasting. 14 potential matches are within your resonance radius.</p>
+           {/* Discovery Seed (CTA) */}
+           <div className="relative mt-8 group flex justify-center lg:justify-end">
+              <motion.div 
+                whileHover={{ scale: 1.05 }}
+                onClick={onBeginDiscovery}
+                className="p-8 lg:p-12 rounded-full bg-mat-moss text-white flex items-center gap-6 cursor-pointer shadow-2xl hover:bg-mat-noir transition-all group"
+              >
+                 <div className="space-y-1">
+                    <p className="mat-text-editorial-caps text-[9px] tracking-[0.5em] text-white/50">Discovery</p>
+                    <h4 className="text-2xl font-light tracking-widest">Sow Resonance</h4>
                  </div>
-
-                 <div className="relative z-10">
-                    <button 
-                      onClick={onBeginDiscovery}
-                      className="group relative w-32 h-32 rounded-full border border-white/10 flex items-center justify-center hover:border-violet-500/50 transition-all duration-700"
-                    >
-                       <div className="absolute inset-2 rounded-full border border-dashed border-white/5 group-hover:animate-[spin_10s_linear_infinite]" />
-                       <ArrowRight size={32} className="text-white group-hover:translate-x-1 group-hover:text-violet-400 transition-all" />
-                    </button>
+                 <div className="p-4 rounded-full bg-white/10 group-hover:bg-mat-peach/20 transition-all">
+                    <ArrowRight size={24} />
                  </div>
-              </div>
-
-              <div className="flex gap-6">
-                 <button 
+              </motion.div>
+              
+              {/* Floating Verification Leaf */}
+              {!isVerified && (
+                 <motion.button 
                    onClick={() => setShowVerification(true)}
-                   className="flex-1 py-6 rounded-3xl bg-white text-black mat-text-editorial-caps text-[10px] tracking-[0.5em] font-black hover:bg-mat-rose-gold hover:text-white transition-all shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex items-center justify-center gap-4"
+                   initial={{ opacity: 0, x: 20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   transition={{ delay: 1 }}
+                   className="absolute -top-4 -left-4 lg:left-auto lg:right-48 p-4 rounded-full bg-mat-peach text-mat-noir shadow-lg flex items-center gap-2 hover:scale-110 transition-all"
                  >
-                   Apply Verification <Sparkles size={16} />
-                 </button>
-                 <div className="p-6 rounded-3xl bg-white/[0.03] border border-white/10 flex items-center justify-center">
-                    <Cpu size={20} className="text-white/20" />
-                 </div>
-              </div>
+                    <Sparkles size={14} />
+                    <span className="mat-text-editorial-caps text-[8px] tracking-[0.2em] font-black">Verify</span>
+                 </motion.button>
+              )}
            </div>
         </div>
 
       </main>
 
-      {/* 💡 MODALS ═══════════════════════════════════════ */}
+      {/* 🌸 MODALS ═══════════════════════════════════════ */}
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-[#020202]"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-mat-bone"
             onClick={() => setShowFAQ(false)}
           >
             <div className="w-full h-full flex flex-col relative" onClick={(e) => e.stopPropagation()}>
               <button onClick={() => setShowFAQ(false)} 
-                className="absolute top-12 right-12 w-16 h-16 border border-white/10 text-white/40 hover:text-mat-rose-gold transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white/5 backdrop-blur-xl"
+                className="absolute top-12 right-12 w-16 h-16 border border-mat-noir/10 text-mat-noir/40 hover:text-mat-moss transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white shadow-xl"
               >
                 <X size={24} />
               </button>
               
               <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-8 md:px-32 py-32 lg:py-48">
                 <div className="max-w-6xl mx-auto">
-                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-rose-gold mb-12 block text-center">Sanctum Registry</span>
-                   <div className="pointer-events-auto opacity-80"><FAQ /></div>
+                   <span className="mat-text-editorial-caps text-[12px] tracking-[1em] text-mat-moss mb-12 block text-center">Gnosis Bloom</span>
+                   <div className="pointer-events-auto opacity-70"><FAQ /></div>
                 </div>
               </div>
             </div>
