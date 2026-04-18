@@ -125,7 +125,7 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 mat-text-editorial"
+          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 mat-text-editorial mat-text-rose-gold"
         >
           Curating the <br/>
           Exceptional.

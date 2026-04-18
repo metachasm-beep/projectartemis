@@ -379,11 +379,14 @@
     to { transform: translateX(200%) rotate(45deg); }
   }
 
+  .mat-text-rose-gold {
+    color: #b76e79;
+  }
+
   .mat-text-editorial {
     font-family: 'Playfair Display', serif;
     font-weight: 900;
     font-style: italic;
-    color: #1a1a1a;
     letter-spacing: -0.02em;
   }
 
