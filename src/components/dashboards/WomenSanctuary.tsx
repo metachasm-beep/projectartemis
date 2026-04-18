@@ -9,7 +9,9 @@ import {
   HelpCircle,
   ArrowRight,
   Fingerprint,
-  Sparkles
+  Sparkles,
+  Compass,
+  Clock
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -54,6 +56,7 @@ interface WomenSanctuaryProps {
     activeStreak?: number;
     safetyLevel?: string;
     profileViews?: number;
+    totalAspirants?: number;
   };
   setIsEditing: (val: boolean) => void;
   onBeginDiscovery?: () => void;
@@ -75,6 +78,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const age = profile?.date_of_birth 
     ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() 
     : null;
+
+  const discoveryDepth = Math.min(100, Math.round(((metrics.profilesEngaged || 0) / (metrics.totalAspirants || 100)) * 100));
+  const immersionHours = Math.round((metrics.sessionSeconds || 0) / 3600);
 
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden mat-apple-bg flex flex-col selection:bg-mat-noir selection:text-white pt-[72px]">
@@ -132,7 +138,9 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         {/* 2. SYMMETRICAL STATS GRID (2 COLUMNS) */}
         <div className="w-full grid grid-cols-2 gap-3 lg:gap-6 my-4 lg:my-8 flex-shrink-0 max-w-2xl mx-auto">
            <GlassMetric label="Matches" value={String(metrics.matches || 0)} icon={<Heart size={18} />} delay={0.1} />
-           <GlassMetric label="Rank" value={metrics.safetyLevel ?? 'Gold'} icon={<Star size={18} />} delay={0.2} />
+           <GlassMetric label="Discovery" value={`${discoveryDepth}%`} icon={<Compass size={18} />} delay={0.2} />
+           <GlassMetric label="Immersion" value={`${immersionHours}h`} icon={<Clock size={18} />} delay={0.3} />
+           <GlassMetric label="Rank" value={metrics.safetyLevel ?? 'Gold'} icon={<Star size={18} />} delay={0.4} />
         </div>
 
         {/* 3. COMPACT CONTROLS */}

@@ -70,8 +70,9 @@ export const Dashboard: React.FC = () => {
 
         // 📊 Fetch Real-Time Metrics for the Sanctuary
         const metricsRes = await Promise.all([
-           turso.execute("SELECT COUNT(*) as count FROM selection_events WHERE woman_id = ?", [user.id])
-        ]).catch(() => [null]);
+           turso.execute("SELECT COUNT(*) as count FROM selection_events WHERE woman_id = ?", [user.id]),
+           turso.execute("SELECT COUNT(*) as total FROM profiles WHERE role = 'man'", [])
+        ]).catch(() => [null, null]);
 
         const profilesViewedCount = metricsRes[0]?.rows[0]?.count || 0;
 
@@ -192,7 +193,8 @@ export const Dashboard: React.FC = () => {
           responseRate: status?.response_rate,
           vibeRating: status?.vibe_rating,
           activeStreak: status?.consecutive_days,
-          safetyLevel: status?.safetyLevel
+          safetyLevel: status?.safetyLevel,
+          totalAspirants: Number(metricsRes[1]?.rows[0]?.total || 100)
         }} 
         setIsEditing={setIsEditing}
         onOpenSettings={() => setIsSettingsOpen(true)}
