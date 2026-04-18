@@ -15,13 +15,17 @@ interface GlassHeaderProps {
   onTabChange: (tab: any) => void;
   roleFilter: string;
   onRoleFilterChange: (role: any) => void;
+  onLogout?: () => void;
+  onViewSwitch?: (view: 'man' | 'woman' | 'admin') => void;
 }
 
 export const GlassHeader: React.FC<GlassHeaderProps> = ({ 
   activeTab, 
   onTabChange, 
   roleFilter, 
-  onRoleFilterChange 
+  onRoleFilterChange,
+  onLogout,
+  onViewSwitch
 }) => {
   const [time, setTime] = useState(new Date());
 
@@ -60,7 +64,10 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
              </span>
           </div>
           <div className="h-10 w-px bg-black/[0.05]" />
-          <button className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-black/[0.03] transition-all">
+          <button 
+            onClick={onLogout}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
+          >
              <Settings size={20} strokeWidth={1.5} />
           </button>
         </div>
@@ -84,23 +91,24 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
            ))}
         </div>
 
-        {activeTab === 'ROSTER' && (
+        <div className="flex items-center gap-6">
           <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner animate-in fade-in slide-in-from-right-4 duration-500">
-             {['man', 'woman', 'admin'].map((role) => (
+             {['man', 'woman', 'admin'].map((role: any) => (
                 <button
                   key={role}
-                  onClick={() => onRoleFilterChange(role === 'admin' ? (roleFilter === 'admin' ? 'all' : 'admin') : (roleFilter === role ? 'all' : role))}
-                  className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
-                    roleFilter === role 
-                      ? 'bg-white text-slate-900 shadow-md' 
-                      : 'text-slate-900 hover:text-slate-700'
+                  onClick={() => onViewSwitch?.(role)}
+                  className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                    role === 'admin' 
+                      ? 'bg-slate-900 text-white shadow-md' 
+                      : 'text-slate-900 hover:text-slate-700 hover:bg-white/40'
                   }`}
                 >
-                  {role}
+                  <Layers size={10} />
+                  View As {role}
                 </button>
              ))}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

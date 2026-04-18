@@ -20,6 +20,7 @@ import { AdminCommunicationsHub } from './AdminCommunicationsHub';
 import { AdminBlogModeration } from './AdminBlogModeration';
 import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
+import { AdminManual } from './AdminManual';
 
 import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
@@ -29,9 +30,26 @@ import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/comp
 interface AdminDashboardProps {
   handleLogout: () => void;
   onOpenPictureManager?: () => void;
+  onTabChange?: (tab: any) => void;
 }
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager }) => {
+const JournalSection: React.FC = () => {
+  const [subTab, setSubTab] = useState<'MANUAL' | 'MODERATION'>('MANUAL');
+
+  useEffect(() => {
+    const handler = (e: any) => setSubTab(e.detail);
+    window.addEventListener('admin-subtab-change', handler);
+    return () => window.removeEventListener('admin-subtab-change', handler);
+  }, []);
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-10 duration-700">
+      {subTab === 'MANUAL' ? <AdminManual /> : <AdminBlogModeration />}
+    </div>
+  );
+};
+
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager, onTabChange }) => {
   const { user: currentUser } = useAuth();
   const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
@@ -107,6 +125,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
     setLoading(false);
   };
 
+  const handleViewSwitch = (role: 'man' | 'woman' | 'admin') => {
+    if (!onTabChange) return;
+    if (role === 'admin') onTabChange('admin_panel');
+    else if (role === 'man') onTabChange('profile');
+    else if (role === 'woman') onTabChange('discovery');
+  };
+
   const confirmDelete = async () => {
     if (!itemToDelete) return;
     try {
@@ -151,31 +176,88 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
 
         {selectedProfile && (
           <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
-            <div className="bg-white rounded-[4rem] max-w-4xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row h-[80vh] md:h-auto">
-               <div className="w-full md:w-1/2 aspect-square md:aspect-auto h-full relative">
+            <motion.div 
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              className="bg-white rounded-[4rem] max-w-6xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row h-[90vh]"
+            >
+               {/* Image Section */}
+               <div className="w-full md:w-2/5 h-1/2 md:h-full relative bg-slate-100">
                   <img 
                     src={selectedProfile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-cover grayscale opacity-90 hover:grayscale-0 transition-all duration-1000" 
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
-               </div>
-               <div className="flex-1 p-12 md:p-20 flex flex-col justify-between space-y-12">
-                  <div className="space-y-6">
-                     <div className="space-y-2">
-                        <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-[0.4em] border-slate-200 text-slate-400 italic px-4 py-1.5">{selectedProfile.role} // {selectedProfile.is_verified ? 'SEALED' : 'UNVERIFIED'}</Badge>
-                        <h2 className="text-6xl font-black text-slate-900 tracking-tighter italic leading-none">{selectedProfile.full_name}</h2>
-                        <p className="text-xl font-medium text-slate-400 italic">{selectedProfile.city || 'Location Unknown'}</p>
-                     </div>
-                     <div className="space-y-4">
-                        <div className="h-px w-24 bg-slate-100" />
-                        <p className="text-xs text-slate-500 leading-relaxed max-w-md italic">{selectedProfile.bio || 'No transmission recorded.'}</p>
-                     </div>
-                  </div>
-                  <div className="flex gap-4">
-                     <button onClick={() => setSelectedProfile(null)} className="flex-1 py-6 bg-slate-900 text-white rounded-[2rem] font-bold text-[10px] tracking-[0.4em] uppercase hover:bg-slate-800 transition-all shadow-xl">Close Archive</button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent opacity-60" />
+                  <div className="absolute bottom-12 left-12 space-y-2">
+                     <Badge className="bg-white/80 text-slate-900 border-none text-[8px] font-black tracking-widest px-4 py-1.5 backdrop-blur-md">
+                        ID_{selectedProfile.user_id.slice(-8).toUpperCase()}
+                     </Badge>
                   </div>
                </div>
-            </div>
+
+               {/* Info Section */}
+               <div className="flex-1 p-12 md:p-24 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+                  <div className="space-y-16">
+                     <div className="flex justify-between items-start">
+                        <div className="space-y-4">
+                           <div className="flex items-center gap-4">
+                              <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-[0.4em] border-slate-200 text-slate-400 italic px-5 py-2">
+                                {selectedProfile.role} // {selectedProfile.is_verified ? 'IDENTITY_SEALED' : 'PENDING_VERIFICATION'}
+                              </Badge>
+                           </div>
+                           <h2 className="text-7xl font-black text-slate-900 tracking-tighter italic leading-none">{selectedProfile.full_name}</h2>
+                           <div className="flex items-center gap-6">
+                              <p className="text-2xl font-medium text-slate-400 italic">{selectedProfile.city || 'Location Unknown'}</p>
+                              <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
+                              <p className="text-xl font-bold text-slate-900 tabular-nums italic">{(selectedProfile as any).age || 25} Years</p>
+                           </div>
+                        </div>
+                        <div className="w-24 h-24 bg-slate-50 rounded-[2.5rem] border border-black/[0.03] flex flex-col items-center justify-center">
+                           <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1">Aura</span>
+                           <span className="text-2xl font-bold text-slate-900 tabular-nums">{(selectedProfile.tokens || 0).toLocaleString()}</span>
+                        </div>
+                     </div>
+
+                     <div className="grid grid-cols-2 gap-12 border-y border-black/[0.03] py-12">
+                        <div className="space-y-3">
+                           <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Identity Narrative</span>
+                           <p className="text-sm text-slate-500 leading-relaxed italic">{selectedProfile.bio || 'The aspirant has not yet transmitted an identity narrative to the sanctuary.'}</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-8">
+                           <div className="space-y-2">
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Occupation</span>
+                              <p className="text-xs font-bold text-slate-900 italic">{(selectedProfile as any).occupation || 'Unspecified'}</p>
+                           </div>
+                           <div className="space-y-2">
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Height</span>
+                              <p className="text-xs font-bold text-slate-900 italic">{(selectedProfile as any).height || 'Undisclosed'}</p>
+                           </div>
+                           <div className="space-y-2">
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Religion</span>
+                              <p className="text-xs font-bold text-slate-900 italic">{(selectedProfile as any).religion || 'Private'}</p>
+                           </div>
+                           <div className="space-y-2">
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Created At</span>
+                              <p className="text-xs font-bold text-slate-900 italic">{new Date((selectedProfile as any).created_at).toLocaleDateString()}</p>
+                           </div>
+                        </div>
+                     </div>
+
+                     <div className="space-y-6">
+                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Archive Protocols</span>
+                        <div className="flex flex-wrap gap-4">
+                           <button onClick={() => setMessageTarget({id: selectedProfile.user_id, name: selectedProfile.full_name})} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">Direct Transmission</button>
+                           <button onClick={() => AdminService.updateProfileStatus(selectedProfile.user_id, {is_verified: !selectedProfile.is_verified}).then(loadData)} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">{selectedProfile.is_verified ? 'Revoke Seal' : 'Apply Identity Seal'}</button>
+                           <button onClick={() => handleUpdateTokens(selectedProfile.user_id, 1000)} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">Grant 1k Aura</button>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div className="pt-12 mt-12 border-t border-black/[0.03]">
+                     <button onClick={() => setSelectedProfile(null)} className="w-full py-6 bg-slate-900 text-white rounded-[2rem] font-bold text-[10px] tracking-[0.6em] uppercase hover:bg-slate-800 transition-all shadow-2xl">Return to Index</button>
+                  </div>
+               </div>
+            </motion.div>
           </div>
         )}
       </AnimatePresence>
@@ -186,6 +268,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
            onTabChange={(t: any) => setDashboardTab(t)}
            roleFilter={filters.role}
            onRoleFilterChange={(r: any) => setFilters(f => ({...f, role: r}))}
+           onLogout={handleLogout}
+           onViewSwitch={handleViewSwitch}
         />
 
         <main className="flex-1 py-16 space-y-20 pb-64">
@@ -307,7 +391,25 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                   ) : dashboardTab === 'COMMUNICATIONS' ? (
                     <AdminCommunicationsHub />
                   ) : (
-                    <AdminBlogModeration />
+                    <div className="space-y-20">
+                      <div className="flex justify-center gap-4">
+                         {['MANUAL', 'MODERATION'].map((st: any) => (
+                           <button 
+                             key={st}
+                             onClick={() => (window as any)._adminSubTab = st && setProfiles([...profiles])} // Hacky force re-render for this demo
+                             className={`px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] transition-all ${((window as any)._adminSubTab || 'MANUAL') === st ? 'bg-slate-900 text-white shadow-xl scale-105' : 'bg-white/40 text-slate-400 hover:bg-white'}`}
+                             onClickCapture={() => {
+                               const event = new CustomEvent('admin-subtab-change', { detail: st });
+                               window.dispatchEvent(event);
+                             }}
+                           >
+                             {st}
+                           </button>
+                         ))}
+                      </div>
+                      
+                      <JournalSection />
+                    </div>
                   )}
                 </div>
              </motion.div>

@@ -152,7 +152,11 @@ export const DashboardLayout: React.FC = () => {
 
             {activeTab === 'admin_panel' && profile?.role === 'admin' && (
               <motion.div key="admin_panel" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}>
-                  <AdminDashboard onOpenPictureManager={() => setActiveTab('picture_manager' as any)} />
+                  <AdminDashboard 
+                    onOpenPictureManager={() => setActiveTab('picture_manager' as any)} 
+                    onTabChange={(t) => setActiveTab(t as any)}
+                    handleLogout={signOut}
+                  />
               </motion.div>
             )}
 

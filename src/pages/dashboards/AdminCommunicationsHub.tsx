@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 
 export const AdminCommunicationsHub: React.FC = () => {
   const [comms, setComms] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedMatch, setSelectedMatch] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -28,18 +29,44 @@ export const AdminCommunicationsHub: React.FC = () => {
     try { return JSON.parse(json || '[]'); } catch { return []; }
   };
 
+  const filteredComms = comms.filter(c => {
+    const q = searchQuery.toLowerCase();
+    return (c.man_name || '').toLowerCase().includes(q) || 
+           (c.woman_name || '').toLowerCase().includes(q);
+  });
+
   if (selectedMatch) {
     return (
       <div className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-24 px-10">
-        <button 
-          onClick={() => setSelectedMatch(null)}
-          className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 hover:text-slate-900 transition-all group"
-        >
-          <div className="p-3 bg-white rounded-xl border border-black/[0.03] group-hover:bg-slate-50 transition-all shadow-sm">
-            <ArrowRight size={14} className="rotate-180" strokeWidth={1.5} />
-          </div> 
-          TERMINATE_MONITORING_CONDUIT
-        </button>
+        <div className="flex justify-between items-center">
+          <button 
+            onClick={() => setSelectedMatch(null)}
+            className="flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 hover:text-slate-900 transition-all group"
+          >
+            <div className="p-3 bg-white rounded-xl border border-black/[0.03] group-hover:bg-slate-50 transition-all shadow-sm">
+              <ArrowRight size={14} className="rotate-180" strokeWidth={1.5} />
+            </div> 
+            TERMINATE_MONITORING_CONDUIT
+          </button>
+
+          <div className="flex items-center gap-12 bg-white/40 px-10 py-4 rounded-[2rem] border border-black/[0.03] backdrop-blur-md">
+             {[
+               { name: selectedMatch.man_name, photos: selectedMatch.man_photos, role: 'man' },
+               { name: selectedMatch.woman_name, photos: selectedMatch.woman_photos, role: 'woman' }
+             ].map((u, idx) => (
+               <div key={idx} className="flex items-center gap-4">
+                  <div className="w-10 h-10 rounded-2xl overflow-hidden border border-black/[0.05]">
+                     <img src={safeParse(u.photos)[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${u.name}`} className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                     <p className="text-[10px] font-bold text-slate-900 leading-none uppercase italic">{u.name}</p>
+                     <p className="text-[7px] font-black text-slate-300 uppercase tracking-widest mt-1">{u.role}</p>
+                  </div>
+               </div>
+             ))}
+          </div>
+        </div>
+
         <div className="bg-white/40 p-2 rounded-[3.5rem] border border-black/[0.03] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] backdrop-blur-3xl overflow-hidden">
            <MagicChat 
              match={{
@@ -61,7 +88,7 @@ export const AdminCommunicationsHub: React.FC = () => {
 
   return (
     <div className="space-y-12 pb-24 px-10">
-      <div className="flex justify-between items-center px-4 md:px-0 border-b border-black/[0.03] pb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-0 border-b border-black/[0.03] pb-8 gap-8">
           <div className="space-y-2">
              <div className="flex items-center gap-4">
                 <div className="w-1.5 h-1.5 rounded-full bg-slate-900" />
@@ -71,12 +98,25 @@ export const AdminCommunicationsHub: React.FC = () => {
                 <Shield size={12} className="text-slate-400" /> Passive Resonance Monitoring Pipeline
              </p>
           </div>
-          <button 
-            onClick={loadComms} 
-            className="w-14 h-14 rounded-[2rem] bg-white border border-black/[0.03] text-slate-400 hover:text-slate-900 transition-all shadow-sm active:scale-90"
-          >
-             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
-          </button>
+          
+          <div className="flex items-center gap-6 w-full md:w-auto">
+             <div className="relative flex-1 md:w-80 group">
+                <Activity className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-slate-900" />
+                <input 
+                  type="text"
+                  placeholder="FILTER BY IDENTITY..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full h-14 pl-16 pr-6 bg-white border border-black/[0.03] rounded-2xl text-[9px] font-bold uppercase tracking-widest focus:ring-4 focus:ring-slate-100 transition-all outline-none"
+                />
+             </div>
+             <button 
+               onClick={loadComms} 
+               className="w-14 h-14 rounded-[2rem] bg-white border border-black/[0.03] text-slate-400 hover:text-slate-900 transition-all shadow-sm active:scale-90 flex items-center justify-center shrink-0"
+             >
+                <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
+             </button>
+          </div>
       </div>
 
       <div className="grid grid-cols-1 gap-8">
@@ -84,14 +124,14 @@ export const AdminCommunicationsHub: React.FC = () => {
             <div className="h-64 flex items-center justify-center text-slate-200">
                <RefreshCw className="animate-spin w-12 h-12" />
             </div>
-         ) : comms.length === 0 ? (
+         ) : filteredComms.length === 0 ? (
             <div className="py-40 flex flex-col items-center justify-center text-center space-y-8 bg-white/40 rounded-[3rem] border border-black/[0.02] shadow-sm opacity-60">
                 <Lock size={48} className="text-slate-200" strokeWidth={1} />
-                <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.5em] italic">NO_ACTIVE_RESONANCE_DETECTION</p>
+                <p className="text-[10px] font-bold text-slate-300 uppercase tracking-[0.5em] italic">NO_MATCHING_RESONANCE_DETECTION</p>
             </div>
          ) : (
             <AnimatePresence>
-               {comms.map((c, i) => (
+               {filteredComms.map((c, i) => (
                   <motion.div 
                     key={c.id}
                     initial={{ opacity: 0, scale: 0.98 }}
