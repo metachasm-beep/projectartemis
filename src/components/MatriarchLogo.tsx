@@ -10,21 +10,21 @@ interface MatriarchLogoProps {
 
 export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnly = false }) => {
   return (
-    <div className={cn("flex flex-col items-center gap-2 select-none mat-perspective-1000", className)}>
+    <div className={cn("flex flex-col items-center gap-6 select-none mat-perspective-1000", className)}>
       <motion.div 
-        whileHover={{ rotateY: 10, rotateX: -10, scale: 1.05 }}
-        className="relative flex items-center justify-center mat-transform-3d transition-transform duration-500"
+        whileHover={{ rotateY: 15, rotateX: -10, scale: 1.1 }}
+        className="relative flex items-center justify-center w-20 h-20 rounded-2xl mat-iridescent-glass mat-transform-3d transition-all duration-700 shadow-2xl"
       >
         <Crown 
-          className="w-12 h-12 text-[#D4AF37] drop-shadow-[0_10px_20px_rgba(212,175,55,0.4)]" 
-          strokeWidth={1}
-          style={{ filter: 'drop-shadow(0 2px 0 #B8860B) drop-shadow(0 4px 0 #996515) drop-shadow(0 15px 30px rgba(0,0,0,0.3))' }}
+          className="w-10 h-10 text-white/90 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]" 
+          strokeWidth={0.5}
         />
+        <div className="absolute inset-0 bg-gradient-to-tr from-mat-gold/20 via-transparent to-white/20 animate-pulse" />
       </motion.div>
       
       {!iconOnly && (
         <span 
-          className="font-body text-3xl md:text-5xl font-bold tracking-[0.5em] text-transparent bg-clip-text bg-gradient-to-b from-[#F7EF8A] via-[#D4AF37] to-[#B8860B] whitespace-nowrap mat-3d-depth"
+          className="font-body text-xl md:text-2xl font-light tracking-[0.8em] uppercase mat-text-holographic whitespace-nowrap"
         >
           MATRIARCH
         </span>

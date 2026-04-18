@@ -124,20 +124,20 @@ const HeroFold: React.FC = () => {
         <motion.h1 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-9xl font-body text-slate-900 mb-6 md:mb-8 leading-[1.1] max-w-6xl px-4 tracking-[-0.02em]"
+          transition={{ duration: 1.2, ease: "easeOut" }}
+          className="text-5xl md:text-[10rem] font-body font-extralight mb-8 md:mb-12 leading-[0.9] max-w-7xl px-4 tracking-[-0.04em] mat-text-holographic"
         >
-          <span className="font-extralight block">Curating the</span>
-          <span className="font-medium bg-gradient-to-r from-slate-900 via-mat-gold to-slate-900 bg-clip-text text-transparent block">Exceptional.</span>
+          Curating the <br/>
+          Exceptional.
         </motion.h1>
 
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-slate-500 max-w-2xl text-xl md:text-2xl font-body font-thin tracking-[0.1em] leading-relaxed mb-12"
+          transition={{ delay: 0.4, duration: 1.2 }}
+          className="text-white/60 max-w-3xl text-xl md:text-3xl font-body font-thin tracking-[0.2em] uppercase leading-relaxed mb-16 drop-shadow-sm"
         >
-          India's most exclusive network for high-value connections and refined companionship.
+          India's most exclusive network for <br/> high-value connections and refined companionship.
         </motion.p>
 
         <motion.div
