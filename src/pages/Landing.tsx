@@ -62,8 +62,8 @@ const LandingPage: React.FC = () => {
   });
 
   // Dynamic Logo transitions: STRICT First-Fold Visibility Only
-  const logoOpacity = useTransform(scrollYProgress, [0, 0.005], [1, 0]);
-  const logoScale = useTransform(scrollYProgress, [0, 0.005], [1, 0.9]);
+  const logoOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
+  const logoScale = useTransform(scrollYProgress, [0, 0.05], [1, 0.9]);
   
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -72,7 +72,6 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const desktopOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
 
   // Check session on mount
   React.useEffect(() => {
@@ -170,7 +169,7 @@ const LandingPage: React.FC = () => {
       {/* 🔮 Dynamic Persistent Logo */}
       <motion.div 
         style={{ 
-          opacity: isMobile ? logoOpacity : desktopOpacity,
+          opacity: logoOpacity,
           scale: logoScale,
         }}
         className="fixed left-1/2 top-12 md:top-8 z-[100] -translate-x-1/2 pointer-events-none origin-center"

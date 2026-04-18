@@ -94,7 +94,14 @@ export default function SplashCursor({
       TRANSPARENT
     };
 
-    const { gl, ext } = getWebGLContext(canvas);
+    let glContext;
+    try {
+      glContext = getWebGLContext(canvas);
+    } catch (e) {
+      console.warn('SplashCursor: WebGL initialization failed, skipping effect.', e);
+      return;
+    }
+    const { gl, ext } = glContext;
     if (!gl || !ext) return;
 
     if (!ext.supportLinearFiltering) {

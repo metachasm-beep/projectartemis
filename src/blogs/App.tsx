@@ -164,7 +164,11 @@ const App: React.FC = () => {
   const [dynamicPosts, setDynamicPosts] = useState<any[]>([]);
 
   const allPosts = useMemo(() => {
-    const combined = [...BLOG_POSTS];
+    const combined = [...BLOG_POSTS].map(p => ({
+      ...p,
+      sortDate: new Date(p.date).getTime() || 0
+    }));
+
     dynamicPosts.forEach(dp => {
       if (!combined.find(p => p.id === dp.id)) {
         combined.push({
@@ -172,14 +176,16 @@ const App: React.FC = () => {
           excerpt: dp.content.substring(0, 100) + '...',
           markdownUrl: '',
           category: 'Relationships',
-          date: new Date(dp.created_at).toLocaleDateString(),
+          date: new Date(dp.created_at).toLocaleDateString(), // Display format
+          sortDate: new Date(dp.created_at).getTime(), // Numeric timestamp for sorting
           readTime: '5 min read',
           image: dp.image_url,
           authorId: dp.author_id,
-        });
+        } as any);
       }
     });
-    return combined.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+    return (combined as any[]).sort((a, b) => (b.sortDate || 0) - (a.sortDate || 0));
   }, [dynamicPosts]);
 
   const selectedPost = useMemo(() => allPosts.find(p => p.id === selectedPostId), [selectedPostId, allPosts]);

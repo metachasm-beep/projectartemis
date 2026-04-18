@@ -45,7 +45,12 @@ const HeroFold: React.FC = () => {
   });
 
   // Parallax transforms: minimal scale to prevent aggressive cropping
-  const backgroundScale = useTransform(scrollYProgress, [0, 1], [1, 1.02]);
+  // 🚀 Cinematic Zoom Out: 30% range for desktop, 20% for mobile
+  const backgroundScale = useTransform(
+    scrollYProgress, 
+    [0, 1], 
+    [typeof window !== 'undefined' && window.innerWidth > 1024 ? 1.3 : 1.2, 1.0]
+  );
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
   
