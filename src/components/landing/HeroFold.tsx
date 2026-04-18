@@ -82,7 +82,7 @@ const HeroFold: React.FC = () => {
               <motion.div
                 key={imageIndex}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
+                animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 3 }}
                 className="absolute inset-0 mat-ken-burns"
@@ -90,15 +90,15 @@ const HeroFold: React.FC = () => {
                 <img 
                    src={IMAGES[imageIndex]} 
                    alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
-                   className="absolute inset-0 w-full h-full object-cover"
+                   className="absolute inset-0 w-full h-full object-cover mat-portrait-aesthetic"
                    // @ts-ignore - fetchpriority is supported but not always in React types
                    fetchpriority={imageIndex === 0 ? "high" : "low"}
                    loading={imageIndex === 0 ? "eager" : "lazy"}
                 />
               </motion.div>
             </AnimatePresence>
-            {/* Soft Sanctuary Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-b from-[#FDFCFB]/40 via-transparent to-[#FDFCFB]" />
+            {/* Cinematic Shadow Vignette (Removes White Tint) */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -117,8 +117,8 @@ const HeroFold: React.FC = () => {
           <motion.h1 
             className="leading-[1.1] mb-8 md:mb-12 flex flex-col items-center md:items-start"
           >
-            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.2rem)] mb-4 text-[#1a1a1a]/60">Curating the</span>
-            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,9.5rem)] text-[#1a1a1a]">
+            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.2rem)] mb-4 text-white/60">Curating the</span>
+            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,9.5rem)] text-[#FDFCFB]">
               Exceptional<span className="mat-text-gold">.</span>
             </span>
           </motion.h1>
@@ -127,7 +127,7 @@ const HeroFold: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 2.2, duration: 1.5 }}
-            className="text-[#1a1a1a]/70 max-w-xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
+            className="text-white/70 max-w-xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
           >
             India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
           </motion.p>
