@@ -429,7 +429,7 @@
   }
 
   .mat-portrait-aesthetic {
-    filter: contrast(1.15) brightness(0.95) saturate(1.05);
+    filter: contrast(1.07) brightness(0.98) saturate(1.02);
   }
 
   /* ─── Cinematic Backgrounds (Low GPU) ─── */
