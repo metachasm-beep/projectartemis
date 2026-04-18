@@ -85,7 +85,7 @@ const HeroFold: React.FC = () => {
               <motion.div
                 key={imageIndex}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
+                animate={{ opacity: 0.6 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2 }}
                 className="absolute inset-0"
@@ -111,31 +111,22 @@ const HeroFold: React.FC = () => {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
       >
-
-        <motion.span 
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15, duration: 0.6 }}
-          className="text-[#1a1a1a]/40 font-body tracking-[0.4em] text-[10px] md:text-xs mb-8 uppercase"
-        >
-          A Private Club for the Exceptional
-        </motion.span>
         
         <motion.h1 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 mat-text-editorial mat-text-rose-gold"
+          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 flex flex-col items-center"
         >
-          Curating the <br/>
-          Exceptional.
+          <span className="mat-text-ethereal">Curating the</span>
+          <span className="mat-text-outline-glow">Exceptional.</span>
         </motion.h1>
 
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1.2 }}
-          className="text-[#1a1a1a]/60 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-16"
+          className="text-white/60 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.1em] uppercase leading-relaxed mb-16"
         >
           India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
         </motion.p>
