@@ -72,7 +72,7 @@ const SelectionMatrixFold: React.FC = () => {
                     {item.title.split(' ')[0]} <br/>
                     <span className={`text-mat-gold italic font-display`}>{item.title.split(' ')[1]}</span>
                   </h3>
-                  <p className="text-mat-slate/40 font-light text-[11px] leading-relaxed max-w-xs uppercase tracking-wide">
+                  <p className="text-mat-slate/40 font-light text-[11px] leading-relaxed max-w-xs tracking-wide">
                     {item.desc}
                   </p>
                 </div>

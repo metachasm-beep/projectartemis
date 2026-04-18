@@ -66,7 +66,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#FDFCFB]"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0A0A0B]"
     >
       {/* 2. Parallax Background Slideshow */}
       <AnimatePresence>
@@ -98,7 +98,7 @@ const HeroFold: React.FC = () => {
               </motion.div>
             </AnimatePresence>
             {/* Cinematic Shadow Vignette (Removes White Tint) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
           </motion.div>
         )}
       </AnimatePresence>

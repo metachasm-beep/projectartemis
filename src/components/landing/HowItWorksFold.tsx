@@ -50,7 +50,7 @@ const HowItWorksFold: React.FC = () => {
                     <h4 className="text-sm md:text-3xl font-display text-mat-slate leading-tight uppercase tracking-tight">{step.label}</h4>
                   </div>
                 </div>
-                <p className="text-[9px] md:text-[12px] text-mat-slate/40 text-center md:text-left leading-relaxed font-light mt-2 md:mt-6 border-t border-mat-gold/5 pt-2 md:pt-6 uppercase tracking-wider">
+                <p className="text-[9px] md:text-[12px] text-mat-slate/40 text-center md:text-left leading-relaxed font-light mt-2 md:mt-6 border-t border-mat-gold/5 pt-2 md:pt-6 tracking-wider">
                   {step.desc}
                 </p>
               </motion.div>
