@@ -222,8 +222,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                          </div>
                       </div>
 
-                      {true ? (
-                        <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
+                      <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
                            <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
                                  <thead className="bg-[#f8fafc] sticky top-0 z-20">
@@ -302,7 +301,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                               </table>
                            </div>
                         </div>
-                      )}
                     </div>
                   ) : dashboardTab === 'TITHE' ? (
                     <AdminAuraPanel />
