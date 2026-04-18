@@ -7,8 +7,6 @@ import {
   Trash2, 
   ShieldAlert, 
   BadgeCheck, 
-  Layers, 
-  Eye,
   MessageSquare,
   Zap
 } from 'lucide-react';
@@ -22,7 +20,6 @@ import { AdminCommunicationsHub } from './AdminCommunicationsHub';
 import { AdminBlogModeration } from './AdminBlogModeration';
 import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
-import GazeHologram from './GazeHologram';
 
 import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
@@ -37,7 +34,6 @@ interface AdminDashboardProps {
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager }) => {
   const { user: currentUser } = useAuth();
   const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
-  const [viewMode, setViewMode] = useState<'STREAM' | 'GAZE'>('STREAM');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -210,14 +206,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
                         <h2 className="text-[10px] font-bold uppercase tracking-[0.5em] text-slate-400 italic">Archive Index</h2>
                      </div>
-                     <div className="flex items-center gap-2 p-1 bg-black/[0.02] rounded-2xl">
-                        <button onClick={() => setViewMode('STREAM')} className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'STREAM' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                           <Layers size={11} strokeWidth={2} /> Stream
-                        </button>
-                        <button onClick={() => setViewMode('GAZE')} className={`px-6 py-2.5 rounded-xl text-[9px] font-bold uppercase tracking-widest transition-all flex items-center gap-2 ${viewMode === 'GAZE' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}>
-                           <Eye size={11} strokeWidth={2} /> Gaze Mode
-                        </button>
-                     </div>
                   </div>
 
                   {dashboardTab === 'ROSTER' ? (
@@ -234,9 +222,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                          </div>
                       </div>
 
-                      {viewMode === 'GAZE' ? (
-                        <GazeHologram profiles={profiles} onVerify={(id, s) => AdminService.updateProfileStatus(id, {is_verified: !s}).then(loadData)} onMessage={setMessageTarget} onDelete={setItemToDelete} />
-                      ) : (
+                      {true ? (
                         <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
                            <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">

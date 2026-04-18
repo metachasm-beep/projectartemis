@@ -138,7 +138,7 @@ export const AdminAuraPanel: React.FC = () => {
                        <div className="space-y-2">
                           <p className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em] italic leading-none">Aura Expansion</p>
                           <div className="text-3xl font-bold text-slate-900 leading-none tabular-nums tracking-tighter">
-                             +{claim.amount.toLocaleString()}
+                             +{(claim.amount || 0).toLocaleString()}
                           </div>
                        </div>
                     </div>

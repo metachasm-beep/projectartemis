@@ -62,14 +62,13 @@ export const AdminService = {
     };
 
     try {
-      const [totalMen, totalWomen, verifiedProfiles, totalForumTopics] = await Promise.all([
+      const [totalMen, totalWomen, verifiedProfiles] = await Promise.all([
         safeCount("SELECT COUNT(*) as count FROM profiles WHERE role = 'man'"),
         safeCount("SELECT COUNT(*) as count FROM profiles WHERE role = 'woman'"),
-        safeCount("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1"),
-        safeCount("SELECT COUNT(*) as count FROM forum_topics")
+        safeCount("SELECT COUNT(*) as count FROM profiles WHERE is_verified = 1")
       ]);
 
-      const data = { totalMen, totalWomen, verifiedProfiles, totalForumTopics };
+      const data = { totalMen, totalWomen, verifiedProfiles, totalForumTopics: 0 };
       metricsCache = { data, timestamp: now };
       return data;
     } catch (err) {
