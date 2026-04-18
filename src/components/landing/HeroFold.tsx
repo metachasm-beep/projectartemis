@@ -66,7 +66,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0C0C0C]"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#FDFCFB]"
     >
       {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
 
@@ -85,7 +85,7 @@ const HeroFold: React.FC = () => {
               <motion.div
                 key={imageIndex}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.4 }}
+                animate={{ opacity: 0.5 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2 }}
                 className="absolute inset-0"
@@ -93,7 +93,7 @@ const HeroFold: React.FC = () => {
                 <img 
                   src={IMAGES[imageIndex]} 
                   alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover grayscale brightness-50"
+                  className="absolute inset-0 w-full h-full object-cover"
                   // @ts-ignore - fetchpriority is supported but not always in React types
                   fetchpriority={imageIndex === 0 ? "high" : "low"}
                   loading={imageIndex === 0 ? "eager" : "lazy"}
@@ -101,7 +101,7 @@ const HeroFold: React.FC = () => {
               </motion.div>
             </AnimatePresence>
             {/* Soft Sanctuary Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/60 to-[#0C0C0C]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FDFCFB]/40 to-[#FDFCFB]" />
           </motion.div>
         )}
       </AnimatePresence>
@@ -116,16 +116,16 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15, duration: 0.6 }}
-          className="text-white/40 font-body tracking-[0.4em] text-[10px] md:text-xs mb-8 uppercase"
+          className="text-[#1a1a1a]/40 font-body tracking-[0.4em] text-[10px] md:text-xs mb-8 uppercase"
         >
-          Protocol: Invite-Only Exclusive
+          A Private Club for the Exceptional
         </motion.span>
         
         <motion.h1 
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="text-[clamp(2.5rem,10vw,7rem)] leading-[1.1] mb-8 md:mb-12 max-w-7xl px-4 tracking-[-0.02em] mat-text-mirage"
+          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 mat-text-editorial"
         >
           Curating the <br/>
           Exceptional.
@@ -135,7 +135,7 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1.2 }}
-          className="text-white/50 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.1em] uppercase leading-relaxed mb-16"
+          className="text-[#1a1a1a]/60 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-16"
         >
           India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
         </motion.p>
