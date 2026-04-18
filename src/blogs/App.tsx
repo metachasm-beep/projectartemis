@@ -265,8 +265,8 @@ const App: React.FC = () => {
         {/* SplashCursor in background - Lowered resolution for iOS stability */}
         <div className="fixed inset-0 pointer-events-none z-50 opacity-40">
           <SplashCursor 
-            DYE_RESOLUTION={512}
-            SIM_RESOLUTION={128}
+            DYE_RESOLUTION={1024}
+            SIM_RESOLUTION={256}
             DENSITY_DISSIPATION={4}
             VELOCITY_DISSIPATION={2.5}
             PRESSURE={0.2}

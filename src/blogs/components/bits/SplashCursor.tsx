@@ -898,6 +898,9 @@ export default function SplashCursor({
       cachedHeight = canvas.clientHeight;
       if (resizeCanvas()) initFramebuffers();
     };
+    
+    // Initial resize to sync canvas with viewport
+    handleResize();
     window.addEventListener('resize', handleResize);
 
     function updateColors(dt: number) {
