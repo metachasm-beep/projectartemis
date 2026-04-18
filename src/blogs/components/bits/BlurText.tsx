@@ -64,20 +64,31 @@ const BlurText: React.FC<BlurTextProps> = ({
   }, [threshold, rootMargin]);
 
   const defaultFrom = useMemo(
-    () =>
-      direction === 'top' ? { filter: 'blur(10px)', opacity: 0, y: -50 } : { filter: 'blur(10px)', opacity: 0, y: 50 },
+    () => {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const blurAmount = isMobile ? '0px' : '10px';
+
+      return direction === 'top' 
+        ? { filter: `blur(${blurAmount})`, opacity: 0, y: -50 } 
+        : { filter: `blur(${blurAmount})`, opacity: 0, y: 50 };
+    },
     [direction]
   );
 
   const defaultTo = useMemo(
-    () => [
-      {
-        filter: 'blur(5px)',
-        opacity: 0.5,
-        y: direction === 'top' ? 5 : -5
-      },
-      { filter: 'blur(0px)', opacity: 1, y: 0 }
-    ],
+    () => {
+      const isMobile = typeof window !== 'undefined' && window.innerWidth <= 768;
+      const midBlurAmount = isMobile ? '0px' : '5px';
+      
+      return [
+        {
+          filter: `blur(${midBlurAmount})`,
+          opacity: 0.5,
+          y: direction === 'top' ? 5 : -5
+        },
+        { filter: 'blur(0px)', opacity: 1, y: 0 }
+      ];
+    },
     [direction]
   );
 

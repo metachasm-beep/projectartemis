@@ -864,13 +864,19 @@ export default function SplashCursor({
     let cachedWidth = canvas.clientWidth;
     let cachedHeight = canvas.clientHeight;
 
+    let isFrameStarted = false;
     function updateFrame() {
-      const dt = calcDeltaTime();
-      updateColors(dt);
-      applyInputs();
-      step(dt);
-      render(null);
-      requestAnimationFrame(updateFrame);
+      if (isFrameStarted) return;
+      isFrameStarted = true;
+      const innerUpdate = () => {
+        const dt = calcDeltaTime();
+        updateColors(dt);
+        applyInputs();
+        step(dt);
+        render(null);
+        requestAnimationFrame(innerUpdate);
+      };
+      innerUpdate();
     }
 
     function calcDeltaTime() {

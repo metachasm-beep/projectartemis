@@ -201,6 +201,12 @@ const App: React.FC = () => {
   const [dynamicPosts, setDynamicPosts] = useState<any[]>([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
 
+  const isIOS = useMemo(() => {
+    if (typeof window === 'undefined') return false;
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+           (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  }, []);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setCurrentUser(session?.user ?? null);
@@ -265,8 +271,8 @@ const App: React.FC = () => {
         {/* SplashCursor in background - Lowered resolution for iOS stability */}
         <div className="fixed inset-0 pointer-events-none z-50 opacity-40">
           <SplashCursor 
-            DYE_RESOLUTION={1024}
-            SIM_RESOLUTION={256}
+            DYE_RESOLUTION={isIOS ? 256 : 1024}
+            SIM_RESOLUTION={isIOS ? 64 : 256}
             DENSITY_DISSIPATION={4}
             VELOCITY_DISSIPATION={2.5}
             PRESSURE={0.2}
