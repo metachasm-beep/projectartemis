@@ -3,6 +3,14 @@ import { precacheAndRoute } from 'workbox-precaching';
 // 🛠️ PRECACHE: Automatically handle static assets injected by VitePWA
 precacheAndRoute(self.__WB_MANIFEST);
 
+self.addEventListener('install', () => {
+  self.skipWaiting();
+});
+
+self.addEventListener('activate', (event) => {
+  event.waitUntil(clients.claim());
+});
+
 /**
  * 📡 PUSH EVENT LISTENER
  * Triggers when the Sovereign relay broadcast hits the browser.

@@ -31,7 +31,7 @@ window.__BUNDLE_START__ = true;
 const diagnostic = document.getElementById('diagnostic-console');
 if (diagnostic) {
   diagnostic.style.display = 'block';
-  diagnostic.innerHTML += '<div>> [SYSTEM] Bundle v1.0.2 execution confirmed.</div>';
+  diagnostic.innerHTML += '<div>> [SYSTEM] Bundle v1.0.3 execution confirmed.</div>';
 }
 
 // 📡 SOVEREIGN_PUSH: Register PWA Handshake
