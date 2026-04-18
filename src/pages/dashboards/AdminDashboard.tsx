@@ -336,6 +336,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                          </div>
                       </div>
 
+                      <div className="flex items-center gap-4 bg-white/40 p-2 rounded-2xl border border-black/[0.02] w-fit backdrop-blur-sm">
+                         {['all', 'man', 'woman'].map((r: any) => (
+                            <button
+                              key={r}
+                              onClick={() => setFilters(f => ({...f, role: r}))}
+                              className={`px-8 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
+                                filters.role === r 
+                                  ? 'bg-slate-900 text-white shadow-lg scale-105' 
+                                  : 'text-slate-400 hover:text-slate-600 hover:bg-white/60'
+                              }`}
+                            >
+                              {r}
+                            </button>
+                         ))}
+                      </div>
+
                       <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
                            <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">

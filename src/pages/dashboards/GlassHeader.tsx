@@ -82,8 +82,8 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-6">
-        <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-10">
+        <div className="flex items-center gap-10">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
              {navItems.map((item) => (
                 <button
@@ -100,29 +100,10 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
                 </button>
              ))}
           </div>
-          
-          {activeTab === 'ROSTER' && (
-            <div className="flex items-center bg-slate-100/50 p-1 rounded-2xl border border-black/[0.02]">
-               {['all', 'man', 'woman'].map((r: any) => (
-                  <button
-                    key={r}
-                    onClick={() => onRoleFilterChange(r)}
-                    className={`px-5 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${
-                      roleFilter === r 
-                        ? 'bg-white text-slate-900 shadow-sm' 
-                        : 'text-slate-400 hover:text-slate-600'
-                    }`}
-                  >
-                    {r}
-                  </button>
-               ))}
-            </div>
-          )}
-        </div>
 
-        <div className="flex items-center gap-6">
-          <div className="flex flex-col items-end gap-1.5">
-             <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest mr-2">Sovereign Portal Toggle</span>
+          <div className="h-8 w-px bg-black/[0.05]" />
+
+          <div className="flex items-center gap-4">
              <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner">
                 {['man', 'woman', 'admin'].map((role: any) => (
                    <button
