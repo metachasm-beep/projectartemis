@@ -7,7 +7,8 @@ import {
   Archive, 
   Settings, 
   Fingerprint,
-  Zap
+  Zap,
+  Layers
 } from 'lucide-react';
 
 interface GlassHeaderProps {
