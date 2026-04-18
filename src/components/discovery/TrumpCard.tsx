@@ -37,6 +37,7 @@ interface TrumpCardProps {
     rank_tier?: string;
     latitude?: number | null;
     longitude?: number | null;
+    photos?: string[];
   };
   currentUserLocation?: { latitude: number; longitude: number } | null;
   measurementUnit?: 'km' | 'mi';
@@ -46,6 +47,19 @@ interface TrumpCardProps {
 }
 
 export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocation, measurementUnit = 'km', onClose, onAction, isDashboard }) => {
+  const [currentPhotoIndex, setCurrentPhotoIndex] = React.useState(0);
+  const photos = profile.photos && profile.photos.length > 0 ? profile.photos : [profile.img];
+
+  const handleNextPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentPhotoIndex((prev) => (prev + 1) % photos.length);
+  };
+
+  const handlePrevPhoto = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setCurrentPhotoIndex((prev) => (prev - 1 + photos.length) % photos.length);
+  };
+
   const stats = mapToTrumpStats(profile);
   const isPremium = profile.status === 'Imperial' || profile.status === 'Vanguard';
 
@@ -123,13 +137,44 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
         isDashboard ? "flex-[0_0_42%]" : "flex-1 md:flex-[0_0_65%]"
       )}>
         <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all">
-          <img 
-            src={profile.img} 
-            className="w-full h-full object-cover grayscale-[20%] brightness-[0.85] group-hover:brightness-100 group-hover:scale-110 transition-all duration-[1.5s] ease-out" 
-            alt={profile.name}
-            loading="eager"
-          />
+          <AnimatePresence mode="wait">
+            <motion.img 
+              key={currentPhotoIndex}
+              src={photos[currentPhotoIndex]} 
+              initial={{ opacity: 0, scale: 1.1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.5 }}
+              className="w-full h-full object-cover grayscale-[20%] brightness-[0.85] group-hover:brightness-100 transition-all duration-[1.5s] ease-out" 
+              alt={profile.name}
+              loading="eager"
+            />
+          </AnimatePresence>
+          
           <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-40" />
+          
+          {/* 🖼️ GALLERY INDICATORS */}
+          {photos.length > 1 && (
+             <div className="absolute top-3 inset-x-4 flex gap-1.5 z-40">
+                {photos.map((_, i) => (
+                   <div 
+                     key={i} 
+                     className={cn(
+                        "h-0.5 flex-1 rounded-full transition-all duration-300",
+                        i === currentPhotoIndex ? "bg-mat-gold shadow-[0_0_10px_rgba(212,175,55,0.8)]" : "bg-white/20"
+                     )} 
+                   />
+                ))}
+             </div>
+          )}
+
+          {/* 🔘 TAP AREAS */}
+          {photos.length > 1 && (
+             <div className="absolute inset-0 z-30 flex">
+                <div className="flex-1 cursor-pointer" onClick={handlePrevPhoto} />
+                <div className="flex-1 cursor-pointer" onClick={handleNextPhoto} />
+             </div>
+          )}
         </div>
 
         {/* 🏅 RANK PLATE - PHYSICAL INSET */}

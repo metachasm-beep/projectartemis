@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Camera, CheckCircle2, Zap, Flame, Eye, MousePointerClick, Heart, Coins, ArrowUpRight, ShieldCheck, Gem } from 'lucide-react';
 import type { MatriarchProfile } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -34,6 +34,9 @@ export const MenDossier: React.FC<MenDossierProps> = ({
   const [sanctuaryRank, setSanctuaryRank] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isBrowsingLeaderboard, setIsBrowsingLeaderboard] = useState(false);
+  const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
+
+  const photos = profile.photos && profile.photos.length > 0 ? profile.photos : [];
 
   // ─── LIVE RANK RETRIEVAL ───
   const fetchLiveRank = useCallback(async () => {
@@ -107,12 +110,35 @@ export const MenDossier: React.FC<MenDossierProps> = ({
       
       {/* ─── SCENE 1: THE MONOLITHIC HERO ─── */}
       <div className="relative w-full h-[75vh] md:h-[90vh] overflow-hidden">
-        <img 
-          src={profile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} 
-          alt="Identity Primary" 
-          className="w-full h-full object-cover scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent"></div>
+        <AnimatePresence mode="wait">
+          <motion.img 
+            key={currentPhotoIndex}
+            src={photos[currentPhotoIndex] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile.user_id}`} 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 1 }}
+            alt="Identity Primary" 
+            className="w-full h-full object-cover scale-105"
+          />
+        </AnimatePresence>
+
+        {/* Gallery Controls */}
+        {photos.length > 1 && (
+           <>
+              <div className="absolute top-24 inset-x-6 flex gap-2 z-20">
+                 {photos.map((_, i) => (
+                    <div key={i} className={cn("h-0.5 flex-1 rounded-full transition-all duration-500", i === currentPhotoIndex ? "bg-mat-gold shadow-[0_0_15px_rgba(212,175,55,0.6)]" : "bg-white/20")} />
+                 ))}
+              </div>
+              <div className="absolute inset-0 z-10 flex">
+                 <div className="flex-1 cursor-pointer" onClick={() => setCurrentPhotoIndex(prev => (prev - 1 + photos.length) % photos.length)} />
+                 <div className="flex-1 cursor-pointer" onClick={() => setCurrentPhotoIndex(prev => (prev + 1) % photos.length)} />
+              </div>
+           </>
+        )}
+
+        <div className="absolute inset-0 bg-gradient-to-t from-mat-obsidian via-mat-obsidian/40 to-transparent pointer-events-none"></div>
         
         {/* Floating Typography */}
         <motion.div 

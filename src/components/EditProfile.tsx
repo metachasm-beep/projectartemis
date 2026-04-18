@@ -121,6 +121,14 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     }
   };
 
+  const handleMakePrimary = (index: number) => {
+    if (index === 0) return;
+    const newPhotos = [...(formData.photos || [])];
+    const [primary] = newPhotos.splice(index, 1);
+    newPhotos.unshift(primary);
+    setFormData(prev => ({ ...prev, photos: newPhotos }));
+  };
+
   const handleSave = async () => {
     if ((formData.photos?.length || 0) === 0) {
       setError("IDENTITY VOID: The Sanctuary requires a visual anchor. Please upload at least one high-resolution portrait.");
@@ -225,9 +233,25 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 {formData.photos?.map((url, i) => (
                    <motion.div key={url} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm">
                       <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700" />
-                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all">
-                         <button onClick={() => handleDeletePhoto(i)} className="w-12 h-12 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose transition-all">
-                            <Trash2 size={20} />
+                      
+                      {i === 0 && (
+                         <div className="absolute top-3 left-3 px-3 py-1 bg-mat-gold text-mat-obsidian text-[8px] font-black uppercase tracking-widest rounded-full shadow-lg z-10 flex items-center gap-1.5">
+                            <Check size={10} strokeWidth={3} /> Primary
+                         </div>
+                      )}
+
+                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all">
+                         {i !== 0 && (
+                            <button 
+                              onClick={() => handleMakePrimary(i)} 
+                              className="w-10 h-10 bg-white text-mat-gold rounded-full flex items-center justify-center hover:bg-mat-gold hover:text-white transition-all shadow-xl"
+                              title="Set as Primary"
+                            >
+                               <Sparkles size={16} />
+                            </button>
+                         )}
+                         <button onClick={() => handleDeletePhoto(i)} className="w-10 h-10 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose transition-all shadow-xl">
+                            <Trash2 size={16} />
                          </button>
                       </div>
                    </motion.div>

@@ -47,19 +47,23 @@ export const Discovery: React.FC = () => {
 
         const result = await turso.execute(query, [targetRole]);
 
-        const mapped = result.rows.map(r => ({
-          id: r.user_id,
-          user_id: r.user_id,
-          name: r.full_name,
-          age: r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25,
-          city: r.city || 'Undisclosed',
-          img: JSON.parse(r.photos as string)?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
-          bio: r.bio || "Identity narrative not established.",
-          is_verified: r.is_verified,
-          height: r.height,
-          occupation: r.occupation,
-          religion: r.religion
-        }));
+        const mapped = result.rows.map(r => {
+          const photos = JSON.parse(r.photos as string || '[]');
+          return {
+            id: r.user_id,
+            user_id: r.user_id,
+            name: r.full_name,
+            age: r.date_of_birth ? new Date().getFullYear() - new Date(r.date_of_birth as string).getFullYear() : 25,
+            city: r.city || 'Undisclosed',
+            img: photos[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${r.full_name}`,
+            photos: photos,
+            bio: r.bio || "Identity narrative not established.",
+            is_verified: r.is_verified,
+            height: r.height,
+            occupation: r.occupation,
+            religion: r.religion
+          };
+        });
         setAspirants(mapped);
       } catch (err) {
         console.error("Discovery synchronization failed:", err);

@@ -156,7 +156,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ onClose, myRank, isInl
                                 "text-lg md:text-xl font-bold italic leading-none",
                                 isInline ? "text-mat-wine" : "text-white"
                              )}>
-                               {aspirant.full_name.split(' ')[0]}, {aspirant.age}
+                               {(aspirant.full_name || 'Aspirant').split(' ')[0]}, {aspirant.age}
                              </h4>
                              <div className={cn(
                                 "flex items-center gap-2 mt-2",

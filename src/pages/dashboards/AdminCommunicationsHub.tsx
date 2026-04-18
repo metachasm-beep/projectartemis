@@ -4,6 +4,7 @@ import { Shield, ArrowRight, Eye, RefreshCw, Activity, Lock, Fingerprint } from 
 import { AdminService } from '@/services/admin';
 import { MagicChat } from '@/components/MagicChat';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const AdminCommunicationsHub: React.FC = () => {
   const [comms, setComms] = useState<any[]>([]);
@@ -115,7 +116,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                            </div>
                            <div className="space-y-1.5">
                               <h4 className="text-2xl font-bold text-slate-900 italic tracking-tighter uppercase whitespace-nowrap group-hover:text-slate-900 transition-colors">
-                                {(c.man_name || 'Anonymous').split(' ')[0]} <span className="text-slate-300 font-light">&</span> {(c.woman_name || 'Anonymous').split(' ')[0]}
+                                {(c.man_name || 'Anonymous').toString().split(' ')[0]} <span className="text-slate-300 font-light">&</span> {(c.woman_name || 'Anonymous').toString().split(' ')[0]}
                               </h4>
                               <div className="flex items-center gap-6 text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em]">
                                  <span className="flex items-center gap-2 italic"><Fingerprint size={12} className="text-slate-400" /> {new Date(c.last_message_at).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })} // TX_LOG</span>
@@ -133,12 +134,19 @@ export const AdminCommunicationsHub: React.FC = () => {
                                  ))}
                               </div>
                            </div>
-                           <button 
-                             onClick={() => setSelectedMatch(c)}
-                             className="px-10 py-4 bg-white border border-black/[0.05] text-slate-500 rounded-2xl font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-slate-900 hover:text-white hover:border-slate-800 transition-all shadow-sm flex items-center gap-3 active:scale-95"
-                           >
-                              <Eye size={18} strokeWidth={1.5} /> OPEN_SIGINT
-                           </button>
+                           <TooltipProvider>
+                             <Tooltip>
+                               <TooltipTrigger asChild>
+                                 <button 
+                                   onClick={() => setSelectedMatch(c)}
+                                   className="px-10 py-4 bg-white border border-black/[0.05] text-slate-500 rounded-2xl font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-slate-900 hover:text-white hover:border-slate-800 transition-all shadow-sm flex items-center gap-3 active:scale-95"
+                                 >
+                                   <Eye size={18} strokeWidth={1.5} /> OPEN_SIGINT
+                                 </button>
+                               </TooltipTrigger>
+                               <TooltipContent>Monitor Resonance Signal</TooltipContent>
+                             </Tooltip>
+                           </TooltipProvider>
                         </div>
                      </div>
                   </motion.div>

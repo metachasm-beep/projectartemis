@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { AdminService } from '@/services/admin';
 import { Check, X, RefreshCw, Zap, Activity, Fingerprint } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const AdminAuraPanel: React.FC = () => {
   const [claims, setClaims] = useState<any[]>([]);
@@ -144,23 +145,35 @@ export const AdminAuraPanel: React.FC = () => {
                     </div>
 
                     {/* Protocol Execution */}
-                    <div className="p-10 bg-black/[0.01] flex items-center justify-center gap-4">
-                       <button 
-                         onClick={() => handleResolve(claim.id, false)}
-                         disabled={!!processingId}
-                         className="p-5 rounded-2xl bg-white text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all border border-black/[0.02]"
-                         title="Archive Rejection"
-                       >
-                          <X size={20} strokeWidth={1.5} />
-                       </button>
-                       <button 
-                         onClick={() => handleResolve(claim.id, true)}
-                         disabled={!!processingId}
-                         className="flex-1 md:flex-none px-12 py-5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-slate-800 transition-all shadow-xl active:scale-95"
-                       >
-                          VERIFY RECORD
-                       </button>
-                    </div>
+                     <div className="p-10 bg-black/[0.01] flex items-center justify-center gap-4">
+                        <TooltipProvider>
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <button 
+                                   onClick={() => handleResolve(claim.id, false)}
+                                   disabled={!!processingId}
+                                   className="p-5 rounded-2xl bg-white text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all border border-black/[0.02]"
+                                 >
+                                    <X size={20} strokeWidth={1.5} />
+                                 </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Reject Ledger Entry</TooltipContent>
+                           </Tooltip>
+
+                           <Tooltip>
+                              <TooltipTrigger asChild>
+                                 <button 
+                                   onClick={() => handleResolve(claim.id, true)}
+                                   disabled={!!processingId}
+                                   className="flex-1 md:flex-none px-12 py-5 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-[0.3em] uppercase hover:bg-slate-800 transition-all shadow-xl active:scale-95"
+                                 >
+                                    VERIFY RECORD
+                                 </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Authorize & Sync Ledger</TooltipContent>
+                           </Tooltip>
+                        </TooltipProvider>
+                     </div>
                   </div>
                 </div>
               </motion.div>

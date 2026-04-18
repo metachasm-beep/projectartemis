@@ -177,7 +177,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
                   <h3 className="text-xl font-bold text-mat-wine italic leading-none">{match.otherUser.full_name}</h3>
                   <div className="flex items-center gap-2 mt-2">
                      <div className="w-2 h-2 bg-mat-gold rounded-full shadow-[0_0_10px_#BFA06A] animate-pulse" />
-                     <p className="mat-text-label-pro !text-[7px] text-mat-wine/40">{commMode.replace('_',' ')} MODE</p>
+                     <p className="mat-text-label-pro !text-[7px] text-mat-wine/40">{(commMode || 'TEXT').toString().replace('_',' ')} MODE</p>
                   </div>
                </div>
             </div>
@@ -205,7 +205,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
                 {['TEXT', 'DELAYED_TEXT', 'HOLD', 'REVOKED'].map((m) => (
                   <button key={m} onClick={() => updateMode(m as CommMode)} className={cn("flex flex-col items-center justify-center gap-3 p-6 rounded-[2rem] text-[9px] font-black uppercase tracking-[0.2em] border transition-all", commMode === m ? "bg-mat-wine text-mat-cream border-mat-wine shadow-mat-premium scale-[1.05]" : "bg-white/40 text-mat-wine border-mat-rose/5 hover:border-mat-rose/40")}>
                     {m === 'TEXT' ? <Zap size={18} /> : m === 'HOLD' ? <Pause size={18} /> : m === 'REVOKED' ? <Lock size={18} /> : <Clock size={18} />}
-                    {m.replace('_', ' ')}
+                    {(m || '').toString().replace('_', ' ')}
                   </button>
                 ))}
              </div>

@@ -90,42 +90,51 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
           {/* Left Column: Core Identity & Control (4 cols) */}
           <div className="col-span-12 lg:col-span-4 flex flex-col gap-6 lg:gap-8">
             
-            {/* Aura Token Control Card */}
-            <GlassCard className="flex-1 min-h-[300px]" delay={0.1}>
+            {/* Sovereign Identity Card */}
+            <GlassCard className="flex-1 min-h-[350px]" delay={0.1}>
               <div className="h-full flex flex-col justify-between">
                 <div className="space-y-6">
-                  <div className="flex justify-between items-center text-white/40">
-                    <span className="mat-text-label-pro text-[10px] tracking-widest uppercase font-black">Energy Balance</span>
-                    <Zap size={16} className="text-mat-gold" />
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-5xl font-bold text-mat-wine italic tracking-tighter leading-none">{status?.points || 0}</span>
-                      <span className="text-mat-gold/60 text-lg font-black animate-pulse">Hz</span>
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <p className="mat-text-label-pro text-[10px] tracking-[0.4em] uppercase font-black text-mat-gold">Sovereign Identity</p>
+                      <h3 className="text-3xl font-bold text-mat-cream italic tracking-tighter leading-none" style={{ fontFamily: 'var(--font-display)' }}>
+                        {profile?.display_name || 'Anonymous'}<span className="text-mat-gold">.</span>
+                      </h3>
                     </div>
-                    <p className="mat-text-label-pro text-[11px] opacity-60 uppercase tracking-[0.2em] text-white">Radiance Potential</p>
+                    <div className="w-16 h-16 rounded-2xl overflow-hidden border border-mat-gold/20 shadow-2xl">
+                      <img 
+                        src={profile?.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.user_id}`} 
+                        className="w-full h-full object-cover"
+                        alt="Profile"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <div className="flex gap-4 text-[11px] font-bold text-mat-bone/60 uppercase tracking-widest italic">
+                       <span>{profile?.date_of_birth ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() : '25'} Years</span>
+                       <span className="text-mat-gold/40">//</span>
+                       <span>{profile?.city || 'New Delhi'}</span>
+                    </div>
+                    <p className="text-xs text-mat-cream/40 leading-relaxed italic line-clamp-4">
+                      {profile?.bio || "Your identity narrative is currently in a state of baseline calibration. Update your bio to increase resonance."}
+                    </p>
                   </div>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="p-4 bg-mat-wine/10 border border-mat-wine/20 rounded-2xl">
-                    <p className="text-[10px] text-mat-cream/60 leading-relaxed italic">
-                      Verify connection strength to multiply frequency rewards.
-                    </p>
-                  </div>
+                <div className="pt-6 border-t border-white/5">
                   <button 
-                    onClick={handleBoost}
-                    disabled={status?.points < 100}
-                    className="w-full py-5 bg-mat-wine text-mat-cream mat-text-label-pro text-[10px] rounded-2xl hover:bg-mat-gold hover:text-black transition-all flex items-center justify-center gap-3 disabled:opacity-20 shadow-2xl shadow-mat-wine/20 font-black uppercase tracking-widest"
+                    onClick={() => window.location.href = '#edit-profile'}
+                    className="w-full py-4 bg-mat-wine/10 border border-mat-wine/30 text-mat-cream mat-text-label-pro text-[9px] rounded-xl hover:bg-mat-wine hover:text-white transition-all flex items-center justify-center gap-3 font-black uppercase tracking-widest"
                   >
-                    {status?.points >= 100 ? "Activate Radiance Protocol" : "Gathering Energy..."} 
-                    <Sparkles size={14} strokeWidth={3} className={status?.points >= 100 ? "animate-spin-slow" : "opacity-20"} />
+                    Refine Identity Narrative
+                    <Sparkles size={12} className="text-mat-gold" />
                   </button>
                 </div>
               </div>
             </GlassCard>
 
-            {/* Verification / Security Card */}
+            {/* Registry Protocol Card */}
             <GlassCard className="h-auto" delay={0.2}>
               <div className="space-y-6">
                 <div className="flex items-center gap-4 text-mat-gold">
@@ -146,7 +155,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   </div>
                 ) : (
                   <div className="space-y-4">
-                    <p className="text-[11px] text-white/60 leading-relaxed">Identity verification pending. Apply the Seal of Truth to unlock high-definition discovery protocols.</p>
+                    <p className="text-[11px] text-white/60 leading-relaxed italic">Identity verification pending. Apply the Seal of Truth to unlock high-definition discovery protocols.</p>
                     <button 
                       onClick={() => window.location.href = '#verification'}
                       className="px-6 py-3 border border-mat-gold/30 text-mat-gold text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-mat-gold/10 transition-colors"
@@ -285,7 +294,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   <div className="flex flex-col items-start space-y-8">
                     <span className="text-[12px] uppercase font-black tracking-[0.6em] opacity-20">Sanctuary Intelligence Protocol</span>
                     <h2 className="font-serif italic text-7xl md:text-9xl tracking-tighter leading-[0.85] opacity-90 max-w-4xl text-black">
-                      The Gnosis of <br /><span className="opacity-30">Selection.</span>
+                      The Strategy of <br /><span className="opacity-30">Selection.</span>
                     </h2>
                   </div>
                   <div className="w-full h-px bg-black/10" />
