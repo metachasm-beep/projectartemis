@@ -72,6 +72,10 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const isVerified = profile?.is_verified;
   const completeness = profile?.profile_completeness ?? 94;
 
+  const age = profile?.date_of_birth 
+    ? new Date().getFullYear() - new Date(profile.date_of_birth).getFullYear() 
+    : null;
+
   return (
     <div className="relative w-full h-[100dvh] overflow-hidden mat-apple-bg flex flex-col selection:bg-mat-noir selection:text-white pt-[72px]">
       
@@ -105,20 +109,30 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </div>
            </motion.div>
 
-           <div className="space-y-1 lg:space-y-2">
+            <div className="space-y-2 lg:space-y-3">
               <h1 className="mat-text-fluid-huge text-4xl lg:text-7xl text-mat-noir leading-none tracking-tight lowercase">
                  {profile?.full_name?.split(' ')[0] || 'aspirant'}<span className="text-mat-rose-gold">.</span>
               </h1>
-              <p className="mat-text-apple-display text-[8px] lg:text-[10px] tracking-[0.4em] text-mat-noir/40 uppercase">Identity Authenticated</p>
-           </div>
+              
+              <div className="flex flex-col items-center gap-1">
+                <p className="mat-text-apple-display text-[10px] lg:text-[12px] tracking-[0.2em] text-mat-noir font-bold uppercase">
+                  {age ? `${age} • ` : ''}{profile?.city || 'Sanctuary'}
+                </p>
+                {profile?.bio && (
+                  <p className="mat-text-apple-display text-[9px] lg:text-[11px] max-w-xs text-mat-noir/60 italic leading-relaxed">
+                    "{profile.bio}"
+                  </p>
+                )}
+              </div>
+
+              <p className="mat-text-apple-display text-[7px] lg:text-[9px] tracking-[0.4em] text-mat-noir/20 uppercase mt-4">Identity Authenticated</p>
+            </div>
         </div>
 
         {/* 2. SYMMETRICAL STATS GRID (2 COLUMNS) */}
-        <div className="w-full grid grid-cols-2 gap-3 lg:gap-6 my-4 lg:my-8 flex-shrink-0">
-           <GlassMetric label="Merit" value={`${completeness}%`} icon={<ShieldCheck size={18} />} delay={0.1} />
-           <GlassMetric label="Matches" value={String(metrics.matches || 0)} icon={<Heart size={18} />} delay={0.2} />
-           <GlassMetric label="Reach" value={String(metrics.profileViews || 0)} icon={<Eye size={18} />} delay={0.3} />
-           <GlassMetric label="Rank" value={metrics.safetyLevel ?? 'Gold'} icon={<Star size={18} />} delay={0.4} />
+        <div className="w-full grid grid-cols-2 gap-3 lg:gap-6 my-4 lg:my-8 flex-shrink-0 max-w-2xl mx-auto">
+           <GlassMetric label="Matches" value={String(metrics.matches || 0)} icon={<Heart size={18} />} delay={0.1} />
+           <GlassMetric label="Rank" value={metrics.safetyLevel ?? 'Gold'} icon={<Star size={18} />} delay={0.2} />
         </div>
 
         {/* 3. COMPACT CONTROLS */}
@@ -132,9 +146,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
              Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
            </motion.button>
 
-           <div className="flex items-center justify-between w-full max-w-xs text-mat-noir/30">
-              <button onClick={() => setIsEditing(true)} className="mat-text-apple-display text-[8px] tracking-[0.2em] hover:text-mat-noir transition-colors uppercase font-bold">Curate</button>
-              
+           <div className="flex items-center justify-center gap-12 w-full max-w-xs text-mat-noir/30">
               {!isVerified && (
                  <button onClick={() => setShowVerification(true)} className="flex items-center gap-2 text-mat-rose-gold animate-pulse">
                     <Sparkles size={12} />
@@ -142,7 +154,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                  </button>
               )}
 
-              <button onClick={() => setShowFAQ(true)} className="mat-text-apple-display text-[8px] tracking-[0.2em] hover:text-mat-noir transition-colors uppercase font-bold">Gnosis</button>
+              <button onClick={() => setShowFAQ(true)} className="mat-text-apple-display text-[8px] tracking-[0.2em] hover:text-mat-noir transition-colors uppercase font-bold">Knowledge</button>
            </div>
         </div>
 
