@@ -7,7 +7,7 @@ import {
   Archive, 
   Settings, 
   Fingerprint,
-  Layers
+  Zap
 } from 'lucide-react';
 
 interface GlassHeaderProps {
@@ -38,6 +38,7 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
     { id: 'ROSTER', label: 'Control Panel', icon: Archive },
     { id: 'TITHE', label: 'Results', icon: Shield },
     { id: 'COMMUNICATIONS', label: 'Messages', icon: MessageSquare },
+    { id: 'MODERATION', label: 'Blog Moderation', icon: Zap },
     { id: 'JOURNAL', label: 'Manual', icon: BookOpen },
   ];
 

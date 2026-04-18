@@ -33,25 +33,9 @@ interface AdminDashboardProps {
   onTabChange?: (tab: any) => void;
 }
 
-const JournalSection: React.FC = () => {
-  const [subTab, setSubTab] = useState<'MANUAL' | 'MODERATION'>('MANUAL');
-
-  useEffect(() => {
-    const handler = (e: any) => setSubTab(e.detail);
-    window.addEventListener('admin-subtab-change', handler);
-    return () => window.removeEventListener('admin-subtab-change', handler);
-  }, []);
-
-  return (
-    <div className="animate-in fade-in slide-in-from-bottom-10 duration-700">
-      {subTab === 'MANUAL' ? <AdminManual /> : <AdminBlogModeration />}
-    </div>
-  );
-};
-
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager, onTabChange }) => {
   const { user: currentUser } = useAuth();
-  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'JOURNAL'>('ROSTER');
+  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'MODERATION' | 'JOURNAL'>('ROSTER');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -436,26 +420,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                     <AdminAuraPanel />
                   ) : dashboardTab === 'COMMUNICATIONS' ? (
                     <AdminCommunicationsHub onViewProfile={(p) => setSelectedProfile(p)} />
+                  ) : dashboardTab === 'MODERATION' ? (
+                    <AdminBlogModeration />
                   ) : (
-                    <div className="space-y-20">
-                      <div className="flex justify-center gap-4">
-                         {['MANUAL', 'MODERATION'].map((st: any) => (
-                           <button 
-                             key={st}
-                             onClick={() => (window as any)._adminSubTab = st && setProfiles([...profiles])} // Hacky force re-render for this demo
-                             className={`px-10 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.4em] transition-all ${((window as any)._adminSubTab || 'MANUAL') === st ? 'bg-slate-900 text-white shadow-xl scale-105' : 'bg-white/40 text-slate-400 hover:bg-white'}`}
-                             onClickCapture={() => {
-                               const event = new CustomEvent('admin-subtab-change', { detail: st });
-                               window.dispatchEvent(event);
-                             }}
-                           >
-                             {st}
-                           </button>
-                         ))}
-                      </div>
-                      
-                      <JournalSection />
-                    </div>
+                    <AdminManual />
                   )}
                 </div>
              </motion.div>
