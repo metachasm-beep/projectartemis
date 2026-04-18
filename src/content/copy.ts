@@ -13,17 +13,17 @@ export const SEO_COPY = {
         {
           title: "Her Choice",
           label: "Observe, Decide",
-          desc: "Browse profiles of men who share your values. Connect only when you feel a genuine spark.",
+          desc: "browse profiles of men who share your values. connect only when you feel a genuine spark.",
         },
         {
           title: "The Seeker",
           label: "Grow, Be found",
-          desc: "No chasing. Construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart.",
+          desc: "no chasing. construct a profile of substance, share your story, and await discovery by the woman who recognizes your heart.",
         },
         {
           title: "Grace",
           label: "Her Terms, Always",
-          desc: "Connection begins only how and when she defines. Once a match is made, she chooses the way you both talk.",
+          desc: "connection begins only how and when she defines. once a match is made, she chooses the way you both talk.",
         }
       ]
     },

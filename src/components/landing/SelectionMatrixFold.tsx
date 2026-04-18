@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 const BENTO_ITEMS = [
   {
     title: "Identity Verification",
-    desc: "Every member is verified to ensure a secure and genuine community.",
+    desc: "every member is verified to ensure a secure and genuine community.",
     icon: ShieldCheck,
     badges: ["Verified Profiles Only", "0% Ghosting"],
     color: "mat-rose",
@@ -15,7 +15,7 @@ const BENTO_ITEMS = [
   },
   {
     title: "Precision Matching",
-    desc: "Real-time matching based on lifestyle, values, and activity. No fake algorithms, just real choices.",
+    desc: "real-time matching based on lifestyle, values, and activity. no fake algorithms, just real choices.",
     icon: Zap,
     alignment: "98.4%",
     color: "mat-gold",
@@ -23,7 +23,7 @@ const BENTO_ITEMS = [
   },
   {
     title: "Safe Haven",
-    desc: "A private community designed for high-value dialogue and long-term meaningful connection.",
+    desc: "a private community designed for high-value dialogue and long-term meaningful connection.",
     icon: Heart,
     footer: "End-to-End Encrypted",
     color: "mat-rose",
@@ -31,7 +31,7 @@ const BENTO_ITEMS = [
   },
   {
     title: "Quality Network",
-    desc: "Enhance your profile through verified activity and positive interactions.",
+    desc: "enhance your profile through verified activity and positive interactions.",
     icon: Activity,
     footer: "Verified status active",
     color: "mat-gold",

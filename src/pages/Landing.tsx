@@ -72,7 +72,7 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const desktopOpacity = useTransform(scrollYProgress, [0, 0.005], [1, 0]);
+  const desktopOpacity = useTransform(scrollYProgress, [0, 0.05], [1, 0]);
 
   // Check session on mount
   React.useEffect(() => {
