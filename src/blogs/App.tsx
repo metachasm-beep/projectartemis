@@ -9,6 +9,8 @@ import ManifestoEditor from './components/ManifestoEditor';
 import { PenTool, CheckCircle, ArrowDown } from 'lucide-react';
 import { ManifestoService } from '@/services/manifestoService';
 import { PWAInstallFAB } from '@/components/ui/PWAInstallFAB';
+import { supabase } from '@/lib/supabase';
+import { LoginModal } from '@/components/auth/LoginModal';
 
 // ---------- Nav ---------------------------------------------------------------
 
@@ -155,13 +157,61 @@ const Footer: React.FC<{ onManifestoClick: () => void }> = ({ onManifestoClick }
 };
 
 
+// ---------- Error Boundary ----------------------------------------------------
+
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() { return { hasError: true }; }
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("SANCTUARY_CRITICAL_FAILURE:", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="min-h-screen bg-[#FFFDF9] flex items-center justify-center p-8 text-center">
+          <div className="max-w-md space-y-6">
+            <h1 className="text-4xl font-black italic text-[#3C2F2F] tracking-tighter">Frequency Disruption</h1>
+            <p className="text-sm text-[#3C2F2F]/50 font-medium leading-relaxed">
+              The sanctuary connection has been momentarily severed. Please refresh to restore the frequency.
+            </p>
+            <button 
+              onClick={() => window.location.reload()}
+              className="px-8 py-4 bg-rose-500 text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-rose-500/20"
+            >
+              Restore Protocol
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // ---------- Main App ----------------------------------------------------------
 
 const App: React.FC = () => {
   const [selectedPostId, setSelectedPostId] = useState<string | null>(null);
   const [isEditorOpen, setIsEditorOpen] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [showSuccessToast, setShowSuccessToast] = useState(false);
   const [dynamicPosts, setDynamicPosts] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const allPosts = useMemo(() => {
     const combined = [...BLOG_POSTS].map(p => ({
@@ -176,11 +226,12 @@ const App: React.FC = () => {
           excerpt: dp.content.substring(0, 100) + '...',
           markdownUrl: '',
           category: 'Relationships',
-          date: new Date(dp.created_at).toLocaleDateString(), // Display format
-          sortDate: new Date(dp.created_at).getTime(), // Numeric timestamp for sorting
+          date: new Date(dp.created_at).toLocaleDateString(), 
+          sortDate: new Date(dp.created_at).getTime(), 
           readTime: '5 min read',
           image: dp.image_url,
           authorId: dp.author_id,
+          likes_count: dp.likes_count,
         } as any);
       }
     });
@@ -191,127 +242,156 @@ const App: React.FC = () => {
   const selectedPost = useMemo(() => allPosts.find(p => p.id === selectedPostId), [selectedPostId, allPosts]);
 
   useEffect(() => {
-    window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
-    ManifestoService.getLiveManifestos().then(setDynamicPosts);
+    let mounted = true;
+    try {
+      const origin = window.location.origin && window.location.origin !== 'null' ? window.location.origin : '*';
+      window.postMessage('MATRIARCH_SANCTUARY_READY', origin);
+    } catch (e) {
+      console.warn("Handshake fail:", e);
+    }
+
+    ManifestoService.getLiveManifestos().then(posts => {
+      if (mounted) setDynamicPosts(posts);
+    });
+
+    return () => { mounted = false; };
   }, []);
 
   useEffect(() => { window.scrollTo(0, 0); }, [selectedPostId]);
 
   return (
-    <div className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
-      <SplashCursor />
+    <ErrorBoundary>
+      <div className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
+        {/* SplashCursor in background - Lowered resolution for iOS stability */}
+        <div className="fixed inset-0 pointer-events-none z-50 opacity-40">
+          <SplashCursor 
+            DYE_RESOLUTION={512}
+            SIM_RESOLUTION={128}
+            DENSITY_DISSIPATION={4}
+            VELOCITY_DISSIPATION={2.5}
+            PRESSURE={0.2}
+          />
+        </div>
 
-      {/* Ambient background */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
-        <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,_rgba(244,63,94,0.08)_0%,_transparent_50%)]" />
-        <div className="absolute top-[20%] right-[-5%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.06)_0%,_transparent_50%)]" />
-      </div>
+        {/* Ambient background */}
+        <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-30">
+          <div className="absolute top-[-10%] left-[-10%] w-[120%] h-[120%] bg-[radial-gradient(circle_at_50%_50%,_rgba(244,63,94,0.08)_0%,_transparent_50%)]" />
+          <div className="absolute top-[20%] right-[-5%] w-[60%] h-[60%] bg-[radial-gradient(circle_at_50%_50%,_rgba(212,175,55,0.06)_0%,_transparent_50%)]" />
+        </div>
 
-      {/* Success toast */}
-      <AnimatePresence>
-        {showSuccessToast && (
-          <motion.div
-            initial={{ y: -50, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            exit={{ y: -50, opacity: 0 }}
-            className="fixed top-8 left-1/2 -translate-x-1/2 z-[300] bg-green-500/90 backdrop-blur-xl text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-xs uppercase tracking-widest shadow-2xl shadow-green-500/20"
-          >
-            <CheckCircle size={18} />
-            Transmission Received. Subject to Curation.
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <ManifestoEditor
-        isOpen={isEditorOpen}
-        onClose={() => setIsEditorOpen(false)}
-        onSuccess={() => { setShowSuccessToast(true); setTimeout(() => setShowSuccessToast(false), 5000); }}
-      />
-
-      {!selectedPost && (
-        <motion.button
-          whileHover={{ scale: 1.1, rotate: -5 }}
-          whileTap={{ scale: 0.9 }}
-          onClick={() => setIsEditorOpen(true)}
-          className="fixed bottom-12 right-12 z-50 p-6 bg-rose-500 text-white rounded-full shadow-2xl shadow-rose-500/40 group overflow-hidden"
-        >
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-          <div className="relative flex items-center gap-3">
-            <PenTool size={24} />
-            <span className="max-w-0 group-hover:max-w-[200px] overflow-hidden whitespace-nowrap transition-all duration-500 text-xs font-black uppercase tracking-widest">Initiate Manifesto</span>
-          </div>
-        </motion.button>
-      )}
-
-      <Navbar onArchiveClick={() => setSelectedPostId(null)} />
-
-      <main className="relative z-10">
-        <AnimatePresence mode="wait">
-          {selectedPost ? (
-            <BlogPostView key="post" post={selectedPost} onBack={() => setSelectedPostId(null)} />
-          ) : (
-            <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
-
-              <section
-                className="relative h-[100dvh] w-full flex items-center justify-center overflow-hidden"
-              >
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Hero />
-                </div>
-
-                {/* Scroll hint */}
-                <motion.div
-                  animate={{ y: [0, 8, 0] }}
-                  transition={{ repeat: Infinity, duration: 2 }}
-                  className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20"
-                >
-                  <span className="text-[9px] tracking-[0.4em] font-black uppercase">Scroll to Archive</span>
-                  <ArrowDown size={14} />
-                </motion.div>
-              </section>
-
-              {/* ── FOLD 2: Frequency label ──────────────────────────────── */}
-              <section className="relative py-24 flex items-center justify-center overflow-hidden ">
-                <motion.div
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.8 }}
-                  className="text-center space-y-4"
-                >
-                  <motion.div
-                    initial={{ scaleX: 0 }}
-                    whileInView={{ scaleX: 1 }}
-                    transition={{ duration: 1, ease: 'circOut' }}
-                    className="h-[1px] w-40 bg-gradient-to-r from-transparent via-rose-500 to-transparent mx-auto"
-                  />
-                  <h2 className="text-[11px] font-black uppercase tracking-[0.8em] text-[#3C2F2F]/20 italic">The Collective Frequency</h2>
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/50">Archives // Sorted by Recency</p>
-                </motion.div>
-              </section>
-
-              <section
-                id="archive-fold"
-                className="relative min-h-screen w-full py-16 px-6 overflow-hidden"
-              >
-                <div className="max-w-7xl mx-auto">
-                  <BlogGrid posts={allPosts} onSelect={(id) => setSelectedPostId(id)} />
-
-                  <div className="mt-20 flex flex-col items-center gap-4 text-[#3C2F2F]/20 uppercase font-black text-[9px] tracking-[0.5em]">
-                    <span>End of Archive</span>
-                    <div className="w-px h-16 bg-gradient-to-b from-[#3C2F2F]/20 to-transparent" />
-                  </div>
-                </div>
-              </section>
-
+        {/* Success toast */}
+        <AnimatePresence>
+          {showSuccessToast && (
+            <motion.div
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -50, opacity: 0 }}
+              className="fixed top-8 left-1/2 -translate-x-1/2 z-[300] bg-green-500/90 backdrop-blur-xl text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-xs uppercase tracking-widest shadow-2xl shadow-green-500/20"
+            >
+              <CheckCircle size={18} />
+              Transmission Received. Subject to Curation.
             </motion.div>
           )}
         </AnimatePresence>
-      </main>
 
-      {!selectedPost && <Footer onManifestoClick={() => setIsEditorOpen(true)} />}
-      <PWAInstallFAB variant="slate" />
-    </div>
+        <ManifestoEditor
+          isOpen={isEditorOpen}
+          onClose={() => setIsEditorOpen(false)}
+          onSuccess={() => { setShowSuccessToast(true); setTimeout(() => setShowSuccessToast(false), 5000); }}
+        />
+
+        {!selectedPost && (
+          <motion.button
+            whileHover={{ scale: 1.1, rotate: -5 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsEditorOpen(true)}
+            className="fixed bottom-12 right-12 z-50 p-6 bg-rose-500 text-white rounded-full shadow-2xl shadow-rose-500/40 group overflow-hidden"
+          >
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <div className="relative flex items-center gap-3">
+              <PenTool size={24} />
+              <span className="max-w-0 group-hover:max-w-[200px] overflow-hidden whitespace-nowrap transition-all duration-500 text-xs font-black uppercase tracking-widest">Initiate Manifesto</span>
+            </div>
+          </motion.button>
+        )}
+
+        <Navbar onArchiveClick={() => setSelectedPostId(null)} />
+
+        <main className="relative z-10">
+          <AnimatePresence mode="wait">
+            {selectedPost ? (
+              <BlogPostView 
+                key="post" 
+                post={selectedPost} 
+                onBack={() => setSelectedPostId(null)} 
+                currentUser={currentUser}
+                onLoginPrompt={() => setIsLoginModalOpen(true)}
+              />
+            ) : (
+              <motion.div key="grid" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+
+                <section
+                  className="relative min-h-screen w-full flex items-center justify-center overflow-hidden"
+                >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Hero />
+                  </div>
+
+                  {/* Scroll hint */}
+                  <motion.div
+                    animate={{ y: [0, 8, 0] }}
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/20"
+                  >
+                    <span className="text-[9px] tracking-[0.4em] font-black uppercase">Scroll to Archive</span>
+                    <ArrowDown size={14} />
+                  </motion.div>
+                </section>
+
+                {/* ── FOLD 2: Frequency label ──────────────────────────────── */}
+                <section className="relative py-24 flex items-center justify-center overflow-hidden ">
+                  <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.8 }}
+                    className="text-center space-y-4"
+                  >
+                    <motion.div
+                      initial={{ scaleX: 0 }}
+                      whileInView={{ scaleX: 1 }}
+                      transition={{ duration: 1, ease: 'circOut' }}
+                      className="h-[1px] w-40 bg-gradient-to-r from-transparent via-rose-500 to-transparent mx-auto"
+                    />
+                    <h2 className="text-[11px] font-black uppercase tracking-[0.8em] text-[#3C2F2F]/20 italic">The Collective Frequency</h2>
+                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-rose-500/50">Archives // Sorted by Recency</p>
+                  </motion.div>
+                </section>
+
+                <section
+                  id="archive-fold"
+                  className="relative min-h-screen w-full py-16 px-6 overflow-hidden"
+                >
+                  <div className="max-w-7xl mx-auto">
+                    <BlogGrid posts={allPosts} onSelect={(id) => setSelectedPostId(id)} />
+
+                    <div className="mt-20 flex flex-col items-center gap-4 text-[#3C2F2F]/20 uppercase font-black text-[9px] tracking-[0.5em]">
+                      <span>End of Archive</span>
+                      <div className="w-px h-16 bg-gradient-to-b from-[#3C2F2F]/20 to-transparent" />
+                    </div>
+                  </div>
+                </section>
+
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </main>
+
+        {!selectedPost && <Footer onManifestoClick={() => setIsEditorOpen(true)} />}
+        <PWAInstallFAB variant="slate" />
+        <LoginModal isOpen={isLoginModalOpen} onClose={() => setIsLoginModalOpen(false)} />
+      </div>
+    </ErrorBoundary>
   );
 };
 

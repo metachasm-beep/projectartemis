@@ -25,6 +25,7 @@ export interface MagicBentoProps {
     color?: string;
     /** optional JSX content rendered inside the card */
     content?: React.ReactNode;
+    stats?: React.ReactNode;
     onClick?: () => void;
   }[];
   spotlightRadius?: number;
@@ -240,30 +241,36 @@ const MagicBento: React.FC<MagicBentoProps> = ({
                   disableAnimations={shouldDisable}
                   onClick={card.onClick}
                 >
+                <div className="flex justify-between items-start mb-4">
                   <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-500/60">{card.label}</span>
-                  {card.content && <div className="flex-1">{card.content}</div>}
-                  <div>
-                    <h3 className="text-lg font-black tracking-tight text-[#3C2F2F] mb-2 leading-tight">{card.title}</h3>
-                    <p className="text-xs text-[#3C2F2F]/60 leading-relaxed font-medium line-clamp-3">{card.description}</p>
-                  </div>
-                </ParticleCard>
-              );
-            }
-
-            return (
-              <div
-                key={card.id}
-                className={`${cardBase} ${colSpan} ${minH}`}
-                style={cardStyle(card.color)}
-                onClick={card.onClick}
-              >
-                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-500/60">{card.label}</span>
+                  {card.stats && <div className="text-[10px] font-bold text-[#3C2F2F]/30 flex items-center gap-1.5">{card.stats}</div>}
+                </div>
                 {card.content && <div className="flex-1">{card.content}</div>}
                 <div>
                   <h3 className="text-lg font-black tracking-tight text-[#3C2F2F] mb-2 leading-tight">{card.title}</h3>
-                  <p className="text-xs text-[#3C2F2F]/50 leading-relaxed font-medium line-clamp-3">{card.description}</p>
+                  <p className="text-xs text-[#3C2F2F]/60 leading-relaxed font-medium line-clamp-3">{card.description}</p>
                 </div>
+              </ParticleCard>
+            );
+          }
+
+          return (
+            <div
+              key={card.id}
+              className={`${cardBase} ${colSpan} ${minH}`}
+              style={cardStyle(card.color)}
+              onClick={card.onClick}
+            >
+              <div className="flex justify-between items-start mb-4">
+                <span className="text-[9px] font-black uppercase tracking-[0.4em] text-rose-500/60">{card.label}</span>
+                {card.stats && <div className="text-[10px] font-bold text-[#3C2F2F]/30 flex items-center gap-1.5">{card.stats}</div>}
               </div>
+              {card.content && <div className="flex-1">{card.content}</div>}
+              <div>
+                <h3 className="text-lg font-black tracking-tight text-[#3C2F2F] mb-2 leading-tight">{card.title}</h3>
+                <p className="text-xs text-[#3C2F2F]/50 leading-relaxed font-medium line-clamp-3">{card.description}</p>
+              </div>
+            </div>
             );
           })}
         </div>

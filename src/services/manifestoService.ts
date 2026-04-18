@@ -15,10 +15,11 @@ export interface ManifestoSubmission {
 export const ManifestoService = {
   /**
    * 🏛️ INITIALIZE SANCTUARY REGISTRY:
-   * Creates the blog_submissions table if it doesn't exist.
+   * Creates the blog_submissions and blog_likes tables if they don't exist.
    */
   initialize: async () => {
     try {
+      // Create Submissions Table
       await turso.execute(`
         CREATE TABLE IF NOT EXISTS blog_submissions (
           id TEXT PRIMARY KEY,
@@ -31,10 +32,82 @@ export const ManifestoService = {
           created_at TEXT
         )
       `);
+
+      // Create Likes Table
+      await turso.execute(`
+        CREATE TABLE IF NOT EXISTS blog_likes (
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          blog_id TEXT,
+          created_at TEXT,
+          UNIQUE(user_id, blog_id)
+        )
+      `);
+
       console.log("MANIFESTO_SERVICE: Registry initialized.");
       return true;
     } catch (err) {
       console.error("MANIFESTO_INIT_ERROR:", err);
+      return false;
+    }
+  },
+
+  /**
+   * ❤️ SOCIAL RESONANCE PROTOCOL:
+   * Handles likes/unlikes for manifestos.
+   */
+  toggleLike: async (blogId: string, userId: string) => {
+    try {
+      // Check if already liked
+      const res = await turso.execute({
+        sql: "SELECT id FROM blog_likes WHERE user_id = ? AND blog_id = ?",
+        args: [userId, blogId]
+      });
+
+      if (res.rows.length > 0) {
+        // Unlike
+        await turso.execute({
+          sql: "DELETE FROM blog_likes WHERE user_id = ? AND blog_id = ?",
+          args: [userId, blogId]
+        });
+        return { liked: false };
+      } else {
+        // Like
+        const id = crypto.randomUUID();
+        const now = new Date().toISOString();
+        await turso.execute({
+          sql: "INSERT INTO blog_likes (id, user_id, blog_id, created_at) VALUES (?, ?, ?, ?)",
+          args: [id, userId, blogId, now]
+        });
+        return { liked: true };
+      }
+    } catch (err) {
+      console.error("MANIFESTO_LIKE_ERROR:", err);
+      throw err;
+    }
+  },
+
+  getLikesCount: async (blogId: string): Promise<number> => {
+    try {
+      const res = await turso.execute({
+        sql: "SELECT COUNT(*) as count FROM blog_likes WHERE blog_id = ?",
+        args: [blogId]
+      });
+      return Number(res.rows[0].count);
+    } catch (err) {
+      console.error("MANIFESTO_LIKES_COUNT_ERROR:", err);
+      return 0;
+    }
+  },
+
+  checkUserLike: async (blogId: string, userId: string): Promise<boolean> => {
+    try {
+      const res = await turso.execute({
+        sql: "SELECT id FROM blog_likes WHERE user_id = ? AND blog_id = ?",
+        args: [userId, blogId]
+      });
+      return res.rows.length > 0;
+    } catch (err) {
       return false;
     }
   },
@@ -66,13 +139,18 @@ export const ManifestoService = {
    * Retrieves all approved manifestos for the public Journal.
    * Includes JIT initialization if the registry is missing.
    */
-  getLiveManifestos: async (): Promise<ManifestoSubmission[]> => {
+  getLiveManifestos: async (): Promise<(ManifestoSubmission & { likes_count: number })[]> => {
     try {
       // 🚀 Just-In-Time Registry Manifestation
       await ManifestoService.initialize();
       
-      const res = await turso.execute("SELECT * FROM blog_submissions WHERE status = 'approved' ORDER BY created_at DESC");
-      return res.rows as unknown as ManifestoSubmission[];
+      const res = await turso.execute(`
+        SELECT *, (SELECT COUNT(*) FROM blog_likes WHERE blog_id = blog_submissions.id) as likes_count 
+        FROM blog_submissions 
+        WHERE status = 'approved' 
+        ORDER BY created_at DESC
+      `);
+      return res.rows as unknown as (ManifestoSubmission & { likes_count: number })[];
     } catch (err) {
       console.error("MANIFESTO_FETCH_ERROR:", err);
       return [];

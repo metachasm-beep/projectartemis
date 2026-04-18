@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import type { Post } from '../data/posts';
 import { motion, AnimatePresence } from 'framer-motion';
 import MagicBento from './MagicBento';
+import { Heart } from 'lucide-react';
 
 const CATEGORIES = ['All', 'Love', 'Relationships', 'Sex', 'Dating'];
 
 interface BlogGridProps {
-  posts: Post[];
+  posts: (Post & { likes_count?: number })[];
   onSelect: (postId: string) => void;
 }
 
@@ -24,6 +25,12 @@ const BlogGrid: React.FC<BlogGridProps> = ({ posts, onSelect }) => {
     description: post.excerpt ?? '',
     label: post.category,
     color: '#FDFBF7',
+    stats: (
+      <span className="flex items-center gap-1">
+        <Heart size={10} className="text-rose-500/40" />
+        {post.likes_count ?? 0}
+      </span>
+    ),
     content: post.image ? (
       <div
         className="w-full h-32 rounded-xl overflow-hidden mb-4 bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity brightness-[0.98]"

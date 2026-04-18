@@ -37,7 +37,7 @@ const LandscapeProtocolFold: React.FC = () => {
               <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-mat-slate/30">The Landscape</h3>
             </div>
             <h2 className="text-xl md:text-5xl font-display text-mat-slate uppercase leading-tight">
-              Noise is <br /><span className="text-mat-gold/60 italic font-display lowercase tracking-normal">The Default</span>
+              Noise is <br /><span className="text-mat-gold/60 italic font-display tracking-normal">The Default</span>
             </h2>
             <div className="space-y-2 md:space-y-4 pt-1">
               {["Endless swiping loops", "Low-intent matches", "Chaotic inboxes", "Fake data scarcity", "No real feminine control"].map(item => (
@@ -58,7 +58,7 @@ const LandscapeProtocolFold: React.FC = () => {
               <h3 className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] text-mat-gold">The Protocol</h3>
             </div>
             <h2 className="text-xl md:text-5xl font-display text-mat-slate uppercase leading-tight relative z-10">
-              Quality is <br /><span className="text-mat-gold italic font-display lowercase tracking-normal">Engineered</span>
+              Quality is <br /><span className="text-mat-gold italic font-display tracking-normal">Engineered</span>
             </h2>
             <div className="space-y-2 md:space-y-4 pt-1 relative z-10">
               {["Female-controlled matching", "Curated male visibility", "Deliberate discovery", "Structured communication", "Premium trust and safety"].map(item => (

@@ -32,7 +32,7 @@ const SecurityFold: React.FC = () => {
               <ShieldCheck className="w-10 h-10 lg:w-12 lg:h-12 text-mat-gold" strokeWidth={1} />
             </motion.div>
             <h2 className="text-4xl md:text-7xl font-display text-mat-slate uppercase leading-[0.85]">
-              Grace <br /><span className="text-mat-gold/20 italic font-display lowercase tracking-normal">& Security.</span>
+              Grace <br /><span className="text-mat-gold/20 italic font-display tracking-normal">& Security.</span>
             </h2>
             <p className="text-lg text-mat-slate/40 font-light max-w-xl leading-relaxed">
               Matriarch is designed to give women absolute control. Safety is not a feature; it is the fundamental architecture.
@@ -68,7 +68,7 @@ const SecurityFold: React.FC = () => {
               transition={{ duration: 1 }}
               className="text-3xl md:text-5xl font-display leading-tight text-mat-slate uppercase tracking-tight"
             >
-              "Matriarch is for women who are done performing for algorithms. It creates an <span className="text-mat-gold italic font-display lowercase tracking-normal">elegant dynamic</span> of choice."
+              "Matriarch is for women who are done performing for algorithms. It creates an <span className="text-mat-gold italic font-display tracking-normal">elegant dynamic</span> of choice."
             </motion.p>
             <motion.div 
               initial={{ width: 0 }}

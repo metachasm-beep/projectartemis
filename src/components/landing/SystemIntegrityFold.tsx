@@ -28,7 +28,7 @@ const SystemIntegrityFold: React.FC = () => {
             Security Manifest
           </motion.div>
           <h2 className="text-4xl md:text-8xl font-display text-mat-slate uppercase leading-[0.85] tracking-tighter">
-            System <br /> <span className="text-mat-gold/10 italic font-display lowercase tracking-normal">Integrity</span>
+            System <br /> <span className="text-mat-gold/10 italic font-display tracking-normal">Integrity</span>
           </h2>
           <p className="text-md text-mat-slate/40 font-light max-w-lg uppercase tracking-widest text-[10px] mx-auto md:mx-0">
             A crystalline infrastructure protecting the selective attention of our collective.
