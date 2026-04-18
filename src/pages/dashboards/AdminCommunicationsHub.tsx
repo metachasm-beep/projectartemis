@@ -107,7 +107,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                               {[c.man_photos, c.woman_photos].map((p, idx) => (
                                  <div key={idx} className="w-16 h-16 rounded-[1.75rem] border-4 border-white overflow-hidden bg-slate-50 shadow-sm group-hover:scale-110 transition-transform duration-1000">
                                     <img 
-                                      src={JSON.parse(p || '[]')[0] || "https://api.dicebear.com/7.x/avataaars/svg?seed=neutral"} 
+                                      src={safeParse(p)[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${idx}`} 
                                       className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000"
                                     />
                                  </div>

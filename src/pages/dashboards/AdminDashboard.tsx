@@ -27,6 +27,7 @@ import GazeHologram from './GazeHologram';
 import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
 import { MinimalDock } from './MinimalDock';
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 
 interface AdminDashboardProps {
   handleLogout: () => void;
@@ -42,6 +43,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [messageTarget, setMessageTarget] = useState<{ id: string, name: string } | null>(null);
+  const [selectedProfile, setSelectedProfile] = useState<MatriarchProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const fetchingRef = useRef(false);
 
@@ -150,6 +152,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
             onSuccess={() => {}}
           />
         )}
+
+        {selectedProfile && (
+          <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
+            <div className="bg-white rounded-[4rem] max-w-4xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)] overflow-hidden flex flex-col md:flex-row h-[80vh] md:h-auto">
+               <div className="w-full md:w-1/2 aspect-square md:aspect-auto h-full relative">
+                  <img 
+                    src={selectedProfile.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedProfile.user_id}`} 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent" />
+               </div>
+               <div className="flex-1 p-12 md:p-20 flex flex-col justify-between space-y-12">
+                  <div className="space-y-6">
+                     <div className="space-y-2">
+                        <Badge variant="outline" className="text-[9px] font-bold uppercase tracking-[0.4em] border-slate-200 text-slate-400 italic px-4 py-1.5">{selectedProfile.role} // {selectedProfile.is_verified ? 'SEALED' : 'UNVERIFIED'}</Badge>
+                        <h2 className="text-6xl font-black text-slate-900 tracking-tighter italic leading-none">{selectedProfile.full_name}</h2>
+                        <p className="text-xl font-medium text-slate-400 italic">{selectedProfile.city || 'Location Unknown'}</p>
+                     </div>
+                     <div className="space-y-4">
+                        <div className="h-px w-24 bg-slate-100" />
+                        <p className="text-xs text-slate-500 leading-relaxed max-w-md italic">{selectedProfile.bio || 'No transmission recorded.'}</p>
+                     </div>
+                  </div>
+                  <div className="flex gap-4">
+                     <button onClick={() => setSelectedProfile(null)} className="flex-1 py-6 bg-slate-900 text-white rounded-[2rem] font-bold text-[10px] tracking-[0.4em] uppercase hover:bg-slate-800 transition-all shadow-xl">Close Archive</button>
+                  </div>
+               </div>
+            </div>
+          </div>
+        )}
       </AnimatePresence>
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -220,13 +252,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                                  <tbody className="divide-y divide-black/[0.02]">
                                     {profiles.map((p) => (
                                        <tr key={p.user_id} className="group hover:bg-black/[0.01] transition-all relative">
-                                          <td className="px-14 py-10 flex items-center gap-10">
-                                             <div className="w-16 h-16 rounded-[2.25rem] overflow-hidden bg-slate-50 relative group-hover:scale-105 transition-transform duration-700">
+                                          <td className="px-14 py-10 flex items-center gap-10 cursor-pointer group/id" onClick={() => setSelectedProfile(p)}>
+                                             <div className="w-16 h-16 rounded-[2.25rem] overflow-hidden bg-slate-50 relative group-hover/id:scale-110 transition-transform duration-700 shadow-sm border border-black/[0.03]">
                                                 <img src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`} className="w-full h-full object-cover" />
                                                 {p.is_verified && <BadgeCheck size={18} className="absolute -bottom-1 -right-1 text-slate-900" fill="white" />}
                                              </div>
                                              <div>
-                                                <p className="font-bold text-slate-900 text-xl tracking-tight italic">{p.full_name}</p>
+                                                <p className="font-bold text-slate-900 text-xl tracking-tight italic group-hover/id:translate-x-1 transition-transform">{p.full_name}</p>
                                                 <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em]">{p.city || 'UNDEFINED'}</p>
                                              </div>
                                           </td>
@@ -246,12 +278,37 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                                              </div>
                                           </td>
                                           <td className="px-14 py-10 text-right">
-                                             <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
-                                                <button onClick={() => handleUpdateTokens(p.user_id, 5000)} className="p-4 hover:bg-amber-50 text-amber-500 rounded-2xl transition-all" title="Aura Boost"><Zap size={18} strokeWidth={1.5} /></button>
-                                                <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-4 hover:bg-slate-50 text-slate-400 rounded-2xl transition-all"><MessageSquare size={18} strokeWidth={1.5} /></button>
-                                                <button onClick={() => AdminService.updateProfileStatus(p.user_id, {is_verified: !p.is_verified}).then(loadData)} className={`p-4 rounded-2xl transition-all ${p.is_verified ? 'text-slate-900 bg-slate-50' : 'text-slate-200 hover:text-slate-900'}`}><Shield size={18} strokeWidth={1.5} /></button>
-                                                <button onClick={() => setItemToDelete(p.user_id)} className="p-4 hover:bg-rose-50 text-rose-400 rounded-2xl transition-all"><Trash2 size={18} strokeWidth={1.5} /></button>
-                                             </div>
+                                             <TooltipProvider>
+                                                <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                                                   <Tooltip>
+                                                      <TooltipTrigger asChild>
+                                                         <button onClick={() => handleUpdateTokens(p.user_id, 5000)} className="p-4 hover:bg-amber-50 text-amber-500 rounded-2xl transition-all"><Zap size={18} strokeWidth={1.5} /></button>
+                                                      </TooltipTrigger>
+                                                      <TooltipContent>Aura Boost (+5000)</TooltipContent>
+                                                   </Tooltip>
+
+                                                   <Tooltip>
+                                                      <TooltipTrigger asChild>
+                                                         <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-4 hover:bg-slate-50 text-slate-400 rounded-2xl transition-all"><MessageSquare size={18} strokeWidth={1.5} /></button>
+                                                      </TooltipTrigger>
+                                                      <TooltipContent>Direct Message</TooltipContent>
+                                                   </Tooltip>
+
+                                                   <Tooltip>
+                                                      <TooltipTrigger asChild>
+                                                         <button onClick={() => AdminService.updateProfileStatus(p.user_id, {is_verified: !p.is_verified}).then(loadData)} className={`p-4 rounded-2xl transition-all ${p.is_verified ? 'text-slate-900 bg-slate-50' : 'text-slate-200 hover:text-slate-900'}`}><Shield size={18} strokeWidth={1.5} /></button>
+                                                      </TooltipTrigger>
+                                                      <TooltipContent>{p.is_verified ? 'Revoke Verification' : 'Grant Verification'}</TooltipContent>
+                                                   </Tooltip>
+
+                                                   <Tooltip>
+                                                      <TooltipTrigger asChild>
+                                                         <button onClick={() => setItemToDelete(p.user_id)} className="p-4 hover:bg-rose-50 text-rose-400 rounded-2xl transition-all"><Trash2 size={18} strokeWidth={1.5} /></button>
+                                                      </TooltipTrigger>
+                                                      <TooltipContent>Excision Protocol</TooltipContent>
+                                                   </Tooltip>
+                                                </div>
+                                             </TooltipProvider>
                                           </td>
                                        </tr>
                                     ))}

@@ -95,7 +95,14 @@ export const AdminAuraPanel: React.FC = () => {
                              <div className="w-full h-full rounded-[1.6rem] overflow-hidden bg-slate-100">
                                 {claim.user_photos ? (
                                    <img 
-                                     src={JSON.parse(claim.user_photos)[0]} 
+                                     src={(() => {
+                                       try {
+                                         const p = typeof claim.user_photos === 'string' ? JSON.parse(claim.user_photos) : claim.user_photos;
+                                         return Array.isArray(p) ? p[0] : p;
+                                       } catch (e) {
+                                         return `https://api.dicebear.com/7.x/avataaars/svg?seed=${claim.user_id}`;
+                                       }
+                                     })()} 
                                      className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000" 
                                    />
                                 ) : (
