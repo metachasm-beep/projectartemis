@@ -357,20 +357,20 @@
     animation: mat-aura-pulse 5s ease-in-out infinite;
   }
 
-  .mat-satin-rose {
-    background: linear-gradient(135deg, #e2b1b1 0%, #b76e79 50%, #8e545c 100%);
+  .mat-satin-gold {
+    background: linear-gradient(135deg, #f7ef8a 0%, #d4af37 50%, #b8860b 100%);
     box-shadow: 
       inset 0 1px 2px rgba(255, 255, 255, 0.4),
-      0 10px 30px rgba(183, 110, 121, 0.3);
+      0 10px 30px rgba(212, 175, 55, 0.3);
     position: relative;
     overflow: hidden;
   }
 
-  .mat-satin-rose::after {
+  .mat-satin-gold::after {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
     transform: translateX(-100%) rotate(45deg);
     animation: mat-satin-shimmer 4s infinite;
   }
@@ -379,15 +379,9 @@
     to { transform: translateX(200%) rotate(45deg); }
   }
 
-  .mat-text-rose-gold {
-    color: #b76e79;
-  }
-
-  .mat-text-editorial {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
-    font-style: italic;
-    letter-spacing: -0.02em;
+  .mat-text-gold {
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
   }
 
   .mat-text-taupe {
@@ -395,9 +389,11 @@
     opacity: 0.8;
   }
 
-  .mat-text-satin-rose-gold {
-    color: #b76e79;
-    text-shadow: 0 0 10px rgba(183, 110, 121, 0.2);
+  .mat-text-editorial {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-style: italic;
+    letter-spacing: -0.02em;
   }
 
   /* ─── Cinematic Backgrounds (Low GPU) ─── */

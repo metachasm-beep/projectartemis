@@ -119,7 +119,7 @@ const HeroFold: React.FC = () => {
           className="leading-[1] mb-8 md:mb-12 max-w-7xl px-4 flex flex-col items-center mat-text-editorial"
         >
           <span className="text-[clamp(1.2rem,5vw,3rem)] tracking-[0.2em] uppercase mat-text-taupe mb-2">Curating the</span>
-          <span className="text-[clamp(3.5rem,14vw,9.5rem)] mat-text-satin-rose-gold drop-shadow-sm">Exceptional.</span>
+          <span className="text-[clamp(3.5rem,14vw,9.5rem)] mat-text-gold drop-shadow-sm">Exceptional.</span>
         </motion.h1>
 
         <motion.p 

@@ -13,7 +13,7 @@ export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnl
     <div className={cn("flex flex-col items-center gap-6 select-none mat-perspective-1000", className)}>
       <motion.div 
         whileHover={{ rotateY: 15, rotateX: -10, scale: 1.1 }}
-        className="relative flex items-center justify-center w-20 h-20 rounded-2xl mat-satin-rose mat-transform-3d transition-all duration-700 shadow-xl overflow-hidden"
+        className="relative flex items-center justify-center w-20 h-20 rounded-2xl mat-satin-gold mat-transform-3d transition-all duration-700 shadow-xl overflow-hidden"
       >
         <Crown 
           className="w-10 h-10 text-white drop-shadow-lg" 
@@ -23,7 +23,7 @@ export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnl
       
       {!iconOnly && (
         <span 
-          className="text-xl md:text-2xl mat-text-editorial mat-text-rose-gold tracking-[0.4em] uppercase whitespace-nowrap"
+          className="text-xl md:text-2xl mat-text-editorial mat-text-gold tracking-[0.4em] uppercase whitespace-nowrap"
         >
           MATRIARCH
         </span>
