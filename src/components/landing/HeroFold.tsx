@@ -66,7 +66,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0A0A0B]"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#FDFCFB]"
     >
       {/* 2. Parallax Background Slideshow */}
       <AnimatePresence>
@@ -82,10 +82,10 @@ const HeroFold: React.FC = () => {
               <motion.div
                 key={imageIndex}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.5 }}
+                animate={{ opacity: 0.6 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 3 }} // 🏎️ Increased transition by 50%
-                className="absolute inset-0"
+                transition={{ duration: 3 }}
+                className="absolute inset-0 mat-ken-burns"
               >
                 <img 
                    src={IMAGES[imageIndex]} 
@@ -97,28 +97,28 @@ const HeroFold: React.FC = () => {
                 />
               </motion.div>
             </AnimatePresence>
-            {/* Deep Oracle Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0A0A0B]" />
+            {/* Soft Sanctuary Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-b from-[#FDFCFB]/40 via-transparent to-[#FDFCFB]" />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. Hero Content (Glass Oracle Module) */}
+      {/* 3. Hero Content (Infinite Gaze - Asymmetric Editorial) */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
+        className="relative z-10 flex flex-col items-center md:items-start justify-center h-full text-center md:text-left px-6 md:px-24 pt-32 md:pt-0"
       >
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-          className="mat-glass-oracle p-8 md:p-16 rounded-[2.5rem] max-w-5xl w-full flex flex-col items-center"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 1.5, duration: 1.5, ease: "easeOut" }}
+          className="max-w-4xl"
         >
           <motion.h1 
-            className="leading-[1.1] mb-8 md:mb-12 flex flex-col items-center"
+            className="leading-[1.1] mb-8 md:mb-12 flex flex-col items-center md:items-start"
           >
-            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.5rem)] mb-4">Curating the</span>
-            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,8.5rem)]">
+            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.2rem)] mb-4 text-[#1a1a1a]/60">Curating the</span>
+            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,9.5rem)] text-[#1a1a1a]">
               Exceptional<span className="mat-text-gold">.</span>
             </span>
           </motion.h1>
@@ -126,16 +126,16 @@ const HeroFold: React.FC = () => {
           <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.8, duration: 1.5 }}
-            className="text-white/70 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
+            transition={{ delay: 2.2, duration: 1.5 }}
+            className="text-[#1a1a1a]/70 max-w-xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
           >
-            India's most exclusive network for high-value connections and refined companionship.
+            India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.2, duration: 0.8 }}
+            transition={{ delay: 2.8, duration: 0.8 }}
             className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
           >
             <StarBorder 
@@ -146,7 +146,7 @@ const HeroFold: React.FC = () => {
             </StarBorder>
             
             <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
-              <StarBorder className="px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-white/5 border-white/10 text-white/80 hover:text-white transition-colors">
+              <StarBorder className="px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-[#1a1a1a]/5 border-[#1a1a1a]/10 text-[#1a1a1a]/60 hover:text-[#1a1a1a] transition-colors">
                 READ BLOGS
               </StarBorder>
             </button>
