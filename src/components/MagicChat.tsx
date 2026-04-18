@@ -22,6 +22,7 @@ import {
 import { turso } from '@/lib/turso';
 import { supabase } from '@/lib/supabase';
 import { MessagingService, type MessagingMatch, type CommMode, type MatriarchMessage } from '@/lib/messaging';
+import { AdminService } from '@/services/admin';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { cn } from '@/lib/utils';
@@ -32,9 +33,10 @@ interface ChatProps {
   userRole: 'woman' | 'man' | 'admin';
   onBack: () => void;
   isAdminMonitor?: boolean;
+  onViewProfile?: (profile: any) => void;
 }
 
-export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole, onBack, isAdminMonitor }) => {
+export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole, onBack, isAdminMonitor, onViewProfile }) => {
   const [messages, setMessages] = useState<MatriarchMessage[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState(true);
@@ -46,6 +48,7 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
   
   const scrollRef = useRef<HTMLDivElement>(null);
   const isWoman = userRole === 'woman';
+  const isAdmin = userRole === 'admin';
   const convIdRef = useRef<string | null>(null);
 
   // 🏹 Resonance Initialization
@@ -78,6 +81,10 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
           .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, (p) => {
              const newMsg = p.new as MatriarchMessage;
              setMessages(prev => (prev.find(m => m.id === newMsg.id) ? prev : [...prev, newMsg]));
+          })
+          .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, (p) => {
+             const oldMsgId = (p.old as any).id;
+             setMessages(prev => prev.filter(m => m.id !== oldMsgId));
           })
           .on('presence', { event: 'sync' }, () => {
              const state = channel.presenceState();
@@ -130,6 +137,34 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
     } catch (e) { console.error("Mode Sync Error:", e); }
   };
 
+  const handleDeleteMessage = async (msgId: string) => {
+    if (!confirm("Excision Protocol: Remove this specific message from the archive?")) return;
+    const ok = await AdminService.deleteMessage(msgId);
+    if (ok) {
+      setMessages(prev => prev.filter(m => m.id !== msgId));
+    }
+  };
+
+  const handleDeleteConversation = async () => {
+    if (!confirm("ABSOLUTE EXCISION: Permanently wipe this entire conversation and match record?")) return;
+    if (!convIdRef.current) return;
+    const ok = await AdminService.deleteConversation(convIdRef.current);
+    if (ok) {
+      onBack();
+    }
+  };
+
+  const openProfile = async (role: 'man' | 'woman') => {
+    if (!onViewProfile) return;
+    const userId = role === 'man' ? match.man_user_id : match.woman_user_id;
+    try {
+      const res = await turso.execute({ sql: "SELECT * FROM profiles WHERE user_id = ?", args: [userId] });
+      if (res.rows[0]) {
+        onViewProfile(res.rows[0]);
+      }
+    } catch (e) { console.error("Identity Retrieval Error:", e); }
+  };
+
   // 🧩 Permission Rituals
   const isHold = commMode === 'HOLD';
   const isRevoked = commMode === 'REVOKED';
@@ -170,11 +205,27 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
          <div className="flex items-center gap-6">
             <button onClick={onBack} className="p-4 rounded-2xl hover:bg-mat-wine/5 text-mat-rose transition-all"><ChevronLeft size={24} /></button>
             <div className="flex items-center gap-5">
-               <div className="w-14 h-14 rounded-2xl overflow-hidden border border-mat-rose/10 shadow-sm transition-transform hover:scale-105">
-                  <img src={match.otherUser.avatar} referrerPolicy="no-referrer" crossOrigin="anonymous" alt="" className="w-full h-full object-cover grayscale brightness-110" />
+               <div className="flex -space-x-3">
+                 {[
+                   { role: 'man', avatar: (match as any).man_photos ? JSON.parse((match as any).man_photos)[0] : null },
+                   { role: 'woman', avatar: (match as any).woman_photos ? JSON.parse((match as any).woman_photos)[0] : null }
+                 ].map((u, i) => (
+                   <button 
+                     key={i}
+                     onClick={() => openProfile(u.role as any)}
+                     className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-white shadow-sm transition-transform hover:scale-110 relative group"
+                   >
+                     <img src={u.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`} referrerPolicy="no-referrer" crossOrigin="anonymous" alt="" className="w-full h-full object-cover grayscale brightness-110" />
+                     <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <Eye size={12} className="text-white" />
+                     </div>
+                   </button>
+                 ))}
                </div>
                <div>
-                  <h3 className="text-xl font-bold text-mat-wine italic leading-none">{match.otherUser.full_name}</h3>
+                  <h3 className="text-xl font-bold text-mat-wine italic leading-none">
+                    {isAdmin ? `${(match as any).man_name || 'Man'} & ${(match as any).woman_name || 'Woman'}` : match.otherUser.full_name}
+                  </h3>
                   <div className="flex items-center gap-2 mt-2">
                      <div className="w-2 h-2 bg-mat-gold rounded-full shadow-[0_0_10px_#BFA06A] animate-pulse" />
                      <p className="mat-text-label-pro !text-[7px] text-mat-wine/40">{(commMode || 'TEXT').toString().replace('_',' ')} MODE</p>
@@ -186,6 +237,11 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
             {isWoman && (
               <button onClick={() => setShowControls(!showControls)} className={cn("p-5 rounded-[1.75rem] transition-all shadow-md", showControls ? "bg-mat-wine text-mat-cream" : "bg-white/60 text-mat-wine border border-mat-rose/10")}>
                  <Settings size={20} />
+              </button>
+            )}
+            {isAdmin && (
+              <button onClick={handleDeleteConversation} className="p-5 rounded-[1.75rem] bg-rose-50 text-rose-500 hover:bg-rose-500 hover:text-white transition-all shadow-sm border border-rose-100">
+                 <Trash2 size={20} />
               </button>
             )}
          </div>
@@ -221,10 +277,22 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
             const alignRight = isAdminMonitor ? msg.sender_user_id === match.woman_user_id : isMe;
             
             return (
-              <motion.div key={msg.id} initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className={cn("flex w-full", alignRight ? "justify-end" : "justify-start")}>
-                 <div className={cn("max-w-[70%] p-8 rounded-[2.5rem] text-[15px] leading-relaxed shadow-sm", alignRight ? "bg-mat-wine text-mat-cream rounded-tr-none shadow-mat-rose/20" : "bg-white border border-mat-rose/5 text-mat-wine rounded-tl-none")}>
-                    {msg.body}
-                    <p className={cn("text-[7px] mt-4 uppercase tracking-widest opacity-20 font-black italic", alignRight ? "text-right" : "text-left")}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+              <motion.div key={msg.id} initial={{ opacity: 0, y: 10, scale: 0.98 }} animate={{ opacity: 1, y: 0, scale: 1 }} className={cn("flex w-full group/msg", alignRight ? "justify-end" : "justify-start")}>
+                 <div className="flex flex-col gap-2 max-w-[70%]">
+                    <div className={cn("p-8 rounded-[2.5rem] text-[15px] leading-relaxed shadow-sm relative", alignRight ? "bg-mat-wine text-mat-cream rounded-tr-none shadow-mat-rose/20" : "bg-white border border-mat-rose/5 text-mat-wine rounded-tl-none")}>
+                        {msg.body}
+                        
+                        {isAdmin && (
+                          <button 
+                            onClick={() => handleDeleteMessage(msg.id)}
+                            className={cn("absolute top-4 p-2 rounded-xl bg-white/10 text-white/40 hover:bg-white/20 hover:text-white transition-all opacity-0 group-hover/msg:opacity-100", alignRight ? "-left-12" : "-right-12 text-mat-rose/20 hover:text-mat-rose bg-mat-rose/5 hover:bg-mat-rose/10")}
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        )}
+
+                        <p className={cn("text-[7px] mt-4 uppercase tracking-widest opacity-20 font-black italic", alignRight ? "text-right" : "text-left")}>{new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+                    </div>
                  </div>
               </motion.div>
             );

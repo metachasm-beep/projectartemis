@@ -331,5 +331,29 @@ export const AdminService = {
     } catch (err) {
       return false;
     }
+  },
+
+  /**
+   * 🧹 SIGINT Sanitation: Removes specific messages or entire threads.
+   */
+  deleteMessage: async (messageId: string) => {
+    try {
+      await turso.execute({ sql: "DELETE FROM messages WHERE id = ?", args: [messageId] });
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
+
+  deleteConversation: async (conversationId: string) => {
+    try {
+      await turso.batch([
+        { sql: "DELETE FROM messages WHERE conversation_id = ?", args: [conversationId] },
+        { sql: "DELETE FROM conversations WHERE id = ?", args: [conversationId] }
+      ], "write");
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 };

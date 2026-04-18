@@ -69,6 +69,46 @@ export const AdminManual: React.FC = () => {
         "Excision: The recursive deletion of non-aligned identities.",
         "The Ledger: Real-time tracking of Aura flows and system metrics."
       ]
+    },
+    {
+      title: "VI. DATABASE ARCHITECTURE",
+      icon: Database,
+      content: "The Sanctuary's memory is stored across a hybrid edge-distributed ledger system, optimized for sub-100ms resonance latency.",
+      details: [
+        "Turso Edge: Primary relational store for dossiers and conduits.",
+        "Supabase Realtime: The neural pathway for instant message transmission.",
+        "Atomic Batching: Ensuring transactional integrity during identity excision."
+      ]
+    },
+    {
+      title: "VII. FRONTEND ORCHESTRATION",
+      icon: Cpu,
+      content: "A high-performance React/Vite assembly designed for the 'Apple Cinematic' aesthetic, utilizing advanced shader-like CSS effects.",
+      details: [
+        "Framer Motion: Handles the fluid, organic transitions between states.",
+        "Glassmorphism: Deep backdrop-blur layers for visual hierarchy.",
+        "Responsive Dossiers: Dynamic layout shifts for mobile-first immersion."
+      ]
+    },
+    {
+      title: "VIII. THE PWA SHIELD",
+      icon: Fingerprint,
+      content: "The platform is engineered as a Progressive Web App to bypass traditional app store gatekeepers and provide direct sovereign access.",
+      details: [
+        "Service Workers: Offline-first identity persistence.",
+        "App Manifest: Native-level OS integration for mobile devices.",
+        "Protocol Handshake: Secure initialization during boot sequences."
+      ]
+    },
+    {
+      title: "IX. NEURAL CANVAS",
+      icon: Compass,
+      content: "The discovery interface (Neural Canvas) utilizes advanced spatial positioning to present aspirants based on resonance compatibility.",
+      details: [
+        "Circular Gallery: Draggable, high-density visualization of the roster.",
+        "Trump Cards: High-fidelity dossiers containing parsed identity narratives.",
+        "Interaction Rituals: Swipe-less, intentional connection initiation."
+      ]
     }
   ];
 

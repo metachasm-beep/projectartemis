@@ -144,6 +144,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
     }
   };
 
+  const parseIdentityNarrative = (bio: string) => {
+    try {
+      const data = JSON.parse(bio);
+      if (data && (data.trump_stats || data.text !== undefined)) return data;
+    } catch (e) {}
+    return { text: bio, trump_stats: null };
+  };
+
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-900 font-sans relative overflow-x-hidden selection:bg-slate-900 selection:text-white">
       
@@ -174,7 +182,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
           />
         )}
 
-        {selectedProfile && (
+        {selectedProfile && (() => {
+          const narrative = parseIdentityNarrative(selectedProfile.bio || '');
+          return (
           <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
             <motion.div 
               initial={{ opacity: 0, y: 40, scale: 0.95 }}
@@ -218,12 +228,43 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                         </div>
                      </div>
 
-                     <div className="grid grid-cols-2 gap-12 border-y border-black/[0.03] py-12">
-                        <div className="space-y-3">
-                           <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Identity Narrative</span>
-                           <p className="text-sm text-slate-500 leading-relaxed italic">{selectedProfile.bio || 'The aspirant has not yet transmitted an identity narrative to the sanctuary.'}</p>
+                     <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-y border-black/[0.03] py-12">
+                        <div className="space-y-6">
+                           <div className="space-y-2">
+                              <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Identity Narrative</span>
+                              <p className="text-sm text-slate-500 leading-relaxed italic">{narrative.text || 'The aspirant has not yet transmitted an identity narrative.'}</p>
+                           </div>
+
+                           {narrative.trump_stats && (
+                             <div className="space-y-4 pt-4">
+                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Aura Resonance Metrics</span>
+                                <div className="grid grid-cols-2 gap-x-10 gap-y-4">
+                                   {Object.entries(narrative.trump_stats).map(([key, val]: [string, any]) => {
+                                     if (typeof val !== 'number') return null;
+                                     return (
+                                       <div key={key} className="space-y-1.5">
+                                          <div className="flex justify-between text-[7px] font-black uppercase tracking-widest text-slate-400">
+                                             <span>{key}</span>
+                                             <span>{val}%</span>
+                                          </div>
+                                          <div className="h-0.5 w-full bg-slate-100 overflow-hidden">
+                                             <div className="h-full bg-slate-900" style={{ width: `${val}%` }} />
+                                          </div>
+                                       </div>
+                                     );
+                                   })}
+                                </div>
+                                {narrative.trump_stats.signature_move && (
+                                  <div className="pt-4 border-t border-black/[0.02]">
+                                     <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest block mb-1">Signature Ritual</span>
+                                     <p className="text-[10px] font-bold text-slate-900 italic uppercase tracking-tighter">{narrative.trump_stats.signature_move}</p>
+                                  </div>
+                                )}
+                             </div>
+                           )}
                         </div>
-                        <div className="grid grid-cols-2 gap-8">
+                        
+                        <div className="grid grid-cols-2 gap-8 content-start">
                            <div className="space-y-2">
                               <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Occupation</span>
                               <p className="text-xs font-bold text-slate-900 italic">{(selectedProfile as any).occupation || 'Unspecified'}</p>
@@ -237,7 +278,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                               <p className="text-xs font-bold text-slate-900 italic">{(selectedProfile as any).religion || 'Private'}</p>
                            </div>
                            <div className="space-y-2">
-                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Created At</span>
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Origin Point</span>
+                              <p className="text-xs font-bold text-slate-900 italic">{narrative.trump_stats?.hometown || (selectedProfile as any).city || 'Unknown'}</p>
+                           </div>
+                           <div className="space-y-2">
+                              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Identity Archive Date</span>
                               <p className="text-xs font-bold text-slate-900 italic">{new Date((selectedProfile as any).created_at).toLocaleDateString()}</p>
                            </div>
                         </div>
@@ -259,7 +304,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                </div>
             </motion.div>
           </div>
-        )}
+          );
+        })()}
       </AnimatePresence>
 
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -389,7 +435,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                   ) : dashboardTab === 'TITHE' ? (
                     <AdminAuraPanel />
                   ) : dashboardTab === 'COMMUNICATIONS' ? (
-                    <AdminCommunicationsHub />
+                    <AdminCommunicationsHub onViewProfile={(p) => setSelectedProfile(p)} />
                   ) : (
                     <div className="space-y-20">
                       <div className="flex justify-center gap-4">

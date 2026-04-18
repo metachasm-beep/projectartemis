@@ -64,49 +64,79 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
              </span>
           </div>
           <div className="h-10 w-px bg-black/[0.05]" />
-          <button 
-            onClick={onLogout}
-            className="w-10 h-10 rounded-full flex items-center justify-center text-slate-400 hover:text-rose-500 hover:bg-rose-50 transition-all"
-          >
-             <Settings size={20} strokeWidth={1.5} />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              className="w-10 h-10 rounded-xl flex items-center justify-center text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all border border-transparent hover:border-black/[0.03]"
+            >
+               <Settings size={20} strokeWidth={1.5} />
+            </button>
+            <button 
+              onClick={onLogout}
+              className="px-6 h-10 rounded-xl flex items-center justify-center text-[10px] font-bold uppercase tracking-widest text-rose-500 hover:bg-rose-50 transition-all border border-transparent hover:border-rose-100"
+            >
+               Excision (Logout)
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-6">
-        <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
-           {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => onTabChange(item.id)}
-                className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
-                  activeTab === item.id 
-                    ? 'bg-slate-900 text-white shadow-xl' 
-                    : 'text-slate-900 hover:bg-black/[0.03] hover:text-slate-800'
-                }`}
-              >
-                <item.icon size={14} strokeWidth={2} />
-                {item.label}
-              </button>
-           ))}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
+             {navItems.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => onTabChange(item.id)}
+                  className={`flex items-center gap-2.5 px-6 py-2.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${
+                    activeTab === item.id 
+                      ? 'bg-slate-900 text-white shadow-xl' 
+                      : 'text-slate-900 hover:bg-black/[0.03] hover:text-slate-800'
+                  }`}
+                >
+                  <item.icon size={14} strokeWidth={2} />
+                  {item.label}
+                </button>
+             ))}
+          </div>
+          
+          {activeTab === 'ROSTER' && (
+            <div className="flex items-center bg-slate-100/50 p-1 rounded-2xl border border-black/[0.02]">
+               {['all', 'man', 'woman'].map((r: any) => (
+                  <button
+                    key={r}
+                    onClick={() => onRoleFilterChange(r)}
+                    className={`px-5 py-2 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all ${
+                      roleFilter === r 
+                        ? 'bg-white text-slate-900 shadow-sm' 
+                        : 'text-slate-400 hover:text-slate-600'
+                    }`}
+                  >
+                    {r}
+                  </button>
+               ))}
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-6">
-          <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner animate-in fade-in slide-in-from-right-4 duration-500">
-             {['man', 'woman', 'admin'].map((role: any) => (
-                <button
-                  key={role}
-                  onClick={() => onViewSwitch?.(role)}
-                  className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
-                    role === 'admin' 
-                      ? 'bg-slate-900 text-white shadow-md' 
-                      : 'text-slate-900 hover:text-slate-700 hover:bg-white/40'
-                  }`}
-                >
-                  <Layers size={10} />
-                  View As {role}
-                </button>
-             ))}
+          <div className="flex flex-col items-end gap-1.5">
+             <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest mr-2">Sovereign Portal Toggle</span>
+             <div className="flex items-center bg-black/[0.02] p-1 rounded-2xl border border-black/[0.03] shadow-inner">
+                {['man', 'woman', 'admin'].map((role: any) => (
+                   <button
+                     key={role}
+                     onClick={() => onViewSwitch?.(role)}
+                     className={`px-6 py-2 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                       role === 'admin' 
+                         ? 'bg-slate-900 text-white shadow-md' 
+                         : 'text-slate-900 hover:text-slate-700 hover:bg-white/40'
+                     }`}
+                   >
+                     <Layers size={10} />
+                     View As {role}
+                   </button>
+                ))}
+             </div>
           </div>
         </div>
       </div>

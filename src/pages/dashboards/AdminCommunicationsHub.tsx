@@ -6,7 +6,7 @@ import { MagicChat } from '@/components/MagicChat';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-export const AdminCommunicationsHub: React.FC = () => {
+export const AdminCommunicationsHub: React.FC<{ onViewProfile?: (profile: any) => void }> = ({ onViewProfile }) => {
   const [comms, setComms] = useState<any[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMatch, setSelectedMatch] = useState<any | null>(null);
@@ -80,6 +80,7 @@ export const AdminCommunicationsHub: React.FC = () => {
              userRole="admin" 
              onBack={() => setSelectedMatch(null)}
              isAdminMonitor={true}
+             onViewProfile={onViewProfile}
            />
         </div>
       </div>
@@ -134,13 +135,13 @@ export const AdminCommunicationsHub: React.FC = () => {
                {filteredComms.map((c, i) => (
                   <motion.div 
                     key={c.id}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95 }}
                     transition={{ duration: 0.6, delay: i * 0.05 }}
                     className="group"
                   >
                      <div className="bg-white border border-black/[0.02] rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center justify-between gap-10 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 group relative overflow-hidden">
-                        {/* Soft Reveal Gradient */}
                         <div className="absolute inset-y-0 left-0 w-1 bg-slate-900 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
                         <div className="flex items-center gap-10 flex-1 relative z-10">
