@@ -9,16 +9,16 @@ interface MatriarchLogoProps {
 
 export const MatriarchLogo: React.FC<MatriarchLogoProps> = ({ className, iconOnly = false }) => {
   return (
-    <div className={cn("flex flex-col items-center gap-2 select-none", className)}>
+    <div className={cn("flex flex-col items-center gap-4 select-none px-12 py-6 rounded-full mat-glass-silk", className)}>
       <div className="relative flex items-center justify-center">
         <Crown 
-          className="w-10 h-10 text-mat-rose-gold" 
-          strokeWidth={1.5}
+          className="w-10 h-10 text-slate-800" 
+          strokeWidth={1}
         />
       </div>
       
       {!iconOnly && (
-        <span className="font-display text-3xl font-bold tracking-[0.3em] uppercase bg-gradient-to-b from-[#D4AF37] via-[#F7EF8A] to-[#D4AF37] bg-clip-text text-transparent whitespace-nowrap drop-shadow-sm">
+        <span className="font-body text-2xl font-semibold tracking-[0.5em] text-slate-900 whitespace-nowrap">
           MATRIARCH
         </span>
       )}

@@ -125,17 +125,17 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
-          className="text-5xl md:text-9xl font-display font-medium text-mat-slate mb-6 md:mb-8 leading-tight max-w-5xl px-4"
+          className="text-5xl md:text-9xl font-body text-slate-900 mb-6 md:mb-8 leading-[1.1] max-w-6xl px-4 tracking-[-0.02em]"
         >
-          Curating the <br/>
-          <span className="text-mat-gold italic">Exceptional.</span>
+          <span className="font-extralight block">Curating the</span>
+          <span className="font-medium bg-gradient-to-r from-slate-900 via-mat-gold to-slate-900 bg-clip-text text-transparent block">Exceptional.</span>
         </motion.h1>
 
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.8 }}
-          className="text-mat-slate/80 max-w-2xl text-xl md:text-2xl font-heritage italic font-light tracking-tight leading-relaxed mb-12"
+          className="text-slate-500 max-w-2xl text-xl md:text-2xl font-body font-thin tracking-[0.1em] leading-relaxed mb-12"
         >
           India's most exclusive network for high-value connections and refined companionship.
         </motion.p>
