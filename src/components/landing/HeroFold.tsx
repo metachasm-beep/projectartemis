@@ -59,18 +59,15 @@ const HeroFold: React.FC = () => {
     if (!showHeavyAssets) return;
     const timer = setInterval(() => {
       setImageIndex((prev) => (prev + 1) % IMAGES.length);
-    }, 5000);
+    }, 7500); // 🏎️ Increased timing by 50%
     return () => clearInterval(timer);
   }, [showHeavyAssets]);
 
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#FDFCFB]"
+      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0A0A0B]"
     >
-      {/* 1. Fixed Logo Layer (Requested: Fixed, other folds scroll over) */}
-
-
       {/* 2. Parallax Background Slideshow */}
       <AnimatePresence>
         {showHeavyAssets && (
@@ -87,69 +84,73 @@ const HeroFold: React.FC = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 0.5 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 2 }}
+                transition={{ duration: 3 }} // 🏎️ Increased transition by 50%
                 className="absolute inset-0"
               >
                 <img 
-                  src={IMAGES[imageIndex]} 
-                  alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
-                  className="absolute inset-0 w-full h-full object-cover"
-                  // @ts-ignore - fetchpriority is supported but not always in React types
-                  fetchpriority={imageIndex === 0 ? "high" : "low"}
-                  loading={imageIndex === 0 ? "eager" : "lazy"}
+                   src={IMAGES[imageIndex]} 
+                   alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
+                   className="absolute inset-0 w-full h-full object-cover"
+                   // @ts-ignore - fetchpriority is supported but not always in React types
+                   fetchpriority={imageIndex === 0 ? "high" : "low"}
+                   loading={imageIndex === 0 ? "eager" : "lazy"}
                 />
               </motion.div>
             </AnimatePresence>
-            {/* Soft Sanctuary Vignette */}
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FDFCFB]/40 to-[#FDFCFB]" />
+            {/* Deep Oracle Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-[#0A0A0B]" />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. Hero Content */}
+      {/* 3. Hero Content (Glass Oracle Module) */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-6"
       >
-        
-        <motion.h1 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1.2, ease: "easeOut" }}
-          className="leading-[1] mb-8 md:mb-12 max-w-7xl px-4 flex flex-col items-center mat-text-editorial"
-        >
-          <span className="text-[clamp(1.2rem,5vw,3rem)] tracking-[0.2em] uppercase mat-text-taupe mb-2">Curating the</span>
-          <span className="text-[clamp(3.5rem,14vw,9.5rem)] mat-text-gold drop-shadow-sm">Exceptional.</span>
-        </motion.h1>
-
-        <motion.p 
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 1.2 }}
-          className="text-[#1a1a1a]/50 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-16"
-        >
-          India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
-        </motion.p>
-
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto px-4 sm:px-0"
+          transition={{ duration: 1.5, ease: "easeOut" }}
+          className="mat-glass-oracle p-8 md:p-16 rounded-[2.5rem] max-w-5xl w-full flex flex-col items-center"
         >
-
-          <StarBorder 
-            onClick={() => setIsLoginModalOpen(true)} 
-            className="w-full sm:w-auto px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-gold text-white border-mat-gold"
+          <motion.h1 
+            className="leading-[1.1] mb-8 md:mb-12 flex flex-col items-center"
           >
-            GET STARTED
-          </StarBorder>
-          
-          <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
-            <StarBorder className="px-6 py-3 md:px-10 md:py-4 text-lg md:text-xl font-display tracking-widest bg-mat-cream-deep border-mat-gold/10 text-mat-slate/60 hover:text-mat-slate transition-colors">
-              READ BLOGS
+            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.5rem)] mb-4">Curating the</span>
+            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,8.5rem)]">
+              Exceptional<span className="mat-text-gold">.</span>
+            </span>
+          </motion.h1>
+
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 1.5 }}
+            className="text-white/70 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
+          >
+            India's most exclusive network for high-value connections and refined companionship.
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.2, duration: 0.8 }}
+            className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
+          >
+            <StarBorder 
+              onClick={() => setIsLoginModalOpen(true)} 
+              className="w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-mat-gold text-white border-mat-gold"
+            >
+              GET STARTED
             </StarBorder>
-          </button>
+            
+            <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
+              <StarBorder className="px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-white/5 border-white/10 text-white/80 hover:text-white transition-colors">
+                READ BLOGS
+              </StarBorder>
+            </button>
+          </motion.div>
         </motion.div>
 
         {/* Scroll Indicator */}
