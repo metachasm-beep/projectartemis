@@ -62,8 +62,8 @@ const LandingPage: React.FC = () => {
   });
 
   // Dynamic Logo transitions: STRICT First-Fold Visibility Only
-  const logoOpacity = useTransform(scrollYProgress, [0.15, 0.2], [1, 0]);
-  const logoScale = useTransform(scrollYProgress, [0.15, 0.2], [1, 0.9]);
+  const logoOpacity = useTransform(scrollYProgress, [0.05, 0.1], [1, 0]);
+  const logoScale = useTransform(scrollYProgress, [0.05, 0.1], [1, 0.9]);
   
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
