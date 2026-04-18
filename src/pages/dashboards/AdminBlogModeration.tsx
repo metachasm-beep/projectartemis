@@ -106,7 +106,7 @@ export const AdminBlogModeration: React.FC = () => {
                 <div className="space-y-8">
                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.3em]">
                       <span className="text-slate-300">Data_Mass</span>
-                      <span className="text-slate-900">~{Math.ceil(selectedSubmission.content.split(' ').length)} Tokens</span>
+                      <span className="text-slate-900">~{Math.ceil((selectedSubmission.content || '').split(' ').length)} Tokens</span>
                    </div>
                    <div className="flex justify-between items-center text-[10px] font-bold uppercase tracking-[0.3em]">
                       <span className="text-slate-300">Resonance</span>

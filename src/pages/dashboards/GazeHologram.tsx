@@ -85,7 +85,7 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
 
                   <div className="space-y-1">
                      <h3 className="text-3xl font-bold text-slate-900 italic tracking-tighter">
-                        {profile.full_name.split(' ')[0]} <br/>
+                        {(profile.full_name || 'Anonymous').split(' ')[0]} <br/>
                         <span className="text-slate-400 opacity-80 uppercase text-[9px] tracking-[0.4em] font-bold">{profile.role}</span>
                      </h3>
                      <div className="flex items-center gap-2 text-[9px] font-bold text-slate-300 uppercase tracking-widest">

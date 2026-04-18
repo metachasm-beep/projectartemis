@@ -115,7 +115,7 @@ export const AdminCommunicationsHub: React.FC = () => {
                            </div>
                            <div className="space-y-1.5">
                               <h4 className="text-2xl font-bold text-slate-900 italic tracking-tighter uppercase whitespace-nowrap group-hover:text-slate-900 transition-colors">
-                                {c.man_name.split(' ')[0]} <span className="text-slate-300 font-light">&</span> {c.woman_name.split(' ')[0]}
+                                {(c.man_name || 'Anonymous').split(' ')[0]} <span className="text-slate-300 font-light">&</span> {(c.woman_name || 'Anonymous').split(' ')[0]}
                               </h4>
                               <div className="flex items-center gap-6 text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em]">
                                  <span className="flex items-center gap-2 italic"><Fingerprint size={12} className="text-slate-400" /> {new Date(c.last_message_at).toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit' })} // TX_LOG</span>
