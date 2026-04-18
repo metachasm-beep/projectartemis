@@ -187,6 +187,19 @@
     perspective: 1000px;
   }
 
+  .mat-transform-3d {
+    transform-style: preserve-3d;
+  }
+
+  .mat-3d-depth {
+    text-shadow: 
+      0 1px 0 #B8860B,
+      0 2px 0 #996515,
+      0 3px 0 #8B4513,
+      0 10px 20px rgba(0,0,0,0.2);
+    transform: translateZ(20px);
+  }
+
   .mat-isometric-tilt {
     transform: rotateX(10deg) rotateY(-5deg) rotateZ(1deg);
     transform-style: preserve-3d;
