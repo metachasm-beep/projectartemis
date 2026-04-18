@@ -85,7 +85,7 @@ const HeroFold: React.FC = () => {
               <motion.div
                 key={imageIndex}
                 initial={{ opacity: 0 }}
-                animate={{ opacity: 0.6 }}
+                animate={{ opacity: 0.5 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2 }}
                 className="absolute inset-0"
@@ -116,17 +116,17 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1.2, ease: "easeOut" }}
-          className="text-[clamp(2.8rem,11vw,7.5rem)] leading-[1.05] mb-8 md:mb-12 max-w-7xl px-4 flex flex-col items-center"
+          className="leading-[1] mb-8 md:mb-12 max-w-7xl px-4 flex flex-col items-center mat-text-editorial"
         >
-          <span className="mat-text-ethereal">Curating the</span>
-          <span className="mat-text-outline-glow">Exceptional.</span>
+          <span className="text-[clamp(1.2rem,5vw,3rem)] tracking-[0.2em] uppercase mat-text-taupe mb-2">Curating the</span>
+          <span className="text-[clamp(3.5rem,14vw,9.5rem)] mat-text-satin-rose-gold drop-shadow-sm">Exceptional.</span>
         </motion.h1>
 
         <motion.p 
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 1.2 }}
-          className="text-white/60 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.1em] uppercase leading-relaxed mb-16"
+          className="text-[#1a1a1a]/50 max-w-2xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-16"
         >
           India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
         </motion.p>

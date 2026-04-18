@@ -390,20 +390,14 @@
     letter-spacing: -0.02em;
   }
 
-  .mat-text-ethereal {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 600;
-    color: #FFFFFF;
-    letter-spacing: -0.02em;
+  .mat-text-taupe {
+    color: #8d8070;
+    opacity: 0.8;
   }
 
-  .mat-text-outline-glow {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 300;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.8);
-    text-shadow: 0 0 20px rgba(183, 110, 121, 0.4);
-    letter-spacing: 0.05em;
+  .mat-text-satin-rose-gold {
+    color: #b76e79;
+    text-shadow: 0 0 10px rgba(183, 110, 121, 0.2);
   }
 
   /* ─── Cinematic Backgrounds (Low GPU) ─── */
