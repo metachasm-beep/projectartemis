@@ -142,7 +142,7 @@ export default function SplashCursor({
         supportLinearFiltering = !!gl.getExtension('OES_texture_half_float_linear');
       }
 
-      gl.clearColor(0, 0, 0, 1);
+      gl.clearColor(0, 0, 0, config.TRANSPARENT ? 0 : 1);
 
       const halfFloatTexType = isWebGL2
         ? (gl as WebGL2RenderingContext).HALF_FLOAT
@@ -650,7 +650,7 @@ export default function SplashCursor({
           gl.bindFramebuffer(gl.FRAMEBUFFER, target.fbo);
         }
         if (doClear) {
-          gl.clearColor(0, 0, 0, 1);
+          gl.clearColor(0, 0, 0, config.TRANSPARENT ? 0 : 1);
           gl.clear(gl.COLOR_BUFFER_BIT);
         }
         gl.drawElements(gl.TRIANGLES, 6, gl.UNSIGNED_SHORT, 0);
@@ -1039,6 +1039,11 @@ export default function SplashCursor({
     }
 
     function render(target: FBO | null) {
+      if (!target) {
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.clearColor(0, 0, 0, config.TRANSPARENT ? 0 : 1);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+      }
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.enable(gl.BLEND);
       drawDisplay(target);
