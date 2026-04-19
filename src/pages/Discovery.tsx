@@ -92,7 +92,7 @@ export const Discovery: React.FC = () => {
     }
   }, [aspirants]);
 
-  const handleAction = useCallback((type: string, targetProfile: any) => {
+  const handleAction = useCallback(async (type: string, targetProfile: any) => {
      if (type === 'ping') {
         if (isUnverifiedWoman) {
            setShowVerificationModal(true);
@@ -102,8 +102,31 @@ export const Discovery: React.FC = () => {
            alert("Sovereign resonance requires identity verification. Please seal your identity in the Sanctuary.");
            return;
         }
+        
+        // 🔮 Record Ping/Match Action
+        await DiscoveryService.recordAction(targetProfile.id, 'match');
+        setSelectedProfile(null);
+        alert(`Resonance established with ${targetProfile.name}. Initiating protocol...`);
      }
-  }, [isUnverifiedWoman]);
+
+     if (type === 'block' || type === 'report') {
+        const confirmMsg = type === 'block' 
+          ? `Seal this identity? You will no longer encounter ${targetProfile.name} in the Sanctuary.`
+          : `Report this identity for protocol violation?`;
+        
+        if (window.confirm(confirmMsg)) {
+           await DiscoveryService.recordAction(targetProfile.id, type as any);
+           
+           // 🧬 Update local array to remove the filtered identity
+           setAspirants(prev => prev.filter(a => a.id !== targetProfile.id));
+           setSelectedProfile(null);
+           
+           if (type === 'report') {
+              alert("Identity flagged for review by the Matriarch Oracle.");
+           }
+        }
+     }
+  }, [isUnverifiedWoman, aspirants]);
 
   return (
     <div className="relative w-full h-screen bg-mat-obsidian overflow-hidden">

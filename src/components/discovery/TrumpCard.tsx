@@ -295,7 +295,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
         {/* ⚡ PHYSICAL ACTION MATRIX - COMPRESSED FOR MOBILE */}
         {!isDashboard && (
           <div className="flex items-center justify-center gap-4 md:gap-6 pt-2 md:pt-6 border-t border-white/5 mt-2 md:mt-4">
-             {[{ id: 'report', icon: ShieldAlert }, { id: 'block', icon: UserX }, { id: 'ping', icon: MessageSquarePlus, primary: true }, { id: 'never_show', icon: EyeOff }].map((btn) => (
+             {[{ id: 'report', icon: ShieldAlert }, { id: 'block', icon: UserX }, { id: 'ping', icon: MessageSquarePlus, primary: true }].map((btn) => (
                <Tooltip key={btn.id}>
                   <TooltipTrigger>
                      <Button 

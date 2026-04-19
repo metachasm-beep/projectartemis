@@ -5,7 +5,7 @@ export interface QueueStatus {
 }
 
 export const DiscoveryService = {
-  recordAction: async (manId: string, action: 'match' | 'skip' | 'save' | 'view') => {
+  recordAction: async (manId: string, action: 'match' | 'skip' | 'save' | 'view' | 'block' | 'report') => {
     try {
       const res = await api.post('/discovery/select', {
         man_id: manId,
