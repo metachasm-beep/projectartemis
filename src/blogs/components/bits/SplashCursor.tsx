@@ -114,8 +114,8 @@ export default function SplashCursor({
         alpha: true,
         depth: false,
         stencil: false,
-        antialias: false,
-        preserveDrawingBuffer: false
+        antialias: true,
+        preserveDrawingBuffer: true
       };
 
       let gl = canvas.getContext('webgl2', params) as WebGL2RenderingContext | null;
@@ -1044,6 +1044,8 @@ export default function SplashCursor({
     function render(target: FBO | null) {
       if (!target) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
       }
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.enable(gl.BLEND);

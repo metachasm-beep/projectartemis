@@ -7,7 +7,7 @@ import StarBorder from '../../components/bits/StarBorder';
 
 const Hero: React.FC = () => {
   return (
-    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-[#FFFDF9]">
+    <section className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden bg-transparent">
       <div className="absolute inset-0 bg-rose-500/[0.03] pointer-events-none" />
 
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FFFDF9]/40 to-[#FFFDF9] pointer-events-none" />
