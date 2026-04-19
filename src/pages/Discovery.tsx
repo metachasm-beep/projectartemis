@@ -344,6 +344,8 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
              </motion.div>
            </div>
          )}
+       </AnimatePresence>
+
        {/* 🛡️ SAFETY PROTOCOL MODALS */}
        <AnimatePresence>
          {(showBlockModal || showReportModal) && (
