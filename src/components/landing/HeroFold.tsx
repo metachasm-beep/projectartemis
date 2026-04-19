@@ -49,7 +49,7 @@ const HeroFold: React.FC = () => {
   const backgroundScale = useTransform(
     scrollYProgress, 
     [0, 1], 
-    [typeof window !== 'undefined' && window.innerWidth > 1024 ? 1.3 : 1.2, 1.0]
+    [typeof window !== 'undefined' && window.innerWidth > 1024 ? 1.0 : 1.1, 1.0]
   );
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
