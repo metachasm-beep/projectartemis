@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 export const SkeletonCard = () => (
-  <div className="aspect-[3/4] rounded-[2.5rem] bg-mat-wine/5 border border-mat-rose/5 overflow-hidden p-8 flex flex-col justify-end gap-4">
+  <div className="aspect-[4/5] rounded-[2.5rem] bg-mat-wine/5 border border-mat-rose/5 overflow-hidden p-8 flex flex-col justify-end gap-4 mat-shimmer-glass">
      <motion.div 
         animate={{ opacity: [0.05, 0.12, 0.05] }} 
         transition={{ duration: 1.5, repeat: Infinity }} 

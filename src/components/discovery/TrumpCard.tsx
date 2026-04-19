@@ -131,12 +131,11 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
         </div>
       </div>
 
-      {/* 🖼️ RECESSED PORTRAIT FRAME */}
       <div className={cn(
         "relative min-h-0 overflow-hidden z-10 flex flex-col pt-1 px-1",
-        isDashboard ? "flex-[0_0_42%]" : "flex-1 md:flex-[0_0_65%]"
+        isDashboard ? "flex-[0_0_42%] aspect-[4/5]" : "flex-1 md:flex-[0_0_65%] aspect-[4/5]"
       )}>
-        <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all">
+        <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all mat-shimmer-glass">
           <AnimatePresence mode="wait">
             <motion.img 
               key={currentPhotoIndex}
