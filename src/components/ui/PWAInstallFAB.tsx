@@ -30,7 +30,8 @@ export const PWAInstallFAB: React.FC<PWAInstallFABProps> = ({ variant = 'rose' }
   };
 
   return (
-    <AnimatePresence>
+    <>
+      <AnimatePresence>
       {(!isInstalled && (isInstallable || isIOS)) && (
         <div className="fixed bottom-24 right-8 md:bottom-32 md:right-12 z-[100] flex items-center gap-3">
           {/* Help Bubble - Now Next to the Install Button */}
