@@ -1044,8 +1044,6 @@ export default function SplashCursor({
     function render(target: FBO | null) {
       if (!target) {
         gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-        gl.clearColor(0, 0, 0, config.TRANSPARENT ? 0 : 1);
-        gl.clear(gl.COLOR_BUFFER_BIT);
       }
       gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
       gl.enable(gl.BLEND);

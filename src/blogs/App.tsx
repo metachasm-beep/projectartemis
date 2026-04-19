@@ -269,13 +269,14 @@ const App: React.FC = () => {
     <ErrorBoundary>
       <div className="min-h-screen bg-[#FFFDF9] text-[#3C2F2F] selection:bg-rose-500/10 selection:text-rose-500 overflow-x-hidden">
         {/* SplashCursor in background - Lowered resolution for iOS stability */}
-        <div className="fixed inset-0 pointer-events-none z-50 opacity-40">
+        <div className="fixed inset-0 pointer-events-none z-0 opacity-40">
           <SplashCursor 
             DYE_RESOLUTION={isIOS ? 256 : 1024}
             SIM_RESOLUTION={isIOS ? 64 : 256}
             DENSITY_DISSIPATION={4}
             VELOCITY_DISSIPATION={2.5}
             PRESSURE={0.2}
+            TRANSPARENT={true}
           />
         </div>
 
