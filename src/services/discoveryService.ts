@@ -26,5 +26,30 @@ export const DiscoveryService = {
       console.error("QUEUE_STATUS_ERROR:", err);
       return { count: 0 };
     }
+  },
+
+  // --- 🛡️ Safety Protocols ---
+  blockUser: async (targetId: string) => {
+    try {
+      const res = await api.post('/safety/block', { blocked_id: targetId });
+      return res.data;
+    } catch (err) {
+      console.error("BLOCK_PROTOCOL_ERROR:", err);
+      throw err;
+    }
+  },
+
+  reportUser: async (targetId: string, reason: string, evidenceUrl?: string) => {
+    try {
+      const res = await api.post('/safety/report', {
+        reported_id: targetId,
+        reason: reason,
+        evidence_url: evidenceUrl
+      });
+      return res.data;
+    } catch (err) {
+      console.error("REPORT_PROTOCOL_ERROR:", err);
+      throw err;
+    }
   }
 };

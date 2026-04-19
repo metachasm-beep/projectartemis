@@ -18,6 +18,10 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
   const [showVerificationModal, setShowVerificationModal] = useState(false);
   const [viewedProfileIds] = useState(new Set<string>());
+  const [showReportModal, setShowReportModal] = useState(false);
+  const [showBlockModal, setShowBlockModal] = useState(false);
+  const [safetyReason, setSafetyReason] = useState('');
+  const [isSafetySubmitting, setIsSafetySubmitting] = useState(false);
 
   const { profile, refreshProfile } = useAuth();
   
@@ -141,24 +145,50 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
         }
      }
 
-     if (type === 'block' || type === 'report') {
-        const confirmMsg = type === 'block' 
-          ? `Seal this identity? You will no longer encounter ${targetProfile.name} in the Sanctuary.`
-          : `Report this identity for protocol violation?`;
-        
-        if (window.confirm(confirmMsg)) {
-           await DiscoveryService.recordAction(targetProfile.id, type as any);
-           
-           // 🧬 Update local array to remove the filtered identity
-           setAspirants(prev => prev.filter(a => a.id !== targetProfile.id));
-           setSelectedProfile(null);
-           
-           if (type === 'report') {
-              alert("Identity flagged for review by the Matriarch Oracle.");
-           }
-        }
+     if (type === 'block') {
+        setShowBlockModal(true);
      }
-  }, [isUnverifiedWoman, aspirants]);
+
+     if (type === 'report') {
+        setShowReportModal(true);
+     }
+  }, [isUnverifiedWoman, aspirants, profile?.user_id, profile?.full_name, profile?.photos, profile?.role, onOpenChat]);
+
+  const confirmBlock = async () => {
+    if (!selectedProfile) return;
+    setIsSafetySubmitting(true);
+    try {
+      await DiscoveryService.blockUser(selectedProfile.id);
+      setAspirants(prev => prev.filter(a => a.id !== selectedProfile.id));
+      setSelectedProfile(null);
+      setShowBlockModal(false);
+    } catch (err) {
+      alert("Excision Protocol failure: Signal could not be severed.");
+    } finally {
+      setIsSafetySubmitting(false);
+    }
+  };
+
+  const submitReport = async () => {
+    if (!selectedProfile || !safetyReason) return;
+    if (safetyReason.length < 10) {
+       alert("Oracle Review requires a detailed description (minimum 10 characters).");
+       return;
+    }
+    setIsSafetySubmitting(true);
+    try {
+      await DiscoveryService.reportUser(selectedProfile.id, safetyReason);
+      setAspirants(prev => prev.filter(a => a.id !== selectedProfile.id));
+      setSelectedProfile(null);
+      setShowReportModal(false);
+      setSafetyReason('');
+      alert("Identity flagged for Oracle review. Resonance standing adjusted.");
+    } catch (err) {
+      alert("Oracle Escalation failure: Review request not recorded.");
+    } finally {
+      setIsSafetySubmitting(false);
+    }
+  };
 
   return (
     <div className="relative w-full h-screen bg-mat-obsidian overflow-hidden">
@@ -313,6 +343,66 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
                 />
              </motion.div>
            </div>
+         )}
+       {/* 🛡️ SAFETY PROTOCOL MODALS */}
+       <AnimatePresence>
+         {(showBlockModal || showReportModal) && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-3xl"
+            >
+               <motion.div 
+                 initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                 animate={{ scale: 1, opacity: 1, y: 0 }}
+                 exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                 className="w-full max-w-md bg-neutral-900 border border-white/10 p-8 rounded-[2rem] shadow-[0_50px_100px_rgba(0,0,0,1)] flex flex-col items-center text-center"
+               >
+                  <div className="w-16 h-16 rounded-full bg-mat-gold/10 border border-mat-gold/30 flex items-center justify-center mb-6">
+                    <ShieldAlert className="text-mat-gold" size={32} />
+                  </div>
+                  
+                  <h2 className="mat-text-impact text-2xl text-white uppercase italic mb-2">
+                    {showBlockModal ? "Excision Protocol" : "Oracle Review Request"}
+                  </h2>
+                  
+                  <p className="text-[11px] text-white/40 uppercase tracking-widest leading-relaxed mb-8">
+                    {showBlockModal 
+                      ? `Are you certain? Sealing ${selectedProfile?.name}'s identity is a sovereign act that permanently severs resonance.`
+                      : `You are escalating ${selectedProfile?.name} to the Matriarch Oracle. Provide a narrative for the violation.`}
+                  </p>
+
+                  {showReportModal && (
+                    <textarea 
+                      value={safetyReason}
+                      onChange={(e) => setSafetyReason(e.target.value)}
+                      placeholder="Narrate the protocol violation..."
+                      className="w-full bg-black/40 border border-white/10 rounded-xl p-4 text-white text-sm mb-6 focus:border-mat-gold/50 outline-none transition-all h-32 resize-none"
+                    />
+                  )}
+
+                  <div className="flex gap-4 w-full">
+                    <button 
+                      onClick={() => {
+                        setShowBlockModal(false);
+                        setShowReportModal(false);
+                        setSafetyReason('');
+                      }}
+                      className="flex-1 py-4 rounded-xl border border-white/10 text-white/40 text-[10px] font-black uppercase tracking-widest hover:bg-white/5 transition-all"
+                    >
+                      Abort
+                    </button>
+                    <button 
+                      onClick={showBlockModal ? confirmBlock : submitReport}
+                      disabled={isSafetySubmitting || (showReportModal && safetyReason.length < 10)}
+                      className="flex-1 py-4 rounded-xl bg-mat-gold text-mat-obsidian text-[10px] font-black uppercase tracking-widest hover:bg-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isSafetySubmitting ? "Processing..." : (showBlockModal ? "Seal Identity" : "Flag Oracle")}
+                    </button>
+                  </div>
+               </motion.div>
+            </motion.div>
          )}
        </AnimatePresence>
 
