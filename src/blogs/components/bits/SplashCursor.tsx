@@ -258,7 +258,8 @@ export default function SplashCursor({
       gl.shaderSource(shader, shaderSource);
       gl.compileShader(shader);
       if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.trace(gl.getShaderInfoLog(shader));
+        console.error('SplashCursor Shader Error:', gl.getShaderInfoLog(shader));
+        return null;
       }
       return shader;
     }
@@ -271,7 +272,8 @@ export default function SplashCursor({
       gl.attachShader(program, fragmentShader);
       gl.linkProgram(program);
       if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-        console.trace(gl.getProgramInfoLog(program));
+        console.error('SplashCursor Link Error:', gl.getProgramInfoLog(program));
+        return null;
       }
       return program;
     }
@@ -397,11 +399,11 @@ export default function SplashCursor({
     const displayShaderSource = `
       precision mediump float;
       precision mediump sampler2D;
-      varying vec2 vUv;
-      varying vec2 vL;
-      varying vec2 vR;
-      varying vec2 vT;
-      varying vec2 vB;
+      varying highp vec2 vUv;
+      varying highp vec2 vL;
+      varying highp vec2 vR;
+      varying highp vec2 vT;
+      varying highp vec2 vB;
       uniform sampler2D uTexture;
       uniform vec2 texelSize;
 
@@ -433,7 +435,7 @@ export default function SplashCursor({
       `
       precision highp float;
       precision highp sampler2D;
-      varying vec2 vUv;
+      varying highp vec2 vUv;
       uniform sampler2D uTarget;
       uniform float aspectRatio;
       uniform vec3 color;
@@ -455,7 +457,7 @@ export default function SplashCursor({
       `
       precision highp float;
       precision highp sampler2D;
-      varying vec2 vUv;
+      varying highp vec2 vUv;
       uniform sampler2D uVelocity;
       uniform sampler2D uSource;
       uniform vec2 texelSize;
@@ -549,11 +551,11 @@ export default function SplashCursor({
       `
       precision highp float;
       precision highp sampler2D;
-      varying vec2 vUv;
-      varying vec2 vL;
-      varying vec2 vR;
-      varying vec2 vT;
-      varying vec2 vB;
+      varying highp vec2 vUv;
+      varying highp vec2 vL;
+      varying highp vec2 vR;
+      varying highp vec2 vT;
+      varying highp vec2 vB;
       uniform sampler2D uVelocity;
       uniform sampler2D uCurl;
       uniform float curl;
@@ -922,6 +924,7 @@ export default function SplashCursor({
     }
 
     function step(dt: number) {
+      if (!gl || !velocity) return;
       gl.disable(gl.BLEND);
 
       curlProgram.bind();
