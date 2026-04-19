@@ -68,6 +68,7 @@ export const PWAInstallFAB: React.FC<PWAInstallFABProps> = ({ variant = 'rose' }
           </motion.button>
         </div>
       )}
+    </AnimatePresence>
 
       {/* Induction Guidance Protocol */}
       <AnimatePresence>
