@@ -58,14 +58,15 @@ const LandingPage: React.FC = () => {
     };
   }, []);
 
-  const { scrollYProgress } = useScroll({
+  const { scrollYProgress, scrollY } = useScroll({
     container: mainRef,
   });
 
   // Dynamic Logo transitions: STRICT First-Fold Visibility Only
   // We harden this for mobile/Android to ensure it vanishes immediately
-  const logoOpacity = useTransform(scrollYProgress, [0.02, 0.05], [1, 0]);
-  const logoScale = useTransform(scrollYProgress, [0.02, 0.05], [1, 0.9]);
+  // Switching to absolute scrollY for predictable behavior across varying page heights
+  const logoOpacity = useTransform(scrollY, [0, 100], [1, 0]);
+  const logoScale = useTransform(scrollY, [0, 100], [1, 0.8]);
 
   // Install FAB visibility: Only on the last fold (progress > 0.8)
   const fabOpacity = useTransform(scrollYProgress, [0.85, 0.9], [0, 1]);
