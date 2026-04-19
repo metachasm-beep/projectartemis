@@ -1158,12 +1158,12 @@ export default function SplashCursor({
     }
 
     function generateColor(): ColorRGB {
-      // 🌹 Rose / Gold logic
+      // 🌹 Boosted Rose / Gold logic
       const isRose = Math.random() > 0.5;
       if (isRose) {
-        return { r: 0.88, g: 0.11, b: 0.28 }; // #E11D48
+        return { r: 1.5, g: 0.05, b: 0.3 }; // Intense Rose
       } else {
-        return { r: 0.75, g: 0.63, b: 0.42 }; // #BFA06A
+        return { r: 1.4, g: 1.1, b: 0.5 };  // Brilliant Gold
       }
     }
 
