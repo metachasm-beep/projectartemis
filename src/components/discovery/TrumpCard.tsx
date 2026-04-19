@@ -101,7 +101,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
       exit={{ scale: 0.95, opacity: 0 }}
       className={cn(
         "relative bg-[#1A1A1A] border-l-[1px] border-t-[1px] border-white/10 border-r-[2px] border-b-[2px] border-black/60 rounded-[2.5rem] shadow-[0_40px_120px_rgba(0,0,0,0.8),_inset_0_1px_1px_rgba(255,255,255,0.05)] overflow-hidden flex flex-col group p-[1px] select-none",
-        isDashboard ? "w-full h-full aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] h-[82vh] md:min-h-[750px] max-h-[850px]"
+        isDashboard ? "w-full h-full aspect-[2/3] lg:aspect-[3/4.2]" : "w-full max-w-[480px] h-[88vh] md:min-h-[750px] max-h-[900px]"
       )}
     >
       {/* 🧬 Material Texture Overlay (Carbon/Noise) */}
@@ -133,7 +133,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
 
       <div className={cn(
         "relative min-h-0 overflow-hidden z-10 flex flex-col pt-1 px-1",
-        isDashboard ? "flex-[0_0_42%] aspect-[4/5]" : "flex-1 md:flex-[0_0_65%] aspect-[4/5]"
+        isDashboard ? "flex-[0_0_42%] aspect-[4/5]" : "flex-1 min-h-0 aspect-[4/5]"
       )}>
         <div className="w-full h-full relative overflow-hidden flex-1 rounded-2xl bg-black shadow-[inset_0_10px_30px_rgba(0,0,0,1)] group-hover:shadow-[inset_0_10px_40px_rgba(0,0,0,1)] transition-all mat-shimmer-glass">
           <AnimatePresence mode="wait">
@@ -198,11 +198,10 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
         </div>
       </div>
 
-      {/* 📜 PHYSICAL INTEL PANEL - OVERLAY ON MOBILE */}
       <div className={cn(
-        "flex flex-col justify-between relative z-20 overflow-hidden",
-        isDashboard ? "p-4 bg-[#121212] border-t-[1px] border-white/5" : "p-5 md:p-8",
-        !isDashboard && "absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-[#0a0a0abf] to-transparent md:relative md:bg-[#121212] md:border-t-[1px] md:border-white/5"
+        "flex flex-col justify-between relative z-20",
+        isDashboard ? "p-4 bg-[#121212] border-t-[1px] border-white/5" : "p-4 md:p-8",
+        !isDashboard && "absolute bottom-0 left-0 w-full bg-gradient-to-t from-black via-[#0a0a0abfd9] to-transparent md:relative md:bg-[#121212] md:border-t-[1px] md:border-white/5"
       )}>
         
         {/* Bio Embossing */}
@@ -254,7 +253,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
         </div>
 
         {/* 📋 SKEUOMORPHIC DOSSIER DATA - COMPRESSED FOR MOBILE */}
-        <div className={cn("grid grid-cols-3 md:grid-cols-2 gap-2 border-t border-white/5 pt-3 md:pt-4 pb-1 md:pb-2", isDashboard ? "mt-3" : "mt-4 md:mt-8")}>
+        <div className={cn("grid grid-cols-3 md:grid-cols-2 gap-1.5 border-t border-white/5 pt-2 md:pt-4 pb-1 md:pb-2", isDashboard ? "mt-3" : "mt-2 md:mt-8")}>
             <div className="flex items-center gap-1.5 md:gap-2 bg-black/20 p-1.5 md:p-2 rounded-lg md:rounded-xl border border-white/5 shadow-inner">
                <div className="w-6 h-6 md:w-8 md:h-8 rounded bg-neutral-800 flex items-center justify-center border border-white/5 text-mat-gold/60 shrink-0">
                   <Trophy size={11} className="md:size-[14px]" />
@@ -295,7 +294,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
 
         {/* ⚡ PHYSICAL ACTION MATRIX - COMPRESSED FOR MOBILE */}
         {!isDashboard && (
-          <div className="flex items-center justify-center gap-4 md:gap-6 pt-4 md:pt-6 border-t border-white/5 mt-3 md:mt-4">
+          <div className="flex items-center justify-center gap-4 md:gap-6 pt-2 md:pt-6 border-t border-white/5 mt-2 md:mt-4">
              {[{ id: 'report', icon: ShieldAlert }, { id: 'block', icon: UserX }, { id: 'ping', icon: MessageSquarePlus, primary: true }, { id: 'never_show', icon: EyeOff }].map((btn) => (
                <Tooltip key={btn.id}>
                   <TooltipTrigger>
