@@ -22,6 +22,7 @@
 !/backend/
 !/api/
 !/scripts/
+!/mobile/
 
 # 4. Ignore build artifacts & dependencies within whitelisted folders
 **/node_modules
