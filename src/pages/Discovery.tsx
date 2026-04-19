@@ -9,9 +9,10 @@ import { Button } from '@/components/ui/button';
 import { AadhaarVerification } from '@/components/AadhaarVerification';
 import { SEO_COPY } from '@/content/copy';
 import { DiscoveryService } from '@/services/discoveryService';
+import { MessagingService } from '@/lib/messaging';
 import { SEOProvider, defaultSchema } from '@/components/SEOProvider';
 
-export const Discovery: React.FC = () => {
+export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onOpenChat }) => {
   const [selectedProfile, setSelectedProfile] = useState<any>(null);
   const [aspirants, setAspirants] = useState<any[]>([]);
   const [activeGazeIndex, setActiveGazeIndex] = useState(0);
@@ -105,8 +106,39 @@ export const Discovery: React.FC = () => {
         
         // 🔮 Record Ping/Match Action
         await DiscoveryService.recordAction(targetProfile.id, 'match');
-        setSelectedProfile(null);
-        alert(`Resonance established with ${targetProfile.name}. Initiating protocol...`);
+        
+        // 🏹 Establish Signit Channel (Match Creation)
+        if (profile?.user_id) {
+          try {
+            const matchId = await MessagingService.createMatch(profile.user_id, targetProfile.id);
+            
+            // Construct full match object for the chat room
+            const matchObject = {
+              id: matchId,
+              woman_user_id: profile.role === 'woman' ? profile.user_id : targetProfile.id,
+              man_user_id: profile.role === 'man' ? profile.user_id : targetProfile.id,
+              status: 'PENDING_ACCEPTANCE',
+              current_comm_mode: 'TEXT',
+              otherUser: {
+                full_name: targetProfile.name,
+                photos: targetProfile.photos
+              },
+              // Metadata for header display
+              man_name: profile.role === 'man' ? profile.full_name : targetProfile.name,
+              woman_name: profile.role === 'woman' ? profile.full_name : targetProfile.name,
+              man_photos: JSON.stringify(profile.role === 'man' ? profile.photos : targetProfile.photos),
+              woman_photos: JSON.stringify(profile.role === 'woman' ? profile.photos : targetProfile.photos)
+            };
+
+            setSelectedProfile(null);
+            if (onOpenChat) {
+               onOpenChat(matchObject);
+            }
+          } catch (error) {
+            console.error("Signit Channel establishment failed:", error);
+            alert("Protocol failure: Could not establish secure resonance channel.");
+          }
+        }
      }
 
      if (type === 'block' || type === 'report') {

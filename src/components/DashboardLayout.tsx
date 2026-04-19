@@ -81,7 +81,10 @@ export const DashboardLayout: React.FC = () => {
                 {profile?.role === 'man' && !profile?.is_verified ? (
                   <AadhaarVerification userId={profile?.user_id || ''} onVerified={() => realAuth.refreshProfile()} />
                 ) : (
-                  <Discovery />
+                  <Discovery onOpenChat={(match) => {
+                    setSelectedMatch(match as any);
+                    setActiveTab('messages');
+                  }} />
                 )}
               </motion.div>
             )}
