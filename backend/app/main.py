@@ -12,18 +12,11 @@ import asyncio
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # --- 1. Automated Turso Schema Migration ---
+    # --- 1. Automated Turso Registry Migrations ---
     try:
-        schema_path = os.path.join(os.path.dirname(__file__), "db", "turso_schema.sql")
-        if os.path.exists(schema_path):
-            with open(schema_path, "r") as f:
-                schema_sql = f.read()
-            # Split by semicolon to execute individual statements
-            # Note: This is a simple parser, might need improvement for complex SQL
-            statements = [s.strip() for s in schema_sql.split(";") if s.strip()]
-            for statement in statements:
-                await turso_client.execute(statement)
-            print("🛠️ MATRIARCH_INIT: Turso Registry Schema verified/migrated.")
+        from app.db.migration_manager import migration_manager
+        await migration_manager.run_migrations()
+        print("🛠️ MATRIARCH_INIT: Turso Registry Schema verified/migrated.")
     except Exception as e:
         print(f"❌ MATRIARCH_INIT: Migration failure - {e}")
 

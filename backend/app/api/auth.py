@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, Depends, status
+from fastapi import APIRouter, HTTPException, Depends, status, Response, Request
 from pydantic import BaseModel
 from app.db.turso import turso_client
 from app.core.security import auth_bearer
@@ -13,6 +13,31 @@ class InviteVerifyRequest(BaseModel):
 
 class ConsumeInviteRequest(BaseModel):
     code: str
+
+class SessionRequest(BaseModel):
+    access_token: str
+
+@router.post("/session")
+async def set_session(request: SessionRequest, response: Response):
+    """
+    Hardens the authentication by setting an httpOnly cookie.
+    Frontend should call this after successful Supabase Auth.
+    """
+    response.set_cookie(
+        key="access_token",
+        value=request.access_token,
+        httponly=True,
+        samesite="lax", # Use 'lax' for better compatibility with cross-site redirects (OAuth)
+        secure=False, # Set to True if running behind HTTPS (Vercel)
+        max_age=3600 * 24 * 7 # 7 days
+    )
+    return {"status": "session_secured"}
+
+@router.post("/logout")
+async def logout(response: Response):
+    """Clears the session cookie."""
+    response.delete_cookie("access_token")
+    return {"status": "logged_out"}
 
 # 🛡️ THE PROTOCOL: CIRCULAR LOOP PREVENTION (DAG)
 async def verify_referral_integrity(referrer_id: str, referee_id: str):

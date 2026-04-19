@@ -15,29 +15,36 @@ class JWTBearer(HTTPBearer):
 
     async def __call__(self, request: Request) -> Optional[dict]:
         credentials: Optional[HTTPAuthorizationCredentials] = await super(JWTBearer, self).__call__(request)
+        
+        token = None
         if credentials:
             if not credentials.scheme == "Bearer":
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
-            
-            # Verify token via Supabase Auth API
             token = credentials.credentials
-            try:
-                # This call handles token verification and returns the user object
-                user_res = supabase.auth.get_user(token)
-                if not user_res or not user_res.user:
-                     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
-                
-                # Return the user object so it can be used in dependencies
-                return {
-                    "id": user_res.user.id,
-                    "email": user_res.user.email,
-                    "role": user_res.user.user_metadata.get("role", "aspirant")
-                }
-            except Exception as e:
-                logger.error(f"JWT_VERIFICATION_FAILED: {str(e)}")
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Authentication failed: {str(e)}")
         else:
-            raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Authentication token required.")
+            # Check for token in cookies if Authorization header is missing
+            token = request.cookies.get("access_token")
+            
+        if not token:
+            if self.auto_error:
+                raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Authentication token required.")
+            return None
+
+        try:
+            # This call handles token verification and returns the user object
+            user_res = supabase.auth.get_user(token)
+            if not user_res or not user_res.user:
+                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+            
+            # Return the user object so it can be used in dependencies
+            return {
+                "id": user_res.user.id,
+                "email": user_res.user.email,
+                "role": user_res.user.user_metadata.get("role", "aspirant")
+            }
+        except Exception as e:
+            logger.error(f"JWT_VERIFICATION_FAILED: {str(e)}")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Authentication failed: {str(e)}")
 
 # Dependency for routes
 auth_bearer = JWTBearer()
