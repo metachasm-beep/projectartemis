@@ -61,7 +61,6 @@ const App: React.FC = () => {
                 } />
               </Routes>
             </React.Suspense>
-            <PWAInstallFAB variant="rose" />
           </div>
         </BrowserRouter>
       )}

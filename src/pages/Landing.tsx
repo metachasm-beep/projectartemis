@@ -13,6 +13,7 @@ const SelectionMatrixFold = lazy(() => import("@/components/landing/SelectionMat
 const Footer = lazy(() => import("@/components/landing/Footer"));
 
 import MatriarchLogo from "@/components/MatriarchLogo";
+import { PWAInstallFAB } from "@/components/ui/PWAInstallFAB";
 
 import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import { useRef } from "react";
@@ -62,8 +63,13 @@ const LandingPage: React.FC = () => {
   });
 
   // Dynamic Logo transitions: STRICT First-Fold Visibility Only
-  const logoOpacity = useTransform(scrollYProgress, [0.05, 0.1], [1, 0]);
-  const logoScale = useTransform(scrollYProgress, [0.05, 0.1], [1, 0.9]);
+  // We harden this for mobile/Android to ensure it vanishes immediately
+  const logoOpacity = useTransform(scrollYProgress, [0.02, 0.05], [1, 0]);
+  const logoScale = useTransform(scrollYProgress, [0.02, 0.05], [1, 0.9]);
+
+  // Install FAB visibility: Only on the last fold (progress > 0.8)
+  const fabOpacity = useTransform(scrollYProgress, [0.85, 0.9], [0, 1]);
+  const fabY = useTransform(scrollYProgress, [0.85, 0.9], [20, 0]);
   
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -198,6 +204,10 @@ const LandingPage: React.FC = () => {
           )}
         </div>
       </div>
+
+      <motion.div style={{ opacity: fabOpacity, y: fabY }}>
+        <PWAInstallFAB variant="rose" />
+      </motion.div>
 
       <LegalArchiveOverlay slug={legalSlug} onClose={() => setLegalSlug(null)} />
       {showOnboarding && <OnboardingOverlay onComplete={handleOnboardingComplete} />}

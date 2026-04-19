@@ -30,41 +30,43 @@ export const PWAInstallFAB: React.FC<PWAInstallFABProps> = ({ variant = 'rose' }
   };
 
   return (
-    <>
-      <div className="fixed bottom-40 right-12 z-[100] flex items-center gap-3">
-        {/* Help Bubble - Now Next to the Install Button */}
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          whileHover={{ scale: 1.1 }}
-          onClick={() => setShowGuide(true)}
-          className={`w-14 h-14 rounded-full backdrop-blur-xl border flex items-center justify-center transition-all ${
-            variant === 'slate' 
-              ? 'bg-[#3C2F2F]/10 border-[#3C2F2F]/20 text-[#3C2F2F]/40 hover:text-[#3C2F2F] hover:border-[#3C2F2F]/40' 
-              : 'bg-white/10 border-white/20 text-white/40 hover:text-white hover:border-white/40'
-          }`}
-        >
-          <HelpCircle size={22} />
-        </motion.button>
+    <AnimatePresence>
+      {(!isInstalled && (isInstallable || isIOS)) && (
+        <div className="fixed bottom-24 right-8 md:bottom-32 md:right-12 z-[100] flex items-center gap-3">
+          {/* Help Bubble - Now Next to the Install Button */}
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            whileHover={{ scale: 1.1 }}
+            onClick={() => setShowGuide(true)}
+            className={`w-14 h-14 rounded-full backdrop-blur-xl border flex items-center justify-center transition-all ${
+              variant === 'slate' 
+                ? 'bg-[#3C2F2F]/10 border-[#3C2F2F]/20 text-[#3C2F2F]/40 hover:text-[#3C2F2F] hover:border-[#3C2F2F]/40' 
+                : 'bg-white/10 border-white/20 text-white/40 hover:text-white hover:border-white/40'
+            }`}
+          >
+            <HelpCircle size={22} />
+          </motion.button>
 
-        {/* Main Install Button */}
-        <motion.button
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={isIOS ? () => setShowGuide(true) : install}
-          className={`px-8 py-4 rounded-full shadow-2xl flex items-center gap-4 group relative overflow-hidden transition-all ${colors[variant]}`}
-        >
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
-          <div className="relative flex items-center gap-3">
-             <Smartphone size={20} className="group-hover:rotate-12 transition-transform" />
-             <span className="text-[11px] font-black uppercase tracking-[0.3em] leading-none">
-               Install App
-             </span>
-          </div>
-        </motion.button>
-      </div>
+          {/* Main Install Button - Icon Only on Mobile as requested */}
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={isIOS ? () => setShowGuide(true) : install}
+            className={`w-14 h-14 md:w-auto md:px-8 md:py-4 rounded-full shadow-2xl flex items-center justify-center md:justify-start gap-4 group relative overflow-hidden transition-all ${colors[variant]}`}
+          >
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+            <div className="relative flex items-center gap-3">
+               <Smartphone size={20} className="group-hover:rotate-12 transition-transform" />
+               <span className="hidden md:inline text-[11px] font-black uppercase tracking-[0.3em] leading-none">
+                 Install App
+               </span>
+            </div>
+          </motion.button>
+        </div>
+      )}
 
       {/* Induction Guidance Protocol */}
       <AnimatePresence>
