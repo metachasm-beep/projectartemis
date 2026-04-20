@@ -78,7 +78,7 @@ export const VerificationPaymentModal: React.FC<VerificationPaymentModalProps> =
       >
         <button 
           onClick={onClose}
-          className="absolute -top-4 -right-4 w-10 h-10 bg-black/80 border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white transition-all z-20"
+          className="absolute -top-4 -right-4 w-10 h-10 bg-mat-gold text-mat-obsidian border border-white/10 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all z-20"
         >
           <X size={20} />
         </button>

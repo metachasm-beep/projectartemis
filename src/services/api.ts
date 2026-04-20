@@ -72,6 +72,21 @@ export const api = {
       console.error('Error verifying identity:', error);
       return { success: false, message: 'Verification failed' };
     }
+  },
+  
+  finalizeVerification: async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const response = await apiClient.post('/verification/finalize', {}, {
+        headers: {
+          Authorization: `Bearer ${session?.access_token}`
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error finalizing verification:', error);
+      return { success: false, message: 'Finalization failed' };
+    }
   }
 };
 

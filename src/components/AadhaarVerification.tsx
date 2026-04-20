@@ -15,11 +15,15 @@ import {
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { supabase } from '@/lib/supabase';
 import { api } from '@/services/api';
 import { diditService } from '@/services/DiditService';
-import { faceVerificationService } from '@/services/FaceVerificationService';
 import { cn } from '@/lib/utils';
+import { auth as firebaseAuth } from '@/lib/firebase';
+import { 
+  RecaptchaVerifier, 
+  signInWithPhoneNumber, 
+  ConfirmationResult 
+} from 'firebase/auth';
 
 type VerificationStep = 'START' | 'ID_VERIFICATION' | 'LIVENESS' | 'PHONE_REGISTRY' | 'SUCCESS';
 
@@ -36,11 +40,13 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   
   const [phoneNumber, setPhoneNumber] = useState('');
   const [phoneOtp, setPhoneOtp] = useState('');
+  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
+  
+  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
 
   // 🛡️ Global message listener for iframe feedback
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
-      // Security: Add origin check in production
       if (event.data?.type === 'DIDIT_COMPLETE') {
         if (event.data.status === 'Approved') {
           setStep('PHONE_REGISTRY');
@@ -57,27 +63,53 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   const handlePhoneRequest = async () => {
     if (phoneNumber.length !== 10) return setError('Invalid mobile registry');
     setLoading(true);
+    setError(null);
+    
     try {
-      const { error } = await supabase.auth.signInWithOtp({ 
-        phone: `+91${phoneNumber}` 
-      });
-      if (error) throw error;
+      // 🛡️ Initialize Recaptcha
+      if (!recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current = new RecaptchaVerifier(firebaseAuth, 'recaptcha-anchor', {
+          'size': 'invisible'
+        });
+      }
+
+      const formattedPhone = `+91${phoneNumber}`;
+      const result = await signInWithPhoneNumber(firebaseAuth, formattedPhone, recaptchaVerifierRef.current);
+      setConfirmationResult(result);
       setError('Registry Code Sent.');
     } catch (err: any) {
+      console.error("FIREBASE_REGISTRY_ERROR:", err);
       setError(err.message || 'Registry signal interrupted.');
+      if (recaptchaVerifierRef.current) {
+        recaptchaVerifierRef.current.clear();
+        recaptchaVerifierRef.current = null;
+      }
     } finally {
       setLoading(false);
     }
   };
 
   const handlePhoneVerify = async () => {
+    if (!confirmationResult || phoneOtp.length !== 6) return;
     setLoading(true);
+    setError(null);
+
     try {
-      // In a real flow, verify with Supabase here
-      setStep('SUCCESS');
-      setTimeout(onVerified, 3000);
-    } catch (err) {
-      setError('Invalid Registry Code.');
+      // 1. Verify OTP via Firebase
+      await confirmationResult.confirm(phoneOtp);
+      
+      // 2. Finalize Identity in Sanctuary Registry
+      const res = await api.finalizeVerification();
+      
+      if (res.success) {
+        setStep('SUCCESS');
+        setTimeout(onVerified, 3000);
+      } else {
+        throw new Error(res.message || "Identity Sealing Failed.");
+      }
+    } catch (err: any) {
+      console.error("VERIFICATION_FINALIZATION_ERROR:", err);
+      setError(err.message || 'Invalid Registry Code or Sealing Failure.');
     } finally {
       setLoading(false);
     }
@@ -102,6 +134,9 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
 
   return (
     <div className="w-full max-w-xl mx-auto p-12 space-y-12 bg-black/40 backdrop-blur-xl rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
+      {/* 🛡️ Firebase Recaptcha Anchor */}
+      <div id="recaptcha-anchor"></div>
+
       {/* 🔮 Verification Progress Rail */}
       <div className="flex justify-between items-center px-4 relative z-10">
         {progressSteps.map((s, i) => {

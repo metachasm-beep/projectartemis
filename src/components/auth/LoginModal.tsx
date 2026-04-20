@@ -135,7 +135,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ isOpen, onClose }) => {
           {/* Close Button */}
           <button 
             onClick={onClose}
-            className="absolute top-8 right-8 p-2 rounded-full bg-mat-noir/5 text-mat-noir/40 hover:bg-mat-noir/10 hover:text-mat-noir transition-all z-10"
+            className="absolute top-8 right-8 p-2 rounded-full bg-mat-noir/10 text-mat-noir hover:bg-mat-noir/20 transition-all z-10"
           >
             <X size={20} />
           </button>

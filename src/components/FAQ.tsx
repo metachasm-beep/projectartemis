@@ -90,7 +90,7 @@ export const FAQ: React.FC = () => {
         <div className="pt-32 pb-20 flex flex-col items-center">
             <div className="w-16 h-px bg-black opacity-20 mb-8" />
             <button 
-               onClick={() => window.location.href = 'mailto:support@matriarch.app'}
+               onClick={() => window.location.href = 'mailto:contact@matriarchindia.com'}
                className="text-[12px] font-black uppercase tracking-[0.6em] opacity-40 hover:opacity-100 hover:tracking-[0.8em] transition-all duration-700 py-4"
             >
                Signal Protocol Architect

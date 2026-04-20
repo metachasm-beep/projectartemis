@@ -130,7 +130,7 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
              <p><strong>Name:</strong> Paul Marandi</p>
              <p><strong>Designation:</strong> Resident Grievance Officer (RGO)</p>
              <p><strong>Company:</strong> Metachasm (OPC) Private Limited</p>
-             <p className="font-black text-mat-wine">Email: grievance@matriarchapp.com</p>
+             <p className="font-black text-mat-wine">Email: contact@matriarchindia.com</p>
              <p className="text-[10px] mt-4 uppercase tracking-widest">Note: Our Grievance Officer is a resident of India as mandated by law.</p>
           </div>
         </section>
@@ -496,11 +496,11 @@ const LegalArchiveOverlay: React.FC<ContentOverlayProps> = ({ slug, onClose }) =
 
           {/* Bento Cell 2: Primary Archive Content (Span 8) */}
           <div className="md:col-span-8 mat-glass-deep rounded-[4rem] bg-mat-cream/10 border border-mat-rose/10 overflow-hidden flex flex-col shadow-2xl relative" style={{ height: '70vh' }}>
-             <div className="absolute top-8 right-8 z-50">
-                <button onClick={onClose} className="w-14 h-14 rounded-full bg-mat-wine text-white flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-mat-premium">
+              <div className="absolute top-8 right-8 z-50">
+                <button onClick={onClose} className="w-14 h-14 rounded-full bg-mat-obsidian/10 text-mat-obsidian flex items-center justify-center hover:scale-110 active:scale-90 transition-all">
                    <X size={28} />
                 </button>
-             </div>
+              </div>
              
              <div className="flex-1 p-10 md:p-16 overflow-y-auto custom-scrollbar text-mat-wine">
                 <div className="max-w-3xl mx-auto">
@@ -522,7 +522,7 @@ const LegalArchiveOverlay: React.FC<ContentOverlayProps> = ({ slug, onClose }) =
              </div>
              <div className="flex items-center gap-4">
                 <span className="text-[9px] font-black uppercase text-mat-gold">Support Line:</span>
-                <span className="text-[10px] font-bold italic text-mat-wine">legal@matriarchapp.com</span>
+                <span className="text-[10px] font-bold italic text-mat-wine">contact@matriarchindia.com</span>
              </div>
           </div>
         </motion.div>
