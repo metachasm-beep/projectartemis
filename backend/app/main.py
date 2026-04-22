@@ -7,34 +7,6 @@ from app.db.turso import turso_client
 from fastapi import BackgroundTasks
 import os
 
-from contextlib import asynccontextmanager
-import asyncio
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # --- 1. Automated Turso Registry Migrations ---
-    try:
-        from app.db.migration_manager import migration_manager
-        await migration_manager.run_migrations()
-        print("🛠️ MATRIARCH_INIT: Turso Registry Schema verified/migrated.")
-    except Exception as e:
-        # Non-fatal: log and continue — server must start even if DB is slow
-        print(f"⚠️ MATRIARCH_INIT: Migration skipped - {e}")
-
-    # Start backfill service in the background (non-fatal)
-    try:
-        asyncio.create_task(backfill_service.start_service())
-    except Exception as e:
-        print(f"⚠️ MATRIARCH_INIT: Backfill service failed to start - {e}")
-
-    yield
-
-    # Stop backfill service on shutdown
-    try:
-        backfill_service.stop_service()
-    except Exception:
-        pass
-
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
 
@@ -43,8 +15,7 @@ app = FastAPI(
     description="High-tech, women-first dating platform backend",
     version="1.0.0",
     docs_url="/api/docs",
-    redoc_url="/api/redoc",
-    lifespan=lifespan
+    redoc_url="/api/redoc"
 )
 
 class SafetyCORSMiddleware(BaseHTTPMiddleware):
