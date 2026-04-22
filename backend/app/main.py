@@ -59,6 +59,7 @@ app.include_router(rank.router, prefix="/api/v1/rank", tags=["Rank"])
 app.include_router(auth.router, prefix="/api/v1/auth", tags=["Auth"])
 app.include_router(communication.router, prefix="/api/v1/communication", tags=["Communication"])
 app.include_router(admin.router, prefix="/api/v1/admin", tags=["Admin"])
+app.include_router(safety.router, prefix="/api/v1/safety", tags=["Safety"])
 app.include_router(quests.router, prefix="/api/v1", tags=["Quests"])
 
 
