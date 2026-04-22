@@ -1,10 +1,13 @@
-import sys
-import os
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
-# Add the backend directory to sys.path
-backend_path = os.path.join(os.path.dirname(__file__), '..', 'backend')
-sys.path.append(backend_path)
+app = FastAPI()
 
-# Direct import of the app instance
-from app.main import app
+@app.get("/api/v1/health")
+async def health():
+    return {"status": "ok", "message": "Bridge is healthy!"}
+
+@app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
+async def catch_all(path: str):
+    return JSONResponse(content={"error": "Not Found", "path": path}, status_code=404)
 
