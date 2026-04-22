@@ -13,6 +13,11 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
+console.log("🔥 FIREBASE_INIT: Checking Hostname Awareness");
+console.log("📍 Current Hostname:", window.location.hostname);
+console.log("🔑 API Key in use:", firebaseConfig.apiKey);
+console.log("🌐 Auth Domain in use:", firebaseConfig.authDomain);
+
 const app = initializeApp(firebaseConfig);
 
 // Initialize Firebase Authentication
