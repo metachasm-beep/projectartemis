@@ -11,9 +11,11 @@ _supabase: Optional[Client] = None
 def get_supabase() -> Client:
     global _supabase
     if _supabase is None:
-        if not settings.SUPABASE_URL or not settings.SUPABASE_KEY:
-            raise ValueError("SUPABASE_CONFIG_ERROR: Missing SUPABASE_URL or SUPABASE_KEY in environment.")
-        _supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+        url = settings.SUPABASE_URL
+        key = settings.SUPABASE_ANON_KEY  # matches Vercel env var name
+        if not url or not key:
+            raise ValueError("SUPABASE_CONFIG_ERROR: Missing SUPABASE_URL or SUPABASE_ANON_KEY in environment.")
+        _supabase = create_client(url, key)
     return _supabase
 
 logger = logging.getLogger(__name__)

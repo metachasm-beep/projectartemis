@@ -18,13 +18,22 @@ async def lifespan(app: FastAPI):
         await migration_manager.run_migrations()
         print("🛠️ MATRIARCH_INIT: Turso Registry Schema verified/migrated.")
     except Exception as e:
-        print(f"❌ MATRIARCH_INIT: Migration failure - {e}")
+        # Non-fatal: log and continue — server must start even if DB is slow
+        print(f"⚠️ MATRIARCH_INIT: Migration skipped - {e}")
 
-    # Start backfill service in the background
-    asyncio.create_task(backfill_service.start_service())
+    # Start backfill service in the background (non-fatal)
+    try:
+        asyncio.create_task(backfill_service.start_service())
+    except Exception as e:
+        print(f"⚠️ MATRIARCH_INIT: Backfill service failed to start - {e}")
+
     yield
+
     # Stop backfill service on shutdown
-    backfill_service.stop_service()
+    try:
+        backfill_service.stop_service()
+    except Exception:
+        pass
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import Response
