@@ -1,19 +1,21 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-import cloudinary
-import cloudinary.uploader
 from app.core.config import settings
 
 router = APIRouter()
 
-# Configure Cloudinary
-if settings.CLOUDINARY_CLOUD_NAME and settings.CLOUDINARY_API_KEY and settings.CLOUDINARY_API_SECRET:
-    cloudinary.config(
-        cloud_name=settings.CLOUDINARY_CLOUD_NAME,
-        api_key=settings.CLOUDINARY_API_KEY,
-        api_secret=settings.CLOUDINARY_API_SECRET,
-        secure=True
-    )
+def _get_cloudinary_uploader():
+    """Lazy-load cloudinary to prevent startup crash if not configured."""
+    import cloudinary
+    import cloudinary.uploader
+    if settings.CLOUDINARY_CLOUD_NAME and settings.CLOUDINARY_API_KEY and settings.CLOUDINARY_API_SECRET:
+        cloudinary.config(
+            cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+            api_key=settings.CLOUDINARY_API_KEY,
+            api_secret=settings.CLOUDINARY_API_SECRET,
+            secure=True
+        )
+    return cloudinary.uploader
 
 class DeleteMediaRequest(BaseModel):
     public_id: str
@@ -29,7 +31,8 @@ async def delete_media(request: DeleteMediaRequest):
 
     try:
         # Use cloudinary.uploader.destroy for secure deletion
-        result = cloudinary.uploader.destroy(request.public_id)
+        uploader = _get_cloudinary_uploader()
+        result = uploader.destroy(request.public_id)
         
         if result.get("result") == "ok":
             return {"status": "success", "message": f"Resource {request.public_id} purged."}
