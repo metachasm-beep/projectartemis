@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends, Request
-from typing import List
+from typing import List, Optional
 from app.db.turso import turso_client
 from pydantic import BaseModel
 from datetime import datetime
