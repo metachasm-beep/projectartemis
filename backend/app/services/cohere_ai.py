@@ -1,13 +1,22 @@
 import os
-import cohere
 from typing import Tuple
 
-COHERE_API_KEY = os.getenv("COHERE_API_KEY", "YOUR_COHERE_API_KEY")
+COHERE_API_KEY = os.getenv("COHERE_API_KEY", "")
 
 class CohereModerationService:
     def __init__(self, api_key: str = COHERE_API_KEY):
-        self.co = cohere.ClientV2(api_key=api_key)
-        self.model = "command-r7b-12-2024" # Specific for latest R7B
+        self.api_key = api_key
+        self._co = None
+
+    @property
+    def co(self):
+        if self._co is None:
+            try:
+                import cohere
+                self._co = cohere.ClientV2(api_key=self.api_key)
+            except ImportError:
+                raise RuntimeError("COHERE_NOT_INSTALLED: The 'cohere' package is not available. Install it or disable moderation.")
+        return self._co
 
     async def moderate_profile(self, bio: str) -> Tuple[bool, str]:
         """
@@ -16,18 +25,17 @@ class CohereModerationService:
         """
         try:
             response = self.co.chat(
-                model=self.model,
+                model="command-r7b-12-2024",
                 messages=[
                     {
                         "role": "system",
-                        "content": "You are the Matriarch Matriarch Moderator. Your goal is to ensure all profile bios are elite, respectful, and free of toxicity, harassment, or illegal content. Be STRICT."
+                        "content": "You are the Matriarch Moderator. Your goal is to ensure all profile bios are elite, respectful, and free of toxicity, harassment, or illegal content. Be STRICT."
                     },
                     {
                         "role": "user",
                         "content": f"Moderate the following user bio: \"{bio}\"\n\nDoes this meet Matriarch standards? Respond ONLY with 'APPROVED' or 'REJECTED: [REASON]'."
                     }
                 ],
-                # safety_mode="STRICT" # Applying the user's request for high-fidelity guardrails
             )
             
             result = response.message.content[0].text.strip()
