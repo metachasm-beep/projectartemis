@@ -1,8 +1,11 @@
-from app.main import app
+from app.main import app as fastapi_app
 
-# This exports the FastAPI instance for Vercel's Python runtime
-# Vercel looks for a top-level "app", "application", or "handler"
-application = app
+# Vercel looks for a top-level "app" variable
+app = fastapi_app
+
+@app.get("/")
+async def vercel_root():
+    return {"status": "online", "message": "MATRIARCH API (Vercel Runtime)"}
 
 if __name__ == "__main__":
     import uvicorn
