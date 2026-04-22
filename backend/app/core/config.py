@@ -9,10 +9,7 @@ class Settings(BaseSettings):
     # Supabase configuration
     SUPABASE_URL: str = ""
     SUPABASE_ANON_KEY: str = ""
-    # Alias for code that uses SUPABASE_KEY
-    @property
-    def SUPABASE_KEY(self) -> str:
-        return self.SUPABASE_ANON_KEY
+    SUPABASE_KEY: str = ""
 
     # Database Settings
     POSTGRES_SERVER: str = "localhost"
@@ -33,10 +30,6 @@ class Settings(BaseSettings):
     VITE_CLOUDINARY_CLOUD_NAME: Optional[str] = None
     CLOUDINARY_API_KEY: Optional[str] = None
     CLOUDINARY_API_SECRET: Optional[str] = None
-
-    @property
-    def cloudinary_cloud_name(self) -> Optional[str]:
-        return self.CLOUDINARY_CLOUD_NAME or self.VITE_CLOUDINARY_CLOUD_NAME
 
     model_config = SettingsConfigDict(
         case_sensitive=True,
