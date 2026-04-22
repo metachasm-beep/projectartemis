@@ -43,6 +43,10 @@
       "destination": "/api/index.py"
     },
     {
+      "source": "/api/v1/audit",
+      "destination": "/api/test_env.py"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/index.html"
     }
