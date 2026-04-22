@@ -8,14 +8,23 @@ import { createClient } from '@libsql/client';
 const url = import.meta.env.VITE_TURSO_DATABASE_URL;
 const authToken = import.meta.env.VITE_TURSO_AUTH_TOKEN;
 
-if (!url || !authToken) {
-  console.warn("MATRIARCH_TURSO: Missing Turso credentials in environment.");
+const isConfigured = !!(url && authToken);
+
+if (!isConfigured) {
+  console.warn("MATRIARCH_TURSO: Missing Turso credentials in environment. Site is in MOCK mode.");
 }
 
-export const turso = createClient({
-  url: url || "",
-  authToken: authToken || "",
-});
+// 🛡️ SAFETY GUARD: Prevent URL_INVALID crash if variables are missing
+export const turso = isConfigured 
+  ? createClient({
+      url: url,
+      authToken: authToken,
+    })
+  : {
+      execute: async () => ({ rows: [], columns: [] }),
+      batch: async () => [],
+      close: () => {},
+    } as any;
 
 /**
  * Helper to handle JSON serialization for SQLite
