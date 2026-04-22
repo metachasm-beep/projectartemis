@@ -1,9 +1,0 @@
-import sys
-import os
-
-# Add the backend directory to sys.path so we can import the app
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'backend'))
-
-from backend.app.main import app
-
-# Vercel's Python runtime expects 'app' to be the FastAPI instance

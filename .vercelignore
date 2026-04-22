@@ -1,0 +1,39 @@
+# Ignore heavy node_modules (Vercel handles frontend dependencies separately)
+node_modules
+dist
+public
+src
+
+# Ignore heavy secondary app folders
+mobile
+docs
+scratch
+tmp
+heroui-3
+pwa
+
+# Ignore bloat/downloaded repos
+antigravity-awesome-skills-main
+antigravity-skills-main
+awesome-design-md-main
+everything-claude-code-main
+get-shit-done-for-antigravity-main
+react-bits-main
+shadcnui-main
+stitch-skills-main
+pretext-main
+
+# Ignore static media and database files
+*.jpg
+*.jpeg
+*.png
+*.ips
+*.metriclog
+*.db
+*.sqlite
+*.sqlite3
+
+# Ignore git
+.git
+.agents
+.gsd
