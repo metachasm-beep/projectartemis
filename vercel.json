@@ -44,14 +44,6 @@
   ],
   "rewrites": [
     {
-      "source": "/favicon.png",
-      "destination": "/favicon.png"
-    },
-    {
-      "source": "/icon-(.*).png",
-      "destination": "/icon-$1.png"
-    },
-    {
       "source": "/api/v1/(.*)",
       "destination": "/api/index.py"
     },
