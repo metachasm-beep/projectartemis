@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { turso } from '@/lib/turso';
+import { SanctuaryService } from '@/services/sanctuary';
 import type { MatriarchProfile } from '@/types';
 import type { Session, User } from '@supabase/supabase-js';
 

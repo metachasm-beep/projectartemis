@@ -151,86 +151,83 @@ export const MigrationService = {
       push: 'matriarch_migration_push_v1'
     };
 
-    const pendingQueries: { sql: string }[] = [];
+    console.log(`🛠️ SANCTUARY_SYNC: Commencing integrity check...`);
 
-    // 1. Payment Schema (v1)
-    if (!localStorage.getItem(flags.payment)) {
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN payment_utr TEXT" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN payment_status TEXT DEFAULT 'NONE'" });
-    }
-
-    // 2. Audit Protocol (v2)
-    if (!localStorage.getItem(flags.audit)) {
-      pendingQueries.push({ sql: `
-        CREATE TABLE IF NOT EXISTS protocol_audits (
-          id TEXT PRIMARY KEY,
-          user_id TEXT NOT NULL,
-          action TEXT NOT NULL,
-          status TEXT DEFAULT 'PENDING',
-          metadata TEXT,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `});
-    }
-
-    // 3. System Tables (v4 - required by claims)
-    if (!localStorage.getItem(flags.system)) {
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS pending_claims (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, submitted_utr TEXT NOT NULL, status TEXT DEFAULT 'pending', metadata TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS received_payments (utr TEXT PRIMARY KEY, amount INTEGER NOT NULL, is_claimed INTEGER DEFAULT 0, sender_info TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS profile_analytics (id TEXT PRIMARY KEY, man_user_id TEXT, woman_user_id TEXT, metric_type TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS rank_logs (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, delta INTEGER NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS shortlists (id TEXT PRIMARY KEY, woman_user_id TEXT NOT NULL, man_user_id TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-      pendingQueries.push({ sql: "CREATE TABLE IF NOT EXISTS user_interactions (id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, target_id TEXT NOT NULL, interaction_type TEXT NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" });
-    }
-
-    // 4. Claims Metadata (v3)
-    if (!localStorage.getItem(flags.claims)) {
-      pendingQueries.push({ sql: "ALTER TABLE pending_claims ADD COLUMN metadata TEXT" });
-    }
-
-    // 5. Streak & Retention (v5)
-    if (!localStorage.getItem(flags.streak)) {
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN consecutive_days INTEGER DEFAULT 0" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN last_login_at TEXT" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN last_streak_at TEXT" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN total_session_seconds INTEGER DEFAULT 0" });
-    }
-
-    // 6. Profile Dossier (v6)
-    if (!localStorage.getItem(flags.dossier)) {
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN full_name TEXT" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN age INTEGER" });
-      pendingQueries.push({ sql: "ALTER TABLE profiles ADD COLUMN city TEXT" });
-    }
-    // 7. Sovereign Push Registry (v7)
-    if (!localStorage.getItem(flags.push)) {
-      pendingQueries.push({ sql: `
-        CREATE TABLE IF NOT EXISTS push_subscriptions (
-          user_id TEXT PRIMARY KEY,
-          subscription_json TEXT NOT NULL,
-          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-      `});
-    }
-
-    if (pendingQueries.length === 0) return;
-
-    console.log(`🛠️ SANCTUARY_SYNC: Commencing batch update of ${pendingQueries.length} protocols...`);
-    
     try {
-      // Execute as a single transaction (batch)
-      // Note: We use silent-fail behavior by checking column existence inside individual try/catches 
-      // is hard in batch, so we rely on the localStorage flags to ensure we never run a query twice.
-      await turso.batch(pendingQueries, 'write');
-      
-      // Mark all as completed
-      Object.values(flags).forEach(f => localStorage.setItem(f, 'COMPLETED'));
+      // 1. Payment Schema (v1)
+      if (!localStorage.getItem(flags.payment)) {
+        await silentAlter("ALTER TABLE profiles ADD COLUMN payment_utr TEXT", 'payment_utr');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN payment_status TEXT DEFAULT 'NONE'", 'payment_status');
+        localStorage.setItem(flags.payment, 'COMPLETED');
+      }
+
+      // 2. Audit Protocol (v2)
+      if (!localStorage.getItem(flags.audit)) {
+        await turso.execute(`
+          CREATE TABLE IF NOT EXISTS protocol_audits (
+            id TEXT PRIMARY KEY,
+            user_id TEXT NOT NULL,
+            action TEXT NOT NULL,
+            status TEXT DEFAULT 'PENDING',
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+        localStorage.setItem(flags.audit, 'COMPLETED');
+      }
+
+      // 3. System Tables (v4 - required by claims)
+      if (!localStorage.getItem(flags.system)) {
+        await turso.batch([
+          { sql: "CREATE TABLE IF NOT EXISTS pending_claims (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, submitted_utr TEXT NOT NULL, status TEXT DEFAULT 'pending', metadata TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+          { sql: "CREATE TABLE IF NOT EXISTS received_payments (utr TEXT PRIMARY KEY, amount INTEGER NOT NULL, is_claimed INTEGER DEFAULT 0, sender_info TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+          { sql: "CREATE TABLE IF NOT EXISTS profile_analytics (id TEXT PRIMARY KEY, man_user_id TEXT, woman_user_id TEXT, metric_type TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+          { sql: "CREATE TABLE IF NOT EXISTS rank_logs (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, delta INTEGER NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+          { sql: "CREATE TABLE IF NOT EXISTS shortlists (id TEXT PRIMARY KEY, woman_user_id TEXT NOT NULL, man_user_id TEXT NOT NULL, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" },
+          { sql: "CREATE TABLE IF NOT EXISTS user_interactions (id TEXT PRIMARY KEY, actor_id TEXT NOT NULL, target_id TEXT NOT NULL, interaction_type TEXT NOT NULL, reason TEXT, created_at DATETIME DEFAULT CURRENT_TIMESTAMP)" }
+        ], 'write');
+        localStorage.setItem(flags.system, 'COMPLETED');
+      }
+
+      // 4. Claims Metadata (v3)
+      if (!localStorage.getItem(flags.claims)) {
+        await silentAlter("ALTER TABLE pending_claims ADD COLUMN metadata TEXT", 'pending_claims.metadata');
+        localStorage.setItem(flags.claims, 'COMPLETED');
+      }
+
+      // 5. Streak & Retention (v5)
+      if (!localStorage.getItem(flags.streak)) {
+        await silentAlter("ALTER TABLE profiles ADD COLUMN consecutive_days INTEGER DEFAULT 0", 'consecutive_days');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN last_login_at TEXT", 'last_login_at');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN last_streak_at TEXT", 'last_streak_at');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN total_session_seconds INTEGER DEFAULT 0", 'total_session_seconds');
+        localStorage.setItem(flags.streak, 'COMPLETED');
+      }
+
+      // 6. Profile Dossier (v6)
+      if (!localStorage.getItem(flags.dossier)) {
+        await silentAlter("ALTER TABLE profiles ADD COLUMN full_name TEXT", 'full_name');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN age INTEGER", 'age');
+        await silentAlter("ALTER TABLE profiles ADD COLUMN city TEXT", 'city');
+        localStorage.setItem(flags.dossier, 'COMPLETED');
+      }
+
+      // 7. Sovereign Push Registry (v7)
+      if (!localStorage.getItem(flags.push)) {
+        await turso.execute(`
+          CREATE TABLE IF NOT EXISTS push_subscriptions (
+            user_id TEXT PRIMARY KEY,
+            subscription_json TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+        localStorage.setItem(flags.push, 'COMPLETED');
+      }
+
       console.log('🛠️ SANCTUARY_SYNC: Database integrity confirmed.');
     } catch (err: any) {
-      // If batch fails (e.g. one column exists), we try to fall back or just log
-      // In production, the localStorage flags prevent this.
-      console.error('🛠️ SANCTUARY_SYNC_ERROR:', err);
+      console.error('🛠️ SANCTUARY_SYNC_CRITICAL_FAILURE:', err);
     }
   }
 };
