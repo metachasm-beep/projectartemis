@@ -40,11 +40,11 @@
   "rewrites": [
     {
       "source": "/api/v1/(.*)",
-      "destination": "/index.py"
+      "destination": "/api/index.py"
     },
     {
       "source": "/api/v1/audit",
-      "destination": "/test_env.py"
+      "destination": "/api/test_env.py"
     },
     {
       "source": "/((?!api/|assets/|.*\\..*).*)",
