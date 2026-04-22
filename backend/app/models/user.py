@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, Relationship
+from pydantic import BaseModel, Field
 from datetime import datetime, date
 from typing import Optional, List
 import uuid
@@ -10,30 +10,25 @@ class UserRole(str, Enum):
     man = "man"
 
 
-class User(SQLModel, table=True):
-    __tablename__ = "users"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    phone: str = Field(unique=True, index=True)
-    email: Optional[str] = Field(default=None, unique=True)
+class User(BaseModel):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    phone: str = Field(index=True)
+    email: Optional[str] = Field(default=None)
     role: UserRole
-    firebase_uid: Optional[str] = Field(default=None, unique=True)
+    firebase_uid: Optional[str] = Field(default=None)
     is_active: bool = Field(default=True)
     is_banned: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
     # Matriarch Invite-Only Flow
-    invite_code_used: Optional[str] = Field(default=None, index=True)
+    invite_code_used: Optional[str] = Field(default=None)
     is_verified_Matriarch: bool = Field(default=False)
-    invited_by: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
+    invited_by: Optional[uuid.UUID] = Field(default=None)
 
 
-class Profile(SQLModel, table=True):
-    __tablename__ = "profiles"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", unique=True, index=True)
+class Profile(BaseModel):
+    user_id: uuid.UUID = Field(unique=True)
     full_name: Optional[str] = None
     bio: Optional[str] = None
     avatar_url: Optional[str] = None
@@ -60,12 +55,9 @@ class Profile(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class MaleRankProfile(SQLModel, table=True):
+class MaleRankProfile(BaseModel):
     """Exists only for men — tracks their visibility ranking."""
-    __tablename__ = "male_rank_profiles"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", unique=True, index=True)
+    user_id: uuid.UUID = Field(unique=True)
 
     # Rank components
     rank_score: float = Field(default=0.0)
@@ -88,11 +80,8 @@ class MaleRankProfile(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class FemalePreferences(SQLModel, table=True):
-    __tablename__ = "female_preferences"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", unique=True, index=True)
+class FemalePreferences(BaseModel):
+    user_id: uuid.UUID = Field(unique=True)
 
     min_age: int = Field(default=18)
     max_age: int = Field(default=50)
@@ -101,14 +90,11 @@ class FemalePreferences(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class InviteCode(SQLModel, table=True):
-    __tablename__ = "invite_codes"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    code: str = Field(unique=True, index=True)
-    creator_id: uuid.UUID = Field(foreign_key="users.id")
+class InviteCode(BaseModel):
+    code: str = Field(unique=True)
+    creator_id: uuid.UUID
     is_used: bool = Field(default=False)
-    used_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
+    used_by_id: Optional[uuid.UUID] = Field(default=None)
     created_at: datetime = Field(default_factory=datetime.utcnow)
     used_at: Optional[datetime] = None
     expires_at: Optional[datetime] = None

@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field
+from pydantic import BaseModel, Field
 from datetime import datetime
 from typing import Optional
 import uuid
@@ -20,13 +20,11 @@ class CommunicationMode(str, Enum):
     prompt_intro = "prompt_intro"
 
 
-class Match(SQLModel, table=True):
+class Match(BaseModel):
     """Created ONLY when a woman selects a man. Asymmetric by design."""
-    __tablename__ = "matches"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    woman_id: uuid.UUID = Field(foreign_key="users.id", index=True)
-    man_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    woman_id: uuid.UUID = Field(index=True)
+    man_id: uuid.UUID = Field(index=True)
     status: MatchStatus = Field(default=MatchStatus.active)
 
     # Communication is fully controlled by the woman
@@ -38,23 +36,19 @@ class Match(SQLModel, table=True):
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class SelectionEvent(SQLModel, table=True):
+class SelectionEvent(BaseModel):
     """Records every woman action on a man profile (audit log)."""
-    __tablename__ = "selection_events"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    woman_id: uuid.UUID = Field(foreign_key="users.id", index=True)
-    man_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    woman_id: uuid.UUID = Field(index=True)
+    man_id: uuid.UUID = Field(index=True)
     action: str  # "match", "skip", "save", "report", "block"
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
-class RankEvent(SQLModel, table=True):
+class RankEvent(BaseModel):
     """Immutable ledger of all rank-affecting events."""
-    __tablename__ = "rank_events"
-
-    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
-    user_id: uuid.UUID = Field(foreign_key="users.id", index=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4)
+    user_id: uuid.UUID = Field(index=True)
     event_type: str   # "boost_purchase", "referral_credit", "ad_watch", "moderation_penalty"
     delta: float      # positive = rank up, negative = rank down
     notes: Optional[str] = None
