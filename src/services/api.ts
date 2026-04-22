@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { supabase } from '@/lib/supabase';
 
 let rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 if (!rawBaseUrl.endsWith('/api/v1')) {
@@ -11,6 +12,19 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+});
+
+// 🛡️ AUTH_INTERCEPTOR: Automatically inject the Supabase token into all backend requests
+apiClient.interceptors.request.use(async (config) => {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      config.headers.Authorization = `Bearer ${session.access_token}`;
+    }
+  } catch (err) {
+    console.warn("API_AUTH_SILENT_FAILURE: Could not attach session token.", err);
+  }
+  return config;
 });
 
 export const api = {
