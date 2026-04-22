@@ -14,15 +14,26 @@ const apiClient = axios.create({
   },
 });
 
-// 🛡️ AUTH_INTERCEPTOR: Automatically inject the Supabase token into all backend requests
+import { auth as firebaseAuth } from '@/lib/firebase';
+
+// 🛡️ AUTH_INTERCEPTOR: Automatically inject the active Identity Token (Firebase or Supabase)
 apiClient.interceptors.request.use(async (config) => {
   try {
+    // 1. Try Firebase Token (Phone Auth)
+    const firebaseUser = firebaseAuth.currentUser;
+    if (firebaseUser) {
+      const token = await firebaseUser.getIdToken();
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    }
+
+    // 2. Try Supabase Token (Google Auth)
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.access_token) {
       config.headers.Authorization = `Bearer ${session.access_token}`;
     }
   } catch (err) {
-    console.warn("API_AUTH_SILENT_FAILURE: Could not attach session token.", err);
+    console.warn("API_AUTH_SILENT_FAILURE: Could not attach identity token.", err);
   }
   return config;
 });
