@@ -1,24 +1,32 @@
 import sys
 import os
 import traceback
-from starlette.applications import Starlette
-from starlette.responses import PlainTextResponse
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-try:
-    from app.main import app
-except Exception as e:
-    err_traceback = traceback.format_exc()
-    print("CRITICAL STARTUP ERROR:")
-    print(err_traceback)
-    
-    # Create a dummy Starlette app that just returns the error
-    app = Starlette()
-    @app.route("/{path:path}")
-    async def catch_all(request):
-        return PlainTextResponse(f"MATRIARCH STARTUP CRASH:\n\n{err_traceback}", status_code=500)
+# Define app at the absolute top level so Vercel's AST parser finds it immediately
+app = FastAPI()
 
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+startup_error = None
+
+try:
+    from app.main import app as real_app
+    app.mount("/", real_app)
+except Exception as e:
+    startup_error = traceback.format_exc()
+    print("MATRIARCH_CRITICAL_STARTUP_ERROR:", startup_error)
+
+@app.api_route("/{path_name:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"])
+async def catch_all(path_name: str):
+    if startup_error:
+        return JSONResponse(
+            status_code=500,
+            content={
+                "error": "MATRIARCH_STARTUP_CRASH",
+                "message": "The backend failed to initialize on Vercel.",
+                "traceback": startup_error.split("\n")
+            }
+        )
+    return JSONResponse(status_code=404, content={"error": "Not Found"})
