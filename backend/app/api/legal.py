@@ -17,7 +17,7 @@ class ConsentRequest(BaseModel):
     user_id: str
     document_type: str
     version: str
-    device_info: str | None = None
+    device_info: Optional[str] = None
 
 @router.get("/documents", response_model=List[LegalDoc])
 async def get_legal_documents():
