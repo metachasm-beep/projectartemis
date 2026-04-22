@@ -1,8 +1,7 @@
-# Ignore heavy node_modules (Vercel handles frontend dependencies separately)
+# Ignore heavy node_modules
 node_modules
 dist
-public
-src
+
 
 # Ignore heavy secondary app folders
 mobile
