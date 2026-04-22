@@ -4,7 +4,6 @@ node_modules
 dist
 public/models
 src/models
-src
 
 
 # Ignore heavy secondary app folders
