@@ -1,4 +1,4 @@
-import { turso } from '../_lib/turso.js';
+import { getTurso } from '../_lib/turso.js';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -22,6 +22,8 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
+
+  const turso = getTurso();
 
   const { user_id, jump_type, city = 'Delhi' } = req.body || {};
 

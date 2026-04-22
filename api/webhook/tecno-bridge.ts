@@ -1,4 +1,4 @@
-import { turso } from '../_lib/turso.js';
+import { getTurso } from '../_lib/turso.js';
 
 // MacroDroid / SMS-Forward webhook POST endpoint
 // Receives parsed bank notification text and stores payment records.
@@ -6,6 +6,8 @@ export default async function handler(req: any, res: any) {
   if (req.method !== 'POST') {
     return res.status(405).send('Method Not Allowed');
   }
+
+  const turso = getTurso();
 
   try {
     const { notification_text } = req.body || {};

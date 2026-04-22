@@ -1,11 +1,17 @@
 import { createClient } from '@libsql/client';
 import { VercelRequest, VercelResponse } from '@vercel/node';
 
-// Initialize Turso client (Credentials should be in env)
-const turso = createClient({
-  url: process.env.TURSO_DATABASE_URL || '',
-  authToken: process.env.TURSO_AUTH_TOKEN || '',
-});
+let turso: any = null;
+
+function getTurso() {
+  if (!turso) {
+    turso = createClient({
+      url: process.env.TURSO_DATABASE_URL || 'libsql://dummy-url-to-prevent-crash.turso.io',
+      authToken: process.env.TURSO_AUTH_TOKEN || '',
+    });
+  }
+  return turso;
+}
 
 /**
  * 🕵️ METADATA SERVICE:
@@ -25,7 +31,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     if (type === 'journal' && slug) {
       // Fetch post from Turso
-      const result = await turso.execute({
+      const client = getTurso();
+      const result = await client.execute({
         sql: "SELECT title, content, image_url FROM blog_submissions WHERE id = ? AND status = 'approved'",
         args: [slug as string]
       });
