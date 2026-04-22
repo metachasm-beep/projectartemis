@@ -39,6 +39,10 @@
   ],
   "rewrites": [
     {
+      "source": "/api/v1/(.*)",
+      "destination": "/api/v1.py"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
       "destination": "/index.html"
     }
