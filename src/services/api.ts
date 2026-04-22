@@ -111,12 +111,7 @@ export const api = {
   
   finalizeVerification: async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      const response = await apiClient.post('/verification/finalize', {}, {
-        headers: {
-          Authorization: `Bearer ${session?.access_token}`
-        }
-      });
+      const response = await apiClient.post('/verification/finalize', {});
       return response.data;
     } catch (error) {
       console.error('Error finalizing verification:', error);

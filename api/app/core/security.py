@@ -4,6 +4,8 @@ from supabase import create_client, Client
 from app.core.config import settings
 from typing import Optional
 import logging
+import firebase_admin
+from firebase_admin import auth as firebase_auth
 
 # Lazy initialization for Supabase client
 _supabase: Optional[Client] = None
@@ -20,6 +22,17 @@ def get_supabase() -> Client:
 
 logger = logging.getLogger(__name__)
 
+# Initialize Firebase Admin for token verification
+if not firebase_admin._apps:
+    try:
+        # For simple JWT verification, only the projectId is required
+        # Extract project ID from env if possible, else fallback
+        import os
+        project_id = os.environ.get("VITE_FIREBASE_PROJECT_ID", "vetta-b7fc4")
+        firebase_admin.initialize_app(options={'projectId': project_id})
+    except Exception as e:
+        logger.error(f"Failed to initialize Firebase Admin: {e}")
+
 class JWTBearer(HTTPBearer):
     def __init__(self, auto_error: bool = True):
         super(JWTBearer, self).__init__(auto_error=auto_error)
@@ -33,7 +46,6 @@ class JWTBearer(HTTPBearer):
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid authentication scheme.")
             token = credentials.credentials
         else:
-            # Check for token in cookies if Authorization header is missing
             token = request.cookies.get("access_token")
             
         if not token:
@@ -41,21 +53,63 @@ class JWTBearer(HTTPBearer):
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Authentication token required.")
             return None
 
+        # Dual Verification Strategy
         try:
-            # This call handles token verification and returns the user object
-            user_res = get_supabase().auth.get_user(token)
-            if not user_res or not user_res.user:
-                 raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+            user_data = None
+            provider = None
+
+            # Try Supabase Verification
+            try:
+                user_res = get_supabase().auth.get_user(token)
+                if user_res and user_res.user:
+                    user_data = {
+                        "id": user_res.user.id,
+                        "email": user_res.user.email,
+                    }
+                    provider = "supabase"
+            except:
+                pass
+
+            # Try Firebase Verification if Supabase failed
+            if not user_data:
+                try:
+                    decoded_token = firebase_auth.verify_id_token(token)
+                    user_data = {
+                        "id": decoded_token.get("uid"),
+                        "email": decoded_token.get("email"),
+                        "phone_number": decoded_token.get("phone_number"),
+                    }
+                    provider = "firebase"
+                except Exception as e:
+                    logger.error(f"FIREBASE_VERIFY_ERROR: {e}")
             
-            # Return the user object so it can be used in dependencies
+            if not user_data:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+            # 🏛️ REGISTRY SYNC: Fetch the authoritative role from Turso
+            from app.db.turso import turso_client
+            res = await turso_client.execute(
+                "SELECT role FROM profiles WHERE user_id = ?", 
+                [user_data["id"]]
+            )
+            
+            # Default to aspirant if no profile found yet
+            db_role = res.rows[0]["role"] if res.rows else "aspirant"
+
             return {
-                "id": user_res.user.id,
-                "email": user_res.user.email,
-                "role": user_res.user.user_metadata.get("role", "aspirant")
+                **user_data,
+                "role": db_role,
+                "provider": provider
             }
+
         except Exception as e:
             logger.error(f"JWT_VERIFICATION_FAILED: {str(e)}")
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=f"Authentication failed: {str(e)}")
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, 
+                detail="Authentication failed: Invalid identity token."
+            )
+
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
 
 # Dependency for routes
 auth_bearer = JWTBearer()
