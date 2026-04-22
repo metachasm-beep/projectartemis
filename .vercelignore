@@ -1,5 +1,6 @@
 # Ignore heavy node_modules
 node_modules
+**/node_modules
 dist
 
 
@@ -12,10 +13,9 @@ heroui-3
 pwa
 
 # Ignore bloat/downloaded repos
-antigravity-awesome-skills-main
-antigravity-skills-main
-awesome-design-md-main
+antigravity-*
 everything-claude-code-main
+awesome-design-md-main
 get-shit-done-for-antigravity-main
 react-bits-main
 shadcnui-main
@@ -31,6 +31,13 @@ pretext-main
 *.db
 *.sqlite
 *.sqlite3
+*.weights
+*.bin
+*.dll
+*.exe
+*.msi
+*.zip
+*.7z
 
 # Ignore git
 .git

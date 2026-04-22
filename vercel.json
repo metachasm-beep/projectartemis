@@ -1,4 +1,8 @@
 {
+  "builds": [
+    { "src": "package.json", "use": "@vercel/static-build" },
+    { "src": "api/*.py", "use": "@vercel/python" }
+  ],
   "headers": [
     {
       "source": "/(.*)",
