@@ -12,7 +12,7 @@ interface ManifestoEditorProps {
 }
 
 const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSuccess }) => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [imageUrl, setImageUrl] = useState('');
@@ -53,7 +53,7 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
       const success = await ManifestoService.submit({
         id: `manifesto_${Date.now()}`,
         author_id: user?.id || 'anonymous',
-        author_name: user?.full_name || 'Sanctuary Aspirant',
+        author_name: profile?.full_name || 'Sanctuary Aspirant',
         title,
         content,
         image_url: imageUrl || 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop', // Default space-themed image
@@ -189,10 +189,10 @@ const ManifestoEditor: React.FC<ManifestoEditorProps> = ({ isOpen, onClose, onSu
             <div className="p-8 border-t border-[#3C2F2F]/10 flex flex-col md:flex-row justify-between items-center gap-6 bg-[#3C2F2F]/[0.03]">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-full border border-[#3C2F2F]/10 overflow-hidden bg-rose-500/5">
-                   <img src={user?.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} className="w-full h-full object-cover" />
+                   <img src={profile?.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.id}`} className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <p className="text-[#3C2F2F] text-xs font-bold leading-none">{user?.full_name || 'Sanctuary Aspirant'}</p>
+                  <p className="text-[#3C2F2F] text-xs font-bold leading-none">{profile?.full_name || 'Sanctuary Aspirant'}</p>
                   <p className="text-[9px] uppercase tracking-widest text-[#3C2F2F]/30 mt-1">Verified Identity Protocol</p>
                 </div>
               </div>

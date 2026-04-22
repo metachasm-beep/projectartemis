@@ -118,6 +118,9 @@ export const ManifestoService = {
    */
   submit: async (data: Omit<ManifestoSubmission, 'status' | 'created_at'>) => {
     try {
+      // 🚀 Just-In-Time Registry Manifestation
+      await ManifestoService.initialize();
+
       const now = new Date().toISOString();
       await turso.execute({
         sql: "INSERT INTO blog_submissions (id, author_id, author_name, title, content, image_url, status, created_at) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?)",
