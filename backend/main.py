@@ -1,33 +1,10 @@
-# 🛰️ MATRIARCH_BOOT: Pre-flight check for Vercel Builder
-try:
-    from app.main import app as real_app
-    import_error = None
-except Exception as e:
-    real_app = None
-    import_error = str(e)
+import sys
+import os
 
-if real_app:
-    app = real_app
-else:
-    # 🕵️ DIAGNOSTIC_BRIDGE: Capture startup crashes and report them as JSON
-    from fastapi import FastAPI
-    from fastapi.responses import JSONResponse
-    app = FastAPI()
-    
-    @app.get("/{full_path:path}")
-    async def crash_report(full_path: str):
-        return JSONResponse(
-            status_code=500,
-            content={
-                "status": "CRASHED_ON_STARTUP",
-                "error": import_error,
-                "hint": "Check requirements.txt or internal imports."
-            }
-        )
+# Ensure the current directory is in the path for Vercel
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-@app.get("/")
-async def vercel_root():
-    return {"status": "online", "message": "MATRIARCH API (Vercel Runtime)"}
+from app.main import app
 
 if __name__ == "__main__":
     import uvicorn
