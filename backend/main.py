@@ -1,7 +1,14 @@
+# 🛰️ MATRIARCH_BOOT: Pre-flight check for Vercel Builder
 try:
-    from app.main import app as fastapi_app
-    app = fastapi_app
+    from app.main import app as real_app
+    import_error = None
 except Exception as e:
+    real_app = None
+    import_error = str(e)
+
+if real_app:
+    app = real_app
+else:
     # 🕵️ DIAGNOSTIC_BRIDGE: Capture startup crashes and report them as JSON
     from fastapi import FastAPI
     from fastapi.responses import JSONResponse
@@ -13,7 +20,7 @@ except Exception as e:
             status_code=500,
             content={
                 "status": "CRASHED_ON_STARTUP",
-                "error": str(e),
+                "error": import_error,
                 "hint": "Check requirements.txt or internal imports."
             }
         )
