@@ -31,7 +31,7 @@ export const ImageService = {
         console.error("CLOUDINARY_UPLOAD_ERROR:", errorData);
         // If 'ml_default' failed, it might be a missing preset issue.
         if (errorData.error?.message?.includes('Upload preset')) {
-           alert(`CLOUDINARY_ERROR: Unsigned preset '${UPLOAD_PRESET}' not found. Please create an unsigned preset in Cloudinary settings.`);
+           alert(`[MATRIARCH_VAULT] Cloudinary Error: Unsigned preset '${UPLOAD_PRESET}' not found. Please verify your Cloudinary settings.`);
         }
         return null;
       }
