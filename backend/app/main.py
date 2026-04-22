@@ -40,14 +40,15 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
+        "http://localhost:3000",
         "https://www.matriarchindia.com",
         "https://matriarchindia.com",
         "https://matriarch-api.vercel.app",
         "https://projectartemis-rlah214kw-metachasm-2559s-projects.vercel.app"
     ],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"],
 )
 
 # Core routes
