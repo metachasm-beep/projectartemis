@@ -5,8 +5,17 @@ from app.core.config import settings
 from typing import Optional
 import logging
 
-# Initialize Supabase Admin for user verification
-supabase: Client = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+# Lazy initialization for Supabase client
+_supabase: Optional[Client] = None
+
+def get_supabase() -> Client:
+    global _supabase
+    if _supabase is None:
+        if not settings.SUPABASE_URL or not settings.SUPABASE_KEY:
+            raise ValueError("SUPABASE_CONFIG_ERROR: Missing SUPABASE_URL or SUPABASE_KEY in environment.")
+        _supabase = create_client(settings.SUPABASE_URL, settings.SUPABASE_KEY)
+    return _supabase
+
 logger = logging.getLogger(__name__)
 
 class JWTBearer(HTTPBearer):
@@ -32,7 +41,7 @@ class JWTBearer(HTTPBearer):
 
         try:
             # This call handles token verification and returns the user object
-            user_res = supabase.auth.get_user(token)
+            user_res = get_supabase().auth.get_user(token)
             if not user_res or not user_res.user:
                  raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
             
