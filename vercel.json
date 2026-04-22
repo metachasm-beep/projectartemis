@@ -52,8 +52,24 @@
       "destination": "/api/test_env.py"
     },
     {
+      "source": "/assets/(.*)",
+      "destination": "/dist/assets/$1"
+    },
+    {
+      "source": "/favicon.png",
+      "destination": "/dist/favicon.png"
+    },
+    {
+      "source": "/icon-(.*).png",
+      "destination": "/dist/icon-$1.png"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/dist/manifest.json"
+    },
+    {
       "source": "/((?!api/|assets/|.*\\..*).*)",
-      "destination": "/index.html"
+      "destination": "/dist/index.html"
     }
   ]
 }
