@@ -11,14 +11,16 @@ TURSO_AUTH_TOKEN = os.getenv("TURSO_AUTH_TOKEN")
 
 class TursoDB:
     def __init__(self):
-        if not TURSO_URL or not TURSO_AUTH_TOKEN:
-            raise ValueError("MATRIARCH_TURSO: Missing TURSO_DATABASE_URL or TURSO_AUTH_TOKEN in environment.")
         self._client = None
 
     @property
     def client(self):
         if self._client is None:
-            self._client = libsql_client.create_client(url=TURSO_URL, auth_token=TURSO_AUTH_TOKEN)
+            url = os.getenv("TURSO_DATABASE_URL")
+            token = os.getenv("TURSO_AUTH_TOKEN")
+            if not url or not token:
+                raise ValueError("MATRIARCH_TURSO: Missing TURSO_DATABASE_URL or TURSO_AUTH_TOKEN in environment. Please check Vercel settings.")
+            self._client = libsql_client.create_client(url=url, auth_token=token)
         return self._client
 
     async def execute(self, sql: str, params: Optional[List[Any]] = None) -> Any:

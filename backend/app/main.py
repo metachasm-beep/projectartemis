@@ -79,6 +79,15 @@ app.add_middleware(
     allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With"],
 )
 
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(ValueError)
+async def value_error_handler(request, exc):
+    return JSONResponse(
+        status_code=500,
+        content={"error": "CONFIGURATION_ERROR", "message": str(exc)},
+    )
+
 # Core routes
 app.include_router(health.router, prefix="/api/v1", tags=["Health"])
 app.include_router(legal.router, prefix="/api/v1", tags=["Legal"])
