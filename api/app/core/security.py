@@ -53,63 +53,37 @@ class JWTBearer(HTTPBearer):
                 raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Authentication token required.")
             return None
 
-        # Dual Verification Strategy
         try:
-            user_data = None
-            provider = None
-
-            # Try Supabase Verification
-            try:
-                user_res = get_supabase().auth.get_user(token)
-                if user_res and user_res.user:
-                    user_data = {
-                        "id": user_res.user.id,
-                        "email": user_res.user.email,
-                    }
-                    provider = "supabase"
-            except:
-                pass
-
-            # Try Firebase Verification if Supabase failed
-            if not user_data:
-                try:
-                    decoded_token = firebase_auth.verify_id_token(token)
-                    user_data = {
-                        "id": decoded_token.get("uid"),
-                        "email": decoded_token.get("email"),
-                        "phone_number": decoded_token.get("phone_number"),
-                    }
-                    provider = "firebase"
-                except Exception as e:
-                    logger.error(f"FIREBASE_VERIFY_ERROR: {e}")
-            
-            if not user_data:
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
-
-            # 🏛️ REGISTRY SYNC: Fetch the authoritative role from Turso
+            # Strictly Supabase Verification
             from app.db.turso import turso_client
-            res = await turso_client.execute(
-                "SELECT role FROM profiles WHERE user_id = ?", 
-                [user_data["id"]]
+            user_res = get_supabase().auth.get_user(token)
+            if not user_res or not user_res.user:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired session.")
+            
+            user_id = user_res.user.id
+            
+            # Authoritative Role Lookup (Turso Registry)
+            # ---------------------------------------------------------
+            # Even for Supabase users, we fetch the role from our central 
+            # profiles table to ensure RBAC integrity.
+            profile_res = await turso_client.execute(
+                "SELECT role FROM profiles WHERE user_id = ?",
+                [user_id]
             )
             
-            # Default to aspirant if no profile found yet
-            db_role = res.rows[0]["role"] if res.rows else "aspirant"
-
+            role = "aspirant"
+            if profile_res.rows:
+                role = profile_res.rows[0]["role"]
+            
             return {
-                **user_data,
-                "role": db_role,
-                "provider": provider
+                "id": user_id,
+                "role": role,
+                "provider": "supabase"
             }
-
+            
         except Exception as e:
-            logger.error(f"JWT_VERIFICATION_FAILED: {str(e)}")
-            raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED, 
-                detail="Authentication failed: Invalid identity token."
-            )
-
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired token")
+            print(f"❌ AUTH_FAILURE: {e}")
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed: Invalid identity token.")
 
 # Dependency for routes
 auth_bearer = JWTBearer()

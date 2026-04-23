@@ -1,8 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
 import { turso } from '@/lib/turso';
-import { auth as firebaseAuth } from '@/lib/firebase';
-import { onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
 import { SanctuaryService } from '@/services/sanctuary';
 import type { MatriarchProfile } from '@/types';
 import type { Session, User } from '@supabase/supabase-js';
@@ -13,12 +11,11 @@ const COOLDOWN_MS = 3000; // 3-second hardened cooldown
 
 interface AuthContextType {
   session: Session | null;
-  user: User | FirebaseUser | null;
+  user: User | null;
   profile: MatriarchProfile | null;
   loading: boolean;
   fetchingProfile: boolean;
   isAdmin: boolean;
-  authProvider: 'supabase' | 'firebase' | null;
   setProfile: (p: MatriarchProfile | null) => void;
   refreshProfile: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -28,8 +25,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
-  const [user, setUser] = useState<User | FirebaseUser | null>(null);
-  const [authProvider, setAuthProvider] = useState<'supabase' | 'firebase' | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<MatriarchProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [fetchingProfile, setFetchingProfile] = useState(false);
@@ -127,60 +123,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [syncStreak]);
 
   const refreshProfile = useCallback(async () => {
-    const targetUserId = user?.id || (user as any)?.uid;
-    if (targetUserId) {
-      await fetchProfile(targetUserId);
+    if (user?.id) {
+      await fetchProfile(user.id);
     }
   }, [user, fetchProfile]);
 
   const signOut = useCallback(async () => {
-    if (authProvider === 'supabase') {
-      await supabase.auth.signOut();
-    } else if (authProvider === 'firebase') {
-      await firebaseAuth.signOut();
-    }
+    await supabase.auth.signOut();
     setSession(null);
     setUser(null);
     setProfile(null);
-    setAuthProvider(null);
-  }, [authProvider]);
+  }, []);
 
   useEffect(() => {
-    // 🛡️ Supabase Listener
-    const { data: { subscription: supabaseSub } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
+      setSession(currentSession);
+      setUser(currentSession?.user || null);
+      
       if (currentSession?.user) {
-        setSession(currentSession);
-        setUser(currentSession.user);
-        setAuthProvider('supabase');
         fetchProfile(currentSession.user.id);
-      } else if (!firebaseAuth.currentUser) {
-        setSession(null);
-        setUser(null);
+      } else {
         setProfile(null);
-        setAuthProvider(null);
-        setLoading(false);
-      }
-    });
-
-    // 🔥 Firebase Listener
-    const firebaseSub = onAuthStateChanged(firebaseAuth, (firebaseUser) => {
-      if (firebaseUser) {
-        setUser(firebaseUser);
-        setAuthProvider('firebase');
-        fetchProfile(firebaseUser.uid);
-      } else if (!session?.user) {
-        setUser(null);
-        setProfile(null);
-        setAuthProvider(null);
         setLoading(false);
       }
     });
 
     return () => {
-      supabaseSub.unsubscribe();
-      firebaseSub();
+      subscription.unsubscribe();
     };
-  }, [fetchProfile, session]);
+  }, [fetchProfile]);
 
   const isAdmin = profile?.role === 'admin';
 
@@ -191,11 +162,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     loading,
     fetchingProfile,
     isAdmin,
-    authProvider,
     setProfile,
     refreshProfile,
     signOut
-  }), [session, user, profile, loading, fetchingProfile, isAdmin, authProvider, refreshProfile, signOut]);
+  }), [session, user, profile, loading, fetchingProfile, isAdmin, refreshProfile, signOut]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

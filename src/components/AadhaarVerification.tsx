@@ -1,31 +1,20 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ShieldCheck, 
   Fingerprint, 
-  PhoneCall, 
-  Camera, 
   CheckCircle2, 
   ArrowRight,
   ShieldAlert,
-  Loader2,
   Scan,
-  Smartphone,
   CheckCircle
 } from 'lucide-react';
 import { Button } from './ui/button';
-import { Input } from './ui/input';
 import { api } from '@/services/api';
 import { diditService } from '@/services/DiditService';
 import { cn } from '@/lib/utils';
-import { auth as firebaseAuth } from '@/lib/firebase';
-import { 
-  RecaptchaVerifier, 
-  signInWithPhoneNumber, 
-  ConfirmationResult 
-} from 'firebase/auth';
 
-type VerificationStep = 'START' | 'ID_VERIFICATION' | 'LIVENESS' | 'PHONE_REGISTRY' | 'SUCCESS';
+type VerificationStep = 'START' | 'ID_VERIFICATION' | 'LIVENESS' | 'SUCCESS';
 
 interface AadhaarVerificationProps {
   userId: string;
@@ -36,20 +25,13 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   const [step, setStep] = useState<VerificationStep>('START');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [diditSessionId, setDiditSessionId] = useState<string | null>(null);
   
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [phoneOtp, setPhoneOtp] = useState('');
-  const [confirmationResult, setConfirmationResult] = useState<ConfirmationResult | null>(null);
-  
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
-
   // 🛡️ Global message listener for iframe feedback
   useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
+    const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === 'DIDIT_COMPLETE') {
         if (event.data.status === 'Approved') {
-          setStep('PHONE_REGISTRY');
+          await finalizeRegistry();
         } else {
           setError(event.data.message || 'Identity Handshake Failed.');
         }
@@ -59,48 +41,12 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     return () => window.removeEventListener('message', handleMessage);
   }, []);
 
-  // Registry Finalization logic
-  const handlePhoneRequest = async () => {
-    if (phoneNumber.length !== 10) return setError('Invalid mobile registry');
+  const finalizeRegistry = async () => {
     setLoading(true);
     setError(null);
-    
     try {
-      // 🛡️ Initialize Recaptcha
-      if (!recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current = new RecaptchaVerifier(firebaseAuth, 'recaptcha-anchor', {
-          'size': 'invisible'
-        });
-      }
-
-      const formattedPhone = `+91${phoneNumber}`;
-      const result = await signInWithPhoneNumber(firebaseAuth, formattedPhone, recaptchaVerifierRef.current);
-      setConfirmationResult(result);
-      setError('Registry Code Sent.');
-    } catch (err: any) {
-      console.error("FIREBASE_REGISTRY_ERROR:", err);
-      setError(err.message || 'Registry signal interrupted.');
-      if (recaptchaVerifierRef.current) {
-        recaptchaVerifierRef.current.clear();
-        recaptchaVerifierRef.current = null;
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePhoneVerify = async () => {
-    if (!confirmationResult || phoneOtp.length !== 6) return;
-    setLoading(true);
-    setError(null);
-
-    try {
-      // 1. Verify OTP via Firebase
-      await confirmationResult.confirm(phoneOtp);
-      
-      // 2. Finalize Identity in Sanctuary Registry
+      // Finalize Identity in Sanctuary Registry after Biometric success
       const res = await api.finalizeVerification();
-      
       if (res.success) {
         setStep('SUCCESS');
         setTimeout(onVerified, 3000);
@@ -109,7 +55,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       }
     } catch (err: any) {
       console.error("VERIFICATION_FINALIZATION_ERROR:", err);
-      setError(err.message || 'Invalid Registry Code or Sealing Failure.');
+      setError(err.message || 'Sealing Failure.');
     } finally {
       setLoading(false);
     }
@@ -118,7 +64,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   const progressSteps = [
     { id: 'ID_VERIFICATION', label: 'Identity', icon: Scan },
     { id: 'LIVENESS', label: 'Biometrics', icon: Fingerprint },
-    { id: 'PHONE_REGISTRY', label: 'Registry', icon: Smartphone },
+    { id: 'SUCCESS', label: 'Verified', icon: ShieldCheck },
   ];
 
   const getStepIndex = (s: VerificationStep) => {
@@ -126,17 +72,13 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       'START': -1,
       'ID_VERIFICATION': 0,
       'LIVENESS': 0, // Didit handles both
-      'PHONE_REGISTRY': 2,
-      'SUCCESS': 3
+      'SUCCESS': 2
     };
     return map[s];
   };
 
   return (
     <div className="w-full max-w-xl mx-auto p-12 space-y-12 bg-black/40 backdrop-blur-xl rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
-      {/* 🛡️ Firebase Recaptcha Anchor */}
-      <div id="recaptcha-anchor"></div>
-
       {/* 🔮 Verification Progress Rail */}
       <div className="flex justify-between items-center px-4 relative z-10">
         {progressSteps.map((s, i) => {
@@ -161,7 +103,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                   "text-[8px] font-black uppercase tracking-[0.2em] transition-colors",
                   isActive ? "text-mat-gold" : "text-white/10"
                 )}>
-                  {s.label === 'Registry' ? 'Phone' : s.label}
+                  {s.label}
                 </span>
               </div>
               {i < 2 && (
@@ -207,6 +149,12 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
              </div>
 
              <div className="w-full h-full rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
+                {loading && (
+                   <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
+                      <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
+                      <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Sealing Identity...</span>
+                   </div>
+                )}
                 <iframe 
                   src={diditService.getVerificationUrl()}
                   allow="camera *; microphone *; display-capture *;"
@@ -222,53 +170,6 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
              </div>
              
              <p className="text-[9px] text-white/20 uppercase tracking-[0.2em]">Our system uses Aadhaar checks and Face Liveness via Didit.</p>
-          </motion.div>
-        )}
-
-        {step === 'PHONE_REGISTRY' && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} key="phone" className="space-y-10 relative z-10">
-             <div className="space-y-2 text-center">
-                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 03: Final Step</span>
-                <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">Phone Verification</h3>
-             </div>
-
-             <div className="bg-white/[0.02] p-8 rounded-[2.5rem] border border-white/5 space-y-8 backdrop-blur-sm">
-                <div className="space-y-4">
-                   <p className="text-[10px] text-white/30 uppercase tracking-[0.3em] font-black text-center">Confirm Your Mobile Number</p>
-                   <div className="flex gap-3">
-                      <div className="w-24 h-18 bg-black/40 border border-white/10 rounded-2xl flex items-center justify-center text-mat-gold font-mono text-lg">+91</div>
-                      <Input 
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, '').slice(0, 10))}
-                        placeholder="Mobile Number"
-                        className="h-18 flex-1 bg-black/40 border-white/10 text-xl font-mono tracking-[0.3em] rounded-2xl text-white pl-6"
-                      />
-                   </div>
-                   <Button 
-                      onClick={handlePhoneRequest}
-                      disabled={loading || phoneNumber.length !== 10}
-                      className="w-full h-18 bg-white/[0.05] border border-white/10 text-white hover:bg-white/10 font-bold uppercase tracking-[0.3em] rounded-2xl text-[11px]"
-                   >
-                       {loading ? <Loader2 className="animate-spin" /> : 'Send Verification Code'}
-                   </Button>
-                </div>
-
-                <div className="space-y-4 mt-12 bg-black/20 p-6 rounded-3xl border border-white/5">
-                   <Input 
-                      value={phoneOtp}
-                      onChange={(e) => setPhoneOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      placeholder="______"
-                      className="h-20 bg-transparent border-white/10 text-center font-mono text-3xl tracking-[1em] rounded-2xl text-mat-gold focus:border-mat-gold"
-                   />
-                   <Button 
-                      onClick={handlePhoneVerify}
-                      disabled={loading || phoneOtp.length !== 6}
-                      className="w-full h-18 bg-mat-gold text-mat-obsidian hover:bg-white font-black uppercase tracking-[0.4em] rounded-2xl text-[12px] shadow-lg"
-                   >
-                      Confirm Identity
-                   </Button>
-                </div>
-             </div>
           </motion.div>
         )}
 
@@ -313,10 +214,9 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
 
       {/* 🏛️ SYSTEM ADVISORY */}
       <div className="flex justify-between items-center opacity-20 pt-4 border-t border-white/5 relative z-10">
-        <span className="text-[8px] font-black uppercase tracking-[0.4em]">System Version v2.4.7</span>
+        <span className="text-[8px] font-black uppercase tracking-[0.4em]">System Version v2.5.0</span>
         <span className="text-[8px] font-black uppercase tracking-[0.4em]">Secure Verification Check</span>
       </div>
     </div>
-
   );
 };
