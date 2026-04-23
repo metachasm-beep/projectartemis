@@ -79,6 +79,7 @@ app.include_router(communication.router, prefix="/api/v1", tags=["Communication"
 app.include_router(admin.router, prefix="/api/v1", tags=["Admin"])
 app.include_router(safety.router, prefix="/api/v1", tags=["Safety"])
 app.include_router(quests.router, prefix="/api/v1", tags=["Quests"])
+app.include_router(agentic.router, prefix="/api/v1", tags=["Agentic"])
 
 
 @app.post("/api/v1/admin/trigger-backfill", tags=["Admin"])

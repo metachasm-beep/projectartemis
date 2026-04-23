@@ -21,7 +21,20 @@ CREATE TABLE IF NOT EXISTS profiles (
     height INTEGER,
     referred_by_id TEXT, -- User who invited them
     data_processing_consent TEXT, -- JSON Object
+    skills TEXT DEFAULT '[]', -- JSON Array of Skill Objects (The Playbook)
+    active_brainstorm_id TEXT, -- Current AI Architecture session
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- 🏗️ Verification Implementation Plans: Tracks the agentic "seal" process
+CREATE TABLE IF NOT EXISTS verification_plans (
+    id TEXT PRIMARY KEY,
+    user_id TEXT NOT NULL REFERENCES profiles(user_id) ON DELETE CASCADE,
+    steps TEXT NOT NULL, -- JSON Array of {id, label, status, detail}
+    current_step_id TEXT,
+    status TEXT DEFAULT 'ACTIVE', -- 'ACTIVE', 'HALTED', 'SEALED'
+    started_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 

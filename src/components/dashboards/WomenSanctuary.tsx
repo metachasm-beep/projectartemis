@@ -144,7 +144,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         </div>
 
         {/* 3. COMPACT CONTROLS */}
-        <div className="w-full flex flex-col items-center gap-6 lg:gap-10 mt-auto flex-shrink-0">
+        <div className="w-full flex flex-col items-center gap-6 lg:gap-10 mt-auto flex-shrink-0 pb-6">
            <motion.button 
              whileHover={{ scale: 1.02 }}
              whileTap={{ scale: 0.98 }}
@@ -154,10 +154,20 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
              Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
            </motion.button>
 
-           <div className="flex items-center justify-center gap-12 w-full max-w-xs text-mat-noir/30">
+           <div className="flex items-center justify-center gap-12 w-full max-w-lg text-mat-noir/30">
+              <button onClick={() => setShowArchitect(true)} className="flex items-center gap-2 text-mat-rose-gold hover:text-mat-noir transition-colors group">
+                 <Sparkles size={12} className="group-hover:rotate-12 transition-transform" />
+                 <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Architect</span>
+              </button>
+
+              <button onClick={() => setShowPlaybook(true)} className="flex items-center gap-2 hover:text-mat-noir transition-colors group">
+                 <Compass size={12} className="group-hover:rotate-45 transition-transform" />
+                 <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Playbook</span>
+              </button>
+
               {!isVerified && (
                  <button onClick={() => setShowVerification(true)} className="flex items-center gap-2 text-mat-rose-gold animate-pulse">
-                    <Sparkles size={12} />
+                    <ShieldCheck size={12} />
                     <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Verify</span>
                  </button>
               )}
@@ -169,6 +179,31 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
       </main>
 
       {/* 🍎 MODALS ═══════════════════════════════════════ */}
+      <BrainstormingModal isOpen={showArchitect} onClose={() => setShowArchitect(false)} />
+      
+      <AnimatePresence>
+        {showPlaybook && (
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-0 bg-white/60 backdrop-blur-[50px]"
+            onClick={() => setShowPlaybook(false)}
+          >
+            <div className="w-full h-full flex flex-col relative pt-[72px]" onClick={(e) => e.stopPropagation()}>
+              <button onClick={() => setShowPlaybook(false)} 
+                className="absolute top-20 right-8 w-12 h-12 border border-mat-noir/10 text-mat-noir/40 hover:text-mat-rose-gold transition-all duration-500 z-20 flex items-center justify-center rounded-full bg-white shadow-lg"
+              >
+                <X size={20} />
+              </button>
+              
+              <div className="flex-1 w-full overflow-y-auto custom-scrollbar px-6 py-12">
+                <div className="max-w-4xl mx-auto">
+                   <Playbook />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {showFAQ && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}

@@ -7,7 +7,9 @@ import {
   ArrowRight,
   ShieldAlert,
   Scan,
-  CheckCircle
+  CheckCircle,
+  Zap,
+  Loader2
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { api } from '@/services/api';
@@ -15,6 +17,13 @@ import { diditService } from '@/services/DiditService';
 import { cn } from '@/lib/utils';
 
 type VerificationStep = 'START' | 'ID_VERIFICATION' | 'LIVENESS' | 'SUCCESS';
+
+interface PlanStep {
+  id: string;
+  label: string;
+  status: 'PENDING' | 'ACTIVE' | 'COMPLETED';
+  detail: string;
+}
 
 interface AadhaarVerificationProps {
   userId: string;
@@ -25,6 +34,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   const [step, setStep] = useState<VerificationStep>('START');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [plan, setPlan] = useState<PlanStep[]>([]);
   
   // 🛡️ Global message listener for iframe feedback
   useEffect(() => {
@@ -40,6 +50,22 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
   }, []);
+
+  // Fetch live implementation plan
+  useEffect(() => {
+    const fetchPlan = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/api/v1/agentic/verification/plan`, {
+          headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
+        });
+        const data = await response.json();
+        setPlan(data.steps);
+      } catch (err) {
+        console.error("Failed to fetch verification plan:", err);
+      }
+    };
+    if (step !== 'START' && step !== 'SUCCESS') fetchPlan();
+  }, [step]);
 
   const finalizeRegistry = async () => {
     setLoading(true);
@@ -142,34 +168,53 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         )}
 
         {(step === 'ID_VERIFICATION' || step === 'LIVENESS') && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 h-[500px]">
-             <div className="space-y-2">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 h-[500px] flex flex-col">
+             <div className="space-y-2 mb-4">
                 <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02: Identity Check</span>
                 <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">ID & Biometrics</h3>
              </div>
 
-             <div className="w-full h-full rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
-                {loading && (
-                   <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
-                      <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
-                      <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Sealing Identity...</span>
+             <div className="flex-1 flex gap-6 overflow-hidden">
+                {/* 🛡️ Implementation Plan Sidebar */}
+                <div className="w-48 flex flex-col gap-3 text-left">
+                   <div className="flex items-center gap-2 mb-2">
+                      <Zap size={12} className="text-mat-gold" />
+                      <span className="text-[9px] font-black text-white uppercase tracking-widest">Live Plan</span>
                    </div>
-                )}
-                <iframe 
-                  src={diditService.getVerificationUrl()}
-                  allow="camera *; microphone *; display-capture *;"
-                  className="w-full h-full border-none"
-                  title="Didit Verification Flow"
-                />
-                
-                {/* 🛡️ Privacy Overlay HUD */}
-                <div className="absolute top-4 right-4 flex items-center gap-2 px-3 py-1 bg-black/60 backdrop-blur-md rounded-full border border-white/10 pointer-events-none">
-                   <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                   <span className="text-[7px] text-white/60 font-black uppercase tracking-widest">Secure Encryption Active</span>
+                   {plan.map((p, i) => (
+                      <div key={i} className={cn(
+                        "p-3 rounded-xl border transition-all duration-500",
+                        p.status === 'ACTIVE' ? "bg-mat-gold/10 border-mat-gold/30" : 
+                        p.status === 'COMPLETED' ? "bg-green-500/10 border-green-500/20" : "bg-white/5 border-white/5 opacity-40"
+                      )}>
+                         <div className="flex items-center justify-between mb-1">
+                            <span className={cn("text-[8px] font-black uppercase", p.status === 'COMPLETED' ? "text-green-400" : "text-white/60")}>{p.label}</span>
+                            {p.status === 'ACTIVE' && <Loader2 size={8} className="animate-spin text-mat-gold" />}
+                            {p.status === 'COMPLETED' && <CheckCircle size={8} className="text-green-400" />}
+                         </div>
+                         <p className="text-[7px] text-white/30 font-medium leading-tight">{p.detail}</p>
+                      </div>
+                   ))}
+                </div>
+
+                {/* 🔮 Verification Iframe */}
+                <div className="flex-1 rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
+                    {loading && (
+                      <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
+                          <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
+                          <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Sealing Identity...</span>
+                      </div>
+                    )}
+                    <iframe 
+                      src={diditService.getVerificationUrl()}
+                      allow="camera *; microphone *; display-capture *;"
+                      className="w-full h-full border-none"
+                      title="Didit Verification Flow"
+                    />
                 </div>
              </div>
              
-             <p className="text-[9px] text-white/20 uppercase tracking-[0.2em]">Our system uses Aadhaar checks and Face Liveness via Didit.</p>
+             <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mt-4">Our system uses Aadhaar checks and Face Liveness via Didit.</p>
           </motion.div>
         )}
 
@@ -214,7 +259,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
 
       {/* 🏛️ SYSTEM ADVISORY */}
       <div className="flex justify-between items-center opacity-20 pt-4 border-t border-white/5 relative z-10">
-        <span className="text-[8px] font-black uppercase tracking-[0.4em]">System Version v2.5.0</span>
+        <span className="text-[8px] font-black uppercase tracking-[0.4em]">System Version v2.6.0</span>
         <span className="text-[8px] font-black uppercase tracking-[0.4em]">Secure Verification Check</span>
       </div>
     </div>
