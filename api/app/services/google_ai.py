@@ -9,11 +9,11 @@ class GoogleSocraticService:
     def __init__(self, api_key: str = GOOGLE_API_KEY):
         if api_key:
             genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel('gemini-1.5-pro')
+        self.model = genai.GenerativeModel('gemini-3-pro-preview')
 
     async def brainstorm_step(self, message: str, chat_history: list = []) -> str:
         """
-        Facilitates the Socratic Architect dialogue using Google Gemini.
+        Facilitates the Socratic Architect dialogue using Google Gemini 3.
         """
         system_instruction = (
             "You are the Matriarch Sanctuary Architect. You are helping an elite user design their digital sanctuary. "
@@ -24,7 +24,7 @@ class GoogleSocraticService:
         
         # Configure model with system instruction
         model = genai.GenerativeModel(
-            model_name="gemini-1.5-pro",
+            model_name="gemini-3-pro-preview",
             system_instruction=system_instruction
         )
         
@@ -43,7 +43,7 @@ class GoogleModerationService:
 
     async def moderate_profile(self, bio: str) -> tuple[bool, str]:
         """Vets a profile bio using Gemini."""
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        model = genai.GenerativeModel('gemini-3-flash-preview')
         prompt = (
             "You are the Matriarch Moderator. Vets the following bio for toxicity, "
             "harassment, or illegal content. Respond ONLY with 'APPROVED' or 'REJECTED: [REASON]'.\n\n"
