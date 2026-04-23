@@ -33,6 +33,7 @@ class Settings(BaseSettings):
     
     # AI/Agentic Settings
     COHERE_API_KEY: Optional[str] = None
+    GOOGLE_API_KEY: Optional[str] = None
 
     model_config = SettingsConfigDict(
         case_sensitive=True,

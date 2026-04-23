@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from app.core.security import auth_bearer
 from app.db.turso import turso_client
-from app.services.cohere_ai import architect
+from app.services.google_ai import architect
 import uuid
 import json
 from datetime import datetime
