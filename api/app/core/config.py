@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     VITE_CLOUDINARY_CLOUD_NAME: Optional[str] = None
     CLOUDINARY_API_KEY: Optional[str] = None
     CLOUDINARY_API_SECRET: Optional[str] = None
+    
+    # AI/Agentic Settings
+    COHERE_API_KEY: Optional[str] = None
 
     model_config = SettingsConfigDict(
         case_sensitive=True,

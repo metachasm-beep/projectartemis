@@ -3,6 +3,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from app.core.security import auth_bearer
 from app.db.turso import turso_client
+from app.services.cohere_ai import architect
 import uuid
 import json
 from datetime import datetime
@@ -24,27 +25,14 @@ class Skill(BaseModel):
 @router.post("/brainstorm")
 async def brainstorm_sanctuary(req: BrainstormRequest, user: dict = Depends(auth_bearer)):
     """
-    Socratic AI brainstorming for profile/sanctuary design.
-    In a production app, this would call an LLM.
-    Here we implement the state management for the 'Brainstorming' skill.
+    Socratic AI brainstorming for profile/sanctuary design using Cohere.
     """
     user_id = user["id"]
-    
-    # Check if session exists or create new
     session_id = req.session_id or str(uuid.uuid4())
     
-    # Logic: Log the brainstorm interaction and return the next 'Socratic' question
-    # This simulates the 'brainstorming' skill from Superpowers.
+    # Facilitate Socratic dialogue via Cohere
+    reply = await architect.brainstorm_step(req.message)
     
-    # Mocking AI response logic
-    questions = [
-        "What is the primary emotional resonance you want your Sanctuary to project?",
-        "If your personality was a high-fashion architectural style, what would it be?",
-        "What are the three non-negotiable boundaries you set for your digital peace?",
-        "How should your 'Aura' score reflect your real-world contributions?"
-    ]
-    
-    # Simple state tracking via Turso
     await turso_client.execute(
         "UPDATE profiles SET active_brainstorm_id = ? WHERE user_id = ?",
         [session_id, user_id]
@@ -52,7 +40,7 @@ async def brainstorm_sanctuary(req: BrainstormRequest, user: dict = Depends(auth
     
     return {
         "session_id": session_id,
-        "reply": questions[0], # In reality, dynamic based on 'message'
+        "reply": reply,
         "plan_preview": "Drafting Sanctuary architecture..."
     }
 
