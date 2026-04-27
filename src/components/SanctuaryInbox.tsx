@@ -43,8 +43,8 @@ export const SanctuaryInbox: React.FC<InboxProps> = ({ currentUserId, userRole, 
       setLoading(true);
       try {
         const query = userRole === 'woman' 
-          ? "SELECT m.*, p.full_name, p.photos FROM matches m JOIN profiles p ON m.man_user_id = p.user_id WHERE m.woman_user_id = ? AND m.status = 'ACTIVE' ORDER BY m.selected_at DESC"
-          : "SELECT m.*, p.full_name, p.photos FROM matches m JOIN profiles p ON m.woman_user_id = p.user_id WHERE m.man_user_id = ? AND m.status = 'ACTIVE' ORDER BY m.selected_at DESC";
+          ? "SELECT m.*, p.full_name, p.photos FROM matches m JOIN profiles p ON m.man_user_id = p.user_id WHERE m.woman_user_id = ? AND m.status IN ('ACTIVE', 'PENDING_ACCEPTANCE') ORDER BY m.selected_at DESC"
+          : "SELECT m.*, p.full_name, p.photos FROM matches m JOIN profiles p ON m.woman_user_id = p.user_id WHERE m.man_user_id = ? AND m.status IN ('ACTIVE', 'PENDING_ACCEPTANCE') ORDER BY m.selected_at DESC";
         
         const res = await turso.execute({
           sql: query,
