@@ -229,7 +229,7 @@ export const TrumpCard: React.FC<TrumpCardProps> = ({ profile, currentUserLocati
                <TooltipTrigger asChild>
                   <div className="space-y-1 md:space-y-1.5 cursor-help group/stat">
                      <div className="flex items-center justify-between px-0.5">
-                        <span className="text-[7px] md:text-[9px] font-bold uppercase tracking-wider text-white/30 group-hover/stat:text-mat-gold transition-colors">{s.label.slice(0,3)}</span>
+                        <span className="text-[6px] md:text-[8px] font-bold uppercase tracking-wide text-white/30 group-hover/stat:text-mat-gold transition-colors leading-tight">{s.label}</span>
                         <span className="text-[9px] md:text-[11px] font-black text-mat-gold italic">{s.value}</span>
                      </div>
                      <div className="w-full h-1 md:h-1.5 bg-black rounded-full overflow-hidden shadow-[inset_0_1px_3px_rgba(0,0,0,0.8)]">
