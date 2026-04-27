@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin, quests
+from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin, quests, agentic
 from app.core.config import settings
 from app.services.backfill_service import backfill_service
 from app.db.turso import turso_client
