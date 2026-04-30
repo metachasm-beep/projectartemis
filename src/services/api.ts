@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { supabase } from '@/lib/supabase';
 
-let rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-if (!rawBaseUrl.endsWith('/api/v1')) {
-  rawBaseUrl = rawBaseUrl.replace(/\/$/, '') + '/api/v1';
-}
-const API_BASE_URL = rawBaseUrl;
+const _isLocalDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const _envBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Force relative URLs in production because VITE_API_URL points to a dead Vercel deployment.
+const API_BASE_URL = _isLocalDev 
+  ? (_envBaseUrl.replace(/\/$/, '') + '/api/v1') 
+  : '/api/v1';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
