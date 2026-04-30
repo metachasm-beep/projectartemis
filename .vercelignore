@@ -24,10 +24,9 @@ shadcnui-main
 stitch-skills-main
 pretext-main
 
-# Ignore static media and database files
+# Ignore static media and database files (but NOT .png — needed for PWA icons)
 *.jpg
 *.jpeg
-*.png
 *.ips
 *.metriclog
 *.db
