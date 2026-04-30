@@ -9,3 +9,4 @@ cloudinary>=1.39.1
 pydantic[email]
 python-multipart
 google-generativeai>=0.4.0
+firebase-admin>=6.5.0
