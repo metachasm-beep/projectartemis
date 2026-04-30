@@ -42,11 +42,12 @@ async def migrate():
         CREATE TABLE IF NOT EXISTS coupon_uses (
             id TEXT PRIMARY KEY,
             coupon_code TEXT NOT NULL,
-            used_by_user_id TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            original_amount REAL NOT NULL,
             discounted_amount REAL NOT NULL,
             commission_earned REAL NOT NULL,
             payment_utr TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            approved_at DATETIME DEFAULT CURRENT_TIMESTAMP
         );
         """)
         print("Created coupon_uses table")
