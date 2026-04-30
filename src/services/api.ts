@@ -1,17 +1,11 @@
 import axios from 'axios';
 import { supabase } from '@/lib/supabase';
 
-// 🛡️ CORS ELIMINATION STRATEGY:
-// In production, use relative URLs so all API calls go to www.matriarchindia.com/api/v1/...
-// Vercel's rewrites in vercel.json proxy these to the Python backend — no CORS needed.
-// In local dev, fall back to VITE_API_URL or localhost.
-const _isLocalDev =
-  typeof window !== 'undefined' &&
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-
-const API_BASE_URL = _isLocalDev
-  ? ((import.meta.env.VITE_API_URL || 'http://localhost:8000').replace(/\/$/, '') + '/api/v1')
-  : '/api/v1'; // Same-origin in production — zero CORS issues
+let rawBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+if (!rawBaseUrl.endsWith('/api/v1')) {
+  rawBaseUrl = rawBaseUrl.replace(/\/$/, '') + '/api/v1';
+}
+const API_BASE_URL = rawBaseUrl;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
