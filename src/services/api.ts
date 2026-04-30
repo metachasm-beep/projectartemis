@@ -117,6 +117,40 @@ export const api = {
     }
   },
 
+  // ─── Influencer System ─────────────────────────────────────────────────────
+
+  validateCoupon: async (code: string) => {
+    const response = await apiClient.post('/influencer/coupon/validate', { code });
+    return response.data;
+  },
+
+  getInfluencerDashboard: async () => {
+    const response = await apiClient.get('/influencer/dashboard');
+    return response.data;
+  },
+
+  // ─── Admin Influencer Management ───────────────────────────────────────────
+
+  adminListInfluencers: async () => {
+    const response = await apiClient.get('/admin/influencer/list');
+    return response.data;
+  },
+
+  adminCreateCoupon: async (payload: { influencer_user_id: string, code: string, discount_pct: number }) => {
+    const response = await apiClient.post('/admin/influencer/create-coupon', payload);
+    return response.data;
+  },
+
+  adminToggleCoupon: async (code: string, isActive: boolean) => {
+    const response = await apiClient.post('/admin/influencer/toggle-coupon', { code, is_active: isActive });
+    return response.data;
+  },
+
+  adminSearchProfiles: async (query: string) => {
+    const response = await apiClient.get('/admin/profiles', { params: { query } });
+    return response.data;
+  },
 };
 
+export { API_BASE_URL }; // Export for use in fetch if needed
 export default api;

@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {
-  TrendingUp, IndianRupee, Users, Copy, CheckCircle2,
-  Sparkles, Loader2, RefreshCw, Tag, Clock, ChevronDown
-} from 'lucide-react';
+import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2 } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
+import { api } from '@/services/api';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -79,17 +77,10 @@ export const InfluencerDashboard: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const token = await (user as any)?.getIdToken?.();
-      const res = await fetch('/api/v1/influencer/dashboard', {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (!res.ok) {
-        const d = await res.json();
-        throw new Error(d.detail || 'Failed to load dashboard.');
-      }
-      setData(await res.json());
+      const data = await api.getInfluencerDashboard();
+      setData(data);
     } catch (e: any) {
-      setError(e.message || 'An error occurred.');
+      setError(e.response?.data?.detail || e.message || 'An error occurred.');
     } finally {
       setLoading(false);
     }

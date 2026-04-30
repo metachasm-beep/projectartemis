@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Zap, Crown, Sparkles, TrendingUp, ShieldCheck, ChevronRight, HelpCircle, Info, ArrowRight, CheckCircle2, Copy, Loader2, Tag, X, Gift
 } from 'lucide-react';
+import { api } from '@/services/api';
 
 // ─── TIER CONFIG ───────────────────────────────────────────────────────────────
 const JUMP_TIERS = [
@@ -83,24 +84,14 @@ export const PaymentScreen: React.FC = () => {
     setCouponStatus('checking');
     setCouponError('');
     try {
-      const res = await fetch('/api/v1/influencer/coupon/validate', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code: promoInput.trim() }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        setCouponStatus('invalid');
-        setCouponError(data.detail || 'Invalid coupon code.');
-        setAppliedCoupon(null);
-      } else {
-        setCouponStatus('valid');
-        setAppliedCoupon(data);
-        setShowPromo(false);
-      }
-    } catch {
+      const data = await api.validateCoupon(promoInput.trim());
+      setCouponStatus('valid');
+      setAppliedCoupon(data);
+      setShowPromo(false);
+    } catch (e: any) {
       setCouponStatus('invalid');
-      setCouponError('Could not validate code. Please try again.');
+      setCouponError(e.response?.data?.detail || 'Invalid coupon code.');
+      setAppliedCoupon(null);
     }
   };
 
@@ -128,29 +119,15 @@ export const PaymentScreen: React.FC = () => {
     setErrorMessage('');
 
     try {
-      const res = await fetch('/api/payments/claim', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          user_id: user?.id,
-          utr: utr.trim(),
-          jump_type: selectedTier.id,
-          city,
-          coupon_code: appliedCoupon?.code || '',
-        }),
+      const res = await api.post('/payments/claim', {
+        user_id: user?.id,
+        utr: utr.trim(),
+        jump_type: selectedTier.id,
+        city,
+        coupon_code: appliedCoupon?.code || '',
       });
 
-      // 🛡️ FRONTEND HARDENING: Check for JSON response
-      const contentType = res.headers.get('content-type');
-      if (!contentType || !contentType.includes('application/json')) {
-        const text = await res.text();
-        console.error('🔗 API_NON_JSON_ERROR:', text);
-        throw new Error('Registry Sync Failure: The sanctuary server returned an invalid response. Please try again in moments.');
-      }
-
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || 'Claim failed.');
+      const data = res.data;
       if (res.status === 202) {
         setStatus('pending');
       } else {

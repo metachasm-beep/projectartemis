@@ -31,19 +31,7 @@ interface UserSearchResult {
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-async function adminFetch(path: string, token: string, opts?: RequestInit) {
-  const res = await fetch(path, {
-    ...opts,
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-      ...(opts?.headers || {}),
-    },
-  });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data.detail || 'Request failed.');
-  return data;
-}
+import { api } from '@/services/api';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -71,11 +59,10 @@ export const AdminInfluencerPanel: React.FC = () => {
     setLoading(true);
     setError('');
     try {
-      const token = await getToken();
-      const data = await adminFetch('/api/v1/admin/influencer/list', token);
+      const data = await api.adminListInfluencers();
       setInfluencers(data.influencers || []);
     } catch (e: any) {
-      setError(e.message);
+      setError(e.response?.data?.detail || e.message);
     } finally {
       setLoading(false);
     }
@@ -96,8 +83,7 @@ export const AdminInfluencerPanel: React.FC = () => {
     if (q.length < 2) { setSearchResults([]); return; }
     setSearching(true);
     try {
-      const token = await getToken();
-      const data = await adminFetch(`/api/v1/admin/profiles?query=${encodeURIComponent(q)}`, token);
+      const data = await api.adminSearchProfiles(q);
       setSearchResults((data || []).slice(0, 6));
     } catch {
       setSearchResults([]);
@@ -111,14 +97,10 @@ export const AdminInfluencerPanel: React.FC = () => {
     setCreating(true);
     setCreateResult(null);
     try {
-      const token = await getToken();
-      const data = await adminFetch('/api/v1/admin/influencer/create-coupon', token, {
-        method: 'POST',
-        body: JSON.stringify({
-          influencer_user_id: selectedUser.user_id,
-          code: couponCode.trim().toUpperCase(),
-          discount_pct: 50,
-        }),
+      const data = await api.adminCreateCoupon({
+        influencer_user_id: selectedUser.user_id,
+        code: couponCode.trim().toUpperCase(),
+        discount_pct: 50,
       });
       setCreateResult({ success: true, message: `✓ Created ${data.code} for ${data.influencer_name}` });
       setShowForm(false);
@@ -128,7 +110,7 @@ export const AdminInfluencerPanel: React.FC = () => {
       setSearchResults([]);
       loadInfluencers();
     } catch (e: any) {
-      setCreateResult({ success: false, message: e.message });
+      setCreateResult({ success: false, message: e.response?.data?.detail || e.message });
     } finally {
       setCreating(false);
     }
@@ -136,16 +118,12 @@ export const AdminInfluencerPanel: React.FC = () => {
 
   const handleToggleCoupon = async (code: string, currentState: boolean) => {
     try {
-      const token = await getToken();
-      await adminFetch('/api/v1/admin/influencer/toggle-coupon', token, {
-        method: 'POST',
-        body: JSON.stringify({ code, is_active: !currentState }),
-      });
+      await api.adminToggleCoupon(code, !currentState);
       setInfluencers(prev => prev.map(inf =>
         inf.coupon_code === code ? { ...inf, is_active: !currentState } : inf
       ));
     } catch (e: any) {
-      alert(`Failed to toggle coupon: ${e.message}`);
+      alert(`Failed to toggle coupon: ${e.response?.data?.detail || e.message}`);
     }
   };
 
