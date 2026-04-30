@@ -318,8 +318,8 @@ export const AdminInfluencerPanel: React.FC = () => {
           <div className="grid grid-cols-3 divide-x divide-black/[0.03] border-b border-black/[0.03]">
             {[
               { label: 'Total Influencers', value: influencers.length, icon: Users },
-              { label: 'Total Referrals', value: influencers.reduce((s, i) => s + (i.total_referrals || 0), 0), icon: TrendingUp },
-              { label: 'Total Commissions', value: `₹${influencers.reduce((s, i) => s + (i.total_commission || 0), 0).toFixed(0)}`, icon: IndianRupee },
+              { label: 'Total Referrals', value: influencers.reduce((s, i) => s + Number(i.total_referrals || 0), 0), icon: TrendingUp },
+              { label: 'Total Commissions', value: `₹${influencers.reduce((s, i) => s + Number(i.total_commission || 0), 0).toFixed(0)}`, icon: IndianRupee },
             ].map(({ label, value, icon: Icon }) => (
               <div key={label} className="px-10 py-8 space-y-2">
                 <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">
@@ -370,14 +370,14 @@ export const AdminInfluencerPanel: React.FC = () => {
                       )}
                     </td>
                     <td className="px-10 py-6">
-                      <span className="text-2xl font-black italic text-slate-900 tabular-nums">{inf.total_referrals || 0}</span>
+                      <span className="text-2xl font-black italic text-slate-900 tabular-nums">{Number(inf.total_referrals) || 0}</span>
                     </td>
                     <td className="px-10 py-6">
-                      <span className="text-lg font-black italic text-slate-700">₹{(inf.total_sales || 0).toLocaleString('en-IN')}</span>
+                      <span className="text-lg font-black italic text-slate-700">₹{(Number(inf.total_sales) || 0).toLocaleString('en-IN')}</span>
                     </td>
                     <td className="px-10 py-6">
                       <div className="space-y-0.5">
-                        <span className="text-lg font-black italic text-amber-600">₹{(inf.pending_balance || 0).toFixed(2)}</span>
+                        <span className="text-lg font-black italic text-amber-600">₹{(Number(inf.pending_balance) || 0).toFixed(2)}</span>
                         <p className="text-[8px] text-slate-300 uppercase tracking-widest font-bold">Pending</p>
                       </div>
                     </td>
