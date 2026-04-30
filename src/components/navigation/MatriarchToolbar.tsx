@@ -1,12 +1,12 @@
 import React from 'react';
-import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy, Search, HelpCircle } from 'lucide-react';
+import { Home, User, MessageCircle, LogOut, Wallet, Shield, Trophy, Search, HelpCircle, TrendingUp } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { useEffect, useState } from 'react';
 import { turso } from '@/lib/turso';
 
 interface MatriarchToolbarProps {
-  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel';
-  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel') => void;
+  activeTab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel' | 'influencer_dashboard';
+  setActiveTab: (tab: 'discovery' | 'profile' | 'messages' | 'sovereign_browse' | 'store' | 'admin_panel' | 'influencer_dashboard') => void;
   onLogout: () => void;
   isImmersive?: boolean;
 }
@@ -40,6 +40,10 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
     ...(profile?.role === 'woman' 
       ? [{ id: 'discovery' as const, label: 'Browse', icon: Search }] 
       : [{ id: 'leaderboard' as const, label: 'Results', icon: Trophy }]
+    ),
+    ...(profile?.is_influencer 
+      ? [{ id: 'influencer_dashboard' as const, label: 'Earnings', icon: TrendingUp }] 
+      : []
     ),
     ...(profile?.role !== 'admin' 
       ? [{ id: 'profile' as const, label: profile?.role === 'woman' ? 'Home' : 'Profile', icon: profile?.role === 'woman' ? Home : User }] 
