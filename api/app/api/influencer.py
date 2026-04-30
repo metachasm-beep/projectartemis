@@ -170,9 +170,9 @@ async def get_influencer_dashboard(user: dict = Depends(auth_bearer)):
         "coupon": coupon,
         "pending_balance": profile.get("pending_balance", 0.0),
         "stats": {
-            "total_referrals": stats["total_referrals"],
-            "total_sales": round(stats["total_sales"], 2),
-            "total_commission": round(stats["total_commission"], 2),
+            "total_referrals": int(stats["total_referrals"]) if stats["total_referrals"] else 0,
+            "total_sales": round(float(stats["total_sales"]) if stats["total_sales"] else 0.0, 2),
+            "total_commission": round(float(stats["total_commission"]) if stats["total_commission"] else 0.0, 2),
         },
         "transactions": transactions,
     }
