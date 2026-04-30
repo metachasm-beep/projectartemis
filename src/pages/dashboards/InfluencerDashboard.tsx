@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2 } from 'lucide-react';
+import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2, Sparkles } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { api } from '@/services/api';
 
