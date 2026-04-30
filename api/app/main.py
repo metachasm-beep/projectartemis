@@ -21,14 +21,7 @@ app = FastAPI(
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://www.matriarchindia.com",
-        "https://matriarchindia.com",
-        "https://matriarch-pwa.vercel.app",
-        "https://matriarch-api.vercel.app",
-        "http://localhost:5173",
-        "http://localhost:3000"
-    ],
+    allow_origin_regex="https://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
