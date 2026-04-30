@@ -54,18 +54,32 @@ class JWTBearer(HTTPBearer):
             return None
 
         try:
-            # Strictly Supabase Verification
+            # 1. Try Supabase Verification (Social Auth)
+            try:
+                user_res = get_supabase().auth.get_user(token)
+                if user_res and user_res.user:
+                    user_id = user_res.user.id
+                    provider = "supabase"
+                else:
+                    user_id = None
+            except Exception:
+                user_id = None
+
+            # 2. Try Firebase Verification (Phone Auth)
+            if not user_id:
+                try:
+                    decoded_token = firebase_auth.verify_id_token(token)
+                    user_id = decoded_token['uid']
+                    provider = "firebase"
+                except Exception as fe:
+                    logger.debug(f"Firebase Auth failed: {fe}")
+                    user_id = None
+
+            if not user_id:
+                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired identity token.")
+
+            # 3. Authoritative Role Lookup (Turso Registry)
             from app.db.turso import turso_client
-            user_res = get_supabase().auth.get_user(token)
-            if not user_res or not user_res.user:
-                raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid or expired session.")
-            
-            user_id = user_res.user.id
-            
-            # Authoritative Role Lookup (Turso Registry)
-            # ---------------------------------------------------------
-            # Even for Supabase users, we fetch the role from our central 
-            # profiles table to ensure RBAC integrity.
             profile_res = await turso_client.execute(
                 "SELECT role FROM profiles WHERE user_id = ?",
                 [user_id]
@@ -78,9 +92,11 @@ class JWTBearer(HTTPBearer):
             return {
                 "id": user_id,
                 "role": role,
-                "provider": "supabase"
+                "provider": provider
             }
             
+        except HTTPException:
+            raise
         except Exception as e:
             print(f"❌ AUTH_FAILURE: {e}")
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication failed: Invalid identity token.")

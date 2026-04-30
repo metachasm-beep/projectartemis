@@ -41,24 +41,20 @@ export const VerifyCallback: React.FC = () => {
             return;
           }
 
-          // Update profile
-          const { error: updateError } = await supabase
-            .from('profiles')
-            .update({ 
-              is_verified: true,
-              is_active: true,
-              onboarding_status: 'COMPLETED',
-              updated_at: new Date().toISOString()
-            })
-            .eq('user_id', user.id);
+          // 🛡️ AUTHORITATIVE SYNC: Call the Registry API to seal identity
+          // This updates Turso, recalculates ranks, and logs the protocol audit.
+          const { api } = await import('@/services/api');
+          const res = await api.finalizeVerification();
 
-          if (updateError) throw updateError;
+          if (!res.success) {
+            throw new Error(res.message || "Identity Sealing Failed.");
+          }
 
           setStatus('SUCCESS');
           
           // Auto-redirect after 3 seconds for top-level
           setTimeout(() => {
-            navigate('/discovery');
+            navigate('/');
           }, 3000);
 
         } catch (err: any) {

@@ -1,4 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic import Field, AliasChoices
 from typing import Optional
 
 
@@ -7,8 +8,8 @@ class Settings(BaseSettings):
     API_V1_STR: str = "/api/v1"
 
     # Supabase configuration
-    SUPABASE_URL: str = ""
-    SUPABASE_ANON_KEY: str = ""
+    SUPABASE_URL: str = Field("", validation_alias=AliasChoices("SUPABASE_URL", "VITE_SUPABASE_URL"))
+    SUPABASE_ANON_KEY: str = Field("", validation_alias=AliasChoices("SUPABASE_ANON_KEY", "VITE_SUPABASE_ANON_KEY"))
     SUPABASE_KEY: str = ""
 
     # Database Settings
@@ -25,9 +26,8 @@ class Settings(BaseSettings):
     # Aadhaar/Identity Settings
     AADHAAR_MANDATORY: bool = True
 
-    # Cloudinary configuration (support both prefixed and non-prefixed)
-    CLOUDINARY_CLOUD_NAME: Optional[str] = None
-    VITE_CLOUDINARY_CLOUD_NAME: Optional[str] = None
+    # Cloudinary configuration
+    CLOUDINARY_CLOUD_NAME: Optional[str] = Field(None, validation_alias=AliasChoices("CLOUDINARY_CLOUD_NAME", "VITE_CLOUDINARY_CLOUD_NAME"))
     CLOUDINARY_API_KEY: Optional[str] = None
     CLOUDINARY_API_SECRET: Optional[str] = None
     
@@ -36,9 +36,9 @@ class Settings(BaseSettings):
     GOOGLE_API_KEY: Optional[str] = None
 
     model_config = SettingsConfigDict(
-        case_sensitive=True,
+        case_sensitive=False, # Make it case-insensitive for better env matching
         env_file=".env",
-        extra="ignore",  # allow DATABASE_URL and other extra env vars
+        extra="ignore",
     )
 
 

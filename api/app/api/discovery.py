@@ -177,8 +177,9 @@ async def unlock_advanced_filter(request: UnlockFilterRequest, user: dict = Depe
     tx_id = f"tx_filter_{int(datetime.now().timestamp())}"
     
     await turso_client.batch([
-        f"UPDATE profiles SET points = {new_points} WHERE user_id = '{user_id}'",
-        f"INSERT INTO point_transactions (id, user_id, delta, transaction_type, notes) VALUES ('{tx_id}', '{user_id}', {-cost}, 'filter_unlock', 'Unlocked {request.unlock_type} filters')"
+        ("UPDATE profiles SET points = ? WHERE user_id = ?", [new_points, user_id]),
+        ("INSERT INTO point_transactions (id, user_id, delta, transaction_type, notes) VALUES (?, ?, ?, ?, ?)", 
+         [tx_id, user_id, -cost, 'filter_unlock', f'Unlocked {request.unlock_type} filters'])
     ])
 
     return {"status": "success", "new_points": new_points, "unlocked": request.unlock_type}

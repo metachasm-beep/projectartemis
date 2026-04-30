@@ -75,18 +75,14 @@ async def finalize_verification(user: dict = Depends(auth_bearer)):
     user_id = user["id"]
     
     try:
-        # 1. Seal Identity in Registry
-        await turso_client.execute(
-            "UPDATE profiles SET is_verified = 1, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?",
-            [user_id]
-        )
-        
-        # 2. Record Protocol Audit
+        # 1. & 2. Seal Identity and Record Audit atomically
         audit_id = f"audit_{user_id}_{hashlib.md5(user_id.encode()).hexdigest()[:8]}"
-        await turso_client.execute(
-            "INSERT INTO protocol_audits (id, user_id, action, status, created_at) VALUES (?, ?, 'IDENTITY_SEALING', 'SUCCESS', CURRENT_TIMESTAMP)",
-            [audit_id, user_id]
-        )
+        
+        await turso_client.batch([
+            ("UPDATE profiles SET is_verified = 1, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?", [user_id]),
+            ("INSERT INTO protocol_audits (id, user_id, action, status, created_at) VALUES (?, ?, 'IDENTITY_SEALING', 'SUCCESS', CURRENT_TIMESTAMP)", 
+             [audit_id, user_id])
+        ])
         
         return {
             "success": True,

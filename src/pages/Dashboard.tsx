@@ -17,6 +17,7 @@ export const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<MatriarchProfile | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [totalAspirants, setTotalAspirants] = useState(100);
 
   useEffect(() => {
     const watchdog = setTimeout(() => {
@@ -75,7 +76,9 @@ export const Dashboard: React.FC = () => {
         ]).catch(() => [null, null]);
 
         const profilesViewedCount = metricsRes[0]?.rows[0]?.count || 0;
+        const totalAspirantsCount = Number(metricsRes[1]?.rows[0]?.total || 100);
 
+        setTotalAspirants(totalAspirantsCount);
         setProfile(finalProfile);
 
         const controller = new AbortController();
@@ -194,7 +197,7 @@ export const Dashboard: React.FC = () => {
           vibeRating: status?.vibe_rating,
           activeStreak: status?.consecutive_days,
           safetyLevel: status?.safetyLevel,
-          totalAspirants: Number(metricsRes[1]?.rows[0]?.total || 100)
+          totalAspirants: totalAspirants
         }} 
         setIsEditing={setIsEditing}
         onOpenSettings={() => setIsSettingsOpen(true)}
@@ -227,7 +230,5 @@ export const Dashboard: React.FC = () => {
     </>
   );
 };
-
-export default Dashboard;
 
 export default Dashboard;

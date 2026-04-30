@@ -55,23 +55,21 @@ export const api = {
     }
   },
   
-  getDiscoveryProfiles: async (womanId: string) => {
+  getDiscoveryProfiles: async (verifiedOnly: boolean = false) => {
     try {
-      // POST based on the new backend spec
-      const response = await apiClient.post('/discovery/feed', {
-        woman_id: womanId
+      const response = await apiClient.get('/discovery/potential-matches', {
+        params: { verified_only: verifiedOnly }
       });
-      return response.data.feed || [];
+      return response.data || [];
     } catch (error) {
       console.error('Error fetching discovery feed:', error);
       return [];
     }
   },
 
-  selectAction: async (womanId: string, manId: string, action: 'match' | 'skip' | 'save') => {
+  selectAction: async (manId: string, action: 'match' | 'skip' | 'save') => {
     try {
       const response = await apiClient.post('/discovery/select', {
-        woman_id: womanId,
         man_id: manId,
         action: action
       });

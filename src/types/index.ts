@@ -1,7 +1,7 @@
 import type { MessagingMatch } from '@/lib/messaging';
 
 export type Role = 'man' | 'woman' | 'admin';
-export type Tab = 'discovery' | 'profile' | 'messages' | 'admin' | 'sovereign_browse' | 'store' | 'admin_panel' | 'leaderboard' | 'picture_manager' | 'faq';
+export type Tab = 'discovery' | 'profile' | 'messages' | 'admin' | 'sovereign_browse' | 'store' | 'admin_panel' | 'leaderboard' | 'picture_manager' | 'faq' | 'influencer_dashboard';
 
 export interface MatriarchProfile {
   user_id: string;
@@ -35,6 +35,8 @@ export interface MatriarchProfile {
   longest_streak?: number;
   payment_utr?: string;
   payment_status?: 'NONE' | 'PENDING' | 'APPROVED' | 'REJECTED';
+  is_influencer?: boolean;
+  pending_balance?: number;
   data_processing_consent?: {
     analytics_accepted: boolean;
     ads_accepted: boolean;

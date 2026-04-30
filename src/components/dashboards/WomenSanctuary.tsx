@@ -18,6 +18,8 @@ import { cn } from '@/lib/utils';
 import { FAQ } from '@/components/FAQ';
 import { VerificationPaymentModal } from '@/components/verification/VerificationPaymentModal';
 import { useAuth } from '@/hooks/useAuth';
+import { BrainstormingModal } from '@/components/agentic/BrainstormingModal';
+import { Playbook } from '@/components/agentic/Playbook';
 
 /**
  * 🍎 GlassMetric: A compact, high-contrast stat card for zero-scroll layouts
@@ -70,6 +72,8 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 }) => {
   const [showFAQ, setShowFAQ] = React.useState(false);
   const [showVerification, setShowVerification] = React.useState(false);
+  const [showArchitect, setShowArchitect] = React.useState(false);
+  const [showPlaybook, setShowPlaybook] = React.useState(false);
   const { refreshProfile } = useAuth();
 
   const isVerified = profile?.is_verified;

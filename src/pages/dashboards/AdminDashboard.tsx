@@ -21,6 +21,7 @@ import { AdminBlogModeration } from './AdminBlogModeration';
 import { DirectMessageModal } from './DirectMessageModal';
 import { AdminAuraPanel } from './AdminAuraPanel';
 import { AdminManual } from './AdminManual';
+import { AdminInfluencerPanel } from './AdminInfluencerPanel';
 
 import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
@@ -35,7 +36,7 @@ interface AdminDashboardProps {
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, onOpenPictureManager, onTabChange }) => {
   const { user: currentUser } = useAuth();
-  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'MODERATION' | 'JOURNAL'>('ROSTER');
+  const [dashboardTab, setDashboardTab] = useState<'ROSTER' | 'TITHE' | 'COMMUNICATIONS' | 'MODERATION' | 'JOURNAL' | 'INFLUENCERS'>('ROSTER');
   const [metrics, setMetrics] = useState({ totalMen: 0, totalWomen: 0, verifiedProfiles: 0, totalForumTopics: 0 });
   const [searchQuery, setSearchQuery] = useState('');
   const [profiles, setProfiles] = useState<MatriarchProfile[]>([]);
@@ -438,6 +439,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                     <AdminCommunicationsHub onViewProfile={(p) => setSelectedProfile(p)} />
                   ) : dashboardTab === 'MODERATION' ? (
                     <AdminBlogModeration />
+                  ) : dashboardTab === 'INFLUENCERS' ? (
+                    <AdminInfluencerPanel />
                   ) : (
                     <AdminManual />
                   )}

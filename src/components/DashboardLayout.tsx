@@ -21,6 +21,7 @@ const PictureManager = lazy(() => import('@/components/dashboards/PictureManager
 const AadhaarVerification = lazy(() => import('@/components/AadhaarVerification').then(m => ({ default: m.AadhaarVerification })));
 const Leaderboard = lazy(() => import('@/components/discovery/Leaderboard').then(m => ({ default: m.Leaderboard })));
 const FAQSection = lazy(() => import('@/components/FAQSection').then(m => ({ default: m.FAQSection })));
+const InfluencerDashboard = lazy(() => import('@/pages/dashboards/InfluencerDashboard').then(m => ({ default: m.InfluencerDashboard })));
 
 const DashboardSkeleton = () => (
   <div className="w-full h-[60vh] flex items-center justify-center">
@@ -36,8 +37,9 @@ export const DashboardLayout: React.FC = () => {
   const bypassCtx = useContext(AuthBypassContext);
   const realAuth = useAuth();
   const { profile, signOut } = bypassCtx || realAuth;
-  // Define correct initial tab based on role so admins land on control panel, women on browse
-  const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' : 
+  // Define correct initial tab based on role so admins land on control panel, women on browse, influencers on their hub
+  const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' :
+                         (profile as any)?.is_influencer ? 'influencer_dashboard' :
                          profile?.role === 'woman' ? 'discovery' : 'profile';
   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
@@ -160,6 +162,12 @@ export const DashboardLayout: React.FC = () => {
                     onTabChange={(t) => setActiveTab(t as any)}
                     handleLogout={signOut}
                   />
+              </motion.div>
+            )}
+
+            {activeTab === 'influencer_dashboard' && (profile as any)?.is_influencer && (
+              <motion.div key="influencer_dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
+                <InfluencerDashboard />
               </motion.div>
             )}
 

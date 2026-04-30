@@ -99,11 +99,55 @@ class TursoDB:
             
         return TursoResultSet(rows, cols)
 
-    async def batch(self, queries: List[str]) -> List[Any]:
-        """Executes a batch of queries."""
+    async def batch(self, requests: List[tuple]) -> List[Any]:
+        """
+        Executes a batch of queries in a single transaction-like pipeline.
+        Each element in 'requests' should be a tuple of (sql, params).
+        """
+        client = self._get_client()
+        
+        pipeline_requests = []
+        for sql, params in requests:
+            formatted_args = []
+            for p in (params or []):
+                if isinstance(p, bool):
+                    formatted_args.append({"type": "boolean", "value": p})
+                elif isinstance(p, int):
+                    formatted_args.append({"type": "integer", "value": str(p)})
+                elif isinstance(p, float):
+                    formatted_args.append({"type": "float", "value": p})
+                elif p is None:
+                    formatted_args.append({"type": "null"})
+                else:
+                    formatted_args.append({"type": "text", "value": str(p)})
+
+            pipeline_requests.append({
+                "type": "execute",
+                "stmt": {
+                    "sql": sql,
+                    "args": formatted_args
+                }
+            })
+        
+        pipeline_requests.append({"type": "close"})
+        
+        payload = {"requests": pipeline_requests}
+        response = await client.post("/v2/pipeline", json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
         results = []
-        for query in queries:
-            results.append(await self.execute(query))
+        for i in range(len(requests)):
+            res_data = data["results"][i]["response"]["result"]
+            cols = [c["name"] for c in res_data["cols"]]
+            rows = []
+            for row_data in res_data["rows"]:
+                row = {}
+                for j, val in enumerate(row_data):
+                    row[cols[j]] = val.get("value")
+                rows.append(row)
+            results.append(TursoResultSet(rows, cols))
+            
         return results
 
     async def close(self):
