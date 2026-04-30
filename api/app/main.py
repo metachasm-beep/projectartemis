@@ -18,44 +18,20 @@ app = FastAPI(
     redoc_url="/api/redoc"
 )
 
-class SafetyCORSMiddleware(BaseHTTPMiddleware):
-    async def dispatch(self, request, call_next):
-        if request.method == "OPTIONS":
-            response = Response()
-        else:
-            response = await call_next(request)
-        
-        origin = request.headers.get("origin")
-        allowed_origins = [
-            "https://www.matriarchindia.com",
-            "https://matriarchindia.com",
-            "https://matriarch-pwa.vercel.app",
-            "https://matriarch-api.vercel.app",
-            "http://localhost:5173",
-            "http://localhost:3000"
-        ]
-        
-        # 🛡️ BROAD CORS: Support all Vercel previews and subdomains
-        is_allowed = origin in allowed_origins or (origin and (origin.endswith(".vercel.app") or origin.endswith("matriarchindia.com")))
-        
-        if is_allowed:
-            response.headers["Access-Control-Allow-Origin"] = origin or "*"
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
-            response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Accept, X-Requested-With, X-CSRF-Token"
-        
-        return response
-
-app.add_middleware(SafetyCORSMiddleware)
-
-
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.matriarchindia\.com|https://matriarchindia\.com|http://localhost:.*",
+    allow_origins=[
+        "https://www.matriarchindia.com",
+        "https://matriarchindia.com",
+        "https://matriarch-pwa.vercel.app",
+        "https://matriarch-api.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000"
+    ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "Accept", "X-Requested-With", "X-CSRF-Token"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 from fastapi.responses import JSONResponse

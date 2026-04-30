@@ -14,7 +14,7 @@
         },
         {
           "key": "Access-Control-Allow-Origin",
-          "value": "https://www.matriarchindia.com"
+          "value": "*"
         },
         {
           "key": "Access-Control-Allow-Methods",
