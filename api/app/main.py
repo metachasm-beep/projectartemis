@@ -18,39 +18,48 @@ app = FastAPI(
     redoc_url="/api/redoc"
 )
 
+CORS_ALLOWED_ORIGINS = [
+    "https://www.matriarchindia.com",
+    "https://matriarchindia.com",
+    "https://matriarch-pwa.vercel.app",
+    "https://matriarch-api.vercel.app",
+    "http://localhost:5173",
+    "http://localhost:3000",
+]
+
+def _is_allowed_origin(origin: str | None) -> bool:
+    if not origin:
+        return False
+    if origin in CORS_ALLOWED_ORIGINS:
+        return True
+    return origin.endswith(".vercel.app") or origin.endswith("matriarchindia.com")
+
 class SafetyCORSMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
+        origin = request.headers.get("origin", "")
+
+        # ✅ Short-circuit all CORS preflight (OPTIONS) requests immediately.
+        # Forwarding them downstream causes a 405 from the router, which strips headers.
+        if request.method == "OPTIONS":
+            response = Response(status_code=200)
+            if _is_allowed_origin(origin):
+                response.headers["Access-Control-Allow-Origin"] = origin
+                response.headers["Access-Control-Allow-Credentials"] = "true"
+                response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+                response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Accept, X-Requested-With, X-CSRF-Token"
+                response.headers["Access-Control-Max-Age"] = "86400"
+            return response
+
+        # For normal requests, proceed then inject headers
         response = await call_next(request)
-        origin = request.headers.get("origin")
-        
-        # 🛡️ SOVEREIGN CORS: Explicitly allow production and local origins
-        allowed_origins = [
-            "https://www.matriarchindia.com",
-            "https://matriarchindia.com",
-            "https://matriarch-pwa.vercel.app",
-            "https://matriarch-api.vercel.app",
-            "http://localhost:5173",
-            "http://localhost:3000"
-        ]
-        
-        if origin in allowed_origins or (origin and (origin.endswith(".vercel.app") or origin.endswith("matriarchindia.com"))):
+        if _is_allowed_origin(origin):
             response.headers["Access-Control-Allow-Origin"] = origin
             response.headers["Access-Control-Allow-Credentials"] = "true"
             response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
             response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Accept, X-Requested-With, X-CSRF-Token"
-        
         return response
 
 app.add_middleware(SafetyCORSMiddleware)
-
-# Also keep standard CORS as backup
-app.add_middleware(
-    CORSMiddleware,
-    allow_origin_regex=r"https://.*\.vercel\.app|https://.*\.matriarchindia\.com|https://matriarchindia\.com|http://localhost:.*",
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 from fastapi.responses import JSONResponse
 
