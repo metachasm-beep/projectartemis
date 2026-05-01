@@ -87,7 +87,7 @@ const Navbar: React.FC<{ onArchiveClick: () => void }> = ({ onArchiveClick }) =>
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 20 }}
-            className="fixed inset-0 bg-[#FFFDF9] z-[-1] flex flex-col items-center justify-center gap-8 md:hidden shadow-2xl"
+            className="fixed inset-0 bg-[#FFFDF9] z-[-1] flex flex-col items-center justify-center gap-8 md:hidden shadow-2xl pointer-events-auto"
           >
             {NAV_LINKS.map(link => (
               <button
