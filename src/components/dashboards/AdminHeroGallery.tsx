@@ -1,5 +1,10 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { uploadToCloudinary } from '@/lib/cloudinary';
 import { DEFAULT_IMAGES } from '@/components/landing/HeroFold';
 import { Trash2, Plus, Image as ImageIcon, ExternalLink, ShieldCheck, Upload, Loader2, CheckSquare, Square, X } from 'lucide-react';
+import { AdminService } from '@/services/admin';
+import { Input } from '@/components/ui/input';
 
 export const AdminHeroGallery: React.FC = () => {
   const [images, setImages] = useState<any[]>([]);
