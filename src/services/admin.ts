@@ -359,5 +359,41 @@ export const AdminService = {
     } catch (err) {
       return false;
     }
+  },
+
+  /**
+   * 🖼️ Hero Asset Management: Sovereign control over landing page visuals.
+   */
+  getHeroImages: async () => {
+    try {
+      const res = await turso.execute("SELECT * FROM system_assets WHERE asset_type = 'hero_slideshow' ORDER BY created_at DESC");
+      return res.rows;
+    } catch (err) {
+      return [];
+    }
+  },
+
+  addHeroImage: async (url: string) => {
+    try {
+      await turso.execute({
+        sql: "INSERT INTO system_assets (id, asset_type, url) VALUES (?, 'hero_slideshow', ?)",
+        args: [`asset_${Date.now()}`, url]
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
+  },
+
+  removeHeroImage: async (id: string) => {
+    try {
+      await turso.execute({
+        sql: "DELETE FROM system_assets WHERE id = ? AND asset_type = 'hero_slideshow'",
+        args: [id]
+      });
+      return true;
+    } catch (err) {
+      return false;
+    }
   }
 };

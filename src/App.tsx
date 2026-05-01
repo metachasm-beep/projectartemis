@@ -28,6 +28,7 @@ const App: React.FC = () => {
   useEffect(() => {
     if (!loading && !isBlogSubdomain) {
       window.postMessage('MATRIARCH_SANCTUARY_READY', window.location.origin);
+      MigrationService.runAll();
     }
   }, [loading, isBlogSubdomain]);
 

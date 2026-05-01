@@ -9,7 +9,8 @@ import {
   Fingerprint,
   Zap,
   Layers,
-  Tag
+  Tag,
+  Image as ImageIcon
 } from 'lucide-react';
 
 interface GlassHeaderProps {
@@ -42,6 +43,7 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
     { id: 'COMMUNICATIONS', label: 'Messages', icon: MessageSquare },
     { id: 'MODERATION', label: 'Blog Moderation', icon: Zap },
     { id: 'INFLUENCERS', label: 'Influencers', icon: Tag },
+    { id: 'GALLERY', label: 'Gallery', icon: ImageIcon },
     { id: 'JOURNAL', label: 'Manual', icon: BookOpen },
   ];
 

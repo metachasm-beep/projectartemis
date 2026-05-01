@@ -6,9 +6,11 @@ import { ArrowDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { LoginModal } from "@/components/auth/LoginModal";
 
+import { AdminService } from "@/services/admin";
+
 const CLOUDINARY_PREFIX = "https://res.cloudinary.com/dsmbhnjg5/image/fetch/f_auto,q_auto,w_1200,c_limit/https://www.matriarchindia.com";
 
-const IMAGES = [
+const DEFAULT_IMAGES = [
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_1.png`,
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_2.png`,
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_3.png`,
@@ -23,6 +25,7 @@ const HeroFold: React.FC = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [showHeavyAssets, setShowHeavyAssets] = useState(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+  const [heroImages, setHeroImages] = useState<string[]>(DEFAULT_IMAGES);
 
   useEffect(() => {
     // 🏎️ PERFORMANCE: Hydration Yield
@@ -31,6 +34,19 @@ const HeroFold: React.FC = () => {
       setShowHeavyAssets(true);
       console.log("MATRIARCH_PERF: Hero Hydration Yield Complete.");
     };
+
+    const fetchImages = async () => {
+      try {
+        const images = await AdminService.getHeroImages();
+        if (images && images.length > 0) {
+          setHeroImages(images.map((img: any) => img.url));
+        }
+      } catch (e) {
+        console.warn("Hero Gallery Recall Fail:", e);
+      }
+    };
+
+    fetchImages();
 
     if (window.requestIdleCallback) {
       window.requestIdleCallback(() => yieldHydration());
@@ -63,10 +79,10 @@ const HeroFold: React.FC = () => {
   useEffect(() => {
     if (!showHeavyAssets) return;
     const timer = setInterval(() => {
-      setImageIndex((prev) => (prev + 1) % IMAGES.length);
+      setImageIndex((prev) => (prev + 1) % heroImages.length);
     }, 7500); // 🏎️ Increased timing by 50%
     return () => clearInterval(timer);
-  }, [showHeavyAssets]);
+  }, [showHeavyAssets, heroImages.length]);
 
   return (
     <section 
@@ -92,14 +108,14 @@ const HeroFold: React.FC = () => {
                 transition={{ duration: 3 }}
                 className="absolute inset-0 mat-ken-burns"
               >
-                <img 
-                   src={IMAGES[imageIndex]} 
-                   alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
-                   className="absolute inset-0 w-full h-full object-cover mat-portrait-aesthetic"
-                   // @ts-ignore - fetchpriority is supported but not always in React types
-                   fetchpriority={imageIndex === 0 ? "high" : "low"}
-                   loading={imageIndex === 0 ? "eager" : "lazy"}
-                />
+                 <img 
+                    src={heroImages[imageIndex]} 
+                    alt={`Exclusive Sanctuary Visual ${imageIndex + 1}`}
+                    className="absolute inset-0 w-full h-full object-cover mat-portrait-aesthetic"
+                    // @ts-ignore - fetchpriority is supported but not always in React types
+                    fetchpriority={imageIndex === 0 ? "high" : "low"}
+                    loading={imageIndex === 0 ? "eager" : "lazy"}
+                 />
               </motion.div>
             </AnimatePresence>
             {/* Cinematic Shadow Vignette (Removes White Tint) */}

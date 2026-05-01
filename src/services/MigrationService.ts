@@ -122,17 +122,28 @@ export const MigrationService = {
   /**
    * v6 — Profile Dossier: Adds legacy/missing columns required for leaderboard and discovery.
    */
-  migrateProfileDossier: async () => {
-    const flag = 'matriarch_migration_dossier_v1';
+  },
+
+  /**
+   * v8 — Hero Assets: Creates system_assets table for landing page management.
+   */
+  migrateHeroAssets: async () => {
+    const flag = 'matriarch_migration_hero_assets_v1';
     if (localStorage.getItem(flag)) return;
     try {
-      await silentAlter("ALTER TABLE profiles ADD COLUMN full_name TEXT;", 'full_name');
-      await silentAlter("ALTER TABLE profiles ADD COLUMN age INTEGER;", 'age');
-      await silentAlter("ALTER TABLE profiles ADD COLUMN city TEXT;", 'city');
+      await turso.execute(`
+        CREATE TABLE IF NOT EXISTS system_assets (
+          id TEXT PRIMARY KEY,
+          asset_type TEXT NOT NULL,
+          url TEXT NOT NULL,
+          metadata TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
       localStorage.setItem(flag, 'COMPLETED');
-      console.log('🏛️ DOSSIER_MIGRATION: age/city/full_name manifested.');
+      console.log('🖼️ HERO_ASSETS: System assets table manifested.');
     } catch (err) {
-      console.error('🏛️ DOSSIER_MIGRATION_FAILURE:', err);
+      console.error('🖼️ HERO_ASSETS_FAILURE:', err);
     }
   },
 
@@ -148,7 +159,8 @@ export const MigrationService = {
       system: 'matriarch_migration_system_v1',
       streak: 'matriarch_migration_streak_v2',
       dossier: 'matriarch_migration_dossier_v1',
-      push: 'matriarch_migration_push_v1'
+      push: 'matriarch_migration_push_v1',
+      hero_assets: 'matriarch_migration_hero_assets_v1'
     };
 
     console.log(`🛠️ SANCTUARY_SYNC: Commencing integrity check...`);
@@ -223,6 +235,20 @@ export const MigrationService = {
           )
         `);
         localStorage.setItem(flags.push, 'COMPLETED');
+      }
+      
+      // 8. Hero Assets (v8)
+      if (!localStorage.getItem(flags.hero_assets)) {
+        await turso.execute(`
+          CREATE TABLE IF NOT EXISTS system_assets (
+            id TEXT PRIMARY KEY,
+            asset_type TEXT NOT NULL,
+            url TEXT NOT NULL,
+            metadata TEXT,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+          )
+        `);
+        localStorage.setItem(flags.hero_assets, 'COMPLETED');
       }
 
       console.log('🛠️ SANCTUARY_SYNC: Database integrity confirmed.');
