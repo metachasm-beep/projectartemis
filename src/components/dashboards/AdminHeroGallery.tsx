@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trash2, Plus, Image as ImageIcon, ExternalLink, ShieldCheck } from 'lucide-react';
-import { AdminService } from '@/services/admin';
-import { Input } from '@/components/ui/input';
+import { uploadToCloudinary } from '@/lib/cloudinary';
+import { Trash2, Plus, Image as ImageIcon, ExternalLink, ShieldCheck, Upload, Loader2 } from 'lucide-react';
 
 export const AdminHeroGallery: React.FC = () => {
   const [images, setImages] = useState<any[]>([]);
   const [newUrl, setNewUrl] = useState('');
   const [loading, setLoading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     loadImages();
@@ -29,6 +29,24 @@ export const AdminHeroGallery: React.FC = () => {
     setLoading(false);
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setLoading(true);
+    try {
+      const url = await uploadToCloudinary(file, 'hero_slideshow');
+      const ok = await AdminService.addHeroImage(url);
+      if (ok) await loadImages();
+    } catch (err) {
+      console.error("Upload failed", err);
+      alert("Manifestation failed: Sovereign vault is temporarily sealed.");
+    } finally {
+      setLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const handleRemove = async (id: string) => {
     if (!window.confirm("Archiving this visual will remove it from the Sanctuary's entry. Proceed?")) return;
     const ok = await AdminService.removeHeroImage(id);
@@ -39,7 +57,7 @@ export const AdminHeroGallery: React.FC = () => {
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+      <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-8">
         <div className="space-y-2">
           <div className="flex items-center gap-3">
              <div className="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white">
@@ -50,20 +68,39 @@ export const AdminHeroGallery: React.FC = () => {
           <p className="text-slate-400 text-xs font-medium tracking-widest uppercase italic">Curate the Visual Identity of the Zenith Stage</p>
         </div>
 
-        <div className="flex gap-4 w-full md:w-auto">
-          <Input 
-            placeholder="INSERT IMAGE URL..." 
-            className="h-14 px-6 bg-white border-black/[0.03] rounded-2xl focus:border-slate-900 focus:ring-4 focus:ring-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-900 placeholder:text-slate-200 shadow-sm md:w-96" 
-            value={newUrl}
-            onChange={(e) => setNewUrl(e.target.value)}
+        <div className="flex flex-col md:flex-row gap-4 w-full xl:w-auto">
+          <input 
+            type="file" 
+            ref={fileInputRef} 
+            className="hidden" 
+            accept="image/*" 
+            onChange={handleFileUpload} 
           />
+          
           <button 
-            onClick={handleAdd}
-            disabled={loading || !newUrl}
-            className="h-14 px-8 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-800 transition-all shadow-xl disabled:opacity-50 flex items-center gap-3"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={loading}
+            className="h-14 px-8 bg-white border border-slate-200 text-slate-900 rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-50 transition-all shadow-sm disabled:opacity-50 flex items-center justify-center gap-3"
           >
-            <Plus size={14} /> Manifest
+            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+            LOCAL / DRIVE UPLOAD
           </button>
+
+          <div className="flex gap-2 flex-1 md:flex-none">
+            <Input 
+              placeholder="OR INSERT IMAGE URL..." 
+              className="h-14 px-6 bg-white border-black/[0.03] rounded-2xl focus:border-slate-900 focus:ring-4 focus:ring-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-900 placeholder:text-slate-200 shadow-sm md:w-80" 
+              value={newUrl}
+              onChange={(e) => setNewUrl(e.target.value)}
+            />
+            <button 
+              onClick={handleAdd}
+              disabled={loading || !newUrl}
+              className="h-14 px-8 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-800 transition-all shadow-xl disabled:opacity-50 flex items-center gap-3"
+            >
+              <Plus size={14} /> Manifest
+            </button>
+          </div>
         </div>
       </div>
 
