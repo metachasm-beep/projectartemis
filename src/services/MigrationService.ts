@@ -119,9 +119,18 @@ export const MigrationService = {
     }
   },
 
-  /**
-   * v6 — Profile Dossier: Adds legacy/missing columns required for leaderboard and discovery.
-   */
+  migrateProfileDossier: async () => {
+    const flag = 'matriarch_migration_dossier_v1';
+    if (localStorage.getItem(flag)) return;
+    try {
+      await silentAlter("ALTER TABLE profiles ADD COLUMN full_name TEXT;", 'full_name');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN age INTEGER;", 'age');
+      await silentAlter("ALTER TABLE profiles ADD COLUMN city TEXT;", 'city');
+      localStorage.setItem(flag, 'COMPLETED');
+      console.log('🏛️ DOSSIER_MIGRATION: age/city/full_name manifested.');
+    } catch (err) {
+      console.error('🏛️ DOSSIER_MIGRATION_FAILURE:', err);
+    }
   },
 
   /**
