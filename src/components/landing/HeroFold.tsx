@@ -10,7 +10,7 @@ import { AdminService } from "@/services/admin";
 
 const CLOUDINARY_PREFIX = "https://res.cloudinary.com/dsmbhnjg5/image/fetch/f_auto,q_auto,w_1200,c_limit/https://www.matriarchindia.com";
 
-const DEFAULT_IMAGES = [
+export const DEFAULT_IMAGES = [
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_1.png`,
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_2.png`,
   `${CLOUDINARY_PREFIX}/assets/slideshow/h_3.png`,
