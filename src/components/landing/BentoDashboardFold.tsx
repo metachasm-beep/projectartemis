@@ -1,7 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ShieldCheck, Crown, Activity, Heart, Zap, Lock, ExternalLink, ArrowUpRight } from 'lucide-react';
-import StarBorder from '@/components/bits/StarBorder';
+import { ShieldCheck, Crown, Activity, Heart, Zap, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { SEO_COPY } from '@/content/copy';
 import { Badge } from '@/components/ui/badge';
 
@@ -167,36 +166,6 @@ const BentoDashboardFold: React.FC<BentoDashboardFoldProps> = ({ onOpenLegal, on
           </motion.div>
         </div>
 
-        {/* Central Aesthetic CTA Block */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="w-full py-16 flex flex-col items-center text-center space-y-8"
-        >
-          <div className="space-y-4">
-            <ShieldCheck className="w-8 h-8 text-mat-gold mx-auto opacity-50" strokeWidth={1} />
-            <h2 className="text-3xl md:text-5xl font-display text-mat-slate uppercase tracking-tight">
-              Grace & <span className="text-mat-gold italic font-display tracking-normal">Security</span>
-            </h2>
-            <p className="text-mat-slate/50 font-light max-w-xl mx-auto">
-              Matriarch is for women who are done performing for algorithms. It creates an elegant dynamic of choice.
-            </p>
-          </div>
-          
-          <div className="flex flex-col sm:flex-row gap-6 mt-4">
-            <button onClick={() => window.location.href = '/signin'}>
-              <StarBorder className="px-10 py-4 text-sm font-black tracking-[0.2em] bg-mat-gold text-white border-mat-gold hover:scale-105 transition-transform duration-300">
-                REQUEST ACCESS
-              </StarBorder>
-            </button>
-            <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')}>
-              <StarBorder className="px-10 py-4 text-sm font-black tracking-[0.2em] bg-mat-slate text-mat-cream border-mat-slate hover:scale-105 transition-transform duration-300">
-                VIEW JOURNAL
-              </StarBorder>
-            </button>
-          </div>
-        </motion.div>
 
         {/* Footer (Simplified & Embedded) */}
         <div className="mt-auto pt-8 border-t border-mat-gold/10 w-full pb-4">
