@@ -6,11 +6,7 @@ import GrainOverlay from "@/components/landing/GrainOverlay";
 import HeroFold from "@/components/landing/HeroFold";
 
 // 🚀 Performance: Lazy load sections below the fold
-const HowItWorksFold = lazy(() => import("@/components/landing/HowItWorksFold"));
-const LandscapeProtocolFold = lazy(() => import("@/components/landing/LandscapeProtocolFold"));
-const SecurityFold = lazy(() => import("@/components/landing/SecurityFold"));
-const SelectionMatrixFold = lazy(() => import("@/components/landing/SelectionMatrixFold"));
-const Footer = lazy(() => import("@/components/landing/Footer"));
+const BentoDashboardFold = lazy(() => import("@/components/landing/BentoDashboardFold"));
 
 import MatriarchLogo from "@/components/MatriarchLogo";
 import { PWAInstallFAB } from "@/components/ui/PWAInstallFAB";
@@ -192,13 +188,8 @@ const LandingPage: React.FC = () => {
         <div ref={secondaryFoldRef} className="relative z-20 min-h-[10px]">
           {showSecondaryFolds && (
             <Suspense fallback={<div className="h-40 bg-mat-cream" />}>
-              <HowItWorksFold />
-              <LandscapeProtocolFold />
-              <SelectionMatrixFold />
-              <SecurityFold />
-              <Footer 
+              <BentoDashboardFold 
                 onOpenLegal={setLegalSlug} 
-                onScrollTo={scrollToSection}
                 onScrollToTop={scrollToTop}
               />
             </Suspense>

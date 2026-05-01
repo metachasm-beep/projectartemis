@@ -57,7 +57,7 @@ export const AdminAuraPanel: React.FC = () => {
   };
 
   return (
-    <div className="space-y-12 min-h-[60vh] pb-24 px-10">
+    <div className="space-y-12 min-h-[60vh] pb-24 px-4 md:px-10">
       <div className="flex justify-between items-center px-4 md:px-0 border-b border-black/[0.03] pb-8">
           <div className="space-y-2">
              <div className="flex items-center gap-4">
@@ -90,7 +90,7 @@ export const AdminAuraPanel: React.FC = () => {
                 <div className="bg-white border border-black/[0.02] rounded-[2.5rem] overflow-hidden shadow-[0_20px_40px_-10px_rgba(0,0,0,0.03)] group hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700">
                   <div className="flex flex-col md:flex-row divide-y md:divide-y-0 md:divide-x divide-black/[0.02]">
                     {/* Identity Data */}
-                    <div className="p-10 md:w-1/3 bg-black/[0.01] flex items-center gap-8">
+                    <div className="p-6 md:p-10 md:w-1/3 bg-black/[0.01] flex items-center gap-8">
                        <div className="relative">
                           <div className="w-20 h-20 rounded-[1.75rem] p-0.5 bg-slate-50 shadow-inner">
                              <div className="w-full h-full rounded-[1.6rem] overflow-hidden bg-slate-100">
@@ -121,7 +121,7 @@ export const AdminAuraPanel: React.FC = () => {
                     </div>
 
                     {/* Transaction Payload */}
-                    <div className="p-10 flex-1 grid grid-cols-2 lg:grid-cols-3 gap-8 items-center bg-white">
+                    <div className="p-6 md:p-10 flex-1 grid grid-cols-2 lg:grid-cols-3 gap-8 items-center bg-white">
                        <div className="space-y-2">
                           <p className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.4em] italic leading-none">Access Grade</p>
                           <div className="flex items-center gap-2">
@@ -145,7 +145,7 @@ export const AdminAuraPanel: React.FC = () => {
                     </div>
 
                     {/* Protocol Execution */}
-                     <div className="p-10 bg-black/[0.01] flex items-center justify-center gap-4">
+                     <div className="p-6 md:p-10 bg-black/[0.01] flex items-center justify-center gap-4">
                         <TooltipProvider>
                            <Tooltip>
                               <TooltipTrigger asChild>

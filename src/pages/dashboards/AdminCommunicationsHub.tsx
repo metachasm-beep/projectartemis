@@ -37,7 +37,7 @@ export const AdminCommunicationsHub: React.FC<{ onViewProfile?: (profile: any) =
 
   if (selectedMatch) {
     return (
-      <div className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-24 px-10">
+      <div className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-700 pb-24 px-4 md:px-10">
         <div className="flex justify-between items-center">
           <button 
             onClick={() => setSelectedMatch(null)}
@@ -49,7 +49,7 @@ export const AdminCommunicationsHub: React.FC<{ onViewProfile?: (profile: any) =
             TERMINATE_MONITORING_CONDUIT
           </button>
 
-          <div className="flex items-center gap-12 bg-white/40 px-10 py-4 rounded-[2rem] border border-black/[0.03] backdrop-blur-md">
+          <div className="flex items-center gap-4 md:gap-12 bg-white/40 px-4 md:px-10 py-4 rounded-[2rem] border border-black/[0.03] backdrop-blur-md">
              {[
                { name: selectedMatch.man_name, photos: selectedMatch.man_photos, role: 'man' },
                { name: selectedMatch.woman_name, photos: selectedMatch.woman_photos, role: 'woman' }
@@ -88,7 +88,7 @@ export const AdminCommunicationsHub: React.FC<{ onViewProfile?: (profile: any) =
   }
 
   return (
-    <div className="space-y-12 pb-24 px-10">
+    <div className="space-y-12 pb-24 px-4 md:px-10">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-4 md:px-0 border-b border-black/[0.03] pb-8 gap-8">
           <div className="space-y-2">
              <div className="flex items-center gap-4">
@@ -141,7 +141,7 @@ export const AdminCommunicationsHub: React.FC<{ onViewProfile?: (profile: any) =
                     transition={{ duration: 0.6, delay: i * 0.05 }}
                     className="group"
                   >
-                     <div className="bg-white border border-black/[0.02] rounded-[2.5rem] p-10 flex flex-col md:flex-row items-center justify-between gap-10 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 group relative overflow-hidden">
+                     <div className="bg-white border border-black/[0.02] rounded-[2.5rem] p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-10 hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700 group relative overflow-hidden">
                         <div className="absolute inset-y-0 left-0 w-1 bg-slate-900 opacity-0 group-hover:opacity-100 transition-opacity" />
                         
                         <div className="flex items-center gap-10 flex-1 relative z-10">

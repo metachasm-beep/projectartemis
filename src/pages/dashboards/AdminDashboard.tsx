@@ -143,7 +143,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
       
       {itemToDelete && createPortal(
         <div className="fixed inset-0 z-[100000] flex items-center justify-center p-4 bg-white/40 backdrop-blur-2xl animate-in fade-in duration-700">
-          <div className="bg-white p-16 rounded-[4rem] max-w-xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)]">
+          <div className="bg-white p-8 md:p-16 rounded-[4rem] max-w-xl w-full border border-black/[0.03] shadow-[0_40px_100px_rgba(0,0,0,0.1)]">
             <div className="w-24 h-24 bg-rose-50 text-rose-500 rounded-3xl flex items-center justify-center mx-auto mb-10">
                <ShieldAlert size={48} strokeWidth={1} />
             </div>
@@ -191,7 +191,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                </div>
 
                {/* Info Section */}
-               <div className="flex-1 p-12 md:p-24 flex flex-col justify-between overflow-y-auto custom-scrollbar">
+               <div className="flex-1 p-6 md:p-24 flex flex-col justify-between overflow-y-auto custom-scrollbar">
                   <div className="space-y-16">
                      <div className="flex justify-between items-start">
                         <div className="space-y-4">
@@ -200,7 +200,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                                 {selectedProfile.role} // {selectedProfile.is_verified ? 'IDENTITY_SEALED' : 'PENDING_VERIFICATION'}
                               </Badge>
                            </div>
-                           <h2 className="text-7xl font-black text-slate-900 tracking-tighter italic leading-none">{selectedProfile.full_name}</h2>
+                           <h2 className="text-4xl md:text-7xl font-black text-slate-900 tracking-tighter italic leading-none">{selectedProfile.full_name}</h2>
                            <div className="flex items-center gap-6">
                               <p className="text-2xl font-medium text-slate-400 italic">{selectedProfile.city || 'Location Unknown'}</p>
                               <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />
@@ -315,7 +315,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
              >
                 <EtherealStatus metrics={metrics} />
 
-                <div className="max-w-[1600px] mx-auto px-10 space-y-12">
+                <div className="max-w-[1600px] mx-auto px-4 md:px-10 space-y-12">
                   <div className="flex justify-between items-center bg-white/40 p-4 rounded-3xl border border-black/[0.03] shadow-sm backdrop-blur-md">
                      <div className="flex items-center gap-4">
                         <div className="w-1.5 h-1.5 rounded-full bg-slate-400 animate-pulse" />
@@ -354,7 +354,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                       </div>
 
                       <div className="bg-white rounded-[4rem] border border-black/[0.02] overflow-hidden shadow-[0_40px_100px_-20px_rgba(0,0,0,0.05)] relative min-h-[500px]">
-                           <div className="hidden md:block h-[60vh] overflow-y-auto scrollbar-hide">
+                           <div className="w-full h-[60vh] overflow-y-auto overflow-x-auto scrollbar-hide">
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
                                  <thead className="bg-[#f8fafc] sticky top-0 z-20">
                                     <tr>

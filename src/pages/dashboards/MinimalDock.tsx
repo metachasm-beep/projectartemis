@@ -18,7 +18,7 @@ export const MinimalDock: React.FC<MinimalDockProps> = ({
   loading
 }) => {
   return (
-    <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[5000] w-full max-w-xl px-6">
+    <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-[5000] w-full max-w-xl px-2 md:px-6">
       <motion.div 
         initial={{ y: 80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -35,17 +35,17 @@ export const MinimalDock: React.FC<MinimalDockProps> = ({
            </button>
         </div>
 
-        <div className="flex-1 flex justify-center gap-4 px-6 border-x border-black/[0.03] mx-2">
+        <div className="flex-1 flex justify-center gap-2 md:gap-4 px-2 md:px-6 border-x border-black/[0.03] mx-2">
            <button 
              onClick={onBroadcast}
-             className="px-8 py-3.5 bg-slate-900 border border-slate-800 text-white rounded-[1.25rem] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-slate-800 hover:scale-105 transition-all flex items-center gap-3 shadow-xl active:scale-95 group"
+             className="px-4 md:px-8 py-3 md:py-3.5 bg-slate-900 border border-slate-800 text-white rounded-[1.25rem] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-slate-800 hover:scale-105 transition-all flex items-center gap-3 shadow-xl active:scale-95 group"
            >
               <Share2 size={16} strokeWidth={2} className="group-hover:rotate-12 transition-transform" />
               Manifest Decree
            </button>
            <button 
              onClick={onCulling}
-             className="px-8 py-3.5 bg-rose-50 border border-rose-100 text-rose-500 rounded-[1.25rem] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-rose-100 hover:scale-105 transition-all flex items-center gap-3 active:scale-95 group"
+             className="px-4 md:px-8 py-3 md:py-3.5 bg-rose-50 border border-rose-100 text-rose-500 rounded-[1.25rem] text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-rose-100 hover:scale-105 transition-all flex items-center gap-3 active:scale-95 group"
            >
               <Zap size={16} strokeWidth={2} className="group-hover:scale-110 transition-transform" />
               Excision

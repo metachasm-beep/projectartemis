@@ -20,9 +20,9 @@ export const EtherealStatus: React.FC<EtherealStatusProps> = ({ metrics }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-10">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-4 md:px-10">
       {items.map((item) => (
-        <div key={item.label} className="group bg-white rounded-[2.5rem] p-8 border border-black/[0.03] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700">
+        <div key={item.label} className="group bg-white rounded-[2.5rem] p-6 md:p-8 border border-black/[0.03] shadow-[0_20px_40px_-15px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.08)] transition-all duration-700">
            <div className="flex justify-between items-start mb-6">
               <div className={`p-4 rounded-2xl ${item.bg} ${item.color} transition-all duration-500 group-hover:scale-110`}>
                  <item.icon size={22} strokeWidth={1.5} />

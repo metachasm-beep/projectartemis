@@ -322,10 +322,14 @@ export const AdminService = {
       
       await turso.batch([
         { sql: "UPDATE pending_claims SET status = 'approved' WHERE id = ?", args: [claimId] },
-        { sql: "UPDATE profiles SET tokens = tokens + ? WHERE user_id = ?", args: [amount, claim.user_id] }
+        { sql: "UPDATE profiles SET tokens = tokens + ?, is_verified = 1 WHERE user_id = ?", args: [amount, claim.user_id] }
       ], "write");
 
-      await AdminService.sendDirectAdminMessage(claim.user_id, `Your tithe [UTR: ${claim.submitted_utr}] has been verified. ${amount} Aura tokens credited.`);
+      const message = meta.type === 'verification' 
+        ? `Your Verification Tithe [UTR: ${claim.submitted_utr}] has been approved. Your Identity Seal is now active.`
+        : `Your tithe [UTR: ${claim.submitted_utr}] has been verified. ${amount} Aura tokens credited, and your Identity Seal is now active.`;
+
+      await AdminService.sendDirectAdminMessage(claim.user_id, message);
       metricsCache = null;
       return true;
     } catch (err) {

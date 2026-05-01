@@ -46,7 +46,7 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
   ];
 
   return (
-    <div className="w-full bg-white/40 backdrop-blur-3xl border-b border-black/[0.03] px-10 py-5 flex flex-col gap-6 sticky top-0 z-[1000] shadow-[0_1px_0_rgba(255,255,255,1)]">
+    <div className="w-full bg-white/40 backdrop-blur-3xl border-b border-black/[0.03] px-4 md:px-10 py-4 flex flex-col gap-6 sticky top-0 z-[1000] shadow-[0_1px_0_rgba(255,255,255,1)]">
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-5">
           <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05)] border border-black/[0.02]">
@@ -84,7 +84,7 @@ export const GlassHeader: React.FC<GlassHeaderProps> = ({
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-10">
+      <div className="flex flex-wrap items-center justify-between gap-4 md:gap-10">
         <div className="flex items-center gap-10">
           <div className="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar">
              {navItems.map((item) => (

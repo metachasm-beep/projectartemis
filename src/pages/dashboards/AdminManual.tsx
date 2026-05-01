@@ -118,7 +118,7 @@ export const AdminManual: React.FC = () => {
           <div className="inline-flex items-center gap-4 px-6 py-2 bg-slate-900 text-white rounded-full text-[9px] font-black tracking-[0.5em] uppercase italic">
              <Globe size={12} className="animate-spin-slow" /> SYSTEM_MANUAL_V3.0
           </div>
-          <h1 className="text-8xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
+          <h1 className="text-5xl md:text-8xl font-black text-slate-900 uppercase italic tracking-tighter leading-none">
              THE MATRIARCH <span className="font-light text-slate-300">CODEX</span>
           </h1>
           <p className="text-xl text-slate-400 italic font-medium max-w-2xl mx-auto leading-relaxed">
@@ -126,7 +126,7 @@ export const AdminManual: React.FC = () => {
           </p>
        </header>
 
-       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto px-10">
+       <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-7xl mx-auto px-4 md:px-10">
           {sections.map((s, i) => (
              <motion.div 
                key={i}
@@ -163,9 +163,9 @@ export const AdminManual: React.FC = () => {
           ))}
        </div>
 
-       <div className="max-w-7xl mx-auto px-10">
-          <div className="bg-slate-900 p-20 rounded-[5rem] relative overflow-hidden shadow-2xl">
-             <div className="absolute top-0 right-0 p-20 opacity-10">
+       <div className="max-w-7xl mx-auto px-4 md:px-10">
+          <div className="bg-slate-900 p-8 md:p-20 rounded-[5rem] relative overflow-hidden shadow-2xl">
+             <div className="absolute top-0 right-0 p-8 md:p-20 opacity-10">
                 <Flame size={300} className="text-white" strokeWidth={1} />
              </div>
              
@@ -175,7 +175,7 @@ export const AdminManual: React.FC = () => {
                    <p className="text-slate-400 text-lg italic leading-relaxed">In the event of a system-wide resonance failure or high-priority security breach, use the 'Excision Protocol' to purge the non-aligned identity immediately.</p>
                 </div>
                 
-                <div className="grid grid-cols-3 gap-10 border-t border-white/10 pt-10">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 border-t border-white/10 pt-10">
                    <div className="space-y-2">
                       <span className="text-[8px] font-black text-slate-500 uppercase tracking-[0.4em]">Auth Status</span>
                       <p className="text-white font-bold italic">SOVEREIGN_ADMIN</p>

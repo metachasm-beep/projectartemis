@@ -163,7 +163,7 @@ export const AdminInfluencerPanel: React.FC = () => {
             exit={{ opacity: 0, height: 0 }}
             className="overflow-hidden"
           >
-            <div className="bg-white rounded-[3rem] border border-black/[0.03] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.06)] p-12 space-y-8">
+            <div className="bg-white rounded-[3rem] border border-black/[0.03] shadow-[0_20px_60px_-10px_rgba(0,0,0,0.06)] p-6 md:p-12 space-y-8">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-2xl bg-slate-900 flex items-center justify-center">
                   <Tag size={16} className="text-white" />
@@ -315,13 +315,13 @@ export const AdminInfluencerPanel: React.FC = () => {
       ) : (
         <div className="bg-white rounded-[3rem] border border-black/[0.02] overflow-hidden shadow-[0_20px_60px_-10px_rgba(0,0,0,0.04)]">
           {/* Summary stats */}
-          <div className="grid grid-cols-3 divide-x divide-black/[0.03] border-b border-black/[0.03]">
+          <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-black/[0.03] border-b border-black/[0.03]">
             {[
               { label: 'Total Influencers', value: influencers.length, icon: Users },
               { label: 'Total Referrals', value: influencers.reduce((s, i) => s + Number(i.total_referrals || 0), 0), icon: TrendingUp },
               { label: 'Total Commissions', value: `₹${influencers.reduce((s, i) => s + Number(i.total_commission || 0), 0).toFixed(0)}`, icon: IndianRupee },
             ].map(({ label, value, icon: Icon }) => (
-              <div key={label} className="px-10 py-8 space-y-2">
+              <div key={label} className="px-6 py-6 md:px-10 md:py-8 space-y-2">
                 <div className="flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.4em] text-slate-300">
                   <Icon size={10} /> {label}
                 </div>

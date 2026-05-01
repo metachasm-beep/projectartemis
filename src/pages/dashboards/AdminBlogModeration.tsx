@@ -34,7 +34,7 @@ export const AdminBlogModeration: React.FC = () => {
 
   if (viewMode === 'CONTENT' && selectedSubmission) {
     return (
-      <div className="space-y-16 animate-in fade-in slide-in-from-bottom-12 duration-1000 pb-32 px-10">
+      <div className="space-y-16 animate-in fade-in slide-in-from-bottom-12 duration-1000 pb-32 px-4 md:px-10">
         <div className="flex flex-col md:flex-row justify-between items-center gap-10">
           <button 
             onClick={() => setViewMode('GRID')}
@@ -61,11 +61,11 @@ export const AdminBlogModeration: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-20">
           <div className="lg:col-span-2 space-y-16">
             <header className="space-y-8">
               <Badge variant="outline" className="text-[9px] font-bold tracking-[0.4em] uppercase border-slate-100 text-slate-400 bg-slate-50 px-5 py-2">PROTOCOL_PENDING_REVIEW</Badge>
-              <h1 className="text-6xl font-bold text-slate-900 uppercase italic leading-[1.1] tracking-tighter">{selectedSubmission.title}</h1>
+              <h1 className="text-4xl md:text-6xl font-bold text-slate-900 uppercase italic leading-[1.1] tracking-tighter">{selectedSubmission.title}</h1>
               <div className="flex items-center gap-10 py-10 border-y border-black/[0.02]">
                  <div className="w-16 h-16 rounded-[2rem] bg-slate-50 border border-black/[0.02] overflow-hidden shadow-sm p-0.5">
                     <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${selectedSubmission.author_id}`} className="w-full h-full object-cover rounded-[1.8rem]" />
@@ -127,7 +127,7 @@ export const AdminBlogModeration: React.FC = () => {
   }
 
   return (
-    <div className="space-y-16 pb-32 px-10">
+    <div className="space-y-16 pb-32 px-4 md:px-10">
       <div className="flex justify-between items-center px-4 md:px-0 border-b border-black/[0.03] pb-8">
           <div className="space-y-2">
              <div className="flex items-center gap-4">
@@ -170,7 +170,7 @@ export const AdminBlogModeration: React.FC = () => {
                            <Badge className="bg-white/80 text-slate-400 border border-black/[0.05] text-[7px] font-bold uppercase tracking-widest px-4 py-1.5 backdrop-blur-md">STATUS: QUEUED</Badge>
                         </div>
                      </div>
-                     <div className="p-10 space-y-10 flex-1 flex flex-col justify-between relative z-10">
+                     <div className="p-6 md:p-10 space-y-10 flex-1 flex flex-col justify-between relative z-10">
                         <div className="space-y-4">
                            <h3 className="text-2xl font-bold text-slate-900 uppercase italic tracking-tighter line-clamp-2 leading-none group-hover:text-slate-900 transition-colors">{s.title}</h3>
                            <div className="flex items-center gap-4">
