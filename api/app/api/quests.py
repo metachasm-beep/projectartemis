@@ -34,7 +34,7 @@ async def ensure_base_quests():
             [q_id, title, desc, q_type, aura, rank, is_daily]
         )
 
-@router.get("/", response_model=List[QuestResponse])
+@router.get("")
 async def get_merit_board(user: dict = Depends(auth_bearer)):
     """Fetches all merits and their current standing for the user."""
     user_id = user["id"]

@@ -136,14 +136,14 @@ async def select_petitioner(request: SelectionRequest, user: dict = Depends(auth
 async def get_queue_status(user: dict = Depends(auth_bearer)):
     """
     Returns the count of Sovereigns (women) who are currently 'considering' the Aspirant.
-    Logic: Distinct women who have either Viewed or Saved the man.
+    Returns 0 gracefully for non-man roles.
     """
     man_id = user["id"]
-    
-    # Verify man role
+
+    # Gracefully return 0 for women and admins — no crash
     user_res = await turso_client.execute("SELECT role FROM profiles WHERE user_id = ?", [man_id])
     if not user_res.rows or user_res.rows[0].get("role") != "man":
-        raise HTTPException(status_code=403, detail="Queue status is reserved for Aspirants.")
+        return {"count": 0}
 
     # Count distinct women who have Viewed or Saved (and aren't matched yet)
     query = """

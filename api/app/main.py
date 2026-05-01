@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin, quests, agentic, influencer
+from app.api import health, legal, verification, discovery, rank, auth, communication, safety, admin, quests, agentic, influencer, payments
 from app.core.config import settings
 from app.services.backfill_service import backfill_service
 from app.db.turso import turso_client
@@ -83,6 +83,7 @@ app.include_router(safety.router, prefix="/api/v1", tags=["Safety"])
 app.include_router(quests.router, prefix="/api/v1", tags=["Quests"])
 app.include_router(agentic.router, prefix="/api/v1", tags=["Agentic"])
 app.include_router(influencer.router, prefix="/api/v1", tags=["Influencer"])
+app.include_router(payments.router, prefix="/api/v1", tags=["Payments"])
 
 
 @app.post("/api/v1/admin/trigger-backfill", tags=["Admin"])
