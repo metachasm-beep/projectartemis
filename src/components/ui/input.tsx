@@ -2,8 +2,23 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  preventSpecialCharacters?: boolean;
+}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ className, type, preventSpecialCharacters, onChange, ...props }, ref) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (preventSpecialCharacters) {
+        // Only allow letters, numbers, and spaces
+        const filteredValue = e.target.value.replace(/[^a-zA-Z0-9\s]/g, "");
+        if (filteredValue !== e.target.value) {
+          e.target.value = filteredValue;
+        }
+      }
+      onChange?.(e);
+    };
+
     return (
       <input
         type={type}
@@ -12,6 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
           className
         )}
         ref={ref}
+        onChange={handleChange}
         {...props}
       />
     )

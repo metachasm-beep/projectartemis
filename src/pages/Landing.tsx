@@ -64,9 +64,9 @@ const LandingPage: React.FC = () => {
   const logoOpacity = useTransform(scrollY, [0, 100], [1, 0]);
   const logoScale = useTransform(scrollY, [0, 100], [1, 0.8]);
 
-  // Install FAB visibility: Only on the last fold (progress > 0.8)
-  const fabOpacity = useTransform(scrollYProgress, [0.85, 0.9], [0, 1]);
-  const fabY = useTransform(scrollYProgress, [0.85, 0.9], [20, 0]);
+  // Install FAB visibility: Persistent once available
+  const fabOpacity = 1;
+  const fabY = 0;
   
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);

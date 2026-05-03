@@ -7,6 +7,7 @@ import type { Tab, SanctuaryMatch } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { MigrationService } from '@/services/MigrationService';
 import { useEffect } from 'react';
+import { PWAInstallFAB } from '@/components/ui/PWAInstallFAB';
 
 
 // 🚀 GRANULAR CODE SPLITTING: Load views only when entered
@@ -178,6 +179,7 @@ export const DashboardLayout: React.FC = () => {
             )}
           </AnimatePresence>
         </Suspense>
+        <PWAInstallFAB variant="rose" />
       </main>
     </motion.div>
   );

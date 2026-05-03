@@ -251,7 +251,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                      <div className="space-y-8">
                         <div className="space-y-2">
                            <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Full Name</label>
-                           <Input value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
+                           <Input preventSpecialCharacters value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
                         </div>
                         <div className="space-y-2">
                            <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Current City</label>
@@ -340,15 +340,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                         <div className="bg-white/40 p-4 rounded-2xl border border-mat-rose/10 space-y-4">
                            <div className="space-y-1">
                              <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Hometown origin</label>
-                             <Input placeholder="Parts Unknown" value={formData.trump_stats.hometown} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, hometown: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                             <Input preventSpecialCharacters placeholder="Parts Unknown" value={formData.trump_stats.hometown} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, hometown: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                            <div className="space-y-1">
                              <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Weight Class (Vibe)</label>
-                             <Input placeholder="Heavyweight Overthinker" value={formData.trump_stats.weight_class} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, weight_class: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                             <Input preventSpecialCharacters placeholder="Heavyweight Overthinker" value={formData.trump_stats.weight_class} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, weight_class: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                            <div className="space-y-1">
                              <label className="text-[11px] font-black uppercase tracking-widest text-mat-wine/80">Signature Move (Prompt)</label>
-                             <Input placeholder="Makes a mean sourdough" value={formData.trump_stats.signature_move} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, signature_move: e.target.value}})} className="h-10 bg-white/50 border-white" />
+                             <Input preventSpecialCharacters placeholder="Makes a mean sourdough" value={formData.trump_stats.signature_move} onChange={(e) => setFormData({...formData, trump_stats: {...formData.trump_stats, signature_move: e.target.value}})} className="h-10 bg-white/50 border-white" />
                            </div>
                         </div>
                       </div>
