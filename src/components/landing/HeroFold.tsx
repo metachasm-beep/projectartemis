@@ -150,7 +150,7 @@ const HeroFold: React.FC = () => {
             transition={{ delay: 2.2, duration: 1.5 }}
             className="text-white/70 max-w-xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
           >
-            India's most exclusive network for <br className="hidden md:block" /> high-value connections and refined companionship.
+            India's most exclusive network for <br className="hidden md:block" /> elite professional networking and premium matchmaking.
           </motion.p>
 
           <motion.div

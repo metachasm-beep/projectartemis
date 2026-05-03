@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ShieldCheck, Crown, Activity, Heart, Zap, ExternalLink, ArrowUpRight } from 'lucide-react';
 import { SEO_COPY } from '@/content/copy';
 import { Badge } from '@/components/ui/badge';
+import { Link } from 'react-router-dom';
 
 interface BentoDashboardFoldProps {
   onOpenLegal?: (slug: string) => void;
@@ -171,9 +172,9 @@ const BentoDashboardFold: React.FC<BentoDashboardFoldProps> = ({ onOpenLegal, on
         <div className="mt-auto pt-8 border-t border-mat-gold/10 w-full pb-4">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-8">
             <div className="flex gap-6 text-[9px] text-mat-slate/60 font-bold uppercase tracking-[0.2em]">
-              <button onClick={() => onOpenLegal?.('privacy-pact')} className="hover:text-mat-wine transition-colors">Privacy Pact</button>
-              <button onClick={() => onOpenLegal?.('terms-of-merit')} className="hover:text-mat-wine transition-colors">Terms of Merit</button>
-              <button onClick={() => onOpenLegal?.('protocol')} className="hover:text-mat-wine transition-colors">Sanctuary Code</button>
+              <Link to="/legal/privacy-pact" className="hover:text-mat-wine transition-colors">Privacy Pact</Link>
+              <Link to="/legal/terms-of-merit" className="hover:text-mat-wine transition-colors">Terms of Merit</Link>
+              <Link to="/legal/protocol" className="hover:text-mat-wine transition-colors">Sanctuary Code</Link>
             </div>
             
             <button 

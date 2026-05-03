@@ -7,7 +7,7 @@ interface ContentOverlayProps {
   onClose: () => void;
 }
 
-const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: React.ReactNode }> = {
+export const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: React.ReactNode }> = {
   protocol: {
     title: 'COMMUNITY GUIDELINES',
     icon: Shield,
@@ -50,8 +50,8 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
           <div className="space-y-4 text-sm opacity-60 leading-relaxed">
             <ul className="list-disc pl-5 space-y-2">
               <li><strong>Financial Scams:</strong> Soliciting UPI "donations" or investment schemes.</li>
-              <li><strong>Solicitation:</strong> Using the app for escort services or professional networking.</li>
-              <li><strong>Link Spamming:</strong> Redirecting users to "OnlyFans" style or commercial platforms.</li>
+              <li><strong>Solicitation:</strong> Using the app for commercial engagement or professional networking.</li>
+              <li><strong>Link Spamming:</strong> Redirecting users to third-party adult platforms or commercial entities.</li>
             </ul>
           </div>
         </section>
@@ -61,8 +61,8 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
           <div className="space-y-4 text-sm opacity-60 leading-relaxed">
             <p>To comply with Google AdSense and PWA status:</p>
             <ul className="list-disc pl-5 space-y-2">
-              <li><strong>No Nudity:</strong> Profile photos must be appropriate for a public space.</li>
-              <li><strong>Sexual Content:</strong> Explicit media or "hookup-only" solicitation is not permitted.</li>
+              <li><strong>Appropriate Attire:</strong> Profile photos must be appropriate for a public space.</li>
+              <li><strong>Inappropriate Content:</strong> Explicit media or "casual-only" solicitation is not permitted.</li>
               <li><strong>Illegal Content:</strong> Depiction of non-consensual acts will be reported to certification nodes (NCBI/CERT-In).</li>
             </ul>
           </div>
@@ -343,8 +343,8 @@ const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; content: Reac
             <p className="mb-4 font-bold">You agree NOT to:</p>
             <ul className="list-disc pl-5 space-y-2">
               <li>Harass, bully, stalk, or intimidate any user.</li>
-              <li>Post NSFW content, including nudity or sexually explicit text/images.</li>
-              <li>Use the platform for any commercial purpose (escort services, unauthorized advertising).</li>
+              <li>Post inappropriate content, including explicit text/images.</li>
+              <li>Use the platform for any commercial purpose (commercial companionship, unauthorized advertising).</li>
               <li>Scrape, crawl, or "bot" the platform to extract user data or manipulate rankings.</li>
               <li>Create fake profiles or "catfish" other users.</li>
             </ul>

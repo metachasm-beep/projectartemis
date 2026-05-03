@@ -16,6 +16,7 @@ const Gurgaon = React.lazy(() => import('./routes/delhi-dating/Gurgaon'));
 const NorthDelhi = React.lazy(() => import('./routes/delhi-dating/NorthDelhi'));
 const VerifyCallback = React.lazy(() => import('./pages/VerifyCallback'));
 const VerifyPage = React.lazy(() => import('./pages/VerifyPage'));
+const LegalPage = React.lazy(() => import('./pages/LegalPage'));
 const BlogApp = React.lazy(() => import('./blogs/App'));
 const RootSkeleton = () => <div className="min-h-screen bg-mat-cream" />;
 
@@ -52,6 +53,7 @@ const App: React.FC = () => {
                 <Route path="/delhi-dating/south-delhi" element={<SouthDelhi />} />
                 <Route path="/delhi-dating/gurgaon" element={<Gurgaon />} />
                 <Route path="/delhi-dating/north-delhi" element={<NorthDelhi />} />
+                <Route path="/legal/:slug" element={<LegalPage />} />
                 <Route path="/signin" element={<AuthGate children={<DashboardLayout />} />} />
                 <Route path="/verify/callback" element={<VerifyCallback />} />
                 <Route path="/verify" element={<AuthGate><VerifyPage /></AuthGate>} />
