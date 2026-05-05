@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import StarBorder from "@/components/bits/StarBorder";
-import { ArrowDown, Crown } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { LoginModal } from "@/components/auth/LoginModal";
 
@@ -124,15 +124,6 @@ const HeroFold: React.FC = () => {
         style={{ y: contentY, opacity: contentOpacity }}
         className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 md:px-12"
       >
-        {/* Crown icon — small eyebrow above wordmark */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
-          className="mb-2 md:mb-4"
-        >
-          <Crown className="w-6 h-6 md:w-8 md:h-8 text-mat-gold mx-auto" strokeWidth={1} />
-        </motion.div>
 
         {/* ── MATRIARCH — The Largest Text on the Page ── */}
         <motion.h1
