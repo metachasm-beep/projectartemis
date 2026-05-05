@@ -122,7 +122,7 @@ const HeroFold: React.FC = () => {
       {/* 3. Hero Content — MATRIARCH as dominant typographic anchor */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 md:px-12"
+        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-0"
       >
 
         {/* ── MATRIARCH — The Largest Text on the Page ── */}
@@ -130,8 +130,14 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 1.0, duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
-          className="font-display font-light tracking-[0.15em] md:tracking-[0.22em] uppercase text-[#FDFCFB] leading-[0.9]"
-          style={{ fontSize: "clamp(3.5rem, 20vw, 17rem)" }}
+          className="font-display font-light uppercase text-[#FDFCFB] leading-none w-full text-center"
+          style={{
+            fontSize: "clamp(2.8rem, 13vw, 10rem)",
+            letterSpacing: "0.06em",
+            wordBreak: "keep-all",
+            whiteSpace: "nowrap",
+            overflow: "visible",
+          }}
         >
           MATRIARCH
         </motion.h1>
