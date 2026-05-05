@@ -1,8 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import MatriarchLogo from "@/components/MatriarchLogo";
 import StarBorder from "@/components/bits/StarBorder";
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Crown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { LoginModal } from "@/components/auth/LoginModal";
 
@@ -69,10 +68,6 @@ const HeroFold: React.FC = () => {
   );
   const contentY = useTransform(scrollYProgress, [0, 1], [0, -100]);
   const contentOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  
-  // Logo transforms: stays fixed, but dims slightly to feel integrated
-  // @ts-ignore
-  const logoOpacity = useTransform(scrollYProgress, [0.8, 1], [1, 0]);
 
   const [imageIndex, setImageIndex] = useState(0);
 
@@ -118,70 +113,100 @@ const HeroFold: React.FC = () => {
                  />
               </motion.div>
             </AnimatePresence>
-            {/* Cinematic Shadow Vignette (Removes White Tint) */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/80" />
+            {/* Cinematic Shadow Vignette */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/30 to-black/85" />
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. Hero Content (Infinite Gaze - Asymmetric Editorial) */}
+      {/* 3. Hero Content — MATRIARCH as dominant typographic anchor */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 flex flex-col items-center md:items-start justify-center h-full text-center md:text-left px-6 md:px-24 pt-32 md:pt-0"
+        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-4 md:px-12"
       >
+        {/* Crown icon — small eyebrow above wordmark */}
         <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1.5, duration: 1.5, ease: "easeOut" }}
-          className="max-w-4xl"
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8, duration: 1.2, ease: "easeOut" }}
+          className="mb-2 md:mb-4"
         >
-          <motion.h1 
-            className="leading-[1.1] mb-8 md:mb-12 flex flex-col items-center md:items-start"
-          >
-            <span className="mat-text-oracle-sub text-[clamp(1rem,4vw,1.2rem)] mb-4 text-white/60">Curating the</span>
-            <span className="mat-text-oracle-headline text-[clamp(3rem,12vw,9.5rem)] text-[#FDFCFB]">
-              Exceptional<span className="mat-text-gold">.</span>
-            </span>
-          </motion.h1>
+          <Crown className="w-6 h-6 md:w-8 md:h-8 text-mat-gold mx-auto" strokeWidth={1} />
+        </motion.div>
 
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.2, duration: 1.5 }}
-            className="text-white/70 max-w-xl text-base md:text-xl font-body font-light tracking-[0.05em] leading-relaxed mb-12"
-          >
-            India's most exclusive network for <br className="hidden md:block" /> elite professional networking and premium matchmaking.
-          </motion.p>
+        {/* ── MATRIARCH — The Largest Text on the Page ── */}
+        <motion.h1
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1.0, duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
+          className="font-display font-light tracking-[0.15em] md:tracking-[0.22em] uppercase text-[#FDFCFB] leading-[0.9]"
+          style={{ fontSize: "clamp(3.5rem, 20vw, 17rem)" }}
+        >
+          MATRIARCH
+        </motion.h1>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 2.8, duration: 0.8 }}
-            className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto"
+        {/* Hairline gold divider */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
+          className="w-24 md:w-40 h-px bg-mat-gold/60 my-6 md:my-8 origin-center"
+        />
+
+        {/* Sub-headline: "Ruled by Her Standard." */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.0, duration: 1.5 }}
+          className="flex flex-col items-center gap-1"
+        >
+          <span className="mat-text-oracle-sub text-[clamp(0.6rem,2.5vw,0.9rem)] text-white/50 tracking-[0.4em]">
+            Ruled by
+          </span>
+          <span className="mat-text-oracle-headline text-[clamp(1.6rem,5.5vw,4rem)] text-[#FDFCFB]/90 font-light italic">
+            Her Standard<span className="text-mat-gold">.</span>
+          </span>
+        </motion.div>
+
+        {/* Body copy */}
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2.5, duration: 1.5 }}
+          className="text-white/55 max-w-md text-sm md:text-base font-body font-light tracking-[0.06em] leading-relaxed mt-6 md:mt-8"
+        >
+          India's most exclusive network for elite professional networking and premium matchmaking.
+        </motion.p>
+
+        {/* CTAs */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 3.0, duration: 0.8 }}
+          className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-10 w-full max-w-sm sm:max-w-none sm:w-auto"
+        >
+          <StarBorder 
+            onClick={() => setIsLoginModalOpen(true)} 
+            className="w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 text-base md:text-lg font-body tracking-[0.2em] bg-mat-gold text-white border-mat-gold"
           >
-            <StarBorder 
-              onClick={() => setIsLoginModalOpen(true)} 
-              className="w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-mat-gold text-white border-mat-gold"
-            >
-              GET STARTED
+            GET STARTED
+          </StarBorder>
+          
+          <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
+            <StarBorder className="w-full px-8 py-4 md:px-12 md:py-5 text-base md:text-lg font-body tracking-[0.2em] bg-white/5 border-white/10 text-white/50 hover:text-white transition-colors">
+              READ BLOGS
             </StarBorder>
-            
-            <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
-              <StarBorder className="px-8 py-4 md:px-12 md:py-5 text-lg md:text-xl font-display tracking-[0.2em] bg-[#1a1a1a]/5 border-[#1a1a1a]/10 text-[#1a1a1a]/60 hover:text-[#1a1a1a] transition-colors">
-                READ BLOGS
-              </StarBorder>
-            </button>
-          </motion.div>
+          </button>
         </motion.div>
 
         {/* Scroll Indicator */}
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-40"
+          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30"
         >
-          <span className="text-[10px] tracking-[0.3em] font-display uppercase">Scroll to Explore</span>
-          <ArrowDown className="w-4 h-4" />
+          <span className="text-[9px] tracking-[0.35em] font-body uppercase text-white">Scroll to Explore</span>
+          <ArrowDown className="w-4 h-4 text-white" />
         </motion.div>
       </motion.div>
 
