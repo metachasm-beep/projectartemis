@@ -8,10 +8,9 @@ import HeroFold from "@/components/landing/HeroFold";
 // 🚀 Performance: Lazy load sections below the fold
 const BentoDashboardFold = lazy(() => import("@/components/landing/BentoDashboardFold"));
 
-import MatriarchLogo from "@/components/MatriarchLogo";
 import { PWAInstallFAB } from "@/components/ui/PWAInstallFAB";
 
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 import { useRef } from "react";
 
 const LandingPage: React.FC = () => {
@@ -54,15 +53,11 @@ const LandingPage: React.FC = () => {
     };
   }, []);
 
-  const { scrollYProgress, scrollY } = useScroll({
+  const { scrollYProgress } = useScroll({
     container: mainRef,
   });
 
-  // Dynamic Logo transitions: STRICT First-Fold Visibility Only
-  // We harden this for mobile/Android to ensure it vanishes immediately
-  // Switching to absolute scrollY for predictable behavior across varying page heights
-  const logoOpacity = useTransform(scrollY, [0, 100], [1, 0]);
-  const logoScale = useTransform(scrollY, [0, 100], [1, 0.8]);
+  // Dynamic Logo transitions removed — wordmark lives in HeroFold
 
   // Install FAB visibility: Persistent once available
   const fabOpacity = 1;
@@ -169,16 +164,6 @@ const LandingPage: React.FC = () => {
       ref={mainRef}
       className="relative h-screen overflow-y-auto overflow-x-hidden snap-y snap-mandatory scroll-smooth bg-mat-cream selection:bg-mat-gold/20 selection:text-mat-slate"
     >
-      {/* 🔮 Dynamic Persistent Logo */}
-      <motion.div 
-        style={{ 
-          opacity: logoOpacity,
-          scale: logoScale,
-        }}
-        className="fixed left-1/2 top-12 md:top-8 z-[100] -translate-x-1/2 pointer-events-none origin-center"
-      >
-        <MatriarchLogo className="transition-transform duration-300" />
-      </motion.div>
 
       <GrainOverlay />
       
