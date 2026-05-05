@@ -67,11 +67,9 @@
     <meta property="og:description" content="Curated verification-based dating for Delhi's professionals. High-fidelity connections in a secure, exclusive sanctuary." />
     <meta property="og:image" content="https://www.matriarchindia.com/og-image.jpg" />
 
-    <!-- 🚀 Performance: Preload Critical Assets -->
-    <link rel="preload" href="/fonts/fraunces-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/fraunces-italic.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/bodoni-normal.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="/fonts/outfit-normal.woff2" as="font" type="font/woff2" crossorigin>
+    <!-- 🚀 Performance: Preload Critical Font Faces -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 
 
@@ -80,8 +78,8 @@
       :root {
         --color-mat-noir: #1A1A1A;
         --color-mat-bone: #FDFCFB;
-        --font-display: "Fraunces", serif;
-        --font-body: "Outfit", sans-serif;
+        --font-display: "Cormorant Garamond", Georgia, serif;
+        --font-body: "Jost", system-ui, sans-serif;
       }
       body {
         background-color: var(--color-mat-bone);

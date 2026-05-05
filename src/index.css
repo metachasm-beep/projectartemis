@@ -1,41 +1,6 @@
-/* ─── High-Performance Typography (Self-Hosted & Google) ────────────────── */
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Fraunces:ital,wght@1,700&family=Montserrat:wght@500&family=Playfair+Display:ital,wght@1,900&family=Syne:wght@700;800&display=swap');
-
-@font-face {
-  font-family: 'Fraunces';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/fraunces-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Fraunces';
-  font-style: italic;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/fraunces-italic.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Bodoni Moda';
-  font-style: normal;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('/fonts/bodoni-normal.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Bodoni Moda';
-  font-style: italic;
-  font-weight: 400 900;
-  font-display: swap;
-  src: url('/fonts/bodoni-italic.woff2') format('woff2');
-}
-@font-face {
-  font-family: 'Outfit';
-  font-style: normal;
-  font-weight: 100 900;
-  font-display: swap;
-  src: url('/fonts/outfit-normal.woff2') format('woff2');
-}
+/* ─── Unified Typography System ─────────────────────────────────────────── */
+/* Pairing: Cormorant Garamond (Display) + Jost (Body) — Luxury Minimalist  */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Jost:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
 @import "tailwindcss";
 
@@ -47,11 +12,9 @@
   --color-mat-cashmere:    #F2E8E4;    /* Soft Surface                    */
   --color-mat-gold:        #D4AF37;    /* Classic Luxury                  */
 
-  /* ─── Typography (High-Fashion) ─────────────────────────────────── */
-  --font-display: "Cormorant Garamond", serif;    /* Luxury Editorial Serif   */
-  --font-royal:   "Bodoni Moda", serif;           /* Royal Fashion            */
-  --font-heritage: "Fraunces", serif;             /* Heritage Serif           */
-  --font-body:    "Montserrat", sans-serif;       /* Clean Modern Sans        */
+  /* ─── Typography: Luxury Minimalist Pairing ─────────────────────── */
+  --font-display: "Cormorant Garamond", Georgia, serif;  /* Editorial Display */
+  --font-body:    "Jost", system-ui, sans-serif;          /* Clean Body UI     */
 
 
   /* ─── Radii & Aesthetics ─────────────────────────────────────────────────── */
@@ -175,7 +138,7 @@
   }
 
   .mat-text-apple-display {
-    font-family: var(--font-body); /* Outfit */
+    font-family: var(--font-body);
     font-weight: 200;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -415,8 +378,8 @@
   }
 
   .mat-text-editorial {
-    font-family: 'Playfair Display', serif;
-    font-weight: 900;
+    font-family: var(--font-display);
+    font-weight: 700;
     font-style: italic;
     letter-spacing: -0.02em;
   }
@@ -428,19 +391,21 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 
+  /* Hero headline: Cormorant Garamond italic — cinematic luxury */
   .mat-text-oracle-headline {
-    font-family: 'Fraunces', serif;
-    font-weight: 700;
+    font-family: var(--font-display);
+    font-weight: 300;
     font-style: italic;
     color: #FDFCFB;
-    letter-spacing: -0.01em;
+    letter-spacing: -0.02em;
   }
 
+  /* Hero sub-label: Jost uppercase — geometric precision */
   .mat-text-oracle-sub {
-    font-family: 'Montserrat', sans-serif;
-    font-weight: 500;
+    font-family: var(--font-body);
+    font-weight: 400;
     color: #C0C0C0;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
   }
 
