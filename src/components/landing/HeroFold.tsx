@@ -160,7 +160,7 @@ const HeroFold: React.FC = () => {
           <span className="mat-text-oracle-sub text-[clamp(0.6rem,2.5vw,0.9rem)] text-white/50 tracking-[0.4em]">
             Ruled by
           </span>
-          <span className="mat-text-oracle-headline text-[clamp(1.6rem,5.5vw,4rem)] text-[#FDFCFB]/90 font-light italic">
+          <span className="mat-text-oracle-headline text-[clamp(1.6rem,5.5vw,4rem)] text-[#FDFCFB]/90">
             Her Standard<span className="text-mat-gold">.</span>
           </span>
         </motion.div>

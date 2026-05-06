@@ -1,6 +1,6 @@
 /* ─── Unified Typography System ─────────────────────────────────────────── */
-/* Pairing: Playfair Display (Display) + Inter (Body) — Classic Elegant      */
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700;1,800;1,900&family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+/* Pairing: Poiret One (Display) + Didact Gothic (Body) — Art Deco Protocol  */
+@import url('https://fonts.googleapis.com/css2?family=Poiret+One&family=Didact+Gothic&display=swap');
 
 @import "tailwindcss";
 
@@ -12,9 +12,9 @@
   --color-mat-cashmere:    #F2E8E4;    /* Soft Surface                    */
   --color-mat-gold:        #D4AF37;    /* Classic Luxury                  */
 
-  /* ─── Typography: Classic Elegant Pairing ───────────────────────── */
-  --font-display: "Playfair Display", Georgia, serif;    /* Timeless Editorial */
-  --font-body:    "Inter", system-ui, sans-serif;         /* Gold-Standard UI   */
+  /* ─── Typography: Art Deco Protocol Pairing ─────────────────────── */
+  --font-display: "Poiret One", Georgia, sans-serif;    /* Art Deco Geometric  */
+  --font-body:    "Didact Gothic", system-ui, sans-serif; /* Clean Modernist     */
 
 
   /* ─── Radii & Aesthetics ─────────────────────────────────────────────────── */
@@ -391,13 +391,13 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 
-  /* Hero headline: Cormorant Garamond italic — cinematic luxury */
+  /* Hero headline: Poiret One — Art Deco geometric */
   .mat-text-oracle-headline {
     font-family: var(--font-display);
-    font-weight: 300;
-    font-style: italic;
+    font-weight: 400;
+    font-style: normal;
     color: #FDFCFB;
-    letter-spacing: -0.02em;
+    letter-spacing: 0.1em;
   }
 
   /* Hero sub-label: Jost uppercase — geometric precision */
