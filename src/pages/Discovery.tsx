@@ -99,12 +99,16 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
 
   const handleAction = useCallback(async (type: string, targetProfile: any) => {
      if (type === 'ping') {
-        if (isUnverifiedWoman) {
-           setShowVerificationModal(true);
+        if (!profile?.is_verified) {
+           if (profile?.role === 'woman') {
+              setShowVerificationModal(true);
+           } else {
+              alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
+           }
            return;
         }
         if (!targetProfile.is_verified) {
-           alert("Sovereign resonance requires identity verification. Please seal your identity in the Sanctuary.");
+           alert("Sovereign resonance requires the target to have a sealed identity.");
            return;
         }
         

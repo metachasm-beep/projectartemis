@@ -157,7 +157,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   <div className="space-y-4">
                     <p className="text-[11px] text-white/60 leading-relaxed italic">Identity verification pending. Apply the Seal of Truth to unlock high-definition discovery protocols.</p>
                     <button 
-                      onClick={() => window.location.href = '#verification'}
+                      onClick={() => window.location.href = '/verify'}
                       className="px-6 py-3 border border-mat-gold/30 text-mat-gold text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-mat-gold/10 transition-colors"
                     >
                       Begin Verification
@@ -216,7 +216,7 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   <div className="flex justify-between items-start">
                     <div className="space-y-2">
                        <p className="mat-text-label-pro text-sm text-mat-gold uppercase tracking-widest font-bold">Resonance Index</p>
-                       <h3 className="text-2xl font-bold italic text-white leading-relaxed">Harmony Index.</h3>
+                       <h3 className="text-2xl font-bold italic text-white leading-relaxed">Absolute Rank.</h3>
                     </div>
                     <div className="p-4 bg-mat-gold/10 rounded-2xl border border-mat-gold/20 flex-shrink-0">
                       <Compass className="text-mat-gold w-6 h-6 animate-spin-slow" strokeWidth={1} />
@@ -224,9 +224,9 @@ export const WomenDashboard: React.FC<WomenDashboardProps> = ({
                   </div>
                   <div className="flex items-center gap-5 py-2">
                      <span className="text-4xl lg:text-5xl font-bold text-mat-cream tracking-normal italic leading-relaxed" style={{ fontFamily: 'var(--font-display)' }}>
-                        {Math.round(status?.rank_score || 0)}
+                        #{profile?.absolute_rank || '--'}
                      </span>
-                     <p className="text-xs text-white/60 italic max-w-[160px] leading-relaxed">Strategic frequency alignment verified in local sector.</p>
+                     <p className="text-xs text-white/60 italic max-w-[160px] leading-relaxed">Global sector standing among sovereign identities.</p>
                   </div>
                 </div>
               </GlassCard>

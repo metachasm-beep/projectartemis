@@ -201,6 +201,7 @@ export const SanctuaryService = {
         WITH ranked AS (
           SELECT user_id, 
           ROW_NUMBER() OVER (
+            PARTITION BY role
             ORDER BY 
               COALESCE(is_verified, 0) DESC, 
               COALESCE(rank_score, 0) DESC, 
@@ -208,7 +209,6 @@ export const SanctuaryService = {
               user_id ASC
           ) as new_rank
           FROM profiles
-          WHERE role = 'man'
         )
         UPDATE profiles
         SET absolute_rank = ranked.new_rank

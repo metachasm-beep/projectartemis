@@ -139,6 +139,7 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     try {
       const updates = {
         full_name: formData.full_name,
+        date_of_birth: formData.date_of_birth,
         bio: formData.bio,
         city: formData.city,
         occupation: formData.occupation,
@@ -290,13 +291,17 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 </div>
                 <div className="grid grid-cols-2 gap-6">
                    <div className="space-y-3">
+                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Date of Birth</label>
+                      <Input type="date" name="date_of_birth" value={formData.date_of_birth || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
+                   </div>
+                   <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">City</label>
                       <Input name="city" value={formData.city || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
                    </div>
-                   <div className="space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Vocation</label>
-                      <Input name="occupation" value={formData.occupation || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
-                   </div>
+                </div>
+                <div className="space-y-3">
+                   <label className="text-[10px] font-black uppercase tracking-[0.3em] text-white/80 ml-4">Vocation</label>
+                   <Input name="occupation" value={formData.occupation || ''} onChange={handleChange} className="h-16 rounded-2xl bg-white/[0.06] border-white/30 text-white font-black text-lg px-6 focus:border-mat-rose-gold" />
                 </div>
              </div>
           </section>

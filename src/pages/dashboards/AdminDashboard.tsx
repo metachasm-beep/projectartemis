@@ -328,10 +328,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                     <div className="space-y-10">
                       <div className="flex flex-col md:flex-row gap-6">
                          <div className="relative flex-1 group">
-                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-slate-900" />
+                            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 group-focus-within:text-slate-900" />
                             <Input 
                               placeholder="RETRIEVE RECORD BY IDENTITY..." 
-                              className="h-16 pl-20 bg-white border-black/[0.03] rounded-[2rem] focus:border-slate-900 focus:ring-4 focus:ring-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-900 placeholder:text-slate-200 shadow-sm" 
+                              className="h-16 pl-20 bg-white border-black/[0.03] rounded-[2rem] focus:border-slate-900 focus:ring-4 focus:ring-slate-100 text-[10px] font-bold uppercase tracking-widest text-slate-900 placeholder:text-slate-400 shadow-sm" 
                               value={searchQuery} 
                               onChange={e => setSearchQuery(e.target.value)} 
                             />
@@ -346,7 +346,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                               className={`px-8 py-2.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all ${
                                 filters.role === r 
                                   ? 'bg-slate-900 text-white shadow-lg scale-105' 
-                                  : 'text-slate-400 hover:text-slate-600 hover:bg-white/60'
+                                  : 'text-slate-500 hover:text-slate-800 hover:bg-slate-100'
                               }`}
                             >
                               {r}
@@ -359,68 +359,68 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                               <table className="w-full text-left whitespace-nowrap border-separate border-spacing-0">
                                  <thead className="bg-[#f8fafc] sticky top-0 z-20">
                                     <tr>
-                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Identity</th>
-                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Class</th>
-                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 text-center">Status</th>
-                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400">Aura Link</th>
-                                       <th className="px-14 py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-400 text-right">Access</th>
+                                       <th className="px-6 md:px-14 py-6 md:py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">Identity</th>
+                                       <th className="px-6 md:px-14 py-6 md:py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">Class</th>
+                                       <th className="px-6 md:px-14 py-6 md:py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500 text-center">Status</th>
+                                       <th className="px-6 md:px-14 py-6 md:py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500">Aura Link</th>
+                                       <th className="px-6 md:px-14 py-6 md:py-10 text-[9px] font-bold uppercase tracking-[0.3em] text-slate-500 text-right">Access</th>
                                     </tr>
                                  </thead>
                                  <tbody className="divide-y divide-black/[0.02]">
                                     {profiles.map((p) => (
                                        <tr key={p.user_id} className="group hover:bg-black/[0.01] transition-all relative">
-                                          <td className="px-14 py-10 flex items-center gap-10 cursor-pointer group/id" onClick={() => setSelectedProfile(p)}>
-                                             <div className="w-16 h-16 rounded-[2.25rem] overflow-hidden bg-slate-50 relative group-hover/id:scale-110 transition-transform duration-700 shadow-sm border border-black/[0.03]">
+                                          <td className="px-6 md:px-14 py-6 md:py-10 flex items-center gap-4 md:gap-10 cursor-pointer group/id" onClick={() => setSelectedProfile(p)}>
+                                             <div className="w-12 h-12 md:w-16 md:h-16 rounded-[1.5rem] md:rounded-[2.25rem] overflow-hidden bg-slate-50 relative group-hover/id:scale-110 transition-transform duration-700 shadow-sm border border-black/[0.03] shrink-0">
                                                 <img src={p.photos?.[0] || `https://api.dicebear.com/7.x/avataaars/svg?seed=${p.user_id}`} className="w-full h-full object-cover" />
                                                 {p.is_verified && <BadgeCheck size={18} className="absolute -bottom-1 -right-1 text-slate-900" fill="white" />}
                                              </div>
                                              <div>
-                                                <p className="font-bold text-slate-900 text-xl tracking-tight italic group-hover/id:translate-x-1 transition-transform">{p.full_name}</p>
-                                                <p className="text-[9px] font-bold text-slate-300 uppercase tracking-[0.2em]">{p.city || 'UNDEFINED'}</p>
+                                                <p className="font-bold text-slate-900 text-lg md:text-xl tracking-tight italic group-hover/id:translate-x-1 transition-transform">{p.full_name}</p>
+                                                <p className="text-[9px] font-bold text-slate-500 uppercase tracking-[0.2em]">{p.city || 'UNDEFINED'}</p>
                                              </div>
                                           </td>
-                                          <td className="px-14 py-10">
-                                             <Badge variant="outline" className="text-[8px] font-bold p-2 uppercase border-slate-200 text-slate-400 bg-white italic">{p.role}</Badge>
+                                          <td className="px-6 md:px-14 py-6 md:py-10">
+                                             <Badge variant="outline" className="text-[8px] font-bold p-2 uppercase border-slate-300 text-slate-500 bg-white italic">{p.role}</Badge>
                                           </td>
-                                          <td className="px-14 py-10 text-center">
-                                             <div className={`w-2 h-2 rounded-full mx-auto ${p.is_verified ? 'bg-slate-900' : 'bg-slate-100'}`} />
+                                          <td className="px-6 md:px-14 py-6 md:py-10 text-center">
+                                             <div className={`w-2 h-2 rounded-full mx-auto ${p.is_verified ? 'bg-slate-900' : 'bg-slate-200'}`} />
                                           </td>
-                                          <td className="px-14 py-10">
+                                          <td className="px-6 md:px-14 py-6 md:py-10">
                                              <div className="flex items-center gap-4">
-                                                <span className="font-bold text-3xl text-slate-900 tabular-nums tracking-tighter">{(p.tokens || 0).toLocaleString()}</span>
-                                                <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-all">
+                                                <span className="font-bold text-xl md:text-3xl text-slate-900 tabular-nums tracking-tighter">{(p.tokens || 0).toLocaleString()}</span>
+                                                <div className="flex gap-1.5 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
                                                    <button onClick={() => handleUpdateTokens(p.user_id, 1000)} className="w-7 h-7 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-xs shadow-lg">+</button>
-                                                   <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-7 h-7 bg-slate-50 text-slate-400 rounded-xl flex items-center justify-center font-bold text-xs">-</button>
+                                                   <button onClick={() => handleUpdateTokens(p.user_id, -1000)} className="w-7 h-7 bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center font-bold text-xs">-</button>
                                                 </div>
                                              </div>
                                           </td>
-                                          <td className="px-14 py-10 text-right">
+                                          <td className="px-6 md:px-14 py-6 md:py-10 text-right">
                                              <TooltipProvider>
-                                                <div className="flex justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all">
+                                                <div className="flex justify-end gap-1 md:gap-3 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
                                                    <Tooltip>
                                                       <TooltipTrigger asChild>
-                                                         <button onClick={() => handleUpdateTokens(p.user_id, 5000)} className="p-4 hover:bg-amber-50 text-amber-500 rounded-2xl transition-all"><Zap size={18} strokeWidth={1.5} /></button>
+                                                         <button onClick={() => handleUpdateTokens(p.user_id, 5000)} className="p-3 md:p-4 hover:bg-amber-50 text-amber-500 rounded-2xl transition-all"><Zap size={18} strokeWidth={1.5} /></button>
                                                       </TooltipTrigger>
                                                       <TooltipContent>Aura Boost (+5000)</TooltipContent>
                                                    </Tooltip>
 
                                                    <Tooltip>
                                                       <TooltipTrigger asChild>
-                                                         <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-4 hover:bg-slate-50 text-slate-400 rounded-2xl transition-all"><MessageSquare size={18} strokeWidth={1.5} /></button>
+                                                         <button onClick={() => setMessageTarget({id: p.user_id, name: p.full_name})} className="p-3 md:p-4 hover:bg-slate-100 text-slate-600 rounded-2xl transition-all"><MessageSquare size={18} strokeWidth={1.5} /></button>
                                                       </TooltipTrigger>
                                                       <TooltipContent>Direct Message</TooltipContent>
                                                    </Tooltip>
 
                                                    <Tooltip>
                                                       <TooltipTrigger asChild>
-                                                         <button onClick={() => AdminService.updateProfileStatus(p.user_id, {is_verified: !p.is_verified}).then(loadData)} className={`p-4 rounded-2xl transition-all ${p.is_verified ? 'text-slate-900 bg-slate-50' : 'text-slate-200 hover:text-slate-900'}`}><Shield size={18} strokeWidth={1.5} /></button>
+                                                         <button onClick={() => AdminService.updateProfileStatus(p.user_id, {is_verified: !p.is_verified}).then(loadData)} className={`p-3 md:p-4 rounded-2xl transition-all ${p.is_verified ? 'text-slate-900 bg-slate-100' : 'text-slate-400 hover:text-slate-900'}`}><Shield size={18} strokeWidth={1.5} /></button>
                                                       </TooltipTrigger>
                                                       <TooltipContent>{p.is_verified ? 'Revoke Verification' : 'Grant Verification'}</TooltipContent>
                                                    </Tooltip>
 
                                                    <Tooltip>
                                                       <TooltipTrigger asChild>
-                                                         <button onClick={() => setItemToDelete(p.user_id)} className="p-4 hover:bg-rose-50 text-rose-400 rounded-2xl transition-all"><Trash2 size={18} strokeWidth={1.5} /></button>
+                                                         <button onClick={() => setItemToDelete(p.user_id)} className="p-3 md:p-4 hover:bg-rose-50 text-rose-500 rounded-2xl transition-all"><Trash2 size={18} strokeWidth={1.5} /></button>
                                                       </TooltipTrigger>
                                                       <TooltipContent>Excision Protocol</TooltipContent>
                                                    </Tooltip>

@@ -254,11 +254,15 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                            <Input preventSpecialCharacters value={formData.full_name} onChange={e => setFormData({...formData, full_name: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
                         </div>
                         <div className="space-y-2">
+                           <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Date of Birth</label>
+                           <Input type="date" value={formData.date_of_birth} onChange={e => setFormData({...formData, date_of_birth: e.target.value})} className="h-16 rounded-2xl bg-white/40 border-mat-fog px-6 focus:border-mat-wine italic font-bold" />
+                        </div>
+                        <div className="space-y-2">
                            <label className="text-[12px] font-black uppercase tracking-widest text-mat-wine/90 ml-2">Current City</label>
                            <CitySelector value={formData.city} onChange={city => setFormData({...formData, city})} />
                         </div>
                      </div>
-                     <button disabled={!formData.full_name || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] shadow-mat-premium">Next Step</button>
+                     <button disabled={!formData.full_name || !formData.date_of_birth || !formData.city} onClick={next} className="w-full h-16 bg-mat-wine text-mat-cream rounded-2xl font-black uppercase tracking-widest text-[13px] shadow-mat-premium">Next Step</button>
                   </motion.div>
                 )}
 

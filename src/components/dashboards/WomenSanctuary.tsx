@@ -170,7 +170,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
               </button>
 
               {!isVerified && (
-                 <button onClick={() => setShowVerification(true)} className="flex items-center gap-2 text-mat-rose-gold animate-pulse">
+                 <button onClick={() => window.location.href = '/verify'} className="flex items-center gap-2 text-mat-rose-gold animate-pulse">
                     <ShieldCheck size={12} />
                     <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Verify</span>
                  </button>
@@ -232,14 +232,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showVerification && (
-          <VerificationPaymentModal
-            onClose={() => setShowVerification(false)}
-            onSuccess={async () => { await refreshProfile(); setShowVerification(false); }}
-          />
-        )}
-      </AnimatePresence>
+
     </div>
   );
 };

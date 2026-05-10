@@ -91,6 +91,17 @@ export const SovereignBrowsing: React.FC<{ onStop: () => void }> = ({ onStop }) 
   const handleMatch = async (targetId: string) => {
     if (!myProfile?.user_id || matchingStatus[targetId] === 'success') return;
     
+    if (!myProfile?.is_verified) {
+       alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
+       return;
+    }
+    
+    const targetProfile = profiles.find(p => p.user_id === targetId);
+    if (targetProfile && !targetProfile.is_verified) {
+       alert("Sovereign resonance requires the target to have a sealed identity.");
+       return;
+    }
+
     setMatchingStatus(prev => ({ ...prev, [targetId]: 'matching' }));
     try {
        await MessagingService.createMatch(myProfile.user_id, targetId);

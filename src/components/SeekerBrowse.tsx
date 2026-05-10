@@ -238,6 +238,14 @@ export const SeekerBrowse: React.FC = () => {
                       <div className="pt-20 flex flex-col sm:flex-row gap-10">
                          <Button onClick={async () => {
                             if (!myProfile?.user_id) return;
+                            if (!myProfile?.is_verified) {
+                               alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
+                               return;
+                            }
+                            if (!selectedProfile.is_verified) {
+                               alert("Sovereign resonance requires the target to have a sealed identity.");
+                               return;
+                            }
                             try {
                                await MessagingService.createMatch(myProfile.user_id, selectedProfile.user_id);
                                alert("Resonance Established. Opening Communication Portal...");

@@ -347,6 +347,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                     vocation: profile.occupation || 'Aspirant',
                     tier: currentLevel.name,
                     is_verified: profile.is_verified,
+                    absolute_rank: absRank,
                     rank_tier: currentLevel.id,
                     latitude: profile.latitude,
                     longitude: profile.longitude

@@ -147,9 +147,11 @@ export const VerificationPaymentModal: React.FC<VerificationPaymentModalProps> =
               </motion.div>
             )}
             {status === 'success' && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-green-400 text-xs text-center border border-green-500/20 bg-green-500/10 p-3 rounded-xl overflow-hidden space-y-1">
-                <p className="font-bold uppercase tracking-widest text-[9px]">Validation Pending</p>
-                <p>The Admin will verify your transaction. Check your messages shortly for the identity link.</p>
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="text-mat-gold text-xs text-center border border-mat-gold/20 bg-mat-gold/10 p-3 rounded-xl overflow-hidden space-y-2 mt-4">
+                <p className="font-black uppercase tracking-[0.4em] text-[9px]">Tithe Received</p>
+                <p className="text-[10px] text-mat-gold/80 leading-relaxed font-medium">
+                  Your contribution is under review by the Sanctuary Architects. Upon authorization, your exclusive biometric seal link will be delivered directly to your dialogues.
+                </p>
               </motion.div>
             )}
           </AnimatePresence>
