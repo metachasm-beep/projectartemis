@@ -1,6 +1,5 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
-import { Loader2 } from "lucide-react"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
@@ -11,24 +10,21 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-mat-wine text-mat-cream shadow hover:bg-mat-wine/90",
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-mat-rose/20 bg-transparent shadow-sm hover:bg-mat-rose/10 hover:text-mat-wine",
+          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
         secondary:
-          "bg-mat-rose text-mat-cream shadow-sm hover:bg-mat-rose/80",
-        ghost: "hover:bg-mat-rose/10 hover:text-mat-wine",
-        link: "text-mat-wine underline-offset-4 hover:underline",
-        gold: "bg-mat-gold text-mat-wine shadow hover:bg-mat-gold/90 font-black tracking-widest",
-        sovereign: "bg-mat-wine/5 border border-mat-wine/10 text-mat-wine hover:bg-mat-wine/10 italic font-bold",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        default: "h-12 px-6 py-2 rounded-2xl",
-        sm: "h-8 rounded-xl px-3 text-xs",
-        lg: "h-14 rounded-[2rem] px-10 text-base",
-        xl: "h-18 rounded-[2.5rem] px-12 text-lg font-bold tracking-widest",
-        icon: "h-10 w-10 rounded-full",
+        default: "h-9 px-4 py-2",
+        sm: "h-8 rounded-md px-3 text-xs",
+        lg: "h-10 rounded-md px-8",
+        icon: "h-9 w-9",
       },
     },
     defaultVariants: {
@@ -42,26 +38,17 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  loading?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, loading = false, children, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }), loading && "opacity-70 pointer-events-none")}
+        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        disabled={loading || props.disabled}
         {...props}
-      >
-        {loading ? (
-          <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            {children}
-          </>
-        ) : children}
-      </Comp>
+      />
     )
   }
 )
