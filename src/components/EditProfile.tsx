@@ -38,6 +38,23 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
   const [success, setSuccess] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
 
+  // ─── DOSSIER EXCELLENCE CALCULATION ───
+  const calculateCompletion = () => {
+    let score = 0;
+    const coreFields = [
+      formData.full_name, formData.bio, formData.date_of_birth,
+      formData.city, formData.occupation, formData.education,
+      formData.religion, formData.mother_tongue
+    ];
+    coreFields.forEach(f => { if (f && f.toString().trim().length > 0) score += 7; });
+    if (formData.bio && formData.bio.length > 100) score += 4;
+    score += Math.min(30, (formData.photos?.length || 0) * 5);
+    if (formData.is_verified) score += 10;
+    return Math.min(100, score);
+  };
+
+  const completionPct = calculateCompletion();
+
   const PHOTO_LIMIT = 6;
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -204,6 +221,27 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
            <button onClick={onCancel} className="p-4 rounded-full bg-white/5 text-white/40 hover:text-white hover:bg-white/10 transition-all">
               <X size={24} />
            </button>
+        </div>
+
+        {/* ─── DOSSIER EXCELLENCE BAR (Merit Board Parity) ─── */}
+        <div className="relative z-10 px-2 space-y-6">
+           <div className="flex justify-between items-end">
+              <div className="space-y-1">
+                 <span className="text-[9px] font-black uppercase tracking-[0.4em] text-mat-gold italic">Dossier Excellence</span>
+                 <p className="text-[8px] text-white/30 uppercase tracking-widest">Calibration Progress</p>
+              </div>
+              <span className="text-5xl font-display text-white italic leading-none">
+                {completionPct}%
+              </span>
+           </div>
+           <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden relative border border-white/10">
+              <motion.div 
+                 initial={{ width: 0 }}
+                 animate={{ width: `${completionPct}%` }}
+                 transition={{ duration: 1.5, ease: [0.16, 1, 0.3, 1] }}
+                 className="absolute inset-y-0 left-0 bg-mat-gold shadow-[0_0_25px_rgba(191,160,106,0.5)]" 
+              />
+           </div>
         </div>
         
         <div className="relative z-10 grid grid-cols-1 gap-12">
