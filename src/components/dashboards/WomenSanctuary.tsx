@@ -11,7 +11,8 @@ import {
   Fingerprint,
   Sparkles,
   Compass,
-  Clock
+  Clock,
+  BookOpen
 } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
@@ -175,6 +176,15 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
                     <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Verify</span>
                  </button>
               )}
+
+
+              <button 
+                onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} 
+                className="flex items-center gap-2 hover:text-mat-noir transition-colors group"
+              >
+                 <BookOpen size={12} className="group-hover:scale-110 transition-transform" />
+                 <span className="mat-text-apple-display text-[8px] tracking-[0.2em] font-black uppercase">Blogs</span>
+              </button>
 
               <button onClick={() => setShowFAQ(true)} className="mat-text-apple-display text-[8px] tracking-[0.2em] hover:text-mat-noir transition-colors uppercase font-bold">Knowledge</button>
            </div>

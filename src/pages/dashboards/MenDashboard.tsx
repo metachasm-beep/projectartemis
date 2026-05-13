@@ -11,10 +11,9 @@ import {
   Camera,
   Compass,
   Sparkles,
-  Settings,
-  ArrowRight,
   HelpCircle,
-  Loader2
+  Loader2,
+  BookOpen
 } from 'lucide-react';
 
 import { 
@@ -563,7 +562,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                         </div>
                       </TooltipProvider>
                    </div>
-                   <p className="text-[8px] text-center text-white/40 uppercase tracking-tighter italic">Absolute Standing: <span className="text-mat-gold font-bold">#{absRank || '--'}</span> of {_totalMen}</p>
+                    <button 
+                      onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')}
+                      className="w-full py-3.5 border border-white/10 text-white/40 rounded-xl text-[10px] font-bold uppercase tracking-[0.4em] flex items-center justify-center gap-2 hover:bg-white/5 transition-all mt-4"
+                    >
+                       <BookOpen size={12} />
+                       <span>Blogs</span>
+                    </button>
+                    <p className="text-[8px] text-center text-white/40 uppercase tracking-tighter italic mt-4">Absolute Standing: <span className="text-mat-gold font-bold">#{absRank || '--'}</span> of {_totalMen}</p>
                    <div className="pt-8 flex justify-center border-t border-white/5 mt-6 px-4">
                       <QueueStatus />
                    </div>
@@ -676,6 +682,13 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                       </div>
                     </TooltipProvider>
                   </div>
+                  <button 
+                    onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')}
+                    className="w-full mt-4 py-5 border border-white/10 text-white/40 rounded-2xl font-bold uppercase tracking-[0.5em] text-[11px] hover:bg-white/5 transition-all flex items-center justify-center gap-3"
+                  >
+                    <BookOpen size={16} />
+                    <span>Blogs</span>
+                  </button>
               </motion.div>
             </div>
           </section>
