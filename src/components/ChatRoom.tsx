@@ -87,8 +87,12 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ otherUserId, onBack }) => {
     if (!newMessage.trim() || sending || !otherUser || !currentUser) return;
 
     // "Verified Souls" Restriction
-    if (!currentUser.is_verified || !otherUser.is_verified) {
-      alert("Both souls must be verified by the Matriarch to resonant dialogues.");
+    if (!currentUser.is_verified) {
+      alert("You must be verified by the Matriarch to engage in resonant dialogues.");
+      return;
+    }
+    if (!otherUser.is_verified) {
+      alert("The other soul must be verified to engage in resonant dialogues.");
       return;
     }
 
@@ -223,10 +227,15 @@ export const ChatRoom: React.FC<ChatRoomProps> = ({ otherUserId, onBack }) => {
 
       {/* Input UI */}
       <div className="p-6 md:p-8 bg-white/60 border-t border-mat-rose/10 transition-all focus-within:bg-white">
-         {(!currentUser?.is_verified || !otherUser?.is_verified) ? (
+         {!currentUser?.is_verified ? (
            <div className="h-16 flex items-center justify-center gap-3 bg-red-50/50 rounded-2xl border border-red-100 text-red-500/60 overflow-hidden">
               <Info size={14} />
-              <span className="text-[9px] font-bold uppercase tracking-widest italic">Verification Seal Required for Dialogue.</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest italic">You require the Verification Seal to engage.</span>
+           </div>
+         ) : !otherUser?.is_verified ? (
+           <div className="h-16 flex items-center justify-center gap-3 bg-red-50/50 rounded-2xl border border-red-100 text-red-500/60 overflow-hidden">
+              <Info size={14} />
+              <span className="text-[9px] font-bold uppercase tracking-widest italic">The other soul lacks the Verification Seal.</span>
            </div>
          ) : (
            <form onSubmit={handleSendMessage} className="flex gap-4">
