@@ -104,7 +104,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
   };
 
   return (
-    <div className="w-full max-w-xl mx-auto p-12 space-y-12 bg-black/40 backdrop-blur-xl rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
+    <div className="w-full max-w-xl mx-auto p-6 md:p-12 space-y-8 md:space-y-12 bg-black/40 backdrop-blur-xl rounded-[2.5rem] md:rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
       {/* 🔮 Verification Progress Rail */}
       <div className="flex justify-between items-center px-4 relative z-10">
         {progressSteps.map((s, i) => {
@@ -168,15 +168,15 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         )}
 
         {(step === 'ID_VERIFICATION' || step === 'LIVENESS') && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 h-[500px] flex flex-col">
+          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 min-h-[500px] flex flex-col">
              <div className="space-y-2 mb-4">
                 <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02: Identity Check</span>
                 <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">ID & Biometrics</h3>
              </div>
 
-             <div className="flex-1 flex gap-6 overflow-hidden">
+             <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
                 {/* 🛡️ Implementation Plan Sidebar */}
-                <div className="w-48 flex flex-col gap-3 text-left">
+                <div className="w-full lg:w-48 flex flex-col gap-3 text-left">
                    <div className="flex items-center gap-2 mb-2">
                       <Zap size={12} className="text-mat-gold" />
                       <span className="text-[9px] font-black text-white uppercase tracking-widest">Live Plan</span>
@@ -198,7 +198,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 </div>
 
                 {/* 🔮 Verification Iframe */}
-                <div className="flex-1 rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
+                <div className="flex-1 min-h-[450px] lg:min-h-0 rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
                     {loading && (
                       <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
                           <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
