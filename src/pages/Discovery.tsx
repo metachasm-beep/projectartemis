@@ -49,7 +49,6 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
         }
 
         query += `
-          AND full_name NOT LIKE '%Paul%' 
           ORDER BY COALESCE(absolute_rank, 99999) ASC, created_at DESC 
           LIMIT 200
         `;
