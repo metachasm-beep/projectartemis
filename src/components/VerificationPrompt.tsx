@@ -8,10 +8,11 @@ import { cn } from '@/lib/utils';
 interface VerificationPromptProps {
   userId: string;
   role: 'man' | 'woman';
+  isVerified?: boolean;
   onVerified: () => void;
 }
 
-export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, role, onVerified }) => {
+export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, role, isVerified, onVerified }) => {
   const [showModal, setShowModal] = useState(false);
 
   const isMan = role === 'man';
@@ -87,7 +88,8 @@ export const VerificationPrompt: React.FC<VerificationPromptProps> = ({ userId, 
               
               <div className="max-h-[90vh] overflow-y-auto rounded-[3.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] bg-[#0F0F10] border border-white/10">
                 <AadhaarVerification 
-                  userId={userId} 
+                  userId={userId}
+                  isVerified={isVerified}
                   onVerified={() => {
                     onVerified();
                     setShowModal(false);

@@ -27,10 +27,11 @@ interface PlanStep {
 
 interface AadhaarVerificationProps {
   userId: string;
+  isVerified?: boolean;
   onVerified: () => void;
 }
 
-export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId, onVerified }) => {
+export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId, isVerified, onVerified }) => {
   const [step, setStep] = useState<VerificationStep>('START');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -86,6 +87,25 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       setLoading(false);
     }
   };
+
+  // ─── ALREADY VERIFIED: Short-circuit to a badge ─────────────────────────
+  if (isVerified) {
+    return (
+      <div className="w-full max-w-xl mx-auto p-8 md:p-12 bg-black/40 backdrop-blur-xl rounded-[2.5rem] md:rounded-[4rem] border border-green-500/20 shadow-2xl flex flex-col items-center text-center space-y-6">
+        <div className="relative">
+          <div className="absolute inset-0 bg-green-500/20 blur-3xl rounded-full" />
+          <div className="relative z-10 w-24 h-24 rounded-full border-4 border-green-400/60 bg-green-500/10 flex items-center justify-center shadow-[0_0_40px_rgba(34,197,94,0.15)]">
+            <ShieldCheck size={48} className="text-green-400" strokeWidth={1.5} />
+          </div>
+        </div>
+        <div className="space-y-2">
+          <span className="text-[9px] font-black uppercase tracking-[0.5em] text-green-400">Identity Sealed</span>
+          <h3 className="text-3xl font-display font-black italic text-white tracking-tighter uppercase">You Are Verified</h3>
+          <p className="text-[10px] text-white/30 uppercase tracking-[0.2em] leading-relaxed">Your biometric identity is permanently encoded into the Sanctuary.</p>
+        </div>
+      </div>
+    );
+  }
 
   const progressSteps = [
     { id: 'ID_VERIFICATION', label: 'Identity', icon: Scan },
