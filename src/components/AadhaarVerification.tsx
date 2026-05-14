@@ -8,8 +8,8 @@ import {
   ShieldAlert,
   Scan,
   CheckCircle,
-  Zap,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { Button } from './ui/button';
 import { api } from '@/services/api';
@@ -44,6 +44,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
           await finalizeRegistry();
         } else {
           setError(event.data.message || 'Identity Handshake Failed.');
+          setStep('START');
         }
       }
     };
@@ -71,7 +72,6 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     setLoading(true);
     setError(null);
     try {
-      // Finalize Identity in Sanctuary Registry after Biometric success
       const res = await api.finalizeVerification();
       if (res.success) {
         setStep('SUCCESS');
@@ -97,12 +97,80 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     const map: Record<VerificationStep, number> = {
       'START': -1,
       'ID_VERIFICATION': 0,
-      'LIVENESS': 0, // Didit handles both
+      'LIVENESS': 0,
       'SUCCESS': 2
     };
     return map[s];
   };
 
+  // ─── FULL-SCREEN IFRAME MODE (iOS Safe) ────────────────────────────────────
+  // During active verification, render the iframe full-screen to avoid any
+  // container clipping issues on iOS Safari (where overflow-hidden on ancestor
+  // elements clips fixed-height flex children unpredictably).
+  if (step === 'ID_VERIFICATION' || step === 'LIVENESS') {
+    return (
+      <div
+        className="fixed inset-0 z-[200] flex flex-col bg-black"
+        style={{ height: '100dvh' }}
+      >
+        {/* Header Bar */}
+        <div className="flex items-center justify-between px-4 py-3 bg-black/80 backdrop-blur-xl border-b border-white/5 shrink-0">
+          <div className="flex flex-col">
+            <span className="text-[8px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02</span>
+            <span className="text-sm font-display font-black text-white italic uppercase leading-none">ID & Biometrics</span>
+          </div>
+          <button
+            onClick={() => setStep('START')}
+            className="w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+          >
+            <X size={16} />
+          </button>
+        </div>
+
+        {/* Loading overlay */}
+        {loading && (
+          <div className="absolute inset-0 bg-black/70 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
+            <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
+            <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Sealing Identity...</span>
+          </div>
+        )}
+
+        {/* Error Banner */}
+        <AnimatePresence>
+          {error && !loading && (
+            <motion.div
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              className="mx-4 mt-3 p-4 rounded-2xl bg-red-500/10 border border-red-500/30 flex items-center gap-4 shrink-0"
+            >
+              <ShieldAlert className="text-red-500 shrink-0" size={18} />
+              <p className="text-[10px] text-red-100 font-bold uppercase tracking-wide leading-tight flex-1">{error}</p>
+              <button onClick={() => setError(null)} className="text-white/30 hover:text-white text-[8px] font-black uppercase tracking-widest shrink-0">✕</button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {/* The Iframe — takes all remaining height */}
+        <iframe
+          src={diditService.getVerificationUrl()}
+          allow="camera *; microphone *; display-capture *;"
+          className="flex-1 w-full border-none"
+          style={{ display: 'block', minHeight: 0 }}
+          title="Didit Verification Flow"
+        />
+
+        {/* Footer */}
+        <div className="px-4 py-2 bg-black/80 border-t border-white/5 shrink-0">
+          <p className="text-[8px] text-center text-white/20 uppercase tracking-[0.2em]">
+            Secured by Didit · Aadhaar + Face Liveness
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── STANDARD CARD MODE (START & SUCCESS) ─────────────────────────────────
   return (
     <div className="w-full max-w-xl mx-auto p-6 md:p-12 space-y-8 md:space-y-12 bg-black/40 backdrop-blur-xl rounded-[2.5rem] md:rounded-[4rem] border border-white/5 shadow-2xl relative overflow-hidden">
       {/* 🔮 Verification Progress Rail */}
@@ -155,66 +223,21 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
             <div className="space-y-4">
                <h2 className="text-4xl font-display font-black text-white italic tracking-tight uppercase">Identity Verification</h2>
                <p className="text-[11px] text-white/40 uppercase tracking-[0.3em] max-w-xs mx-auto leading-relaxed font-medium">
-                 Start the secure identity check. Verified by Didit’s encrypted system. No bots, only real users.
+                 Start the secure identity check. Verified by Didit's encrypted system. No bots, only real users.
                </p>
             </div>
+            {error && (
+              <div className="p-4 rounded-2xl bg-red-500/10 border border-red-500/20 flex items-center gap-3">
+                <ShieldAlert className="text-red-400 shrink-0" size={16} />
+                <p className="text-[10px] text-red-200 font-bold text-left leading-tight">{error}</p>
+              </div>
+            )}
             <Button 
                onClick={() => setStep('ID_VERIFICATION')}
                className="w-full h-18 bg-mat-gold text-mat-obsidian hover:bg-white font-black uppercase tracking-[0.4em] text-[12px] rounded-3xl group shadow-[0_20px_40px_rgba(212,175,55,0.15)] mt-4"
             >
                Start Verification <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
             </Button>
-          </motion.div>
-        )}
-
-        {(step === 'ID_VERIFICATION' || step === 'LIVENESS') && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.05 }} key="didit" className="space-y-8 text-center relative z-10 min-h-[500px] flex flex-col">
-             <div className="space-y-2 mb-4">
-                <span className="text-[9px] font-black text-mat-gold uppercase tracking-[0.5em]">Phase 01-02: Identity Check</span>
-                <h3 className="text-3xl font-display font-black text-white italic tracking-tight uppercase">ID & Biometrics</h3>
-             </div>
-
-             <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
-                {/* 🛡️ Implementation Plan Sidebar */}
-                <div className="w-full lg:w-48 flex flex-col gap-3 text-left">
-                   <div className="flex items-center gap-2 mb-2">
-                      <Zap size={12} className="text-mat-gold" />
-                      <span className="text-[9px] font-black text-white uppercase tracking-widest">Live Plan</span>
-                   </div>
-                   {plan.map((p, i) => (
-                      <div key={i} className={cn(
-                        "p-3 rounded-xl border transition-all duration-500",
-                        p.status === 'ACTIVE' ? "bg-mat-gold/10 border-mat-gold/30" : 
-                        p.status === 'COMPLETED' ? "bg-green-500/10 border-green-500/20" : "bg-white/5 border-white/5 opacity-40"
-                      )}>
-                         <div className="flex items-center justify-between mb-1">
-                            <span className={cn("text-[8px] font-black uppercase", p.status === 'COMPLETED' ? "text-green-400" : "text-white/60")}>{p.label}</span>
-                            {p.status === 'ACTIVE' && <Loader2 size={8} className="animate-spin text-mat-gold" />}
-                            {p.status === 'COMPLETED' && <CheckCircle size={8} className="text-green-400" />}
-                         </div>
-                         <p className="text-[7px] text-white/30 font-medium leading-tight">{p.detail}</p>
-                      </div>
-                   ))}
-                </div>
-
-                {/* 🔮 Verification Iframe */}
-                <div className="flex-1 min-h-[450px] lg:min-h-0 rounded-[2.5rem] overflow-hidden border border-white/5 bg-black/20 shadow-2xl relative">
-                    {loading && (
-                      <div className="absolute inset-0 bg-black/60 backdrop-blur-md z-50 flex flex-col items-center justify-center space-y-4">
-                          <div className="w-12 h-12 border-4 border-mat-gold border-t-transparent rounded-full animate-spin" />
-                          <span className="text-[10px] font-black text-mat-gold uppercase tracking-widest">Sealing Identity...</span>
-                      </div>
-                    )}
-                    <iframe 
-                      src={diditService.getVerificationUrl()}
-                      allow="camera *; microphone *; display-capture *;"
-                      className="w-full h-full border-none"
-                      title="Didit Verification Flow"
-                    />
-                </div>
-             </div>
-             
-             <p className="text-[9px] text-white/20 uppercase tracking-[0.2em] mt-4">Our system uses Aadhaar checks and Face Liveness via Didit.</p>
           </motion.div>
         )}
 
@@ -235,24 +258,6 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <h2 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Identity Verified</h2>
                 <p className="text-[12px] text-green-400 font-black uppercase tracking-[0.6em] animate-pulse">Welcome to the community</p>
              </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ⚠️ ERROR HUD */}
-      <AnimatePresence>
-        {error && !loading && (
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute bottom-8 left-8 right-8 p-6 rounded-3xl bg-red-500/10 border border-red-500/30 flex items-center gap-6 backdrop-blur-xl z-20"
-          >
-             <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
-               <ShieldAlert className="text-red-500" size={24} />
-             </div>
-             <p className="text-[11px] text-red-100 font-bold uppercase tracking-widest leading-relaxed flex-1">{error}</p>
-             <button onClick={() => setError(null)} className="text-white/20 hover:text-white uppercase text-[9px] font-black tracking-widest">Dismiss</button>
           </motion.div>
         )}
       </AnimatePresence>
