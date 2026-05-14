@@ -28,6 +28,16 @@ export const DiscoveryService = {
     }
   },
 
+  getGazeCount: async (): Promise<number> => {
+    try {
+      const res = await api.get('/discovery/gaze-count');
+      return res.data?.count ?? 0;
+    } catch (err) {
+      console.error("GAZE_COUNT_ERROR:", err);
+      return 0;
+    }
+  },
+
   // --- 🛡️ Safety Protocols ---
   blockUser: async (targetId: string) => {
     try {

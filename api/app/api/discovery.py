@@ -183,3 +183,26 @@ async def unlock_advanced_filter(request: UnlockFilterRequest, user: dict = Depe
     ])
 
     return {"status": "success", "new_points": new_points, "unlocked": request.unlock_type}
+
+
+@router.get("/gaze-count")
+async def get_gaze_count(user: dict = Depends(auth_bearer)):
+    """
+    Returns the total cumulative count of profile views (Gaze Index) received by the 
+    authenticated Aspirant (male user). Each time any Sovereign (woman) views his profile
+    is recorded as a 'view' action in selection_events.
+    """
+    man_id = user["id"]
+
+    # Gracefully return 0 for non-man roles
+    user_res = await turso_client.execute("SELECT role FROM profiles WHERE user_id = ?", [man_id])
+    if not user_res.rows or user_res.rows[0].get("role") != "man":
+        return {"count": 0}
+
+    res = await turso_client.execute(
+        "SELECT COUNT(*) as count FROM selection_events WHERE man_id = ? AND action = 'view'",
+        [man_id]
+    )
+    count = res.rows[0].get("count", 0) if res.rows else 0
+    return {"count": count}
+
