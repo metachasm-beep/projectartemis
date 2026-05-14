@@ -99,12 +99,14 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
 
   const handleAction = useCallback(async (type: string, targetProfile: any) => {
      if (type === 'ping') {
-        if (!profile?.is_verified) {
-           if (profile?.role === 'woman') {
-              setShowVerificationModal(true);
-           } else {
-              alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
-           }
+        // Only block unverified women — verified women proceed directly
+        if (!profile?.is_verified && profile?.role === 'woman') {
+           setShowVerificationModal(true);
+           return;
+        }
+        // For men, show an alert instead
+        if (!profile?.is_verified && profile?.role === 'man') {
+           alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
            return;
         }
         if (!targetProfile.is_verified) {
@@ -292,7 +294,10 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
                   >
                     Abort Protocol
                   </button>
-                  <AadhaarVerification userId={profile?.user_id || ''} onVerified={async () => {
+                  <AadhaarVerification
+                    userId={profile?.user_id || ''}
+                    isVerified={!!profile?.is_verified}
+                    onVerified={async () => {
                      await refreshProfile();
                      setShowVerificationModal(false);
                   }} />
