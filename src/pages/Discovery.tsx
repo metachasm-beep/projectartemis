@@ -24,7 +24,11 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
   const [isSafetySubmitting, setIsSafetySubmitting] = useState(false);
 
   const { profile, refreshProfile } = useAuth();
-  
+
+  // Use a ref so handleAction always reads the latest profile without stale closures
+  const profileRef = React.useRef(profile);
+  React.useEffect(() => { profileRef.current = profile; }, [profile]);
+
   const isUnverifiedWoman = profile?.role === 'woman' && !profile?.is_verified;
 
   useEffect(() => {
@@ -98,14 +102,14 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
   }, [aspirants]);
 
   const handleAction = useCallback(async (type: string, targetProfile: any) => {
+     const currentProfile = profileRef.current;
      if (type === 'ping') {
-        // Only block unverified women — verified women proceed directly
-        if (!profile?.is_verified && profile?.role === 'woman') {
+        // Always read latest profile from ref to avoid stale closure on is_verified
+        if (!currentProfile?.is_verified && currentProfile?.role === 'woman') {
            setShowVerificationModal(true);
            return;
         }
-        // For men, show an alert instead
-        if (!profile?.is_verified && profile?.role === 'man') {
+        if (!currentProfile?.is_verified && currentProfile?.role === 'man') {
            alert("Identity unverified. Please seal your identity from your Dashboard to engage.");
            return;
         }
@@ -118,26 +122,24 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
         await DiscoveryService.recordAction(targetProfile.id, 'match');
         
         // 🏹 Establish Signit Channel (Match Creation)
-        if (profile?.user_id) {
+        if (currentProfile?.user_id) {
           try {
-            const matchId = await MessagingService.createMatch(profile.user_id, targetProfile.id);
+            const matchId = await MessagingService.createMatch(currentProfile.user_id, targetProfile.id);
             
-            // Construct full match object for the chat room
             const matchObject = {
               id: matchId,
-              woman_user_id: profile.role === 'woman' ? profile.user_id : targetProfile.id,
-              man_user_id: profile.role === 'man' ? profile.user_id : targetProfile.id,
+              woman_user_id: currentProfile.role === 'woman' ? currentProfile.user_id : targetProfile.id,
+              man_user_id: currentProfile.role === 'man' ? currentProfile.user_id : targetProfile.id,
               status: 'PENDING_ACCEPTANCE',
               current_comm_mode: 'TEXT',
               otherUser: {
                 full_name: targetProfile.name,
                 photos: targetProfile.photos
               },
-              // Metadata for header display
-              man_name: profile.role === 'man' ? profile.full_name : targetProfile.name,
-              woman_name: profile.role === 'woman' ? profile.full_name : targetProfile.name,
-              man_photos: JSON.stringify(profile.role === 'man' ? profile.photos : targetProfile.photos),
-              woman_photos: JSON.stringify(profile.role === 'woman' ? profile.photos : targetProfile.photos)
+              man_name: currentProfile.role === 'man' ? currentProfile.full_name : targetProfile.name,
+              woman_name: currentProfile.role === 'woman' ? currentProfile.full_name : targetProfile.name,
+              man_photos: JSON.stringify(currentProfile.role === 'man' ? currentProfile.photos : targetProfile.photos),
+              woman_photos: JSON.stringify(currentProfile.role === 'woman' ? currentProfile.photos : targetProfile.photos)
             };
 
             setSelectedProfile(null);
@@ -158,7 +160,7 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
      if (type === 'report') {
         setShowReportModal(true);
      }
-  }, [isUnverifiedWoman, aspirants, profile?.user_id, profile?.full_name, profile?.photos, profile?.role, onOpenChat]);
+  }, [onOpenChat]);
 
   const confirmBlock = async () => {
     if (!selectedProfile) return;
