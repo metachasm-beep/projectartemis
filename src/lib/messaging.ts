@@ -135,18 +135,25 @@ export const MessagingService = {
       throw new Error("Communication Paused: The woman has suspended this sanctuary.");
     }
 
-    if (mode === 'DELAYED_TEXT') {
+    // 3.4 Female Initiation Check
+    const femaleMsgsResult = await turso.execute({
+      sql: "SELECT 1 FROM messages WHERE conversation_id = ? AND sender_user_id = ? LIMIT 1",
+      args: [convId, match.woman_user_id]
+    });
+    const femaleHasInitiated = femaleMsgsResult.rows.length > 0;
+
+    if (mode === 'DELAYED_TEXT' && !femaleHasInitiated) {
       if (match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date()) {
         if (!isWoman) throw new Error("Awaiting Gaze: Interaction is restricted for 24 hours.");
       }
     }
 
-    // 3.5 Consent Enforcement: Men cannot respond if connection is still pending
-    if (match.status === 'PENDING_ACCEPTANCE' && !isWoman) {
+    // 3.5 Consent Enforcement: Men cannot respond if connection is still pending and she hasn't initiated
+    if (match.status === 'PENDING_ACCEPTANCE' && !isWoman && !femaleHasInitiated) {
       throw new Error("Sovereign Consent Required: You must accept this resonance before responding.");
     }
 
-    if (mode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed) {
+    if (mode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed && !femaleHasInitiated) {
       // Men can only send prompt responses, not free messages
        throw new Error("Prompt Mandatory: You must complete the woman's introductory story first.");
     }

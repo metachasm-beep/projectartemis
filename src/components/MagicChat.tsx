@@ -168,9 +168,10 @@ export const MagicChat: React.FC<ChatProps> = ({ match, currentUserId, userRole,
   // 🧩 Permission Rituals
   const isHold = commMode === 'HOLD';
   const isRevoked = commMode === 'REVOKED';
-  const isPending = match.status === 'PENDING_ACCEPTANCE';
-  const isTimeLocked = commMode === 'DELAYED_TEXT' && match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date() && !isWoman;
-  const isPromptLocked = commMode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed;
+  const femaleHasInitiated = messages.some(m => m.sender_user_id === match.woman_user_id);
+  const isPending = match.status === 'PENDING_ACCEPTANCE' && !femaleHasInitiated;
+  const isTimeLocked = commMode === 'DELAYED_TEXT' && match.delayed_unlock_at && new Date(match.delayed_unlock_at) > new Date() && !isWoman && !femaleHasInitiated;
+  const isPromptLocked = commMode === 'PROMPT_INTRO' && !isWoman && !match.prompts_completed && !femaleHasInitiated;
   const canSend = (userRole === 'admin') || (!isHold && !isRevoked && !isTimeLocked && !isPromptLocked && !isPending && !isAdminMonitor);
 
   const getStatusLabel = () => {
