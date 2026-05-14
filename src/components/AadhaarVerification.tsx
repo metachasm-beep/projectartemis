@@ -75,7 +75,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
       const res = await api.finalizeVerification();
       if (res.success) {
         setStep('SUCCESS');
-        setTimeout(onVerified, 3000);
+        // User will proceed via the "Enter the Sanctuary" button
       } else {
         throw new Error(res.message || "Identity Sealing Failed.");
       }
@@ -242,7 +242,7 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
         )}
 
         {step === 'SUCCESS' && (
-          <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} key="success" className="text-center space-y-8 py-20 relative z-10">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} key="success" className="text-center space-y-8 py-16 relative z-10">
              <motion.div 
                initial={{ scale: 0.5, opacity: 0 }}
                animate={{ scale: 1, opacity: 1 }}
@@ -258,6 +258,18 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
                 <h2 className="text-5xl font-display font-black text-white italic tracking-tighter uppercase">Identity Verified</h2>
                 <p className="text-[12px] text-green-400 font-black uppercase tracking-[0.6em] animate-pulse">Welcome to the community</p>
              </div>
+             <motion.div
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.6 }}
+             >
+               <Button
+                 onClick={onVerified}
+                 className="w-full h-16 bg-green-500 hover:bg-green-400 text-black font-black uppercase tracking-[0.4em] text-[12px] rounded-3xl group shadow-[0_20px_40px_rgba(34,197,94,0.2)] transition-all"
+               >
+                 Enter the Sanctuary <ArrowRight className="ml-2 group-hover:translate-x-2 transition-transform" />
+               </Button>
+             </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
