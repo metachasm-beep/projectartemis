@@ -54,7 +54,8 @@ export const AdminUserChatsModal: React.FC<AdminUserChatsModalProps> = ({ userId
             </div>
             <button 
               onClick={onClose} 
-              className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all md:hidden"
+              className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all"
+              title="Close Audit"
             >
               <X size={18} />
             </button>
@@ -126,7 +127,8 @@ export const AdminUserChatsModal: React.FC<AdminUserChatsModalProps> = ({ userId
                 </div>
                 <button 
                   onClick={onClose} 
-                  className="w-12 h-12 rounded-full bg-slate-100 hidden md:flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all shadow-sm"
+                  className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-900 transition-all shadow-sm"
+                  title="Close Audit"
                 >
                   <X size={20} />
                 </button>
@@ -184,7 +186,7 @@ export const AdminUserChatsModal: React.FC<AdminUserChatsModalProps> = ({ userId
               <p className="text-xs text-slate-400 mt-1 max-w-sm">Choose a resonance path from the left sidebar to audit the complete transmission history.</p>
               <button 
                 onClick={onClose} 
-                className="mt-8 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase shadow-xl hover:bg-slate-800 transition-all md:hidden"
+                className="mt-8 px-8 py-4 bg-slate-900 text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase shadow-xl hover:bg-slate-800 transition-all"
               >
                 Close Audit
               </button>
