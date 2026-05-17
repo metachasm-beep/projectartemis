@@ -115,7 +115,7 @@ export const AdminAuraPanel: React.FC = () => {
                           </div>
                        </div>
                        <div className="space-y-0.5">
-                          <h4 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter group-hover:text-slate-900 transition-colors">{claim.user_name}</h4>
+                          <h4 className="text-xl font-bold text-slate-900 uppercase italic tracking-tighter group-hover:text-slate-900 transition-colors">{claim.full_name || claim.user_name || 'Unknown Aspirant'}</h4>
                           <span className="text-[8px] font-bold text-slate-300 uppercase tracking-[0.25em]">ID: {claim.user_id.slice(0,12)}</span>
                        </div>
                     </div>
