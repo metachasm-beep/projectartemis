@@ -42,11 +42,11 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
       : [{ id: 'leaderboard' as const, label: 'Results', icon: Trophy }]
     ),
     ...(profile?.is_influencer 
-      ? [{ id: 'influencer_dashboard' as const, label: 'Earnings', icon: TrendingUp }] 
+      ? [{ id: 'influencer_dashboard' as const, label: 'Influencer Hub', icon: TrendingUp }] 
       : []
     ),
     ...(profile?.role !== 'admin' 
-      ? [{ id: 'profile' as const, label: profile?.role === 'woman' ? 'Home' : 'Profile', icon: profile?.role === 'woman' ? Home : User }] 
+      ? [{ id: 'profile' as const, label: profile?.is_influencer ? 'User Profile' : (profile?.role === 'woman' ? 'Home' : 'Profile'), icon: profile?.role === 'woman' ? Home : User }] 
       : []
     ),
     { id: 'messages' as const, label: 'Messages', icon: MessageCircle },

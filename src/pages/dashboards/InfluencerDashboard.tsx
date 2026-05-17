@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2, Sparkles } from 'lucide-react';
+import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2, Sparkles, User } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { api } from '@/services/api';
 
@@ -65,8 +65,8 @@ const StatCard: React.FC<{
 
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 
-export const InfluencerDashboard: React.FC = () => {
-  const { user } = useAuthContext();
+export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> = ({ onSwitchToProfile }) => {
+  const { user, profile } = useAuthContext();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -133,14 +133,27 @@ export const InfluencerDashboard: React.FC = () => {
       className="max-w-5xl mx-auto px-6 py-16 space-y-16"
     >
       {/* ── Header ── */}
-      <div className="space-y-4">
-        <span className="text-[10px] font-black uppercase tracking-[0.6em] text-mat-rose/50">Influence Hub</span>
-        <h1 className="text-6xl md:text-7xl mat-text-display-pro text-mat-wine italic leading-[0.9]">
-          Your<br /><span className="text-mat-rose/30">Impact.</span>
-        </h1>
-        <p className="text-mat-slate/50 max-w-md text-sm leading-relaxed">
-          Welcome back, <strong className="text-mat-wine">{data!.influencer_name}</strong>. Every referral you make builds the Matriarch community.
-        </p>
+      <div className="space-y-6">
+        <div className="space-y-4">
+          <span className="text-[10px] font-black uppercase tracking-[0.6em] text-mat-rose/50">Influence Hub</span>
+          <h1 className="text-6xl md:text-7xl mat-text-display-pro text-mat-wine italic leading-[0.9]">
+            Your<br /><span className="text-mat-rose/30">Impact.</span>
+          </h1>
+          <p className="text-mat-slate/50 max-w-md text-sm leading-relaxed">
+            Welcome back, <strong className="text-mat-wine">{data!.influencer_name}</strong>. Every referral you make builds the Matriarch community.
+          </p>
+        </div>
+
+        {onSwitchToProfile && (
+          <div className="pt-2">
+            <button
+              onClick={onSwitchToProfile}
+              className="px-8 py-4 bg-mat-wine text-white hover:bg-mat-wine-soft transition-all rounded-2xl font-bold text-[11px] tracking-[0.2em] uppercase flex items-center gap-3 shadow-xl border border-white/10"
+            >
+              <User size={16} /> Switch to Normal User Profile ({profile?.role === 'woman' ? 'Woman Sanctuary' : 'Man Dashboard'})
+            </button>
+          </div>
+        )}
       </div>
 
       {/* ── Stats Row ── */}

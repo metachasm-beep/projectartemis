@@ -233,7 +233,7 @@ export const DashboardLayout: React.FC = () => {
 
             {activeTab === 'influencer_dashboard' && (profile as any)?.is_influencer && (
               <motion.div key="influencer_dashboard" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                <InfluencerDashboard />
+                <InfluencerDashboard onSwitchToProfile={() => setActiveTab('profile')} />
               </motion.div>
             )}
 
