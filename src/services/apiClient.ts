@@ -1,4 +1,6 @@
 import axios, { AxiosError, AxiosRequestConfig } from 'axios';
+import { supabase } from '@/lib/supabase';
+import { auth as firebaseAuth } from '@/lib/firebase';
 
 interface RetryConfig extends AxiosRequestConfig {
   _retryCount?: number;
@@ -7,10 +9,13 @@ interface RetryConfig extends AxiosRequestConfig {
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
 
-const rawApiUrl = import.meta.env.VITE_API_URL || '/api/v1';
-const cleanBaseURL = rawApiUrl.endsWith('/api/v1') 
-  ? rawApiUrl 
-  : `${rawApiUrl.replace(/\/$/, '')}/api/v1`;
+const _isLocalDev = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+const _envBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+// Force relative URLs in production because VITE_API_URL points to a dead Vercel deployment.
+const cleanBaseURL = _isLocalDev 
+  ? (_envBaseUrl.replace(/\/$/, '') + '/api/v1') 
+  : '/api/v1';
 
 export const API = axios.create({
   baseURL: cleanBaseURL,
@@ -18,11 +23,24 @@ export const API = axios.create({
   timeout: 10000
 });
 
-// Request Interceptor: Attach JWT Token
-API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+// Request Interceptor: Attach Active Identity Token (Firebase or Supabase)
+API.interceptors.request.use(async (config) => {
+  try {
+    // 1. Try Firebase Token (Phone Auth)
+    const firebaseUser = firebaseAuth.currentUser;
+    if (firebaseUser) {
+      const token = await firebaseUser.getIdToken();
+      config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    }
+
+    // 2. Try Supabase Token (Google Auth)
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      config.headers.Authorization = `Bearer ${session.access_token}`;
+    }
+  } catch (err) {
+    console.warn("API_AUTH_SILENT_FAILURE: Could not attach identity token.", err);
   }
   return config;
 }, (error) => Promise.reject(error));
