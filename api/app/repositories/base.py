@@ -38,6 +38,10 @@ class IProfileRepository(ABC):
     async def recalculate_global_ranks(self) -> bool:
         pass
 
+    @abstractmethod
+    async def get_user_chats(self, user_id: str) -> List[Dict[str, Any]]:
+        pass
+
 
 class ICouponRepository(ABC):
     @abstractmethod

@@ -8,7 +8,8 @@ import {
   ShieldAlert, 
   BadgeCheck, 
   MessageSquare,
-  Zap
+  Zap,
+  MessageCircle
 } from 'lucide-react';
 import { AdminService } from '@/services/admin';
 import { useAuth } from '@/hooks/useAuth';
@@ -28,6 +29,7 @@ import { GlassHeader } from './GlassHeader';
 import { EtherealStatus } from './EtherealStatus';
 import { MinimalDock } from './MinimalDock';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { AdminUserChatsModal } from './AdminUserChatsModal';
 
 interface AdminDashboardProps {
   handleLogout: () => void;
@@ -44,6 +46,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
   const [itemToDelete, setItemToDelete] = useState<string | null>(null);
   const [messageTarget, setMessageTarget] = useState<{ id: string, name: string } | null>(null);
   const [selectedProfile, setSelectedProfile] = useState<MatriarchProfile | null>(null);
+  const [chatTargetProfile, setChatTargetProfile] = useState<MatriarchProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const fetchingRef = useRef(false);
 
@@ -159,6 +162,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
       )}
 
       <AnimatePresence>
+        {chatTargetProfile && (
+          <AdminUserChatsModal 
+            userId={chatTargetProfile.user_id}
+            userName={chatTargetProfile.full_name}
+            onClose={() => setChatTargetProfile(null)}
+          />
+        )}
+
         {messageTarget && (
           <DirectMessageModal 
             userId={messageTarget.id}
@@ -277,6 +288,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                      <div className="space-y-6">
                         <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Archive Protocols</span>
                         <div className="flex flex-wrap gap-4">
+                           <button onClick={() => setChatTargetProfile(selectedProfile)} className="px-8 py-4 bg-slate-900 text-white border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-800 transition-all shadow-md">View Chats</button>
                            <button onClick={() => setMessageTarget({id: selectedProfile.user_id, name: selectedProfile.full_name})} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">Direct Transmission</button>
                            <button onClick={() => AdminService.updateProfileStatus(selectedProfile.user_id, {is_verified: !selectedProfile.is_verified}).then(loadData)} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">{selectedProfile.is_verified ? 'Revoke Seal' : 'Apply Identity Seal'}</button>
                            <button onClick={() => handleUpdateTokens(selectedProfile.user_id, 1000)} className="px-8 py-4 bg-slate-50 text-slate-900 border border-black/[0.03] rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-slate-100 transition-all">Grant 1k Aura</button>
@@ -402,6 +414,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ handleLogout, on
                                                          <button onClick={() => handleUpdateTokens(p.user_id, 5000)} className="p-3 md:p-4 hover:bg-amber-50 text-amber-500 rounded-2xl transition-all"><Zap size={18} strokeWidth={1.5} /></button>
                                                       </TooltipTrigger>
                                                       <TooltipContent>Aura Boost (+5000)</TooltipContent>
+                                                   </Tooltip>
+
+                                                   <Tooltip>
+                                                      <TooltipTrigger asChild>
+                                                         <button onClick={() => setChatTargetProfile(p)} className="p-3 md:p-4 hover:bg-indigo-50 text-indigo-600 rounded-2xl transition-all"><MessageCircle size={18} strokeWidth={1.5} /></button>
+                                                      </TooltipTrigger>
+                                                      <TooltipContent>View Chats</TooltipContent>
                                                    </Tooltip>
 
                                                    <Tooltip>

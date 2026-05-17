@@ -106,6 +106,16 @@ async def hard_delete_user(
     await profile_repo.delete_profile(user_id)
     return {"status": "evicted", "user_id": user_id, "auditor": admin["id"]}
 
+@router.get("/user/{user_id}/chats")
+async def get_user_chats(
+    user_id: str,
+    admin: dict = Depends(require_admin),
+    profile_repo: TursoProfileRepository = Depends(get_profile_repo)
+):
+    """Admin: View all chats/resonances a profile is engaged in, including full message history."""
+    chats = await profile_repo.get_user_chats(user_id)
+    return {"chats": chats}
+
 
 # ─── INFLUENCER MANAGEMENT ────────────────────────────────────────────────────
 

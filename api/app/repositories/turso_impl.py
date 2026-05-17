@@ -89,6 +89,33 @@ class TursoProfileRepository(IProfileRepository):
             logger.error(f"RANK_REFLOW_FAILURE: {e}")
             return False
 
+    async def get_user_chats(self, user_id: str) -> List[Dict[str, Any]]:
+        res = await turso_client.execute("""
+            SELECT r.id as resonance_id, r.woman_id, r.man_id, r.comm_mode, r.status, r.created_at, r.updated_at,
+                   p_woman.full_name as woman_name, p_man.full_name as man_name
+            FROM resonances r
+            LEFT JOIN profiles p_woman ON r.woman_id = p_woman.user_id
+            LEFT JOIN profiles p_man ON r.man_id = p_man.user_id
+            WHERE r.woman_id = ? OR r.man_id = ?
+            ORDER BY r.updated_at DESC
+        """, [user_id, user_id])
+        
+        chats = []
+        for row in res.rows:
+            chat_info = dict(row)
+            msg_res = await turso_client.execute("""
+                SELECT m.id, m.sender_id, m.content, m.message_type, m.created_at, p.full_name as sender_name
+                FROM messages m
+                LEFT JOIN profiles p ON m.sender_id = p.user_id
+                WHERE m.resonance_id = ?
+                ORDER BY m.created_at ASC
+            """, [chat_info["resonance_id"]])
+            chat_info["messages"] = msg_res.rows
+            chats.append(chat_info)
+            
+        return chats
+
+
 
 class TursoCouponRepository(ICouponRepository):
     async def get_coupon_by_code(self, code: str) -> Optional[Dict[str, Any]]:

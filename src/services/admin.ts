@@ -1,4 +1,5 @@
 import { turso } from '@/lib/turso';
+import { API } from './apiClient';
 import type { MatriarchProfile } from '@/types';
 
 // 🛡️ THE CACHING SHIELD: Defensive state management to prevent network saturation.
@@ -402,6 +403,16 @@ export const AdminService = {
       return true;
     } catch (err) {
       return false;
+    }
+  },
+
+  getUserChats: async (userId: string) => {
+    try {
+      const res = await API.get(`/admin/user/${userId}/chats`);
+      return res.data.chats || [];
+    } catch (err) {
+      console.warn("getUserChats error:", err);
+      return [];
     }
   }
 };
