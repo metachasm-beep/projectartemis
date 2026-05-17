@@ -91,25 +91,40 @@ class TursoProfileRepository(IProfileRepository):
 
     async def get_user_chats(self, user_id: str) -> List[Dict[str, Any]]:
         res = await turso_client.execute("""
-            SELECT r.id as resonance_id, r.woman_id, r.man_id, r.comm_mode, r.status, r.created_at, r.updated_at,
-                   p_woman.full_name as woman_name, p_man.full_name as man_name
-            FROM resonances r
-            LEFT JOIN profiles p_woman ON r.woman_id = p_woman.user_id
-            LEFT JOIN profiles p_man ON r.man_id = p_man.user_id
-            WHERE r.woman_id = ? OR r.man_id = ?
-            ORDER BY r.updated_at DESC
-        """, [user_id, user_id])
+            SELECT 
+                c.id as conv_id,
+                m.id as resonance_id,
+                m.woman_user_id as woman_id,
+                m.man_user_id as man_id,
+                m.current_comm_mode as comm_mode,
+                m.status as status,
+                m.selected_at as created_at,
+                (SELECT created_at FROM messages WHERE conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_at,
+                pw.full_name as woman_name,
+                pm.full_name as man_name
+            FROM conversations c
+            LEFT JOIN matches m ON c.match_id = m.id
+            LEFT JOIN profiles pw ON m.woman_user_id = pw.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pw.user_id AND pw.role = 'woman')
+            LEFT JOIN profiles pm ON m.man_user_id = pm.user_id OR (c.match_id IS NULL AND substr(c.id, 12) = pm.user_id AND pm.role = 'man')
+            WHERE m.woman_user_id = ? OR m.man_user_id = ? OR substr(c.id, 12) = ?
+            ORDER BY last_message_at DESC
+        """, [user_id, user_id, user_id])
         
         chats = []
         for row in res.rows:
             chat_info = dict(row)
+            chat_info["updated_at"] = chat_info.get("last_message_at") or chat_info.get("created_at") or "2026-05-17T00:00:00Z"
+            chat_info["comm_mode"] = chat_info.get("comm_mode") or "TEXT"
+            chat_info["status"] = chat_info.get("status") or "ACTIVE"
+            chat_info["resonance_id"] = chat_info.get("resonance_id") or chat_info.get("conv_id")
+            
             msg_res = await turso_client.execute("""
-                SELECT m.id, m.sender_id, m.content, m.message_type, m.created_at, p.full_name as sender_name
+                SELECT m.id, m.sender_user_id as sender_id, m.body as content, m.created_at, p.full_name as sender_name
                 FROM messages m
-                LEFT JOIN profiles p ON m.sender_id = p.user_id
-                WHERE m.resonance_id = ?
+                LEFT JOIN profiles p ON m.sender_user_id = p.user_id
+                WHERE m.conversation_id = ?
                 ORDER BY m.created_at ASC
-            """, [chat_info["resonance_id"]])
+            """, [chat_info["conv_id"]])
             chat_info["messages"] = msg_res.rows
             chats.append(chat_info)
             
