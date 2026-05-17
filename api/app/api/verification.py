@@ -65,29 +65,33 @@ async def verify_aadhaar(request: AadhaarVerifyRequest, user: dict = Depends(aut
     
     raise HTTPException(status_code=400, detail=result["error"])
 
+class FinalizeRequest(BaseModel):
+    status: str = "Approved"
+
 @router.post("/finalize")
-async def finalize_verification(user: dict = Depends(auth_bearer)):
+async def finalize_verification(request: FinalizeRequest, user: dict = Depends(auth_bearer)):
     """
-    🛡️ PROTOCOL V2.5: FINAL IDENTITY SEALING
-    Marks the user as fully verified in the Sanctuary Registry.
-    Only accessible after the biometric and phone registry handshakes are complete.
+    🛡️ PROTOCOL V2.5: FINAL IDENTITY SEALING / REJECTION
+    Marks the user as verified (1) or unverified (0) in the Sanctuary Registry based on Didit result.
     """
     user_id = user["id"]
     
     try:
-        # 1. & 2. Seal Identity and Record Audit atomically
+        is_verified_val = 1 if request.status == "Approved" else 0
+        audit_status = "SUCCESS" if request.status == "Approved" else "FAILED"
+        
         audit_id = f"audit_{user_id}_{hashlib.md5(user_id.encode()).hexdigest()[:8]}"
         
         await turso_client.batch([
-            ("UPDATE profiles SET is_verified = 1, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?", [user_id]),
-            ("INSERT INTO protocol_audits (id, user_id, action, status, created_at) VALUES (?, ?, 'IDENTITY_SEALING', 'SUCCESS', CURRENT_TIMESTAMP)", 
-             [audit_id, user_id])
+            ("UPDATE profiles SET is_verified = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?", [is_verified_val, user_id]),
+            ("INSERT INTO protocol_audits (id, user_id, action, status, created_at) VALUES (?, ?, 'IDENTITY_SEALING', ?, CURRENT_TIMESTAMP)", 
+             [audit_id, user_id, audit_status])
         ])
         
         return {
             "success": True,
-            "message": "Identity sealed. Sanctuary access granted.",
-            "status": "VERIFIED"
+            "message": "Identity sealed. Sanctuary access granted." if is_verified_val == 1 else "Identity verification failed. Marked as unverified.",
+            "status": "VERIFIED" if is_verified_val == 1 else "UNVERIFIED"
         }
     except Exception as e:
         print(f"❌ FINALIZATION_FAILURE: {e}")

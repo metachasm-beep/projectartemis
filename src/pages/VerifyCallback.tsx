@@ -44,7 +44,7 @@ export const VerifyCallback: React.FC = () => {
           // 🛡️ AUTHORITATIVE SYNC: Call the Registry API to seal identity
           // This updates Turso, recalculates ranks, and logs the protocol audit.
           const { api } = await import('@/services/api');
-          const res = await api.finalizeVerification();
+          const res = await api.finalizeVerification('Approved');
 
           if (!res.success) {
             throw new Error(res.message || "Identity Sealing Failed.");
@@ -69,9 +69,16 @@ export const VerifyCallback: React.FC = () => {
         if (isEmbedded) {
            window.parent.postMessage({ 
              type: 'DIDIT_COMPLETE', 
-             status: 'Error', 
+             status: verificationStatus || 'Error', 
              message: verificationStatus === 'Declined' ? 'Identity Match Failed' : 'Handshake Interrupted' 
            }, '*');
+        } else {
+           try {
+             const { api } = await import('@/services/api');
+             await api.finalizeVerification(verificationStatus || 'Declined');
+           } catch (e) {
+             console.error("Failed to mark unverified status:", e);
+           }
         }
         setStatus('ERROR');
         setErrorMessage(

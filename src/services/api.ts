@@ -109,9 +109,9 @@ export const api = {
     }
   },
   
-  finalizeVerification: async () => {
+  finalizeVerification: async (status: string = 'Approved') => {
     try {
-      const response = await apiClient.post('/verification/finalize', {});
+      const response = await apiClient.post('/verification/finalize', { status });
       return response.data;
     } catch (error) {
       console.error('Error finalizing verification:', error);

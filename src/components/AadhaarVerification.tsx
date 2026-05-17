@@ -42,8 +42,9 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     const handleMessage = async (event: MessageEvent) => {
       if (event.data?.type === 'DIDIT_COMPLETE') {
         if (event.data.status === 'Approved') {
-          await finalizeRegistry();
+          await finalizeRegistry('Approved');
         } else {
+          await finalizeRegistry(event.data.status || 'Declined');
           setError(event.data.message || 'Identity Handshake Failed.');
           setStep('START');
         }
@@ -69,16 +70,20 @@ export const AadhaarVerification: React.FC<AadhaarVerificationProps> = ({ userId
     if (step !== 'START' && step !== 'SUCCESS') fetchPlan();
   }, [step]);
 
-  const finalizeRegistry = async () => {
+  const finalizeRegistry = async (statusVal: string = 'Approved') => {
     setLoading(true);
     setError(null);
     try {
-      const res = await api.finalizeVerification();
-      if (res.success) {
-        setStep('SUCCESS');
-        // User will proceed via the "Enter the Sanctuary" button
+      const res = await api.finalizeVerification(statusVal);
+      if (statusVal === 'Approved') {
+        if (res.success) {
+          setStep('SUCCESS');
+          // User will proceed via the "Enter the Sanctuary" button
+        } else {
+          throw new Error(res.message || "Identity Sealing Failed.");
+        }
       } else {
-        throw new Error(res.message || "Identity Sealing Failed.");
+        // If not approved, let the error state show
       }
     } catch (err: any) {
       console.error("VERIFICATION_FINALIZATION_ERROR:", err);
