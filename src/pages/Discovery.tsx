@@ -44,6 +44,10 @@ export const Discovery: React.FC<{ onOpenChat?: (match: any) => void }> = ({ onO
           WHERE role = ?
         `;
 
+        if (targetRole === 'man') {
+          query += " AND is_verified = 1";
+        }
+
         if (targetRole === 'woman') {
           query += " AND rank_tier = 'Aspirant'";
         }

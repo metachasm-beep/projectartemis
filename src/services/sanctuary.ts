@@ -1,4 +1,4 @@
-import { turso } from '@/lib/turso';
+import { API } from './apiClient';
 import { v4 as uuidv4 } from 'uuid';
 
 export const SanctuaryService = {
@@ -6,215 +6,168 @@ export const SanctuaryService = {
    * 🏹 Discovery Feed: Curated Resonance Rails.
    */
   getRailFeed: async (womanId: string, type: 'imperial' | 'truth' | 'rising' | 'nearby' | 'shortlist', city?: string) => {
-    let sql = "";
-    let args: any[] = [];
-
-    // Order: Rank 1 -> Rank N (Ascending)
-    if (type === 'imperial') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY absolute_rank ASC LIMIT 20";
-    } else if (type === 'truth') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND is_verified = 1 ORDER BY absolute_rank ASC LIMIT 20";
-    } else if (type === 'rising') {
-       sql = "SELECT * FROM profiles WHERE role = 'man' ORDER BY created_at DESC, absolute_rank ASC LIMIT 20";
-    } else if (type === 'nearby' && city) {
-       sql = "SELECT * FROM profiles WHERE role = 'man' AND city = ? ORDER BY absolute_rank ASC LIMIT 20";
-       args = [city];
-    } else if (type === 'shortlist') {
-       sql = "SELECT p.* FROM profiles p JOIN shortlists s ON p.user_id = s.man_user_id WHERE s.woman_user_id = ? ORDER BY s.created_at DESC";
-       args = [womanId];
+    try {
+      const res = await API.get('/discovery/rail', { params: { womanId, type, city } });
+      return res.data.profiles || [];
+    } catch (err) {
+      console.warn("getRailFeed fallback:", err);
+      return [];
     }
-    
-    if (!sql) return [];
-    const r = await turso.execute({ sql, args });
-    return r.rows;
+  },
+
+  getGazeCarouselProfiles: async () => {
+    try {
+      const res = await API.get('/discovery/gaze-carousel');
+      return res.data.profiles || [];
+    } catch (err) {
+      console.warn("getGazeCarouselProfiles fallback:", err);
+      return [];
+    }
+  },
+
+  getStandingRanks: async (city?: string, absoluteRank?: number) => {
+    try {
+      const res = await API.get('/rank/standing', { params: { city, absoluteRank } });
+      return res.data || { totalMen: 1, cityRank: 1 };
+    } catch (err) {
+      console.warn("getStandingRanks fallback:", err);
+      return { totalMen: 1, cityRank: 1 };
+    }
   },
 
   /**
    * 📔 Shortlist Protocol: Save for intentional connection.
    */
   saveToShortlist: async (womanId: string, manId: string) => {
-    const id = `short_${uuidv4()}`;
-    await turso.execute({
-      sql: "INSERT INTO shortlists (id, woman_user_id, man_user_id) VALUES (?, ?, ?)",
-      args: [id, womanId, manId]
-    });
-    // Trigger signal
-    await SanctuaryService.trackSignal(manId, 'save', womanId);
-    return true;
+    try {
+      await API.post('/discovery/shortlist', { womanId, manId });
+      await SanctuaryService.trackSignal(manId, 'save', womanId);
+      return true;
+    } catch (err) {
+      console.warn("saveToShortlist error:", err);
+      return false;
+    }
   },
 
   unshortlist: async (womanId: string, manId: string) => {
-    await turso.execute({
-      sql: "DELETE FROM shortlists WHERE woman_user_id = ? AND man_user_id = ?",
-      args: [womanId, manId]
-    });
-    return true;
+    try {
+      await API.delete('/discovery/shortlist', { params: { womanId, manId } });
+      return true;
+    } catch (err) {
+      console.warn("unshortlist error:", err);
+      return false;
+    }
   },
 
   /**
    * 📉 Sanctuary Signals: The Feedback Loop.
    */
   trackSignal: async (manId: string, type: 'impression' | 'visit' | 'save', womanId?: string) => {
-    const id = `sig_${uuidv4()}`;
-    turso.execute({
-      sql: "INSERT INTO profile_analytics (id, man_user_id, woman_user_id, metric_type) VALUES (?, ?, ?, ?)",
-      args: [id, manId, womanId || null, type]
-    }).catch(e => console.warn("Signal Silent Failure:", e));
+    try {
+      await API.post('/sanctuary/signals', { man_id: manId, metric_type: type, woman_id: womanId || null });
+    } catch (e) {
+      console.warn("Signal Silent Failure:", e);
+    }
   },
 
   getSignalMetrics: async (userId: string) => {
-    const r = await turso.execute({
-      sql: `
-        SELECT 
-          metric_type, 
-          COUNT(*) as count
-        FROM profile_analytics 
-        WHERE man_user_id = ? 
-        AND created_at >= date('now', '-30 days')
-        GROUP BY metric_type
-      `,
-      args: [userId]
-    });
-    
-    const metrics: Record<string, number> = { impression: 0, visit: 0, save: 0 };
-    r.rows.forEach((row: any) => {
-       metrics[row.metric_type] = row.count;
-    });
-    return metrics;
+    try {
+      const res = await API.get(`/sanctuary/metrics/${userId}`);
+      return res.data.metrics || { impression: 0, visit: 0, save: 0 };
+    } catch (err) {
+      console.warn("getSignalMetrics fallback:", err);
+      return { impression: 0, visit: 0, save: 0 };
+    }
   },
 
   /**
    * 👑 Sovereign Metrics: For Women's Dashboard only.
    */
   getSovereignMetrics: async (womanId: string) => {
-    const [matchRes, sessionRes, viewsRes, savesRes, interactionsRes] = await Promise.all([
-       turso.execute({ sql: "SELECT COUNT(*) as count FROM matches WHERE woman_user_id = ?", args: [womanId] }),
-       turso.execute({ sql: "SELECT total_session_seconds, consecutive_days FROM profiles WHERE user_id = ?", args: [womanId] }),
-       turso.execute({ sql: "SELECT COUNT(*) as count FROM profile_analytics WHERE woman_user_id = ? AND metric_type = 'impression'", args: [womanId] }), // Her profile views
-       turso.execute({ sql: "SELECT COUNT(*) as count FROM shortlists WHERE woman_user_id = ?", args: [womanId] }), // Profiles she saved
-       turso.execute({ sql: "SELECT COUNT(*) as count FROM profile_analytics WHERE woman_user_id = ? AND metric_type = 'visit'", args: [womanId] }) // Visits tracking
-    ]);
-    
-    return {
-       matches: Number(matchRes.rows[0]?.count || 0),
-       sessionSeconds: Number(sessionRes.rows[0]?.total_session_seconds || 0),
-       activeStreak: Number(sessionRes.rows[0]?.consecutive_days || 0),
-       profileViews: Number(viewsRes.rows[0]?.count || 0),
-       profilesEngaged: Number(interactionsRes.rows[0]?.count || 0),
-       saves: Number(savesRes.rows[0]?.count || 0),
-       profileCompleteness: 94 // Defaulting until column is provisioned
-    };
+    try {
+      const res = await API.get(`/discovery/sovereign-metrics/${womanId}`);
+      return res.data || {
+        matches: 0, sessionSeconds: 0, activeStreak: 0, profileViews: 0, profilesEngaged: 0, saves: 0, profileCompleteness: 94
+      };
+    } catch (err) {
+      console.warn("getSovereignMetrics fallback:", err);
+      return { matches: 0, sessionSeconds: 0, activeStreak: 0, profileViews: 0, profilesEngaged: 0, saves: 0, profileCompleteness: 94 };
+    }
   },
 
   trackSessionTime: async (userId: string, deltaSeconds: number) => {
-     await turso.execute({
-        sql: "UPDATE profiles SET total_session_seconds = total_session_seconds + ? WHERE user_id = ?",
-        args: [deltaSeconds, userId]
-     });
+    try {
+      await API.post('/auth/session-time', { userId, deltaSeconds });
+    } catch (err) {
+      console.warn("trackSessionTime error:", err);
+    }
   },
 
   /**
    * 📈 High-Integrity Rank Reward: The Ledger Protocol.
    */
   rewardRank: async (userId: string, delta: number, reason: string) => {
-    const logId = `rank_log_${uuidv4()}`;
-    await turso.batch([
-      {
-        sql: "INSERT INTO rank_logs (id, user_id, delta, reason) VALUES (?, ?, ?, ?)",
-        args: [logId, userId, delta, reason]
-      },
-      {
-        sql: "UPDATE profiles SET rank_score = rank_score + ? WHERE user_id = ?",
-        args: [delta, userId]
-      }
-    ], "write");
-    
-    // 👑 Trigger Global Re-ranking to maintain exclusive integrity
-    await SanctuaryService.recalculateGlobalRanks();
-    return true;
+    try {
+      await API.post('/rank/reward', { userId, delta, reason });
+      return true;
+    } catch (err) {
+      console.warn("rewardRank error:", err);
+      return false;
+    }
   },
 
   getRankHistory: async (userId: string) => {
-    const r = await turso.execute({
-      sql: "SELECT * FROM rank_logs WHERE user_id = ? ORDER BY created_at DESC LIMIT 20",
-      args: [userId]
-    });
-    return r.rows;
+    try {
+      const res = await API.get(`/rank/history/${userId}`);
+      return res.data.history || [];
+    } catch (err) {
+      console.warn("getRankHistory fallback:", err);
+      return [];
+    }
   },
 
   /**
    * 💎 AURA Tokenomics: Percentile Leap Protocol.
    */
-  /**
-   * 💎 AURA Tokenomics: Percentile Leap Protocol.
-   * Logic: 1 INR = 1 Aura Token.
-   * Jump percentage of the total male population.
-   */
   purchaseJump: async (userId: string, jumpPercent: number) => {
-    // 1. Calculate N (Total Men)
-    const nRes = await turso.execute({ sql: "SELECT COUNT(*) as density FROM profiles WHERE role='man'" });
-    const totalMen = Number(nRes.rows[0]?.density || 100);
-    
-    // 2. Calculate Bonus Required.
-    // Every 'rank_score' point effectively competes against others.
-    // To jump 'X' percentage of 'N' people, we award a bonus.
-    // We'll use a standard weight: 100 points per 1% jump of the total population.
-    const jumpPoints = Math.floor((jumpPercent / 100) * totalMen * 10); 
-
-    // 4. Update the rank_score
-    await SanctuaryService.rewardRank(userId, jumpPoints, `Aura Jump Executed: ${jumpPercent}% Population Leap`);
-    return jumpPoints;
+    try {
+      const res = await API.post('/sanctuary/jump', { user_id: userId, jump_percent: jumpPercent });
+      return res.data.points_awarded || 0;
+    } catch (err) {
+      console.warn("purchaseJump error:", err);
+      return 0;
+    }
   },
 
   purchaseSealOfExcellence: async (userId: string) => {
-     // The ultimate seal: A 1,000,000 point boost to virtually guarantee Rank #1 position.
-     await SanctuaryService.rewardRank(userId, 1000000, "Seal of Excellence Acquired");
-     return true;
+    try {
+      await API.post('/sanctuary/seal', { user_id: userId });
+      return true;
+    } catch (err) {
+      console.warn("purchaseSealOfExcellence error:", err);
+      return false;
+    }
   },
 
   /**
    * 🏆 Global Leaderboard: Fetch the rooted ascent of men.
    */
   getLeaderboard: async (limit: number = 100) => {
-    const r = await turso.execute({
-      sql: `
-        SELECT user_id, full_name, age, city, photos, is_verified, absolute_rank
-        FROM profiles 
-        WHERE role = 'man'
-        ORDER BY absolute_rank ASC 
-        LIMIT ?
-      `,
-      args: [limit]
-    });
-    return r.rows;
+    try {
+      const res = await API.get('/rank/leaderboard', { params: { limit } });
+      return res.data.leaderboard || [];
+    } catch (err) {
+      console.warn("getLeaderboard fallback:", err);
+      return [];
+    }
   },
 
   /**
    * 🌊 Global Rank Reflow: Ensures absolute exclusivity (Only 1 profile per rank).
-   * Priority: Verified (1/0) > Boosts (Desc) > Loyalty (Created Asc) > UID (Tie-breaker).
    */
   recalculateGlobalRanks: async () => {
     try {
-      // 🌊 Sovereign Atomic Reflow: One statement to re-index the entire sanctuary.
-      // Priority: Verified Status > Rank Score (Integrity+Tokens) > Seniority > Deterministic UID.
-      await turso.execute(`
-        WITH ranked AS (
-          SELECT user_id, 
-          ROW_NUMBER() OVER (
-            PARTITION BY role
-            ORDER BY 
-              COALESCE(is_verified, 0) DESC, 
-              COALESCE(rank_score, 0) DESC, 
-              COALESCE(created_at, '9999-12-31') ASC, 
-              user_id ASC
-          ) as new_rank
-          FROM profiles
-        )
-        UPDATE profiles
-        SET absolute_rank = ranked.new_rank
-        FROM ranked
-        WHERE profiles.user_id = ranked.user_id;
-      `);
+      await API.post('/sanctuary/recalculate-ranks');
     } catch (err) {
       console.error("RANK_REFLOW_CRITICAL_FAILURE:", err);
     }
@@ -224,72 +177,60 @@ export const SanctuaryService = {
    * 🛡️ Biometric Ledger: Seal the verification into the database.
    */
   verifyProfile: async (userId: string) => {
-    await turso.execute({
-      sql: "UPDATE profiles SET is_verified = 1 WHERE user_id = ?",
-      args: [userId]
-    });
-    // Trigger rank reflow as verified profiles get priority
-    await SanctuaryService.recalculateGlobalRanks();
-    return true;
+    try {
+      await API.post('/verification/verify', { userId });
+      return true;
+    } catch (err) {
+      console.warn("verifyProfile error:", err);
+      return false;
+    }
   },
 
-  /**
-   * 📑 Audit Trail: Store biometric evidence for high-integrity synchronization.
-   */
   uploadVerificationEvidence: async (userId: string, evidence: Blob | string) => {
-    const auditId = `audit_${uuidv4()}`;
-    // In a production environment, 'evidence' would be stored as an encrypted hash or secure URL
-    // Here we log the high-integrity event for the "Architect" to review.
-    await turso.execute({
-      sql: "INSERT INTO protocol_audits (id, user_id, action, metadata) VALUES (?, ?, ?, ?)",
-      args: [auditId, userId, 'BIOMETRIC_SYNC', JSON.stringify({
-        timestamp: new Date().toISOString(),
-        evidence_sealed: true,
-        payload_hash: typeof evidence === 'string' ? evidence : 'BLOB_ESTABLISHED',
-        protocol_version: '1.0'
-      })]
-    }).catch(e => console.warn("Audit Log Silent Failure (Schema may not exist):", e));
-    
-    return true;
+    try {
+      const formData = new FormData();
+      formData.append('userId', userId);
+      if (typeof evidence === 'string') {
+        formData.append('payload_hash', evidence);
+      } else {
+        formData.append('evidence', evidence);
+      }
+      await API.post('/verification/evidence', formData);
+      return true;
+    } catch (err) {
+      console.warn("uploadVerificationEvidence error:", err);
+      return false;
+    }
   },
 
   /**
    * 📉 Resonance Decay Protocol:
-   * Penalizes rank_score for prolonged sanctuary absence.
-   * Logic: -2% per day beyond a 3-day grace period.
    */
   applyRankDecay: async (userId: string, totalInactivityDays: number) => {
-    if (totalInactivityDays < 3) return 0;
-    
-    // Calculate penalty (2% compounds per day beyond grace)
-    const penaltyRatio = 0.02 * (totalInactivityDays - 3);
-    const cappedPenalty = Math.min(penaltyRatio, 0.50); // Cap at 50% max loss
-    
-    await turso.execute({
-      sql: "UPDATE profiles SET rank_score = rank_score - (rank_score * ?), updated_at = ? WHERE user_id = ?",
-      args: [cappedPenalty, new Date().toISOString(), userId]
-    });
-    
-    await SanctuaryService.recalculateGlobalRanks();
-    return cappedPenalty;
+    try {
+      const res = await API.post('/rank/decay', { userId, totalInactivityDays });
+      return res.data.penalty || 0;
+    } catch (err) {
+      console.warn("applyRankDecay error:", err);
+      return 0;
+    }
   },
 
   /**
    * 📑 Dossier Resonance Sync:
-   * Rewards rank_score based on profile integrity/completeness.
    */
   syncIntegrityBonus: async (userId: string, integrityScore: number) => {
-    // Logic: Every 10% integrity grants 500 rank points.
-    // We only reward for milestones reached.
-    const bonus = Math.floor(integrityScore / 10) * 500;
-    
-    await SanctuaryService.rewardRank(userId, bonus, `Dossier Calibration Bonus: ${integrityScore}% Integrity`);
-    return bonus;
+    try {
+      const res = await API.post('/sanctuary/integrity-bonus', { user_id: userId, integrity_score: integrityScore });
+      return res.data.bonus_awarded || 0;
+    } catch (err) {
+      console.warn("syncIntegrityBonus error:", err);
+      return 0;
+    }
   },
 
   /**
    * 👑 Tier Brackets (Absolute Population Based):
-   * Maps current absolute_rank to high-status designations.
    */
   getTierFromRank: (rank: number, total: number) => {
     if (rank <= 10) return { id: 'choice', name: 'The Choice', color: 'mat-gold-foil' };
@@ -307,57 +248,63 @@ export const SanctuaryService = {
    * 🛡️ Sovereign Protection: Report, Block, and Filter.
    */
   reportUser: async (actorId: string, targetId: string, reason: string) => {
-    const id = `report_${uuidv4()}`;
-    await turso.execute({
-      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type, reason) VALUES (?, ?, ?, 'report', ?)",
-      args: [id, actorId, targetId, reason]
-    });
-    return true;
+    try {
+      await API.post('/safety/report', { actorId, targetId, reason });
+      return true;
+    } catch (err) {
+      console.warn("reportUser error:", err);
+      return false;
+    }
   },
 
   blockUser: async (actorId: string, targetId: string) => {
-    const id = `block_${uuidv4()}`;
-    await turso.execute({
-      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type) VALUES (?, ?, ?, 'block')",
-      args: [id, actorId, targetId]
-    });
-    return true;
+    try {
+      await API.post('/safety/block', { actorId, targetId });
+      return true;
+    } catch (err) {
+      console.warn("blockUser error:", err);
+      return false;
+    }
   },
 
   setNeverShow: async (actorId: string, targetId: string) => {
-    const id = `filter_${uuidv4()}`;
-    await turso.execute({
-      sql: "INSERT INTO user_interactions (id, actor_id, target_id, interaction_type) VALUES (?, ?, ?, 'never_show')",
-      args: [id, actorId, targetId]
-    });
-    return true;
+    try {
+      await API.post('/safety/never-show', { actorId, targetId });
+      return true;
+    } catch (err) {
+      console.warn("setNeverShow error:", err);
+      return false;
+    }
   },
 
   /**
-   * 🗺️ Proximity Protocol: Persistence and calibration of geographical resonance.
+   * 🗺️ Proximity Protocol:
    */
   updateLocation: async (userId: string, latitude: number, longitude: number) => {
-    await turso.execute({
-      sql: "UPDATE profiles SET latitude = ?, longitude = ?, updated_at = ? WHERE user_id = ?",
-      args: [latitude, longitude, new Date().toISOString(), userId]
-    });
-    return true;
+    try {
+      await API.post('/auth/location', { userId, latitude, longitude });
+      return true;
+    } catch (err) {
+      console.warn("updateLocation error:", err);
+      return false;
+    }
   },
 
   updateMeasurementUnit: async (userId: string, unit: 'km' | 'mi') => {
-    await turso.execute({
-      sql: "UPDATE profiles SET measurement_unit = ?, updated_at = ? WHERE user_id = ?",
-      args: [unit, new Date().toISOString(), userId]
-    });
-    return true;
+    try {
+      await API.post('/auth/measurement-unit', { userId, unit });
+      return true;
+    } catch (err) {
+      console.warn("updateMeasurementUnit error:", err);
+      return false;
+    }
   },
 
   /**
-   * 📐 Haversine Formula: Calculates the great-circle distance between two points.
-   * Returns distance in the requested unit.
+   * 📐 Haversine Formula:
    */
   calculateDistance: (lat1: number, lon1: number, lat2: number, lon2: number, unit: 'km' | 'mi' = 'km') => {
-    const R = unit === 'km' ? 6371 : 3958.8; // Radius of the Earth
+    const R = unit === 'km' ? 6371 : 3958.8;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = 
@@ -369,4 +316,3 @@ export const SanctuaryService = {
     return d;
   }
 };
-

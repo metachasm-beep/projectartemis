@@ -6,8 +6,12 @@ import { AuthBypassContext } from '@/components/auth/AuthGate';
 import type { Tab, SanctuaryMatch } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { MigrationService } from '@/services/MigrationService';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { PWAInstallFAB } from '@/components/ui/PWAInstallFAB';
+import { Toast } from '@/components/ui/Toast';
+import { VerificationRequirementModal } from '@/components/verification/VerificationRequirementModal';
+import { supabase } from '@/lib/supabase';
+import { turso } from '@/lib/turso';
 
 
 // 🚀 GRANULAR CODE SPLITTING: Load views only when entered
@@ -41,15 +45,86 @@ export const DashboardLayout: React.FC = () => {
   // Define correct initial tab based on role so admins land on control panel, women on browse, influencers on their hub
   const initialTab: Tab = profile?.role === 'admin' ? 'admin_panel' :
                          (profile as any)?.is_influencer ? 'influencer_dashboard' :
-                         profile?.role === 'woman' ? 'discovery' : 'profile';
-  const [activeTab, setActiveTab] = useState<Tab>(initialTab);
+                         (profile?.role === 'woman' && profile?.is_verified) ? 'discovery' : 'profile';
+   const [activeTab, setActiveTab] = useState<Tab>(initialTab);
   const [selectedMatch, setSelectedMatch] = useState<SanctuaryMatch | null>(null);
+  const [showVerificationModal, setShowVerificationModal] = useState(false);
+  const [notification, setNotification] = useState<{ title: string; message: string; senderName?: string } | null>(null);
+  const conversationIdsRef = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     // 🏛️ SANCTUARY INTEGRITY CHECK
-    // Run migrations only once the user has entered the dashboard shell.
     MigrationService.runAll();
-  }, []);
+
+    if (!profile?.user_id) return;
+
+    // 🛡️ INITIAL VERIFICATION ALERT
+    if (!profile?.is_verified && profile?.role !== 'admin') {
+      setShowVerificationModal(true);
+    }
+
+    let channel: any = null;
+
+    // 📡 INITIALIZE GLOBAL RESONANCE LISTENER
+    const initGlobalListener = async () => {
+      try {
+        // 1. Fetch user's active conversations for filtering
+        const convResult = await turso.execute({
+          sql: `SELECT c.id FROM conversations c 
+                JOIN matches m ON c.match_id = m.id 
+                WHERE m.woman_user_id = ? OR m.man_user_id = ?`,
+          args: [profile.user_id, profile.user_id]
+        });
+        const ids = new Set(convResult.rows.map(r => r.id as string));
+        conversationIdsRef.current = ids;
+
+        // 2. Subscribe to ALL messages (filter by conv ID in callback)
+        channel = supabase.channel('global_resonance')
+          .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages' }, async (payload) => {
+             const newMsg = payload.new as any;
+             
+             // Ignore our own messages or messages from unrelated conversations
+             if (newMsg.sender_user_id === profile.user_id) return;
+             if (!conversationIdsRef.current.has(newMsg.conversation_id)) return;
+
+             // Don't notify if we're already looking at this chat
+             // Note: selectedMatch comparison might need conversion mapping, but for now we'll show it
+             
+             // 🏺 Fetch Sender Identity
+             const senderResult = await turso.execute({
+               sql: "SELECT full_name FROM profiles WHERE user_id = ?",
+               args: [newMsg.sender_user_id]
+             });
+             const senderName = senderResult.rows[0]?.full_name as string || 'Someone';
+
+             setNotification({
+               title: "New Message Received",
+               message: newMsg.body,
+               senderName: senderName
+             });
+          })
+          .subscribe();
+      } catch (err) {
+        console.error("Resonance Sync Failed:", err);
+      }
+    };
+
+    initGlobalListener();
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [profile?.user_id]);
+
+  const handleTabChange = (tab: Tab) => {
+    // 🛡️ VERIFICATION GATEWAY
+    const restrictedTabs: Tab[] = ['discovery', 'messages', 'sovereign_browse'];
+    if (restrictedTabs.includes(tab) && !profile?.is_verified && profile?.role !== 'admin') {
+      setShowVerificationModal(true);
+      return;
+    }
+    setActiveTab(tab);
+  };
 
 
   // 🍷 Sovereign Ritual Toggle
@@ -67,7 +142,7 @@ export const DashboardLayout: React.FC = () => {
       {activeTab !== 'admin_panel' && (
         <MatriarchToolbar 
           activeTab={activeTab as any} 
-          setActiveTab={setActiveTab as any} 
+          setActiveTab={handleTabChange as any} 
           onLogout={signOut} 
           isImmersive={isImmersive}
         />
@@ -171,6 +246,24 @@ export const DashboardLayout: React.FC = () => {
         </Suspense>
         <PWAInstallFAB variant="rose" />
       </main>
+
+      <VerificationRequirementModal 
+        isOpen={showVerificationModal}
+        onClose={() => setShowVerificationModal(false)}
+        onStartVerification={() => {
+          setShowVerificationModal(false);
+          setActiveTab('profile'); 
+        }}
+        role={profile?.role as any}
+      />
+
+      <Toast 
+        show={!!notification}
+        onClose={() => setNotification(null)}
+        title={notification?.title || ''}
+        message={notification?.message || ''}
+        senderName={notification?.senderName}
+      />
     </motion.div>
   );
 };
