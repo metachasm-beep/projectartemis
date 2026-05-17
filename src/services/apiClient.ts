@@ -7,8 +7,13 @@ interface RetryConfig extends AxiosRequestConfig {
 const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 1000;
 
+const rawApiUrl = import.meta.env.VITE_API_URL || '/api/v1';
+const cleanBaseURL = rawApiUrl.endsWith('/api/v1') 
+  ? rawApiUrl 
+  : `${rawApiUrl.replace(/\/$/, '')}/api/v1`;
+
 export const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api/v1',
+  baseURL: cleanBaseURL,
   withCredentials: true,
   timeout: 10000
 });
