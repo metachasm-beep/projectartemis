@@ -13,7 +13,8 @@ import {
   BookOpen, 
   Sparkles,
   Save,
-  ShieldCheck
+  ShieldCheck,
+  Star
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -24,6 +25,7 @@ import { compressImage } from '@/lib/image-utils';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { CameraCapture } from './CameraCapture';
 import { sanitizeBio } from '@/utils/trumpData';
+import { useAuth } from '@/hooks/useAuth';
 
 interface EditProfileProps {
   profile: MatriarchProfile;
@@ -32,6 +34,7 @@ interface EditProfileProps {
 }
 
 export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onCancel }) => {
+  const { refreshProfile } = useAuth();
   const [formData, setFormData] = useState<MatriarchProfile>({ ...profile });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -138,12 +141,29 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
     }
   };
 
-  const handleMakePrimary = (index: number) => {
+  const handleMakePrimary = async (index: number) => {
     if (index === 0) return;
-    const newPhotos = [...(formData.photos || [])];
-    const [primary] = newPhotos.splice(index, 1);
-    newPhotos.unshift(primary);
-    setFormData(prev => ({ ...prev, photos: newPhotos }));
+    setLoading(true);
+    setError(null);
+    try {
+      const newPhotos = [...(formData.photos || [])];
+      const [primary] = newPhotos.splice(index, 1);
+      newPhotos.unshift(primary);
+      setFormData(prev => ({ ...prev, photos: newPhotos }));
+
+      // Persist immediately to Turso DB
+      await turso.execute(
+        `UPDATE profiles SET photos = ?, updated_at = CURRENT_TIMESTAMP WHERE user_id = ?`,
+        [tursoHelpers.serialize(newPhotos), profile.user_id]
+      );
+      // Refresh background profile context without closing the edit modal
+      await refreshProfile();
+    } catch (err: any) {
+      console.error("Failed to set main profile picture", err);
+      setError("Failed to set main profile picture. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSave = async () => {
@@ -268,36 +288,52 @@ export const EditProfile: React.FC<EditProfileProps> = ({ profile, onUpdate, onC
                 )}
              </div>
 
-             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+             {error && (
+               <div className="p-4 rounded-2xl bg-mat-rose/10 border border-mat-rose/20 text-mat-rose text-xs leading-relaxed font-medium">
+                 {error}
+               </div>
+             )}
+
+             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {formData.photos?.map((url, i) => (
-                   <motion.div key={url} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden group border border-mat-rose/10 shadow-sm">
-                      <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700" />
+                   <motion.div key={url} initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="relative aspect-[3/4] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-mat-obsidian flex flex-col group">
+                      <img src={url} alt="" className="w-full h-full object-cover transition-all duration-700 group-hover:scale-105" />
                       
+                      {/* Top Badge: Main Profile Picture */}
                       {i === 0 && (
-                         <div className="absolute top-3 left-3 px-3 py-1 bg-mat-gold text-mat-obsidian text-[8px] font-black uppercase tracking-widest rounded-full shadow-lg z-10 flex items-center gap-1.5">
-                            <Check size={10} strokeWidth={3} /> Primary
+                         <div className="absolute top-3 left-3 px-3 py-1.5 bg-mat-gold text-mat-obsidian text-[9px] font-black uppercase tracking-widest rounded-full shadow-2xl z-10 flex items-center gap-1.5 border border-white/20 backdrop-blur-md">
+                            <Check size={12} strokeWidth={3} /> Main Profile Picture
                          </div>
                       )}
 
-                      <div className="absolute inset-0 bg-mat-wine/40 opacity-0 group-hover:opacity-100 flex items-center justify-center gap-3 transition-all">
-                         {i !== 0 && (
+                      {/* Bottom Action Bar - ALWAYS VISIBLE for flawless mobile & desktop UX */}
+                      <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 via-black/60 to-transparent flex items-center justify-between gap-2 backdrop-blur-[2px]">
+                         {i !== 0 ? (
                             <button 
                               onClick={() => handleMakePrimary(i)} 
-                              className="w-10 h-10 bg-white text-mat-gold rounded-full flex items-center justify-center hover:bg-mat-gold hover:text-white transition-all shadow-xl"
-                              title="Set as Primary"
+                              className="flex-1 py-2 px-3 bg-white/20 hover:bg-mat-gold hover:text-mat-obsidian text-white text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-1.5 backdrop-blur-md transition-all border border-white/20 shadow-xl"
+                              title="Set as Main Profile Picture"
                             >
-                               <Sparkles size={16} />
+                               <Star size={12} className="text-mat-gold" /> Set as Main
                             </button>
+                         ) : (
+                            <div className="flex-1 py-2 px-3 bg-mat-gold/20 text-mat-gold text-[10px] font-black uppercase tracking-widest rounded-xl flex items-center justify-center gap-1.5 backdrop-blur-md border border-mat-gold/30">
+                               ★ Active Main
+                            </div>
                          )}
-                         <button onClick={() => handleDeletePhoto(i)} className="w-10 h-10 bg-white text-mat-wine rounded-full flex items-center justify-center hover:bg-mat-rose transition-all shadow-xl">
-                            <Trash2 size={16} />
+                         <button 
+                           onClick={() => handleDeletePhoto(i)} 
+                           className="w-9 h-9 bg-white/20 hover:bg-mat-rose text-white rounded-xl flex items-center justify-center transition-all backdrop-blur-md border border-white/20 shadow-xl"
+                           title="Delete Photo"
+                         >
+                            <Trash2 size={14} />
                          </button>
                       </div>
                    </motion.div>
                 ))}
 
                  {(formData.photos?.length || 0) < PHOTO_LIMIT && !profile.is_verified && (
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-4 sm:col-span-2 md:col-span-1">
                     <label className="aspect-[3/4] flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-mat-rose/20 bg-mat-rose/[0.02] hover:bg-mat-rose/5 transition-all cursor-pointer group">
                        <input type="file" className="hidden" accept="image/*" onChange={(e) => e.target.files?.[0] && handlePhotoUpload(e.target.files[0])} />
                        <Plus size={24} className="text-mat-rose mb-2" />
