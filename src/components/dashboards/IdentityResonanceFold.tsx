@@ -53,7 +53,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
 
   if (isMobile) {
     return (
-      <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden w-full">
+      <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden w-full bg-[#F5F2EB]">
         <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
           {gazeProfiles.length > 0 && (
             <CircularGallery 
@@ -106,12 +106,12 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
               initial={{ y: 10, opacity: 0 }} 
               animate={{ y: 0, opacity: 1 }} 
               exit={{ y: -5, opacity: 0 }} 
-              className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/20 flex flex-col items-center"
+              className="mat-glass-deep px-5 py-2 rounded-full border-mat-gold/20 flex flex-col items-center shadow-md backdrop-blur-2xl bg-white/40 border border-white/60"
             >
-              <span className="text-sm font-bold text-mat-bone italic tracking-widest uppercase leading-none">
+              <span className="text-sm font-bold text-mat-obsidian italic tracking-widest uppercase leading-none">
                 {gazeProfiles[activeGazeIndex]?.text}
               </span>
-              <span className="text-[6px] font-black uppercase tracking-[0.3em] text-mat-gold/60 mt-1">
+              <span className="text-[6px] font-black uppercase tracking-[0.3em] text-mat-gold/80 mt-1">
                 {gazeProfiles[activeGazeIndex]?.subText}
               </span>
             </motion.div>
@@ -120,7 +120,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
           {!profile.is_verified && (
             <button 
               onClick={() => setShowVerificationModal(true)}
-              className="mt-6 mat-glass-deep px-8 py-3 rounded-full border border-mat-gold/20 text-[10px] text-mat-bone font-black uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all"
+              className="mt-6 mat-glass-deep px-8 py-3 rounded-full border border-mat-gold/20 text-[10px] text-mat-obsidian font-black uppercase tracking-[0.2em] shadow-lg active:scale-95 transition-all bg-white/40 border-white/60"
             >
               Verify to unlock
             </button>
@@ -131,16 +131,16 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
   }
 
   return (
-    <section className="h-[100dvh] min-h-[100dvh] pt-16 pb-4 snap-start flex flex-col items-center justify-center w-full">
+    <section className="h-[100dvh] min-h-[100dvh] pt-16 pb-4 snap-start flex flex-col items-center justify-center w-full bg-[#F5F2EB]">
       <header className="mb-6 text-center px-6">
         <motion.h1 
           variants={maskReveal} 
-          className="text-5xl lg:text-6xl font-light text-white italic tracking-tighter"
+          className="text-5xl lg:text-6xl font-light text-mat-obsidian italic tracking-tighter"
           style={{ fontFamily: 'var(--font-display)' }}
         >
           Identity Resonance.
         </motion.h1>
-        <motion.p variants={maskReveal} className="text-[10px] font-medium uppercase tracking-[1.2em] text-mat-gold/30 mt-3 ml-6">
+        <motion.p variants={maskReveal} className="text-[10px] font-medium uppercase tracking-[1.2em] text-mat-gold/60 mt-3 ml-6">
           Sanctuary Selection Protocol
         </motion.p>
         <motion.div variants={maskReveal} className="mt-6 flex justify-center w-full">
@@ -201,12 +201,12 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
                     initial={{ opacity: 0, y: 15 }} 
                     animate={{ opacity: 1, y: 0 }} 
                     exit={{ opacity: 0, y: -10 }}
-                    className="mat-glass-deep px-12 py-4 rounded-full border border-white/10 flex flex-col items-center shadow-2xl backdrop-blur-3xl"
+                    className="mat-glass-deep px-12 py-4 rounded-full border border-white/60 flex flex-col items-center shadow-2xl backdrop-blur-3xl bg-white/40"
                  >
-                    <span className="text-3xl font-light text-mat-bone italic tracking-tighter uppercase leading-none">
+                    <span className="text-3xl font-light text-mat-obsidian italic tracking-tighter uppercase leading-none">
                       {gazeProfiles[activeGazeIndex]?.originalName.split(' ')[0]}
                     </span>
-                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-gold/60 mt-2">
+                    <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-gold/80 mt-2">
                       {gazeProfiles[activeGazeIndex]?.subText}
                     </span>
                  </motion.div>

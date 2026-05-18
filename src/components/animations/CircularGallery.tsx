@@ -413,7 +413,14 @@ class Media {
       this.program.uniforms.uImageSizes.value = [img.naturalWidth, img.naturalHeight];
     };
     img.onerror = () => {
-      console.error('Failed to load image for sanctuary gaze:', this.image);
+      console.warn('Retrying image load without crossOrigin for sanctuary gaze:', this.image);
+      const fallbackImg = new Image();
+      fallbackImg.src = this.image;
+      fallbackImg.onload = () => {
+        texture.image = fallbackImg;
+        texture.needsUpdate = true;
+        this.program.uniforms.uImageSizes.value = [fallbackImg.naturalWidth, fallbackImg.naturalHeight];
+      };
     };
   }
 
@@ -882,7 +889,7 @@ export default function CircularGallery({
       app.destroy();
       appRef.current = null;
     };
-  }, [items, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
+  }, [items ? JSON.stringify(items) : null, bend, textColor, borderRadius, font, scrollSpeed, scrollEase]);
 
   return <div className="absolute inset-0 overflow-hidden cursor-grab active:cursor-grabbing touch-none" ref={containerRef} />;
 }
