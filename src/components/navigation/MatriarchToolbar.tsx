@@ -41,12 +41,8 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
       ? [{ id: 'discovery' as const, label: 'Browse', icon: Search }] 
       : [{ id: 'leaderboard' as const, label: 'Results', icon: Trophy }]
     ),
-    ...(profile?.is_influencer 
-      ? [{ id: 'influencer_dashboard' as const, label: 'Influencer Hub', icon: TrendingUp }] 
-      : []
-    ),
     ...(profile?.role !== 'admin' 
-      ? [{ id: 'profile' as const, label: profile?.is_influencer ? 'User Profile' : (profile?.role === 'woman' ? 'Home' : 'Profile'), icon: profile?.role === 'woman' ? Home : User }] 
+      ? [{ id: 'profile' as const, label: profile?.role === 'woman' ? 'Home' : 'Profile', icon: profile?.role === 'woman' ? Home : User }] 
       : []
     ),
     { id: 'messages' as const, label: 'Messages', icon: MessageCircle },
@@ -102,6 +98,28 @@ export const MatriarchToolbar: React.FC<MatriarchToolbarProps> = ({
         <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block" />
 
         <div className="flex items-center gap-2">
+          {/* INFLUENCER DEDICATED SWITCH BUTTON */}
+          {profile?.is_influencer && (
+            <button
+              onClick={() => setActiveTab(activeTab === 'influencer_dashboard' ? 'profile' : 'influencer_dashboard')}
+              className={`flex items-center gap-2 px-3.5 py-2 md:px-5 md:py-2.5 rounded-full font-black text-[10px] md:text-[11px] tracking-widest uppercase transition-all shadow-2xl border ${
+                activeTab === 'influencer_dashboard'
+                  ? 'bg-mat-wine text-white hover:bg-mat-wine-soft border-white/20 animate-pulse'
+                  : 'bg-mat-gold text-mat-obsidian hover:bg-mat-gold/90 border-mat-gold/30'
+              }`}
+            >
+              <TrendingUp size={16} />
+              <span className="hidden md:inline">
+                {activeTab === 'influencer_dashboard' 
+                  ? `Switch to Normal User (${profile?.role === 'woman' ? 'Woman Sanctuary' : 'Man Dashboard'})` 
+                  : 'Switch to Influencer Hub'}
+              </span>
+              <span className="inline md:hidden">
+                {activeTab === 'influencer_dashboard' ? 'Normal User' : 'Influencer Hub'}
+              </span>
+            </button>
+          )}
+
           {isAdmin && (
              <div className="hidden lg:flex bg-black/20 p-1 rounded-full items-center border border-white/5">
                <button 
