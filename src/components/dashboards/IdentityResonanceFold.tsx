@@ -54,14 +54,14 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
   if (isMobile) {
     return (
       <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden w-full">
-        <div className="absolute inset-0 z-0">
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
           {gazeProfiles.length > 0 && (
             <CircularGallery 
               items={gazeProfiles} 
               bend={0} 
-              scrollSpeed={0.5} 
+              scrollSpeed={1.2} 
               autoScroll 
-              autoScrollSpeed={0.03} 
+              autoScrollSpeed={0.3} 
               onCenterUpdate={setActiveGazeIndex} 
             />
           )}
@@ -150,14 +150,14 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
       </header>
       
       <div className="relative flex-1 w-full max-w-7xl flex items-center justify-center overflow-hidden">
-         <div className="absolute inset-0 z-0 opacity-30 scale-110">
+         <div className="absolute inset-0 z-0 opacity-30 scale-110 pointer-events-none">
             {gazeProfiles.length > 0 && (
               <CircularGallery 
                 items={gazeProfiles} 
                 bend={-0.1}
-                scrollSpeed={0.3} 
+                scrollSpeed={1.2} 
                 autoScroll 
-                autoScrollSpeed={0.02} 
+                autoScrollSpeed={0.3} 
                 onCenterUpdate={setActiveGazeIndex} 
               />
             )}
