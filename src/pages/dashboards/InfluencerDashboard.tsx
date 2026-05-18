@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { RefreshCw, Tag, Clock, ChevronDown, IndianRupee, Users, TrendingUp, Loader2, Copy, CheckCircle2, Sparkles, User } from 'lucide-react';
 import { useAuthContext } from '@/contexts/AuthContext';
 import { api } from '@/services/api';
+import { EditProfile } from '@/components/EditProfile';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -66,12 +67,13 @@ const StatCard: React.FC<{
 // ─── Main Dashboard ────────────────────────────────────────────────────────────
 
 export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> = ({ onSwitchToProfile }) => {
-  const { user, profile } = useAuthContext();
+  const { user, profile, refreshProfile } = useAuthContext();
   const [data, setData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [codeCopied, setCodeCopied] = useState(false);
   const [showAllTx, setShowAllTx] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const fetchDashboard = async () => {
     setLoading(true);
@@ -144,8 +146,16 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
           </p>
         </div>
 
-        {onSwitchToProfile && (
-          <div className="pt-2">
+        <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-3 md:gap-4">
+          <button
+            onClick={() => setIsEditing(true)}
+            className="w-full sm:w-auto px-6 py-3.5 md:px-8 md:py-4 bg-mat-rose text-white hover:bg-mat-rose-soft transition-all rounded-2xl font-bold text-[10px] md:text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl border border-white/10 text-center leading-normal"
+          >
+            <Sparkles size={16} className="shrink-0 animate-pulse" /> 
+            <span>Edit Influencer Profile</span>
+          </button>
+
+          {onSwitchToProfile && (
             <button
               onClick={onSwitchToProfile}
               className="w-full sm:w-auto px-6 py-3.5 md:px-8 md:py-4 bg-mat-wine text-white hover:bg-mat-wine-soft transition-all rounded-2xl font-bold text-[10px] md:text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl border border-white/10 text-center leading-normal"
@@ -153,8 +163,8 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
               <User size={16} className="shrink-0" /> 
               <span>Switch to Normal User <span className="hidden sm:inline">Profile </span>({profile?.role === 'woman' ? 'Woman Sanctuary' : 'Man Dashboard'})</span>
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {/* ── Stats Row ── */}
@@ -386,6 +396,17 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
           Matriarch // Influence. Commission. Rise.
         </p>
       </div>
+
+      {/* ─── IDENTITY EDIT OVERLAY LAYER ─── */}
+      <AnimatePresence>
+        {isEditing && profile && (
+          <EditProfile 
+            profile={profile} 
+            onUpdate={() => { refreshProfile(); setIsEditing(false); }} 
+            onCancel={() => setIsEditing(false)} 
+          />
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 };
