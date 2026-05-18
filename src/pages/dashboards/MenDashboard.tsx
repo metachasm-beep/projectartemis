@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { User, ShieldCheck, Star, Compass, Award } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
 import { VerificationPaymentModal } from "@/components/verification/VerificationPaymentModal";
 import { VisibilityAlertModal } from "@/components/verification/VisibilityAlertModal";
 import { QuestBoard } from '@/components/dashboards/QuestBoard';
@@ -12,7 +11,6 @@ import { calculateIntegrity } from '@/utils/integrityCalculator';
 import { IdentityResonanceFold } from '@/components/dashboards/IdentityResonanceFold';
 import { SanctuaryStandingCard } from '@/components/dashboards/SanctuaryStandingCard';
 import { SanctuaryErrorBoundary } from '@/components/error/SanctuaryErrorBoundary';
-import { Dock } from '@/components/dashboard/promax/Dock';
 import type { MatriarchProfile } from '@/types';
 
 interface MenDashboardProps {
@@ -26,17 +24,12 @@ interface MenDashboardProps {
   metrics?: { impression: number; visit: number; save: number };
 }
 
-/**
- * 🏛️ Men's Dashboard 2.0: Aspirant Sanctuary Hub (Fold Architecture)
- * Redesigned into pristine, full-screen deep modular folds with zero scrolling.
- */
 export const MenDashboard: React.FC<MenDashboardProps> = ({ 
   profile,
   refreshProfile,
   setIsEditing,
   onOpenSettings,
   onNavigateToStore,
-  handleLogout,
   metrics: externalMetrics
 }) => {
   const [absRank, setAbsRank] = useState<number | null>(null);
@@ -50,24 +43,8 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
   const [meritPct, setMeritPct] = useState(0);
   const [gazeCount, setGazeCount] = useState(0);
   const [showVisibilityAlert, setShowVisibilityAlert] = useState(false);
-  const [activeFold, setActiveFold] = useState('identity');
 
-  // Synchronize with ?fold= URL param
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const fold = params.get('fold');
-    if (fold && ['identity', 'standing', 'quests'].includes(fold)) {
-      setActiveFold(fold);
-    }
-  }, []);
-
-  const handleSelectFold = (fold: string) => {
-    setActiveFold(fold);
-    const url = new URL(window.location.href);
-    url.searchParams.set('fold', fold);
-    window.history.replaceState({}, '', url.toString());
-  };
-
+  // 🛰️ Geolocation Resonance - Once per session
   const { location } = useGeolocation(profile?.user_id);
   const integrity = calculateIntegrity(profile);
 
@@ -112,11 +89,13 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     fetchGaze();
     fetchRank();
 
+    // 🛡️ Visibility Awareness Ritual
     const hidden = localStorage.getItem('mat_hide_visibility_alert');
     if (!profile.is_verified && hidden !== 'true') {
       setShowVisibilityAlert(true);
     }
     
+    // 🔮 Dashboard Intelligence Fetch
     const fetchStats = async () => {
       try {
         const [qs, quests, gaze] = await Promise.all([
@@ -161,6 +140,9 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
   const currentLevel = SanctuaryService.getTierFromRank(absRank || profile.absolute_rank || 9999, totalMen);
 
+  const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container: scrollContainerRef });
+  
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -169,24 +151,25 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const foldsConfig = [
-    { id: 'identity', label: 'Identity.Resonance', icon: User },
-    { id: 'standing', label: 'Sanctuary.Standing', icon: Star },
-    { id: 'quests', label: 'Ritual.Quests', icon: Award },
-  ];
-
-  const foldVariants = {
-    initial: { opacity: 0, y: 20, scale: 0.98 },
-    animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-    exit: { opacity: 0, y: -20, scale: 0.98, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } }
-  };
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 100, damping: 30 });
+  const bgAOpacity = useTransform(smoothProgress, [0, 0.4, 0.7], [1, 1, 0]);
+  const bgAScale = useTransform(smoothProgress, [0, 1], [1.0, 1.05]);
+  const bgBOpacity = useTransform(smoothProgress, [0.3, 0.6, 1], [0, 1, 1]);
+  const bgBScale = useTransform(smoothProgress, [0, 1], [1.05, 1.0]);
 
   return (
     <SanctuaryErrorBoundary onReset={() => { refreshProfile(); fetchRank(); }}>
-      <div className="relative isolate w-full h-[100dvh] overflow-hidden bg-mat-obsidian selection:bg-mat-wine selection:text-white flex flex-col justify-between pb-36 md:pb-28">
-        {/* Background Grain & Breathing Gradients */}
-        <div className="absolute inset-0 z-[-1] overflow-hidden pointer-events-none">
-          <div className="absolute inset-0 mat-cinematic-grain bg-mat-obsidian">
+      <motion.div 
+        ref={scrollContainerRef}
+        initial="initial"
+        animate="animate"
+        className="relative isolate min-h-screen bg-mat-obsidian snap-y snap-mandatory overflow-y-auto overflow-x-hidden h-screen no-scrollbar"
+      >
+        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+          <motion.div 
+            style={{ scale: bgAScale, opacity: bgAOpacity, willChange: 'transform, opacity' }} 
+            className="absolute inset-0 mat-cinematic-grain bg-mat-obsidian"
+          >
             <div 
               className="absolute inset-0 animate-[mat-breathe-gradient_15s_ease-in-out_infinite]"
               style={{ 
@@ -195,30 +178,41 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
               }} 
             />
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-obsidian/40 to-mat-obsidian" />
-          </div>
+          </motion.div>
+
+          <motion.div 
+            style={{ scale: bgBScale, opacity: bgBOpacity, willChange: 'transform, opacity' }}
+            className="absolute inset-0 mat-cinematic-grain bg-[#0C0A09]"
+          >
+            <div 
+              className="absolute inset-0 animate-[mat-breathe-gradient_20s_ease-in-out_infinite]"
+              style={{ 
+                background: 'radial-gradient(circle at 60% 60%, oklch(0.25 0.04 10 / 0.3) 0%, transparent 70%)',
+                backgroundSize: '100% 100%'
+              }} 
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-mat-obsidian/40 to-mat-obsidian" />
+          </motion.div>
         </div>
 
-        {/* ─── PURE FOLD SWITCHING CONTAINER ─── */}
-        <div className="flex-1 w-full flex items-center justify-center overflow-y-auto my-4 px-2 md:px-4">
-          <AnimatePresence mode="wait">
-            {activeFold === 'identity' && (
-              <motion.div key="identity" variants={foldVariants} initial="initial" animate="animate" exit="exit" className="w-full max-w-[1600px] mx-auto py-4">
-                <IdentityResonanceFold 
-                  profile={profile}
-                  gazeProfiles={gazeProfiles}
-                  activeGazeIndex={activeGazeIndex}
-                  setActiveGazeIndex={setActiveGazeIndex}
-                  setShowVerificationModal={setShowVerificationModal}
-                  currentLevel={currentLevel}
-                  absRank={absRank}
-                  location={location}
-                  isMobile={isMobile}
-                />
-              </motion.div>
-            )}
+        <div className="max-w-[1600px] mx-auto px-0 md:px-4">
+          {/* ─── FOLD ONE: IDENTITY & GAZE ─── */}
+          <IdentityResonanceFold 
+            profile={profile}
+            gazeProfiles={gazeProfiles}
+            activeGazeIndex={activeGazeIndex}
+            setActiveGazeIndex={setActiveGazeIndex}
+            setShowVerificationModal={setShowVerificationModal}
+            currentLevel={currentLevel}
+            absRank={absRank}
+            location={location}
+            isMobile={isMobile}
+          />
 
-            {activeFold === 'standing' && (
-              <motion.div key="standing" variants={foldVariants} initial="initial" animate="animate" exit="exit" className="w-full max-w-5xl mx-auto py-4 flex flex-col justify-center items-center">
+          {/* ─── FOLD TWO: SANCTUARY INTELLIGENCE ─── */}
+          {isMobile ? (
+            <>
+              <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
                 <SanctuaryStandingCard 
                   profile={profile}
                   integrity={integrity}
@@ -232,51 +226,66 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                   syncStatus={syncStatus}
                   handleSyncIntegrity={handleSyncIntegrity}
                   setIsEditing={setIsEditing}
-                  isMobile={isMobile}
+                  isMobile={true}
                 />
-              </motion.div>
-            )}
+              </section>
 
-            {activeFold === 'quests' && (
-              <motion.div key="quests" variants={foldVariants} initial="initial" animate="animate" exit="exit" className="w-full max-w-6xl mx-auto py-4 flex flex-col justify-center items-center gap-8">
-                <div className="w-full grid grid-cols-1 lg:grid-cols-2 gap-12 items-center px-4 md:px-10">
-                  <div className="space-y-6 text-center lg:text-left">
-                     <h2 className="text-5xl md:text-7xl font-light text-mat-bone italic tracking-tighter leading-[0.85]">
-                        The Path to <br/> 
-                        <span className="text-mat-gold font-black uppercase not-italic tracking-[0.2em] text-3xl md:text-5xl block mt-2">Sovereignty.</span>
-                     </h2>
-                     <p className="text-xs md:text-sm text-white/40 leading-relaxed max-w-md mx-auto lg:mx-0 uppercase tracking-[0.4em]">
-                        Perform the daily rituals of the Protocol. Every journal entry and verification elevates your Standing.
-                     </p>
-                     <div className="flex flex-wrap gap-4 items-center justify-center lg:justify-start pt-4">
-                        <div className="mat-glass-deep px-6 py-4 rounded-[2rem] border border-white/5 shadow-lg">
-                           <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-1 tracking-[0.3em]">Tier</p>
-                           <p className="text-lg font-bold text-white uppercase tracking-widest italic">{currentLevel.name}</p>
-                        </div>
-                        <div className="mat-glass-deep px-6 py-4 rounded-[2rem] border border-white/5 shadow-lg">
-                           <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-1 tracking-[0.3em]">Power</p>
-                           <p className="text-lg font-bold text-white uppercase tracking-widest italic">+{integrity} Standing</p>
-                        </div>
-                     </div>
-                  </div>
-                  <div className="mat-glass-deep p-6 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] border border-white/10 shadow-2xl w-full max-w-lg mx-auto">
-                     <QuestBoard refreshProfile={refreshProfile} />
-                  </div>
+              <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
+                 <div className="h-full py-20 flex flex-col max-w-lg mx-auto w-full">
+                    <QuestBoard refreshProfile={refreshProfile} />
+                 </div>
+              </section>
+            </>
+          ) : (
+            <section className="h-[100dvh] min-h-[100dvh] py-20 snap-start flex flex-col justify-center">
+              <SanctuaryStandingCard 
+                profile={profile}
+                integrity={integrity}
+                currentLevel={currentLevel}
+                gazeCount={gazeCount}
+                cityRank={cityRank}
+                absRank={absRank}
+                totalMen={totalMen}
+                meritPct={meritPct}
+                queueCount={queueCount}
+                syncStatus={syncStatus}
+                handleSyncIntegrity={handleSyncIntegrity}
+                setIsEditing={setIsEditing}
+                isMobile={false}
+              />
+            </section>
+          )}
+
+          {/* ─── FOLD THREE: THE PATH TO HONOR ─── */}
+          {!isMobile && (
+            <section className="h-[100dvh] min-h-[100dvh] py-24 snap-start flex flex-col items-center justify-center">
+              <div className="max-w-[1400px] w-full grid grid-cols-1 lg:grid-cols-2 gap-24 items-center px-10">
+                <div className="space-y-8">
+                   <h2 className="text-8xl font-light text-mat-bone italic tracking-tighter leading-[0.85]">
+                      The Path to <br/> 
+                      <span className="text-mat-gold font-black uppercase not-italic tracking-[0.2em] text-5xl">Sovereignty.</span>
+                   </h2>
+                   <p className="text-sm text-white/40 leading-relaxed max-w-md uppercase tracking-[0.4em]">
+                      Perform the daily rituals of the Protocol. Every journal entry and verification elevates your Standing.
+                   </p>
+                   <div className="flex gap-6 items-center pt-8">
+                      <div className="mat-glass-deep px-8 py-5 rounded-[2rem] border border-white/5">
+                         <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-2 tracking-[0.3em]">Tier</p>
+                         <p className="text-xl font-bold text-white uppercase tracking-widest italic">{currentLevel.name}</p>
+                      </div>
+                      <div className="mat-glass-deep px-8 py-5 rounded-[2rem] border border-white/5">
+                         <p className="text-[10px] font-black uppercase text-mat-gold/40 mb-2 tracking-[0.3em]">Power</p>
+                         <p className="text-xl font-bold text-white uppercase tracking-widest italic">+{integrity} Standing</p>
+                      </div>
+                   </div>
                 </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
+                <div className="mat-glass-deep p-12 rounded-[3.5rem] border border-white/10 shadow-mat-premium h-[700px] overflow-hidden">
+                   <QuestBoard refreshProfile={refreshProfile} />
+                </div>
+              </div>
+            </section>
+          )}
 
-        {/* 🚀 Floating Command Dock (Zero-Scroll Navigation Switcher) */}
-        <div className="fixed bottom-12 left-1/2 -translate-x-1/2 z-50">
-          <Dock 
-            folds={foldsConfig}
-            activeFold={activeFold}
-            onSelectFold={handleSelectFold}
-            onShowVerification={() => setShowVerificationModal(true)}
-            handleLogout={handleLogout || (() => {})} 
-          />
         </div>
 
         {/* Verification Modal Overlay */}
@@ -296,9 +305,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           isOpen={showVisibilityAlert}
           onClose={handleCloseVisibilityAlert}
         />
-      </div>
+      </motion.div>
     </SanctuaryErrorBoundary>
   );
 };
-
-export default MenDashboard;
