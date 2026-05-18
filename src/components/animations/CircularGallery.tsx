@@ -323,7 +323,6 @@ class Media {
     this.font = font;
     this.createShader();
     this.createMesh();
-    this.createTitle();
     this.onResize();
   }
 
@@ -433,15 +432,7 @@ class Media {
   }
 
   createTitle() {
-    this.title = new Title({
-      gl: this.gl,
-      plane: this.plane,
-      renderer: this.renderer,
-      text: this.text,
-      subText: this.subText,
-      textColor: this.textColor,
-      font: this.font
-    });
+    // No-op: Names and ages are displayed exclusively in the glass pill container below the TrumpCard.
   }
 
   update(scroll: { current: number; last: number }, direction: 'right' | 'left') {
@@ -517,9 +508,7 @@ class Media {
     this.widthTotal = this.width * this.length;
     this.x = this.width * this.index;
 
-    if (this.title) {
-      this.title.reposition();
-    }
+    // Title repositioning removed.
   }
 }
 

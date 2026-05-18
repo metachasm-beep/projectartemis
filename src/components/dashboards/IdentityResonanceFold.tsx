@@ -61,7 +61,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
                 bend={0} 
                 scrollSpeed={1.2} 
                 autoScroll 
-                autoScrollSpeed={0.27} 
+                autoScrollSpeed={0.24} 
                 onCenterUpdate={setActiveGazeIndex} 
               />
           )}
@@ -156,7 +156,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
                 bend={-0.1}
                 scrollSpeed={1.2} 
                 autoScroll 
-                autoScrollSpeed={0.27} 
+                autoScrollSpeed={0.24} 
                 onCenterUpdate={setActiveGazeIndex} 
               />
             )}
