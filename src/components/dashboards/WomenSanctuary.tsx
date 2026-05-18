@@ -150,14 +150,25 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
 
         {/* 3. COMPACT CONTROLS */}
         <div className="w-full flex flex-col items-center gap-6 lg:gap-10 mt-auto flex-shrink-0 pb-6">
-           <motion.button 
-             whileHover={{ scale: 1.02 }}
-             whileTap={{ scale: 0.98 }}
-             onClick={onBeginDiscovery}
-             className="w-full lg:w-96 py-5 rounded-[100px] bg-mat-noir text-white mat-text-apple-display text-[9px] tracking-[0.4em] font-bold shadow-2xl hover:bg-mat-rose-gold transition-all flex items-center justify-center gap-3 group"
-           >
-             Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-           </motion.button>
+           {profile?.is_influencer ? (
+             <motion.button 
+               whileHover={{ scale: 1.02 }}
+               whileTap={{ scale: 0.98 }}
+               onClick={() => setIsEditing(true)}
+               className="w-full lg:w-96 py-5 rounded-[100px] bg-mat-noir text-white mat-text-apple-display text-[9px] tracking-[0.4em] font-bold shadow-2xl hover:bg-mat-rose-gold transition-all flex items-center justify-center gap-3 group"
+             >
+               Edit Profile <Sparkles size={14} className="group-hover:rotate-12 transition-transform" />
+             </motion.button>
+           ) : (
+             <motion.button 
+               whileHover={{ scale: 1.02 }}
+               whileTap={{ scale: 0.98 }}
+               onClick={onBeginDiscovery}
+               className="w-full lg:w-96 py-5 rounded-[100px] bg-mat-noir text-white mat-text-apple-display text-[9px] tracking-[0.4em] font-bold shadow-2xl hover:bg-mat-rose-gold transition-all flex items-center justify-center gap-3 group"
+             >
+               Enter Discovery <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+             </motion.button>
+           )}
 
            <div className="flex items-center justify-center gap-12 w-full max-w-lg text-mat-noir/30">
               <button onClick={() => setShowArchitect(true)} className="flex items-center gap-2 text-mat-rose-gold hover:text-mat-noir transition-colors group">
