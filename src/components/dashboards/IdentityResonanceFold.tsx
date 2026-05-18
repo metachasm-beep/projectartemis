@@ -54,7 +54,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
   if (isMobile) {
     return (
       <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden w-full">
-        <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
+        <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
           {gazeProfiles.length > 0 && (
             <CircularGallery 
               items={gazeProfiles} 
@@ -65,7 +65,6 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
               onCenterUpdate={setActiveGazeIndex} 
             />
           )}
-          <div className="absolute inset-0 bg-black/40" />
         </div>
 
         <motion.div variants={maskReveal} className="relative z-20 mb-6 flex justify-center">
@@ -150,7 +149,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
       </header>
       
       <div className="relative flex-1 w-full max-w-7xl flex items-center justify-center overflow-hidden">
-         <div className="absolute inset-0 z-0 opacity-30 scale-110 pointer-events-none">
+         <div className="absolute inset-0 z-0 opacity-75 scale-110 pointer-events-none">
             {gazeProfiles.length > 0 && (
               <CircularGallery 
                 items={gazeProfiles} 

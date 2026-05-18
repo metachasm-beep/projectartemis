@@ -71,7 +71,53 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           city: r.city
         };
       });
-      setGazeProfiles(mapped.filter((p: any) => p.image && p.image.startsWith('http')));
+      const validProfiles = mapped.filter((p: any) => p.image && p.image.startsWith('http'));
+      if (validProfiles.length > 0) {
+        setGazeProfiles(validProfiles);
+      } else {
+        setGazeProfiles([
+          {
+            image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop',
+            text: 'Elena',
+            subText: '24 • Mumbai',
+            originalName: 'Elena V',
+            age: 24,
+            city: 'Mumbai'
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop',
+            text: 'Aanya',
+            subText: '23 • Delhi',
+            originalName: 'Aanya S',
+            age: 23,
+            city: 'Delhi'
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop',
+            text: 'Kiara',
+            subText: '25 • Bangalore',
+            originalName: 'Kiara M',
+            age: 25,
+            city: 'Bangalore'
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600&auto=format&fit=crop',
+            text: 'Rhea',
+            subText: '22 • Pune',
+            originalName: 'Rhea K',
+            age: 22,
+            city: 'Pune'
+          },
+          {
+            image: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop',
+            text: 'Sophia',
+            subText: '26 • Goa',
+            originalName: 'Sophia R',
+            age: 26,
+            city: 'Goa'
+          }
+        ]);
+      }
     } catch (err) { console.error("Gaze sync failed:", err); }
   }, []);
 
