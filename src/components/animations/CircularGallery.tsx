@@ -328,9 +328,10 @@ class Media {
 
   createShader() {
     const texture = new Texture(this.gl, {
-      generateMipmaps: false, // Fix black screen for NPOT Unsplash images
-      minFilter: this.gl.LINEAR,
+      generateMipmaps: true,
+      minFilter: this.gl.LINEAR_MIPMAP_LINEAR,
       magFilter: this.gl.LINEAR,
+      anisotropy: 16,
       wrapS: this.gl.CLAMP_TO_EDGE,
       wrapT: this.gl.CLAMP_TO_EDGE
     });
@@ -606,7 +607,7 @@ class App {
     this.renderer = new Renderer({
       alpha: true,
       antialias: true,
-      dpr: Math.min(window.devicePixelRatio || 1, 2)
+      dpr: window.devicePixelRatio || 2 // Full pristine HD Retina resolution
     });
     this.gl = this.renderer.gl;
     this.gl.clearColor(0, 0, 0, 0);
