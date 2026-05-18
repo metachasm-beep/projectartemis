@@ -56,14 +56,14 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
       <section className="h-[100dvh] min-h-[100dvh] snap-start relative flex flex-col items-center justify-center overflow-hidden w-full bg-[#F5F2EB]">
         <div className="absolute inset-0 z-0 pointer-events-none opacity-80">
           {gazeProfiles.length > 0 && (
-            <CircularGallery 
-              items={gazeProfiles} 
-              bend={0} 
-              scrollSpeed={1.2} 
-              autoScroll 
-              autoScrollSpeed={0.3} 
-              onCenterUpdate={setActiveGazeIndex} 
-            />
+              <CircularGallery 
+                items={gazeProfiles} 
+                bend={0} 
+                scrollSpeed={1.2} 
+                autoScroll 
+                autoScrollSpeed={0.27} 
+                onCenterUpdate={setActiveGazeIndex} 
+              />
           )}
         </div>
 
@@ -156,7 +156,7 @@ export const IdentityResonanceFold: React.FC<IdentityResonanceFoldProps> = ({
                 bend={-0.1}
                 scrollSpeed={1.2} 
                 autoScroll 
-                autoScrollSpeed={0.3} 
+                autoScrollSpeed={0.27} 
                 onCenterUpdate={setActiveGazeIndex} 
               />
             )}

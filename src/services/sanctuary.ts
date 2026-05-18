@@ -18,9 +18,31 @@ export const SanctuaryService = {
   getGazeCarouselProfiles: async () => {
     try {
       const res = await API.get('/discovery/gaze-carousel');
-      return res.data.profiles || [];
+      let profiles = res.data?.profiles || [];
+      if (profiles.length < 15) {
+        try {
+          const { AdminService } = await import('./admin');
+          const allWomen = await AdminService.searchProfiles({ role: 'woman', limit: 200 });
+          if (allWomen && allWomen.length > 0) {
+            profiles = [...profiles, ...allWomen];
+            const seen = new Set();
+            profiles = profiles.filter(p => {
+              const id = p.user_id || p.id;
+              if (seen.has(id)) return false;
+              seen.add(id);
+              return true;
+            });
+          }
+        } catch(e) { console.warn("Turso gaze expansion fallback failed:", e); }
+      }
+      return profiles;
     } catch (err) {
       console.warn("getGazeCarouselProfiles fallback:", err);
+      try {
+        const { AdminService } = await import('./admin');
+        const allWomen = await AdminService.searchProfiles({ role: 'woman', limit: 200 });
+        if (allWomen && allWomen.length > 0) return allWomen;
+      } catch(e) {}
       return [];
     }
   },

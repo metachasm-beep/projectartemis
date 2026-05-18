@@ -220,14 +220,14 @@ class Title {
 
   reposition() {
     if (!this.mesh) return;
-    const textHeightScaled = this.plane.scale.y * 0.15;
+    const textHeightScaled = 0.18; // Relative to parent plane scale
     const textWidthScaled = textHeightScaled * this.aspect;
     this.mesh.scale.set(textWidthScaled, textHeightScaled, 1);
     
     this.mesh.position.set(
-      -this.plane.scale.x * 0.5 + textWidthScaled * 0.5 + 0.15,
-      -this.plane.scale.y * 0.5 + textHeightScaled * 0.5 + 0.15,
-      0.8 // Definitive holographic depth offset
+      -0.5 + textWidthScaled * 0.5 + 0.05,
+      -0.5 + textHeightScaled * 0.5 + 0.05,
+      0.02 // Slight offset above the card
     );
   }
 }
