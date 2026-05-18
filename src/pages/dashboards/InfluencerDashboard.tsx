@@ -48,15 +48,15 @@ const StatCard: React.FC<{
     initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
     animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
     transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
-    className="mat-glass-deep p-8 rounded-[2.5rem] border border-mat-rose/10 space-y-4 relative overflow-hidden"
+    className="mat-glass-deep p-6 md:p-8 rounded-[2.5rem] border border-mat-rose/10 space-y-4 relative overflow-hidden"
   >
     <div className="absolute top-0 right-0 w-32 h-32 rounded-full bg-mat-rose/3 blur-2xl pointer-events-none" />
     <div className="w-10 h-10 rounded-2xl bg-mat-rose/10 flex items-center justify-center">
       <Icon size={18} className={accent} />
     </div>
     <div>
-      <p className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40 mb-1">{label}</p>
-      <p className={`text-4xl font-black italic tracking-tighter ${accent}`}>
+      <p className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40 mb-1 truncate">{label}</p>
+      <p className={`text-3xl md:text-4xl font-black italic tracking-tighter ${accent}`}>
         {prefix}{typeof value === 'number' ? value.toLocaleString('en-IN') : value}
       </p>
     </div>
@@ -102,8 +102,8 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
 
   // ── Loading ──
   if (loading) return (
-    <div className="min-h-[80vh] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-6 opacity-40">
+    <div className="min-h-[80vh] flex items-center justify-center px-4">
+      <div className="flex flex-col items-center gap-6 opacity-40 text-center">
         <Loader2 size={32} className="animate-spin text-mat-wine" />
         <span className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-slate">Loading Influence Hub...</span>
       </div>
@@ -116,7 +116,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
       <div className="text-center space-y-6 max-w-sm">
         <p className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-rose/60">Access Restricted</p>
         <p className="text-sm text-mat-slate/50">{error}</p>
-        <button onClick={fetchDashboard} className="px-8 py-4 bg-mat-wine text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-mat-wine-soft transition-all flex items-center gap-2 mx-auto">
+        <button onClick={fetchDashboard} className="px-8 py-4 bg-mat-wine text-white rounded-2xl font-bold text-[10px] tracking-widest uppercase hover:bg-mat-wine-soft transition-all flex items-center gap-2 mx-auto shadow-xl">
           <RefreshCw size={12} /> Retry
         </button>
       </div>
@@ -130,16 +130,16 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
       initial="initial"
       animate="animate"
       variants={bloomVariants}
-      className="max-w-5xl mx-auto px-6 py-16 space-y-16"
+      className="max-w-5xl mx-auto px-4 sm:px-6 py-8 md:py-16 space-y-12 md:space-y-16 pb-36 md:pb-24"
     >
       {/* ── Header ── */}
       <div className="space-y-6">
         <div className="space-y-4">
           <span className="text-[10px] font-black uppercase tracking-[0.6em] text-mat-rose/50">Influence Hub</span>
-          <h1 className="text-6xl md:text-7xl mat-text-display-pro text-mat-wine italic leading-[0.9]">
+          <h1 className="text-5xl sm:text-6xl md:text-7xl mat-text-display-pro text-mat-wine italic leading-[0.9]">
             Your<br /><span className="text-mat-rose/30">Impact.</span>
           </h1>
-          <p className="text-mat-slate/50 max-w-md text-sm leading-relaxed">
+          <p className="text-mat-slate/50 max-w-md text-xs sm:text-sm leading-relaxed">
             Welcome back, <strong className="text-mat-wine">{data!.influencer_name}</strong>. Every referral you make builds the Matriarch community.
           </p>
         </div>
@@ -148,16 +148,17 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
           <div className="pt-2">
             <button
               onClick={onSwitchToProfile}
-              className="px-8 py-4 bg-mat-wine text-white hover:bg-mat-wine-soft transition-all rounded-2xl font-bold text-[11px] tracking-[0.2em] uppercase flex items-center gap-3 shadow-xl border border-white/10"
+              className="w-full sm:w-auto px-6 py-3.5 md:px-8 md:py-4 bg-mat-wine text-white hover:bg-mat-wine-soft transition-all rounded-2xl font-bold text-[10px] md:text-[11px] tracking-widest uppercase flex items-center justify-center gap-3 shadow-xl border border-white/10 text-center leading-normal"
             >
-              <User size={16} /> Switch to Normal User Profile ({profile?.role === 'woman' ? 'Woman Sanctuary' : 'Man Dashboard'})
+              <User size={16} className="shrink-0" /> 
+              <span>Switch to Normal User <span className="hidden sm:inline">Profile </span>({profile?.role === 'woman' ? 'Woman Sanctuary' : 'Man Dashboard'})</span>
             </button>
           </div>
         )}
       </div>
 
       {/* ── Stats Row ── */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         <StatCard
           label="Total Referrals"
           value={data!.stats.total_referrals}
@@ -191,11 +192,11 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.3 }}
-          className="mat-glass-deep p-10 rounded-[3rem] border border-mat-gold/20 space-y-6"
+          className="mat-glass-deep p-6 sm:p-8 md:p-10 rounded-[3rem] border border-mat-gold/20 space-y-6"
         >
           <div className="space-y-1">
             <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Pending Balance</span>
-            <p className="text-5xl font-black italic text-mat-gold tracking-tighter">
+            <p className="text-4xl sm:text-5xl font-black italic text-mat-gold tracking-tighter truncate">
               ₹{(data!.pending_balance || 0).toFixed(2)}
             </p>
           </div>
@@ -203,7 +204,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
             Your accumulated commissions. The Matriarch team will settle these earnings with you directly.
           </p>
           <div className="flex items-center gap-2 text-[9px] uppercase font-black tracking-widest text-mat-slate/20">
-            <Sparkles size={10} /> Settled manually by the admin team
+            <Sparkles size={10} className="shrink-0" /> Settled manually by the admin team
           </div>
         </motion.div>
 
@@ -212,7 +213,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.35 }}
-          className="mat-glass-deep p-10 rounded-[3rem] border border-mat-rose/10 space-y-6"
+          className="mat-glass-deep p-6 sm:p-8 md:p-10 rounded-[3rem] border border-mat-rose/10 space-y-6"
         >
           <div className="space-y-1">
             <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Your Promo Code</span>
@@ -221,15 +222,15 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
 
           {data!.coupon ? (
             <div className="space-y-4">
-              <div className="flex items-center gap-4 bg-mat-obsidian/5 rounded-2xl px-6 py-5 border border-mat-rose/10">
-                <Tag size={16} className="text-mat-rose shrink-0" />
-                <span className="font-mono text-2xl font-black tracking-[0.3em] text-mat-wine flex-1">
+              <div className="flex items-center justify-between gap-2 md:gap-4 bg-mat-obsidian/5 rounded-2xl px-4 py-4 md:px-6 md:py-5 border border-mat-rose/10 overflow-hidden">
+                <Tag size={16} className="text-mat-rose shrink-0 hidden sm:block" />
+                <span className="font-mono text-lg sm:text-xl md:text-2xl font-black tracking-widest md:tracking-[0.3em] text-mat-wine truncate flex-1">
                   {data!.coupon.code}
                 </span>
                 <motion.button
                   onClick={copyCode}
                   whileTap={{ scale: 0.92 }}
-                  className={`p-3 rounded-xl transition-all ${codeCopied ? 'bg-mat-wine text-white' : 'bg-mat-rose/10 text-mat-rose hover:bg-mat-rose/20'}`}
+                  className={`p-2.5 md:p-3 rounded-xl shrink-0 transition-all ${codeCopied ? 'bg-mat-wine text-white' : 'bg-mat-rose/10 text-mat-rose hover:bg-mat-rose/20'}`}
                 >
                   <AnimatePresence mode="wait">
                     {codeCopied ? (
@@ -276,10 +277,10 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
         transition={{ duration: 0.7, delay: 0.4 }}
         className="mat-glass-deep rounded-[3rem] border border-mat-rose/10 overflow-hidden"
       >
-        <div className="px-10 pt-10 pb-6 border-b border-mat-rose/10 flex items-center justify-between">
+        <div className="px-6 pt-6 md:px-10 md:pt-10 pb-6 border-b border-mat-rose/10 flex items-center justify-between">
           <div className="space-y-1">
             <span className="text-[9px] font-black uppercase tracking-[0.5em] text-mat-slate/40">Recent Referrals</span>
-            <h3 className="text-2xl font-bold italic text-mat-wine">Transaction Ledger</h3>
+            <h3 className="text-xl sm:text-2xl font-bold italic text-mat-wine">Transaction Ledger</h3>
           </div>
           <div className="flex items-center gap-2 text-[9px] font-black uppercase tracking-widest text-mat-slate/30">
             <Clock size={10} />
@@ -288,7 +289,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
         </div>
 
         {data!.transactions.length === 0 ? (
-          <div className="py-20 text-center space-y-3">
+          <div className="py-20 text-center space-y-3 px-4">
             <p className="text-[10px] font-black uppercase tracking-[0.5em] text-mat-slate/20">No referrals yet</p>
             <p className="text-xs text-mat-slate/20">Start sharing your code — every referral earns you 10% commission.</p>
           </div>
@@ -341,7 +342,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.05 * i }}
-                  className="px-8 py-6 space-y-3"
+                  className="px-6 py-5 space-y-3"
                 >
                   <div className="flex justify-between items-start">
                     <span className="font-mono text-xs font-bold text-mat-wine/60 tracking-widest">{tx.redacted_user}</span>
@@ -365,7 +366,7 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
 
             {/* Show more */}
             {data!.transactions.length > 5 && (
-              <div className="px-10 py-8 border-t border-mat-rose/5">
+              <div className="px-6 sm:px-10 py-8 border-t border-mat-rose/5">
                 <button
                   onClick={() => setShowAllTx(v => !v)}
                   className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-mat-rose/60 hover:text-mat-rose transition-colors mx-auto"
@@ -380,8 +381,8 @@ export const InfluencerDashboard: React.FC<{ onSwitchToProfile?: () => void }> =
       </motion.div>
 
       {/* Footer */}
-      <div className="py-10 text-center">
-        <p className="text-[9px] font-black uppercase tracking-[1.2em] opacity-10 text-mat-wine pointer-events-none select-none">
+      <div className="pt-8 pb-24 md:pb-12 text-center border-t border-mat-rose/5 mt-12">
+        <p className="text-[8px] md:text-[9px] font-black uppercase tracking-[0.8em] md:tracking-[1.2em] opacity-30 text-mat-wine pointer-events-none select-none px-4 leading-relaxed">
           Matriarch // Influence. Commission. Rise.
         </p>
       </div>
