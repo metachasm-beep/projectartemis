@@ -11,6 +11,10 @@
   --color-mat-rose-gold:   #B76E79;    /* Editorial Accent                */
   --color-mat-cashmere:    #F2E8E4;    /* Soft Surface                    */
   --color-mat-gold:        #D4AF37;    /* Classic Luxury                  */
+  --color-mat-obsidian:    #0C0C0C;    /* Pitch Obsidian                  */
+  --color-mat-wine:        #58111A;    /* Deep Sovereign Wine             */
+  --color-mat-rose:        #B76E79;    /* Editorial Rose                  */
+  --color-mat-slate:       #64748B;    /* Slate Muted                     */
 
   /* ─── Typography: Art Deco Protocol Pairing ─────────────────────── */
   --font-display: "Poiret One", Georgia, sans-serif;    /* Art Deco Geometric  */
