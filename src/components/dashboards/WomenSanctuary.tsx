@@ -88,7 +88,7 @@ export const WomenSanctuary: React.FC<WomenSanctuaryProps> = ({
   const immersionHours = Math.round((metrics.sessionSeconds || 0) / 3600);
 
   return (
-    <div className="relative w-full h-[100dvh] overflow-hidden mat-apple-bg flex flex-col selection:bg-mat-noir selection:text-white pt-[72px]">
+    <div className="relative w-full min-h-[100dvh] landscape:min-h-0 landscape:h-auto overflow-hidden landscape:overflow-y-auto mat-apple-bg flex flex-col selection:bg-mat-noir selection:text-white pt-[72px]">
       
       {/* 🍎 BACKGROUND DEPTH ════════════════════════ */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40">

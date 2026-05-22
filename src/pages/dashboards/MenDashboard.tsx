@@ -258,7 +258,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
           {/* ─── FOLD TWO: SANCTUARY INTELLIGENCE ─── */}
           {isMobile ? (
             <>
-              <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
+              <section className="min-h-[100dvh] landscape:min-h-0 landscape:h-auto landscape:py-12 px-4 snap-start flex flex-col justify-center">
                 <SanctuaryStandingCard 
                   profile={profile}
                   integrity={integrity}
@@ -276,14 +276,14 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
                 />
               </section>
 
-              <section className="h-[100dvh] min-h-[100dvh] px-4 snap-start flex flex-col justify-center">
+              <section className="min-h-[100dvh] landscape:min-h-0 landscape:h-auto landscape:py-12 px-4 snap-start flex flex-col justify-center">
                  <div className="h-full py-20 flex flex-col max-w-lg mx-auto w-full">
                     <QuestBoard refreshProfile={refreshProfile} />
                  </div>
               </section>
             </>
           ) : (
-            <section className="h-[100dvh] min-h-[100dvh] py-20 snap-start flex flex-col justify-center">
+            <section className="min-h-[100dvh] landscape:min-h-0 landscape:h-auto landscape:py-12 py-20 snap-start flex flex-col justify-center">
               <SanctuaryStandingCard 
                 profile={profile}
                 integrity={integrity}
@@ -304,7 +304,7 @@ export const MenDashboard: React.FC<MenDashboardProps> = ({
 
           {/* ─── FOLD THREE: THE PATH TO HONOR ─── */}
           {!isMobile && (
-            <section className="h-[100dvh] min-h-[100dvh] py-24 snap-start flex flex-col items-center justify-center">
+            <section className="min-h-[100dvh] landscape:min-h-0 landscape:h-auto landscape:py-12 py-24 snap-start flex flex-col items-center justify-center">
               <div className="max-w-[1400px] w-full grid grid-cols-1 lg:grid-cols-2 gap-24 items-center px-10">
                 <div className="space-y-8">
                    <h2 className="text-8xl font-light text-mat-bone italic tracking-tighter leading-[0.85]">

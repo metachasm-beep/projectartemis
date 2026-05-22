@@ -155,7 +155,7 @@ export const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; conten
                    <tr className="border-b border-mat-rose/10">
                       <td className="p-4 border-r border-mat-rose/10 text-mat-wine">Intimate Imagery</td>
                       <td className="p-4 border-r border-mat-rose/10 text-center">Immediate</td>
-                      <td className="p-4 text-center text-mat-wine">2 Hours</td>
+                      <td className="p-4 text-center text-mat-wine">24 Hours</td>
                    </tr>
                    <tr className="border-b border-mat-rose/10 bg-mat-wine/5">
                       <td className="p-4 border-r border-mat-rose/10">Impersonation</td>
@@ -202,7 +202,14 @@ export const DOCUMENT_CONTENT: Record<string, { title: string; icon: any; conten
     content: (
       <div className="space-y-12">
         <div className="pb-8 border-b border-mat-rose/10">
-           <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40 mb-2">Last Updated: April 5, 2026</p>
+           <div className="flex justify-between items-center mb-4">
+              <p className="text-sm font-black uppercase tracking-[0.3em] text-mat-wine/40">Last Updated: April 5, 2026</p>
+              <div className="flex gap-2">
+                 {['EN', 'HI', 'TA', 'TE', 'BN'].map(lang => (
+                    <button key={lang} className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border transition-colors ${lang === 'EN' ? 'bg-mat-wine text-white border-mat-wine' : 'bg-transparent text-mat-wine/60 border-mat-wine/20 hover:border-mat-wine/60'}`}>{lang}</button>
+                 ))}
+              </div>
+           </div>
            <p className="text-sm opacity-60 leading-relaxed italic">
              Metachasm (OPC) Private Limited ("we," "us," or "our") is committed to protecting the digital personal data of our users ("Data Principals"). This Privacy Policy explains how we process your data in compliance with the Digital Personal Data Protection Act (DPDP), 2023.
            </p>

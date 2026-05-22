@@ -30,6 +30,7 @@ export const Onboarding: React.FC<OnboardingProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [strength, setStrength] = useState(10);
+  const [legalAccepted, setLegalAccepted] = useState(false);
 
   // 🏹 Google Auth Pre-fill logic correctly injected here.
   const [formData, setFormData] = useState({
@@ -368,8 +369,14 @@ export const Onboarding: React.FC<OnboardingProps> = ({
                          <div className="flex justify-between items-center"><span className="text-[14px] font-black uppercase tracking-widest text-mat-wine">Profile Strength</span><span className="text-2xl font-bold text-mat-wine italic">{strength}%</span></div>
                          <div className="h-2 bg-mat-fog rounded-full overflow-hidden"><motion.div initial={{ width: 0 }} animate={{ width: `${strength}%` }} className="h-full bg-mat-gold shadow-sm" /></div>
                       </div>
+                      <div className="flex items-start gap-3 text-left max-w-sm mx-auto bg-white/40 p-4 rounded-2xl border border-mat-rose/10">
+                         <input type="checkbox" id="legal-accept" checked={legalAccepted} onChange={(e) => setLegalAccepted(e.target.checked)} className="mt-1 w-5 h-5 accent-mat-wine cursor-pointer shrink-0" />
+                         <label htmlFor="legal-accept" className="text-[11px] font-bold text-mat-wine/80 leading-relaxed cursor-pointer">
+                            I explicitly agree to the Privacy Policy and Terms of Service, and consent to the processing of my data under the DPDP Act.
+                         </label>
+                      </div>
                       {error && <p className="text-[10px] font-bold text-red-500 uppercase tracking-widest">{error}</p>}
-                      <button onClick={updateProfile} disabled={loading} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform">{loading ? 'Joining...' : 'Launch Dashboard'}</button>
+                      <button onClick={updateProfile} disabled={loading || !legalAccepted} className="w-full h-18 bg-mat-wine text-mat-cream rounded-[2rem] font-black uppercase tracking-[0.4em] text-[12px] shadow-mat-rose hover:scale-[1.02] transition-transform disabled:opacity-50 disabled:cursor-not-allowed">{loading ? 'Joining...' : 'Launch Dashboard'}</button>
                    </motion.div>
                 )}
              </AnimatePresence>

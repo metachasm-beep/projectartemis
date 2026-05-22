@@ -82,7 +82,7 @@ const HeroFold: React.FC = () => {
   return (
     <section 
       ref={containerRef}
-      className="relative h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0A0A0B]"
+      className="relative min-h-[100dvh] w-full overflow-hidden snap-start snap-always bg-[#0A0A0B]"
     >
       {/* 2. Parallax Background Slideshow */}
       <AnimatePresence>
@@ -122,7 +122,7 @@ const HeroFold: React.FC = () => {
       {/* 3. Hero Content — MATRIARCH as dominant typographic anchor */}
       <motion.div 
         style={{ y: contentY, opacity: contentOpacity }}
-        className="relative z-10 flex flex-col items-center justify-center h-full text-center px-0"
+        className="relative z-10 flex flex-col items-center justify-center min-h-[100dvh] text-center px-0 landscape:py-12"
       >
 
         {/* ── MATRIARCH — The Largest Text on the Page ── */}
@@ -132,7 +132,7 @@ const HeroFold: React.FC = () => {
           transition={{ delay: 1.0, duration: 1.8, ease: [0.16, 1, 0.3, 1] }}
           className="font-display font-light uppercase text-[#FDFCFB] leading-none w-full text-center"
           style={{
-            fontSize: "clamp(2.8rem, 13vw, 10rem)",
+            fontSize: "clamp(2.8rem, min(13vw, 25vh), 10rem)",
             letterSpacing: "0.06em",
             wordBreak: "keep-all",
             whiteSpace: "nowrap",
@@ -147,7 +147,7 @@ const HeroFold: React.FC = () => {
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
           transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
-          className="w-24 md:w-40 h-px bg-mat-gold/60 my-6 md:my-8 origin-center"
+          className="w-24 md:w-40 h-px bg-mat-gold/60 my-6 md:my-8 landscape:my-3 origin-center"
         />
 
         {/* Sub-headline: "Ruled by Her Standard." */}
@@ -170,7 +170,7 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2.5, duration: 1.5 }}
-          className="text-white/55 max-w-md text-sm md:text-base font-body font-light tracking-[0.06em] leading-relaxed mt-6 md:mt-8"
+          className="text-white/55 max-w-md text-sm md:text-base font-body font-light tracking-[0.06em] leading-relaxed mt-6 md:mt-8 landscape:mt-3"
         >
           India's most exclusive network for elite professional networking and premium matchmaking.
         </motion.p>
@@ -180,17 +180,17 @@ const HeroFold: React.FC = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 3.0, duration: 0.8 }}
-          className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-10 w-full max-w-sm sm:max-w-none sm:w-auto"
+          className="flex flex-col sm:flex-row gap-4 mt-8 md:mt-10 landscape:mt-4 w-full max-w-sm sm:max-w-none sm:w-auto"
         >
           <StarBorder 
             onClick={() => setIsLoginModalOpen(true)} 
-            className="w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 text-base md:text-lg font-body tracking-[0.2em] bg-mat-gold text-white border-mat-gold"
+            className="w-full sm:w-auto px-8 py-4 md:px-12 md:py-5 landscape:py-3 text-base md:text-lg font-body tracking-[0.2em] bg-mat-gold text-white border-mat-gold"
           >
             GET STARTED
           </StarBorder>
           
           <button onClick={() => window.open('https://blogs.matriarchindia.com', '_blank')} className="w-full sm:w-auto">
-            <StarBorder className="w-full px-8 py-4 md:px-12 md:py-5 text-base md:text-lg font-body tracking-[0.2em] bg-white/5 border-white/10 text-white/50 hover:text-white transition-colors">
+            <StarBorder className="w-full px-8 py-4 md:px-12 md:py-5 landscape:py-3 text-base md:text-lg font-body tracking-[0.2em] bg-white/5 border-white/10 text-white/50 hover:text-white transition-colors">
               READ BLOGS
             </StarBorder>
           </button>
@@ -200,7 +200,7 @@ const HeroFold: React.FC = () => {
         <motion.div 
           animate={{ y: [0, 10, 0] }}
           transition={{ repeat: Infinity, duration: 2 }}
-          className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30"
+          className="absolute bottom-10 landscape:bottom-2 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-30 landscape:hidden"
         >
           <span className="text-[9px] tracking-[0.35em] font-body uppercase text-white">Scroll to Explore</span>
           <ArrowDown className="w-4 h-4 text-white" />

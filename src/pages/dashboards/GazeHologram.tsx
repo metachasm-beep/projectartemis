@@ -13,7 +13,7 @@ import {
 } from '@react-three/drei';
 import * as THREE from 'three';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, MessageSquare, Trash2, BadgeCheck, Globe } from 'lucide-react';
+import { Shield, MessageSquare, Trash2, BadgeCheck, Globe, Flag } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 
 interface ProfileCardProps {
@@ -23,6 +23,7 @@ interface ProfileCardProps {
   onVerify: (id: string, current: boolean) => void;
   onMessage: (p: {id: string, name: string}) => void;
   onDelete: (id: string) => void;
+  onReport?: (id: string) => void;
   onPaymentApprove?: (id: string) => void;
   onPaymentReject?: (id: string) => void;
 }
@@ -34,6 +35,7 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
   onVerify,
   onMessage,
   onDelete,
+  onReport,
   onPaymentApprove,
   onPaymentReject
 }) => {
@@ -117,8 +119,16 @@ const ProfileCard3D: React.FC<ProfileCardProps> = ({
                         <Shield size={16} />
                      </button>
                      <button 
+                       onClick={(e) => { e.stopPropagation(); onReport?.(profile.user_id); }}
+                       className="w-12 h-12 rounded-xl border border-orange-500/20 bg-orange-500/10 text-orange-500 flex items-center justify-center hover:bg-orange-500/20 transition-colors"
+                       title="Report Profile"
+                     >
+                        <Flag size={16} />
+                     </button>
+                     <button 
                        onClick={(e) => { e.stopPropagation(); onDelete(profile.user_id); }}
-                       className="w-12 h-12 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 flex items-center justify-center"
+                       className="w-12 h-12 rounded-xl border border-red-500/20 bg-red-500/10 text-red-500 flex items-center justify-center hover:bg-red-500/20 transition-colors"
+                       title="Remove Profile"
                      >
                         <Trash2 size={16} />
                      </button>
@@ -146,6 +156,7 @@ interface GazeHologramProps {
   onVerify: (id: string, current: boolean) => void;
   onMessage: (p: {id: string, name: string}) => void;
   onDelete: (id: string) => void;
+  onReport?: (id: string) => void;
   onPaymentApprove?: (id: string) => void;
   onPaymentReject?: (id: string) => void;
 }
